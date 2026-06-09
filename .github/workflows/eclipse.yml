@@ -1,0 +1,73 @@
+name: Eclipse Plugin Build
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'eclipse/**'
+      - 'eclipse-build/**'
+      - '.github/workflows/eclipse.yml'
+      - '!**/README.md'
+      - '!**/CHANGELOG.md'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - 'eclipse/**'
+      - 'eclipse-build/**'
+      - '.github/workflows/eclipse.yml'
+      - '!**/README.md'
+      - '!**/CHANGELOG.md'
+
+jobs:
+  build:
+
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        java-version: '21'
+        distribution: 'zulu'
+
+    - name: Cache provisioned Eclipse
+      uses: actions/cache@v5
+      with:
+        path: .eclipse-build-cache
+        key: ${{ runner.os }}-eclipse-${{ hashFiles('eclipse-build/lib.sh', 'eclipse-build/provision.sh') }}
+        restore-keys: ${{ runner.os }}-eclipse-
+
+    - name: Build update site and run tests
+      run: ./eclipse-build/build.sh
+
+    - name: Upload update site
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: cqrs-dsl-update-site
+        path: eclipse-build/repository
+        if-no-files-found: warn
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: cqrs-dsl-test-results
+        path: eclipse-build/test-results
+        if-no-files-found: warn
+
+    - name: Publish to Artifactory
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        P2_USER: ${{ secrets.P2_USER }}
+        P2_TOKEN: ${{ secrets.P2_TOKEN }}
+      run: ./eclipse-build/publish.sh

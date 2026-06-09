@@ -1,0 +1,33 @@
+package org.fuin.dsl.ddd.gen.base
+
+import java.util.List
+import org.fuin.dsl.cqrs.cqrsDsl.Exception
+import org.fuin.srcgen4j.core.emf.CodeSnippet
+import org.fuin.srcgen4j.core.emf.CodeSnippetContext
+
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+
+/**
+ * Creates source code for "throws" clause.
+ */
+class SrcThrowsExceptions implements CodeSnippet {
+
+    val List<Exception> exceptions
+
+    new(CodeSnippetContext ctx, List<Exception> exceptions) {
+        this.exceptions = exceptions
+        if (exceptions !== null) {
+            for (Exception exception : exceptions) {
+                ctx.requiresReference(exception.uniqueName)
+            }
+        }
+    }
+
+    override toString() {
+        if ((exceptions === null) || (exceptions.size == 0)) {
+            return ""
+        }
+        ''' throws «FOR ex : exceptions SEPARATOR ', '»«ex.name»«ENDFOR»'''
+    }
+
+}

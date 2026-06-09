@@ -1,0 +1,25 @@
+# General
+.*
+!.gitignore
+!.gitkeep
+!.github
+*.log
+
+# Maven
+!.mvn
+target
+
+# Eclipse
+!.classpath
+!.project
+!.launch
+!.settings
+bin
+
+# Eclipse headless build outputs (see eclipse-build/)
+eclipse-build/work/
+eclipse-build/repository/
+eclipse-build/test-results/
+# Keep the env template tracked (the real .env stays ignored by the .* rule above)
+!eclipse-build/.env.example
+

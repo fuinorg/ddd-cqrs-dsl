@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.fuin</groupId>
+		<artifactId>pom</artifactId>
+		<version>2.0.2</version>
+		<relativePath/>
+	</parent>
+
+	<groupId>org.fuin.dsl</groupId>
+	<artifactId>ddd-cqrs-dsl-parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<description>DSL and tooling for DDD/CQRS with XText</description>
+	<url>https://github.com/fuinorg/ddd-cqrs-dsl/</url>
+
+	<scm>
+		<url>https://github.com/fuinorg/ddd-cqrs-dsl/</url>
+		<connection>scm:git:git://github.com/fuinorg/ddd-cqrs-dsl.git</connection>
+		<developerConnection>scm:git:git@github.com:fuinorg/ddd-cqrs-dsl.git</developerConnection>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/fuinorg/ddd-cqrs-dsl/issues</url>
+	</issueManagement>
+
+	<properties>
+		<java.version>21</java.version>
+		<java.release.version>${java.version}</java.release.version>
+		<xtext.version>2.42.0</xtext.version>
+	</properties>
+
+	<modules>
+		<module>maven</module>
+		<module>templates</module>
+	</modules>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.1.4</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

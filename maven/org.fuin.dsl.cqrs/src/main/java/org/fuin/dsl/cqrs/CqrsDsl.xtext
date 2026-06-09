@@ -1,0 +1,421 @@
+grammar org.fuin.dsl.cqrs.CqrsDsl hidden(WS, ML_COMMENT, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate cqrsDsl "http://www.fuin.org/dsl/cqrs/CqrsDsl"
+
+/** A system of abstractions that describes the selected aspects of the domain. */
+DomainModel:
+	contexts+=Context*;
+
+/** The setting in which a word or statement appears that determines its meaning. */
+Context:
+	'context' name=FQN '{'
+		namespaces+=Namespace*
+	'}';
+
+/** Structured hierarchy that allows reuse of names in different sub contexts. */
+Namespace:
+	'namespace' name=FQN '{'
+		imports+=Import*
+		elements+=AbstractElement*
+	'}';
+
+/** Allows using objects from other namespaces. */
+Import:
+	'import' importedNamespace=(FQN | FQNWithWildcard);
+
+/** Common properties of domain model elements. */
+AbstractElement:
+	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View;
+
+/** Common properties of all types. */
+Type:
+	ExternalType | InternalType | Service;
+
+/** Common properties of types that are part of the domain model. */
+InternalType:
+	AbstractVO | AbstractEntity | EnumObject;
+
+/** Common properties of value objects. */
+AbstractVO:
+	ValueObject | AbstractEntityId;
+
+/** Common properties of entity or aggregate identifiers. */
+AbstractEntityId:
+	EntityId | AggregateId;
+
+/** Common properties of entities and aggregates. */
+AbstractEntity:
+	Entity | Aggregate;
+
+/** Types that are defined somewhere outside of the domain model. */
+ExternalType:
+	doc=DOC?	
+	'type' (element='element')? name=ID ('generics' generics=INT)?;
+
+/** Standard way of expressing duration. */
+enum TimeUnit:
+	millis | seconds | minutes | hours | days;
+
+/** Determines whether inconsistencies are acceptable or not.  */
+enum ConsistencyLevel:
+	/** Inconsistencies are allowed for some time. */
+	weak |	
+	/** Inconsistencies are never allowed. */ 
+	strong;
+
+/** Determines how inconsistencies are detected. */
+enum InconsistencyDetection:
+	/** No special handling required (They are simply accepted). */
+	never | 
+	/** Someone should verify the data from time to time in a manual process. */
+	manually |
+	/** Some automated process is necessary to verify the constraints. */ 
+	automatic;
+
+/** Determines how an inconsistency will be resolved. */
+enum InconsistencyResolution:
+	/** There will be no action taken (inconsistency stays is is). */
+	never | 
+	/** Someone should manually fix the data. */
+	manually |
+	/** Some automated process is necessary that cleans up the data. */ 
+	automatic | 
+	/** Some workflow should be started to clean the data. */
+	workflow;
+
+/** Amount of time. */
+Duration:
+	time=INT unit=TimeUnit;
+
+/** Inconsistencies are allowed for some time. */
+WeakConsistency:	
+	acceptableDoc=DOC? 
+	'acceptable' acceptable=Duration 
+	
+	detectionDoc=DOC? 
+	'detection' detection=InconsistencyDetection
+	
+	resolutionDoc=DOC? 
+	'resolution' resolution=InconsistencyResolution;
+
+/** Defines a level of consistency. In case of a weak consistency some additional properties are defined. */
+Consistency:
+	doc=DOC?
+	'consistency' level=ConsistencyLevel ('{' weakConsistency=WeakConsistency '}')?;
+
+/** Defines a condition that must be satisfied. */
+Constraint:
+	doc=DOC? 
+	'constraint' name=ID ('input' input+=[Type|FQN] ('|' input+=[Type|FQN])*)? ('exception' exception=[Exception|FQN])? '{'
+		attributes+=Attribute*
+		('message' message=STRING)?
+	'}';
+
+/** Defines a business rule that must be satisfied. */
+BusinessRule:
+	doc=DOC
+	'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
+		attributes+=Attribute*
+		consistency=Consistency
+	'}';
+
+/** Defines an annotation. */
+Annotation:
+	doc=DOC?
+	'annotation' name=ID '{'
+		attributes+=Attribute*
+	'}';
+
+/** Describes an error condition. */
+Exception:
+	doc=DOC?
+	'exception' name=ID ('cid' cid=INT)? '{'
+		attributes+=Attribute* 
+		'message' message=STRING
+	'}';
+
+/** An object that describes some characteristic or attribute but carries no concept of identity. */
+ValueObject:
+	doc=DOC? 
+	annotations+=AnnotationInstance*
+	'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		constructors+=Constructor*
+		methods+=Method*
+	'}';
+
+/** Uniquely identifies an entity. */
+EntityId:
+	doc=DOC?
+	'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		constructors+=Constructor*
+		methods+=Method*
+	'}';
+
+/** Uniquely identifies an aggregate. */
+AggregateId:
+	doc=DOC?
+	'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		constructors+=Constructor*
+		methods+=Method*
+	'}';
+
+/** A type with a limited set of named values. */
+EnumObject:
+	doc=DOC?
+	'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		'instances' '{' instances+=EnumInstance+ '}'
+	'}';
+
+/** Named value of an enumeration. */
+EnumInstance:
+	doc=DOC?
+	(deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')?;	
+
+/** A domain event describes something that happened in the past and that domain experts care about. */
+Event:
+	doc=DOC?
+	annotations+=AnnotationInstance*
+	'event' name=ID ('copies-attributes-of' origin=[AbstractMethod|FQN])? '{'
+		attributes+=Attribute*
+		('message' message=STRING)?
+	'}';
+
+/* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
+Entity:
+	doc=DOC?
+	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		businessRules+=BusinessRule*
+		constructors+=Constructor*
+		methods+=Method*
+		elements+=AbstractElement*
+	'}';
+
+/** 
+ * A cluster of associated objects that are treated as a unit for the purpose of data changes. 
+ * External references are restricted to one member of the Aggregate, designated as the root. 
+ * A set of consistency rules applies within the Aggregate's boundaries.
+ */
+Aggregate:
+	doc=DOC?
+	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? '{'
+		metaInfo=TypeMetaInfo
+		attributes+=Attribute*
+		businessRules+=BusinessRule*
+		constructors+=Constructor*
+		methods+=Method*
+		elements+=AbstractElement*
+	'}';
+
+/** Common properties of methods. */
+AbstractMethod:
+	Constructor | Method;
+
+/** Special type of method used to create an object. */
+Constructor:
+	doc=DOC? 
+	'constructor' name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+		parameters+=Parameter*
+		service=[Service|FQN]?
+		services+=Service*
+		events+=Event*
+	'}';
+
+/** Type returned by a method (not a constructor). */
+ReturnType:
+	doc=DOC? 
+	'returns' type=[Type|FQN];
+
+/** Defines a function of an object. */
+Method:
+	doc=DOC? 
+	'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+		parameters+=Parameter*
+		service=[Service|FQN]?
+		returnType=ReturnType?
+		services+=Service*
+		events+=Event*
+	'}';
+
+/** Properties of an object that are meant to be used in a user interface. */
+TypeMetaInfo:
+	{TypeMetaInfo}
+    	('slabel' (slabel=STRING))?
+    	('label' (label=STRING))?
+    	('tooltip' (tooltip=STRING))?
+    	('prompt' (prompt=STRING))?
+    	('examples' (examples+=Literal*))?;
+
+/** Common properties of attributes and parameters. */
+Variable:
+	Attribute | Parameter;
+
+/** Allows typing another type. */
+GenericArgs:
+	'<' + args+=[Type|FQN] (',' args+=[Type|FQN])* '>';	
+
+/** Property of an object. */
+Attribute:
+	doc=DOC? 
+	(nullable='nullable')? 	
+	type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (overridden=OverriddenTypeMetaInfo)?;
+
+/** Property/Argument of a method. */
+Parameter:
+	doc=DOC? 
+	(nullable='nullable')? 
+	type=[Type|FQN] generics=GenericArgs? name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? (overridden=OverriddenTypeMetaInfo)?;
+
+/** 
+ * List of invariants.
+ * 
+ * An invariant is a rule that should never be violated during program execution.
+ * If it's violated, this means there is an error in the code and exception may be thrown.
+ * It's a kind of unexpected error that is normally signaled with a status code or an unchecked exception.
+ * The module's provider is responsible for keeping this kind of rule.  
+ */
+Invariants:
+	'invariants' constraintInstances+=ConstraintInstance (',' constraintInstances+=ConstraintInstance)*;
+
+/** 
+ * List of preconditions.
+ * 
+ * A precondition is a rule that must be followed before calling a method.
+ * If it's violated, this means there is an error in the caller's code and exception may be thrown.
+ * It's a kind of unexpected error that is normally signaled with a status code or an unchecked exception.
+ * The module's user is responsible for keeping this kind of rule.  
+ */
+Preconditions:
+	'preconditions' constraintInstances+=ConstraintInstance (',' constraintInstances+=ConstraintInstance)*;
+
+/** 
+ * List of business rules.
+ * 
+ * A business rule is a condition that is required to successfully execute a method. It cannot be verified by the caller of the method. 
+ * This means it's not an error in the code but still something that has to be handled before the method can be successfully executed.
+ * It's a kind of error/warning that is normally signaled with a status code or a checked exception.
+ */
+BusinessRules:
+	'business-rules' businessRuleInstances+=BusinessRuleInstance (',' businessRuleInstances+=BusinessRuleInstance)*;
+
+/** A meta information that is overridden for a sub type. */
+OverriddenTypeMetaInfo:
+	'{' metaInfo=TypeMetaInfo '}';
+
+/** Concrete usage of a constraint. */
+ConstraintInstance:
+	constraint=[Constraint|FQN] ('(' params+=Literal (',' params+=Literal)* ')')?;
+
+/** Concrete usage of a business rule. */
+BusinessRuleInstance:
+	businessRule=[BusinessRule|FQN] ('(' params+=Literal (',' params+=Literal)* ')')?;
+
+/** Meta information assigned to a DSL type. */
+AnnotationInstance:
+	'@' annotation=[Annotation|FQN] ('(' params+=Literal (',' params+=Literal)* ')')?;
+
+/** Collection of methods with a unique name. */
+Service:
+	doc=DOC? 
+	'service' name=ID '{'
+		methods+=Method*
+	'}';
+
+/** Command that may be related to an aggregate or is simply standalone. */
+Command:
+	doc=DOC?
+	'command' name=ID ('target' target=[AbstractMethod|FQN])? ('sla' acceptable=Duration)? '{'
+		attributes+=Attribute*
+		('message' message=STRING)?
+	'}';
+
+/** Handles a command. */
+CommandHandler:
+	doc=DOC?
+	'command-handler' name=ID
+	    'handles' commands+=[Command] (',' commands+=[Command])*
+	   ('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?;
+
+/** Uses a number of input events to create some output with it. */
+Projection:
+	doc=DOC?
+	'projection' name=ID ('input' events+=[Event|FQN] (',' events+=[Event|FQN])*)?;
+
+/** Result of a projection. */
+View:
+	doc=DOC?
+	'view' name=ID 'uses' projection=[Projection];
+
+/** A notation for representing a fixed value in source code. */
+Literal:
+	NullLiteral | BooleanLiteral | NumberLiteral | StringLiteral;
+
+/** Unambiguous name that specifies an object. */
+FQN:
+  ID ('.' ID)*;
+
+/** Unambiguous name that specifies a group of object. */
+FQNWithWildcard :
+	FQN  '.' '*';
+
+/** Value that can only be true or false. */
+BooleanLiteral:
+	{BooleanLiteral} value=('false' | 'true');
+
+/** Undefined value. */
+NullLiteral:
+	{NullLiteral} value='null';
+
+/** Numeric value. */
+NumberLiteral:
+	{NumberLiteral} value=Number;
+
+/** Textual value. */
+StringLiteral:
+	{StringLiteral} value=STRING;
+
+terminal ID:
+	('A'..'Z'|'a'..'z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	
+terminal STRING: 
+			'"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+			"'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'";
+
+Number hidden():
+	HEX | (INT | DECIMAL) ('.' (INT | DECIMAL))?;
+
+terminal HEX:
+	('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F'|'_')+ 
+	('#' (('b'|'B')('i'|'I') | ('l'|'L')))?;
+	
+terminal INT returns ecore::EInt:
+	'0'..'9' ('0'..'9'|'_')*; 
+
+terminal DECIMAL:
+	INT 
+	(('e'|'E') ('+'|'-')? INT)? 
+	(('b'|'B')('i'|'I'|'d'|'D') | ('l'|'L'|'d'|'D'|'f'|'F'))?;
+
+// Documentation
+terminal DOC: '/**' -> '*/';
+
+// Multi line comment		 
+terminal ML_COMMENT: '/*' (!'*') -> '*/' ;
+
+// Single line comment
+terminal SL_COMMENT: '//' !('\n'|'\r')* ('\r'? '\n')?;
+
+// Whitespace - Anything that is ignored.
+terminal WS: (' '|'\t'|'\r'|'\n')+;
+

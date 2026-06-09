@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.fuin.dsl</groupId>
+		<artifactId>ddd-cqrs-dsl-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.fuin.dsl.ddd</groupId>
+	<artifactId>ddd-templates</artifactId>
+	<version>0.2.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<description>Xtend based DDD/CQRS code generation templates for use with SrcGen4J</description>
+
+	<scm>
+		<url>https://github.com/fuinorg/ddd-templates/</url>
+		<connection>scm:git:git://github.com/fuinorg/ddd-templates.git</connection>
+		<developerConnection>scm:git:git@github.com:fuinorg/ddd-templates.git</developerConnection>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/fuinorg/ddd-templates/issues</url>
+	</issueManagement>
+
+	<properties>
+		<org-fuin-bom.version>1.0.2-SNAPSHOT</org-fuin-bom.version>
+		<objects4j-bom.version>0.11.1-SNAPSHOT</objects4j-bom.version>
+
+		<!-- Not managed by the fuin.org BOM -->
+		<cqrs-4-java.version>0.7.0-SNAPSHOT</cqrs-4-java.version>
+		<ddd-4-java.version>0.8.0-SNAPSHOT</ddd-4-java.version>
+		<ddd-cqrs-dsl.version>1.0.0-SNAPSHOT</ddd-cqrs-dsl.version>
+		<esc.version>0.10.0-SNAPSHOT</esc.version>
+		<org.eclipse.emf.ecore.change.version>2.16.0</org.eclipse.emf.ecore.change.version>
+		<org.eclipse.emf.ecore.version>2.36.0</org.eclipse.emf.ecore.version>
+		<srcgen4j-core.version>0.5.0-SNAPSHOT</srcgen4j-core.version>
+		<units4j.version>0.12.0</units4j.version>
+
+	</properties>
+
+	<dependencyManagement>
+
+		<dependencies>
+
+			<dependency>
+				<groupId>org.fuin</groupId>
+				<artifactId>bom</artifactId>
+				<version>${org-fuin-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.fuin.objects4j</groupId>
+				<artifactId>objects4j-bom</artifactId>
+				<version>${objects4j-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!-- compile -->
+
+		<dependency>
+			<groupId>org.fuin.dsl</groupId>
+			<artifactId>ddd-cqrs-dsl</artifactId>
+			<version>${ddd-cqrs-dsl.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.xtend</groupId>
+			<artifactId>org.eclipse.xtend.lib</artifactId>
+			<version>${xtext.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.xtend</groupId>
+			<artifactId>org.eclipse.xtend.core</artifactId>
+			<version>${xtext.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<version>${org.eclipse.emf.ecore.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore.change</artifactId>
+			<version>${org.eclipse.emf.ecore.change.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fuin.srcgen4j</groupId>
+			<artifactId>srcgen4j-core</artifactId>
+			<version>${srcgen4j-core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fuin.objects4j</groupId>
+			<artifactId>objects4j-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+		</dependency>
+
+		<!-- test -->
+
+		<dependency>
+			<groupId>org.fuin.esc</groupId>
+			<artifactId>esc-spi</artifactId>
+			<version>${esc.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtext.testing</artifactId>
+			<version>${xtext.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 4 is an optional dependency of org.eclipse.xtext.testing
+		     (ParseHelper / ValidationTestHelper use org.junit.Assert at runtime). -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fuin</groupId>
+			<artifactId>units4j</artifactId>
+			<version>${units4j.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.enterprise</groupId>
+			<artifactId>jakarta.enterprise.cdi-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fuin.ddd4j</groupId>
+			<artifactId>ddd-4-java-core</artifactId>
+			<version>${ddd-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.ddd4j</groupId>
+			<artifactId>ddd-4-java-jaxb</artifactId>
+			<version>${ddd-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.ddd4j</groupId>
+			<artifactId>ddd-4-java-jsonb</artifactId>
+			<version>${ddd-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.ddd4j</groupId>
+			<artifactId>ddd-4-java-jackson</artifactId>
+			<version>${ddd-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fuin.ddd4j</groupId>
+			<artifactId>ddd-4-java-esc</artifactId>
+			<version>${ddd-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		
+		<dependency>
+			<groupId>org.fuin.cqrs4j</groupId>
+			<artifactId>cqrs-4-java-core</artifactId>
+			<version>${cqrs-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.cqrs4j</groupId>
+			<artifactId>cqrs-4-java-jaxb</artifactId>
+			<version>${cqrs-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.cqrs4j</groupId>
+			<artifactId>cqrs-4-java-jsonb</artifactId>
+			<version>${cqrs-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.fuin.cqrs4j</groupId>
+			<artifactId>cqrs-4-java-jackson</artifactId>
+			<version>${cqrs-4-java.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.json</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>yasson</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>nl.jqno.equalsverifier</groupId>
+		    <artifactId>equalsverifier</artifactId>
+		    <scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>io.github.threeten-jaxb</groupId>
+		    <artifactId>threeten-jaxb-core</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>						
+						    <doclint>none</doclint>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/src/main/xtend-gen</source>
+							</sources>
+							
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/src/test/xtend-gen</source>
+							</sources>
+							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src/main/xtend-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/src/test/xtend-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<version>${xtext.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.assertj</groupId>
+						<artifactId>assertj-core</artifactId>
+						<version>3.27.3</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/src/main/xtend-gen</outputDirectory>
+							<testOutputDirectory>${basedir}/src/test/xtend-gen</testOutputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+ 
+	</build>
+
+</project>
