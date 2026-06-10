@@ -26,4 +26,5 @@ Export-Package: org.fuin.dsl.cqrs.parser.antlr,
  org.fuin.dsl.cqrs.cqrsDsl,
  org.fuin.dsl.cqrs.generator,
  org.fuin.dsl.cqrs
-Import-Package: org.apache.log4j
+Import-Package: com.google.gson,
+ org.apache.log4j

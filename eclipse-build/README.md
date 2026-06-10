@@ -71,4 +71,8 @@ Generic repo `ddd-cqrs-dsl` to exist on `fuinorg.jfrog.io`.
   `https://download.eclipse.org/eclipse/updates/<ver>/compositeContent.jar` and set
   `ECLIPSE_SDK_DROP`/`ECLIPSE_SDK_URL`.
 - The grammar is **not** regenerated here — the checked-in `src-gen`/`xtend-gen` sources are
-  compiled as-is, matching the IDE workflow described in the top-level [`README`](../README.md).
+  compiled as-is, matching the IDE workflow described in the top-level [`README`](../README.md). To
+  regenerate after a grammar change, see *Regenerating the language infrastructure* in the
+  [`../eclipse` README](../eclipse/README.md#regenerating-the-language-infrastructure).
+  Or run the [Generate CqrsDsl (cqrs) Language Infrastructure](../eclipse/org.fuin.dsl.cqrs/.launch/Generate CqrsDsl (cqrs) Language Infrastructure.launch)
+  launch configuration inside the Eclipse IDE.

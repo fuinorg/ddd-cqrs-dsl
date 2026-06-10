@@ -3,9 +3,19 @@
  */
 package org.fuin.dsl.cqrs;
 
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider;
+
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 @SuppressWarnings("all")
 public class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
+  /**
+   * Resolves cross-references against remote (HTTP-only) models via a local catalog and cache.
+   */
+  @Override
+  public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+    return CqrsDslGlobalScopeProvider.class;
+  }
 }

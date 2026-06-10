@@ -109,7 +109,7 @@ Consistency:
 Constraint:
 	doc=DOC? 
 	'constraint' name=ID ('input' input+=[Type|FQN] ('|' input+=[Type|FQN])*)? ('exception' exception=[Exception|FQN])? '{'
-		attributes+=Attribute*
+		attributes+=Attribute* 
 		('message' message=STRING)?
 	'}';
 
@@ -117,7 +117,7 @@ Constraint:
 BusinessRule:
 	doc=DOC
 	'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
-		attributes+=Attribute*
+		attributes+=Attribute* 
 		consistency=Consistency
 	'}';
 
@@ -198,7 +198,7 @@ Entity:
 		attributes+=Attribute*
 		businessRules+=BusinessRule*
 		constructors+=Constructor*
-		methods+=Method*
+		methods+=Method*		
 		elements+=AbstractElement*
 	'}';
 
@@ -245,7 +245,7 @@ Method:
 		service=[Service|FQN]?
 		returnType=ReturnType?
 		services+=Service*
-		events+=Event*
+		events+=Event*		
 	'}';
 
 /** Properties of an object that are meant to be used in a user interface. */

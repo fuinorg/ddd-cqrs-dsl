@@ -33,7 +33,7 @@ class CqrsMethodExtensions {
 			list.addAll(method.refMethod.allExceptions);
 		}
 		for (BusinessRuleInstance ci : method.businessRules.nullSafe) {
-			list.add(ci.businessRule.exception);
+			list.add(ci.businessRule.exception);		
 		}
 		return list;
 	}

@@ -80,7 +80,14 @@ You need to keep the main code of the two projects aligned by copying it from [e
 3. Generate the code using the Mwe2 Launch called `Generate CqrsDsl (cqrs) Language Infrastructure`
 4. Click on `org.fuin.dsl.cqrs` and right click "Run as... Eclipse Application"
 5. Test your DSL with any example
-6. Compare the folder [eclipse/org.fuin.dsl.cqrs/src/org](eclipse/org.fuin.dsl.cqrs/src/org) with [maven/org.fuin.dsl.cqrs/src/main/java/org](maven/org.fuin.dsl.cqrs/src/main/java/org)
-   and copy all changes from `eclipse` to `maven`. Do **NOT** copy `GenerateCqrsDsl.mwe2`!
+6. Mirror the changes from `eclipse` to `maven` by running [`./mirror-eclipse-sources-to-maven.sh`](mirror-eclipse-sources-to-maven.sh)
+   in the root directory (use `-n` for a dry run first). It mirrors the hand-written sources
+   ([src](eclipse/org.fuin.dsl.cqrs/src/org)) **and** the generated trees
+   ([src-gen](eclipse/org.fuin.dsl.cqrs/src-gen), [xtend-gen](eclipse/org.fuin.dsl.cqrs/xtend-gen)),
+   automatically keeping the Maven-specific files (`GenerateCqrsDsl.mwe2`, `AbstractCqrsDslValidator.java`,
+   and the Eclipse-only `*.xtendbin` / `*._trace` artifacts) untouched.
+   <br>(To do it by hand instead: compare [eclipse/org.fuin.dsl.cqrs/src/org](eclipse/org.fuin.dsl.cqrs/src/org)
+   with [maven/org.fuin.dsl.cqrs/src/main/java/org](maven/org.fuin.dsl.cqrs/src/main/java/org) and copy all
+   changes from `eclipse` to `maven` — but do **NOT** copy `GenerateCqrsDsl.mwe2`!)
 7. On the console run `./mvnw clean verify` in the [maven](maven) directory
 8. Commit and push changes to Git

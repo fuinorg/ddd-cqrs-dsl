@@ -648,7 +648,7 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 			)
 		}
 	}
-
+	
 	private def getAllExceptions(EObject obj) {
 		val Set<Exception> list = new HashSet<Exception>()
 		val resource = obj.eResource
