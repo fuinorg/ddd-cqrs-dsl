@@ -30,6 +30,7 @@ class SrcVoBaseMethodsString implements CodeSnippet {
         this.typeName = vo.name
         ctx.requiresReference(vo.uniqueName)
         ctx.requiresReference(vo.baseType.uniqueName)
+        ctx.requiresImport("org.jspecify.annotations.Nullable")
     }
 
     override toString() {
@@ -43,7 +44,7 @@ class SrcVoBaseMethodsString implements CodeSnippet {
              * 
              * @return TRUE if it's a valid string, else FALSE.
              */
-            public static boolean isValid(final String value) {
+            public static boolean isValid(@Nullable final String value) {
                 if (value == null) {
                     return true;
                 }
@@ -60,7 +61,8 @@ class SrcVoBaseMethodsString implements CodeSnippet {
              * 
              * @return Converted value.
              */
-            public static «typeName» valueOf(final String value) {
+            @Nullable
+            public static «typeName» valueOf(@Nullable final String value) {
                 if (value == null) {
                     return null;
                 }

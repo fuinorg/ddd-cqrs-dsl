@@ -17,7 +17,6 @@
  */
 package tst2.x.resourceset;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
@@ -26,6 +25,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 @Immutable
 @XmlJavaTypeAdapter(EntityBIdConverter.class)
@@ -33,10 +33,8 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -52,7 +50,7 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public EntityBId(@NotNull final String a, @NotNull final String b) {
+    public EntityBId(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -66,7 +64,6 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -76,7 +73,6 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }
@@ -109,7 +105,7 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -126,7 +122,8 @@ public final class EntityBId extends AbstractStringValueObject implements Entity
      * 
      * @return Converted value.
      */
-    public static EntityBId valueOf(final String value) {
+    @Nullable
+    public static EntityBId valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
@@ -27,13 +26,10 @@ import org.fuin.objects4j.common.Contract;
  */
 public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, AggregateX, EntityCId> {
 
-    @NotNull
     private EntityCId id;
 
-    @NotNull
     private String a;
     
-    @NotNull
     private Integer b;
     
     /**
@@ -46,7 +42,7 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AbstractEntityC(@NotNull final AggregateX rootAggregate, @NotNull final EntityCId id, @NotNull final String a, @NotNull final Integer b) throws AnyConstraintViolatedException {
+    public AbstractEntityC(final AggregateX rootAggregate, final EntityCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
         super(rootAggregate);
         Contract.requireArgNotNull("id", id);
         Contract.requireArgNotNull("a", a);
@@ -72,7 +68,6 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @return Current value.
      */
-    @NotNull
     protected final String getA() {
         return a;
     }
@@ -82,7 +77,6 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @return Current value.
      */
-    @NotNull
     protected final Integer getB() {
         return b;
     }
@@ -92,7 +86,7 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @param a Value to set.
      */
-    protected final void setA(@NotNull final String a) {
+    protected final void setA(final String a) {
         Contract.requireArgNotNull("a", a);
         this.a = a;
     }
@@ -102,7 +96,7 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @param b Value to set.
      */
-    protected final void setB(@NotNull final Integer b) {
+    protected final void setB(final Integer b) {
         Contract.requireArgNotNull("b", b);
         this.b = b;
     }
@@ -112,6 +106,6 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @param event Event to handle.
      */
-    protected abstract void handle(@NotNull final EntityCCreatedEvent event);
+    protected abstract void handle(final EntityCCreatedEvent event);
     
 }

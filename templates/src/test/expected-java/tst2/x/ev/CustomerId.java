@@ -19,16 +19,15 @@ package tst2.x.ev;
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotNull;
 
+import org.fuin.ddd4j.core.AggregateRootId;
+import org.fuin.ddd4j.core.EntityType;
+import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.ConstraintViolationException;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.AbstractUuidValueObject;
 import org.fuin.objects4j.core.UUIDStr;
 import org.fuin.objects4j.core.UUIDStrValidator;
-import org.fuin.ddd4j.core.AggregateRootId;
-import org.fuin.ddd4j.core.EntityType;
-import org.fuin.ddd4j.core.StringBasedEntityType;
 
 public final class CustomerId extends AbstractUuidValueObject implements AggregateRootId {
 
@@ -54,7 +53,7 @@ public final class CustomerId extends AbstractUuidValueObject implements Aggrega
      * @param value
      *            Persistent value.
      */
-    public CustomerId(@NotNull final UUID value) {
+    public CustomerId(final UUID value) {
         super();
         Contract.requireArgNotNull("value", value);
         this.uuid = value;        
@@ -66,7 +65,7 @@ public final class CustomerId extends AbstractUuidValueObject implements Aggrega
      * @param strValue
      *            String value.
      */
-    public CustomerId(@NotNull @UUIDStr final String strValue) {
+    public CustomerId(@UUIDStr final String strValue) {
         super();
         Contract.requireArgNotNull("strValue", strValue);
         if (!UUIDStrValidator.isValid(strValue)) {

@@ -17,7 +17,6 @@
  */
 package tst.x.aggregates;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
@@ -27,7 +26,6 @@ import org.fuin.objects4j.common.Contract;
  */
 public abstract class AbstractAggregateA extends AbstractAggregateRoot<AggregateAId> {
 
-    @NotNull
     private AggregateAId id;
 
     @Override
@@ -45,7 +43,7 @@ public abstract class AbstractAggregateA extends AbstractAggregateRoot<Aggregate
      * 
      * @param id Unique aggregate identifier.
      */
-    protected final void setId(@NotNull final AggregateAId id) {
+    protected final void setId(final AggregateAId id) {
         Contract.requireArgNotNull("id", id);
         this.id = id;
     }

@@ -17,9 +17,9 @@
  */
 package tst.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
+import org.jspecify.annotations.Nullable;
 import tst2.x.valueobject.MyValueObject3Converter;
 
 /**
@@ -44,7 +44,7 @@ public final class MyValueObject3 extends AbstractMyValueObject3 {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyValueObject3(@NotNull final String a, @NotNull final String b) {
+    public MyValueObject3(final String a, final String b) {
         super(a, b);
     }
     
@@ -63,7 +63,7 @@ public final class MyValueObject3 extends AbstractMyValueObject3 {
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -80,7 +80,8 @@ public final class MyValueObject3 extends AbstractMyValueObject3 {
      * 
      * @return Converted value.
      */
-    public static MyValueObject3 valueOf(final String value) {
+    @Nullable
+    public static MyValueObject3 valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

@@ -50,11 +50,11 @@ class SrcHandleEventMethodTest {
                  */
                 @Override
                 @ApplyEvent
-                protected final void handle(@NotNull final DidSomethingEvent event) {
+                protected final void handle(final DidSomethingEvent event) {
                     // TODO Handle event!
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull",
+        assertThat(ctx.imports).containsOnly(
             "org.fuin.ddd4j.core.ApplyEvent", "a.b.c.DidSomethingEvent")
 
     }

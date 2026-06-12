@@ -17,7 +17,6 @@
  */
 package tst.x.aggregateid;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -33,7 +32,6 @@ public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject imp
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private UUID value;
     
     /**
@@ -48,7 +46,7 @@ public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject imp
      *
      * @param value Persistent value.
      */
-    public AbstractMyAggregate6Id(@NotNull final UUID value) {
+    public AbstractMyAggregate6Id(final UUID value) {
         super();
         Contract.requireArgNotNull("value", value);
         
@@ -60,7 +58,6 @@ public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject imp
      *
      * @return Current value.
      */
-    @NotNull
     public final UUID getValue() {
         return value;
     }

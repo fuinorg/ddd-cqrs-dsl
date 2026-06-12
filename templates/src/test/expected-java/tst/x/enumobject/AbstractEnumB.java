@@ -17,19 +17,15 @@
  */
 package tst.x.enumobject;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.objects4j.common.Contract;
 
 /** Enumeration type B - With variables. */
 public abstract class AbstractEnumB {
     
-    @NotNull
     private Integer id;
     
-    @NotNull
     private String shortName;
     
-    @NotNull
     private String longName;
     
     /**
@@ -39,7 +35,7 @@ public abstract class AbstractEnumB {
      * @param shortName Short name.
      * @param longName Long name.
      */
-    protected AbstractEnumB(@NotNull final Integer id, @NotNull final String shortName, @NotNull final String longName) {
+    protected AbstractEnumB(final Integer id, final String shortName, final String longName) {
         Contract.requireArgNotNull("id", id);
         Contract.requireArgNotNull("shortName", shortName);
         Contract.requireArgNotNull("longName", longName);
@@ -54,7 +50,6 @@ public abstract class AbstractEnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public final Integer getId() {
         return id;
     }
@@ -64,7 +59,6 @@ public abstract class AbstractEnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getShortName() {
         return shortName;
     }
@@ -74,7 +68,6 @@ public abstract class AbstractEnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getLongName() {
         return longName;
     }

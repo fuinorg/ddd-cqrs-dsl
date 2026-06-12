@@ -54,12 +54,11 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
     }
 
     def addImports(CodeSnippetContext ctx, AggregateId aggregateId) {
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("jakarta.validation.Constraint")
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
         ctx.requiresImport("jakarta.validation.Payload")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
+        ctx.requiresImport("org.jspecify.annotations.Nullable")
         ctx.requiresImport("java.io.Serial");
         ctx.requiresImport("java.lang.annotation.Documented")
         ctx.requiresImport("java.lang.annotation.ElementType")
@@ -121,7 +120,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                  * @param value
                  *            Persistent value.
                  */
-                public «className»(@NotNull final UUID value) {
+                public «className»(final UUID value) {
                     super(TYPE, value);
                 }
             
@@ -134,7 +133,8 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                  * 
                  * @return Converted value.
                  */
-                public static «className» valueOf(final String value) {
+                @Nullable
+                public static «className» valueOf(@Nullable final String value) {
                     if (value == null) {
                         return null;
                     }
@@ -168,7 +168,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                  * @throws ConstraintViolationException
                  *             The value was not valid.
                  */
-                public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+                public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
                     if (!isValid(value)) {
                         throw new ConstraintViolationException("The argument '" + name + "' is not valid: '" + value + "'");
                     }
@@ -227,7 +227,8 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                      * 
                      * @return Value object of type «className».
                      */
-                    public «className» toVO(final UUID value) {
+                    @Nullable
+                    public «className» toVO(@Nullable final UUID value) {
                         if (value == null) {
                             return null;
                         }
@@ -242,7 +243,8 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                      * 
                      * @return UUID.
                      */
-                    public UUID fromVO(final «className» value) {
+                    @Nullable
+                    public UUID fromVO(@Nullable final «className» value) {
                         if (value == null) {
                             return null;
                         }

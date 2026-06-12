@@ -17,12 +17,12 @@
  */
 package tst2.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Value object single attribute and base.
@@ -32,7 +32,6 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
     @Serial
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String value;
     
     /**
@@ -47,7 +46,7 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
      *
      * @param value Persistent value.
      */
-    public MyValueObject(@NotNull final String value) {
+    public MyValueObject(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
         
@@ -59,7 +58,6 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
      *
      * @return Current value.
      */
-    @NotNull
     public final String getValue() {
         return value;
     }
@@ -78,7 +76,7 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -95,7 +93,8 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
      * 
      * @return Converted value.
      */
-    public static MyValueObject valueOf(final String value) {
+    @Nullable
+    public static MyValueObject valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

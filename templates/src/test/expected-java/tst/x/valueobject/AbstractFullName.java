@@ -17,7 +17,6 @@
  */
 package tst.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
@@ -34,7 +33,6 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     @ShortLabel(key = "firstName.slabel", value = "First")
     @Label(key = "firstName.label", value = "First name")
     @Tooltip(key = "firstName.tooltip", value = "A given name, also known as a personal name or forename")
@@ -42,7 +40,6 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
     @Examples(value = { "Peter","Mary Jane","Harry" })
     private String firstName;
     
-    @NotNull
     @ShortLabel(key = "lastName.slabel", value = "Last")
     @Label(key = "lastName.label", value = "Last name")
     @Tooltip(key = "lastName.tooltip", value = "A family name, also known as a surname")
@@ -63,7 +60,7 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
      * @param firstName First name.
      * @param lastName Last name.
      */
-    public AbstractFullName(@NotNull final String firstName, @NotNull final String lastName) {
+    public AbstractFullName(final String firstName, final String lastName) {
         super();
         Contract.requireArgNotNull("firstName", firstName);
         Contract.requireArgNotNull("lastName", lastName);
@@ -77,7 +74,6 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getFirstName() {
         return firstName;
     }
@@ -87,7 +83,6 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getLastName() {
         return lastName;
     }

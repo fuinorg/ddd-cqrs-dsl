@@ -45,9 +45,8 @@ class SrcParamsDeclTest {
 
         // VERIFY
         assertThat(result).isEqualTo(
-            "@NoArgConstraint @NotNull final String a, @NoArgConstraint final String b, @NotNull final String c, final String d")
-        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String",
-            "jakarta.validation.constraints.NotNull")
+            "@NoArgConstraint final String a, @NoArgConstraint @Nullable final String b, final String c, @Nullable final String d")
+        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String", "org.jspecify.annotations.Nullable")
 
     }
 

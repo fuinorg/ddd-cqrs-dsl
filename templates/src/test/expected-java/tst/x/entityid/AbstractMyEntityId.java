@@ -17,7 +17,6 @@
  */
 package tst.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.core.StringBasedEntityType;
@@ -32,7 +31,6 @@ public abstract class AbstractMyEntityId extends AbstractStringValueObject imple
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String value;
     
     /**
@@ -47,7 +45,7 @@ public abstract class AbstractMyEntityId extends AbstractStringValueObject imple
      *
      * @param value Persistent value.
      */
-    public AbstractMyEntityId(@NotNull final String value) {
+    public AbstractMyEntityId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
         
@@ -59,7 +57,6 @@ public abstract class AbstractMyEntityId extends AbstractStringValueObject imple
      *
      * @return Current value.
      */
-    @NotNull
     public final String getValue() {
         return value;
     }

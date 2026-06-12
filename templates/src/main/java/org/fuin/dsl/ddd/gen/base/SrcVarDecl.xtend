@@ -1,12 +1,10 @@
 package org.fuin.dsl.ddd.gen.base
 
-import jakarta.validation.constraints.NotNull
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
-import jakarta.annotation.Nullable
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 
 /**
@@ -33,10 +31,8 @@ class SrcVarDecl implements CodeSnippet {
         this.options = options
         this.variable = variable
 
-        if (variable.nullable === null) {
-            ctx.requiresImport(NotNull.name)
-        } else {
-            ctx.requiresImport(Nullable.name)
+        if (variable.nullable !== null && !variable.isPrimitive(ctx)) {
+            ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(variable, ctx)
     }
@@ -56,9 +52,7 @@ class SrcVarDecl implements CodeSnippet {
             «FOR cc : variable.constraints SEPARATOR ' '»
                 «new SrcValidationAnnotation(ctx, cc)»
             «ENDFOR»
-            «IF variable.nullable === null»
-                @NotNull
-            «ELSE»
+            «IF variable.nullable !== null && !variable.isPrimitive(ctx)»
                 @Nullable
             «ENDIF»
         '''

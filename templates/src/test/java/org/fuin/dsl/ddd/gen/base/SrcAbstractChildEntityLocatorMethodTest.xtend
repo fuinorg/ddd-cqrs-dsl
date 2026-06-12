@@ -51,9 +51,9 @@ class SrcAbstractChildEntityLocatorMethodTest {
                  *
                  * @return Child entity or NULL if no entity with the given identifier was found.
                  */
-                protected abstract MyEntity findMyEntity(@NotNull final MyEntityId myEntityId);
+                protected abstract MyEntity findMyEntity(final MyEntityId myEntityId);
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyEntity",
+        assertThat(ctx.imports).containsOnly("a.b.c.MyEntity",
             "a.b.c.MyEntityId")
 
     }

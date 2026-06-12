@@ -54,7 +54,7 @@ class SrcVoBaseMethodsUUIDTest {
              * 
              * @return TRUE if it's a valid string, else FALSE.
              */
-            public static boolean isValid(final String value) {
+            public static boolean isValid(@Nullable final String value) {
                 return UUIDStrValidator.isValid(value);
             }
             
@@ -67,7 +67,8 @@ class SrcVoBaseMethodsUUIDTest {
              * 
              * @return Converted value.
              */
-            public static MyAggregateId valueOf(final String value) {
+            @Nullable
+            public static MyAggregateId valueOf(@Nullable final String value) {
                 if (value == null) {
                     return null;
                 }
@@ -76,7 +77,7 @@ class SrcVoBaseMethodsUUIDTest {
             
         '''.toString
         )
-        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId", "java.util.UUID", "org.fuin.objects4j.core.UUIDStrValidator")
+        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId", "java.util.UUID", "org.fuin.objects4j.core.UUIDStrValidator", "org.jspecify.annotations.Nullable")
 
     }
 

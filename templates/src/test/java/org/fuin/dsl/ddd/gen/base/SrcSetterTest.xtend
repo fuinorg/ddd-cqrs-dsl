@@ -48,12 +48,12 @@ class SrcSetterTest {
                  *
                  * @param name Value to set.
                  */
-                public void setName(@NotNull final String name) {
+                public void setName(final String name) {
                     Contract.requireArgNotNull("name", name);
                     this.name = name;
                 }
             '''.toString)
-        assertThat(ctx.imports).contains("jakarta.validation.constraints.NotNull", "java.lang.String",
+        assertThat(ctx.imports).contains("java.lang.String",
             "org.fuin.objects4j.common.Contract")
 
     }
@@ -79,12 +79,12 @@ class SrcSetterTest {
                  *
                  * @param names Value to set.
                  */
-                public void setNames(@NotNull final List<String> names) {
+                public void setNames(final List<String> names) {
                     Contract.requireArgNotNull("names", names);
                     this.names = names;
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "java.util.List",
+        assertThat(ctx.imports).containsOnly("java.util.List",
             "java.lang.String", "org.fuin.objects4j.common.Contract")
 
     }

@@ -17,7 +17,6 @@
  */
 package tst.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -41,7 +40,7 @@ public final class MyValueObject4 extends AbstractMyValueObject4 {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyValueObject4(@NotNull final String a, @NotNull final String b) {
+    public MyValueObject4(final String a, final String b) {
         super(a, b);
     }
     

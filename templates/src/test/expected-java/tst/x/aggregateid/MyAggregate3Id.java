@@ -17,9 +17,9 @@
  */
 package tst.x.aggregateid;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
+import org.jspecify.annotations.Nullable;
 import tst2.x.aggregateid.MyAggregate3IdConverter;
 
 /**
@@ -44,7 +44,7 @@ public final class MyAggregate3Id extends AbstractMyAggregate3Id {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyAggregate3Id(@NotNull final String a, @NotNull final String b) {
+    public MyAggregate3Id(final String a, final String b) {
         super(a, b);
     }
     
@@ -63,7 +63,7 @@ public final class MyAggregate3Id extends AbstractMyAggregate3Id {
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -80,7 +80,8 @@ public final class MyAggregate3Id extends AbstractMyAggregate3Id {
      * 
      * @return Converted value.
      */
-    public static MyAggregate3Id valueOf(final String value) {
+    @Nullable
+    public static MyAggregate3Id valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

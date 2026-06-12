@@ -17,7 +17,6 @@
  */
 package tst2.x.except;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.UniquelyNumberedException;
 import org.fuin.objects4j.core.KeyValue;
@@ -29,10 +28,8 @@ public final class ExceptionF extends UniquelyNumberedException {
 
     private static final long serialVersionUID = 1000L;
 
-    @NotNull
     private String a;
     
-    @NotNull
     private Integer b;
     
     /**
@@ -41,7 +38,7 @@ public final class ExceptionF extends UniquelyNumberedException {
      * @param a A.
      * @param b B.
      */
-    public ExceptionF(@NotNull final String a, @NotNull final Integer b) {
+    public ExceptionF(final String a, final Integer b) {
         super(125, KeyValue.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b)));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -55,7 +52,6 @@ public final class ExceptionF extends UniquelyNumberedException {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -65,7 +61,6 @@ public final class ExceptionF extends UniquelyNumberedException {
      *
      * @return Current value.
      */
-    @NotNull
     public final Integer getB() {
         return b;
     }

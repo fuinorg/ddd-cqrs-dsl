@@ -17,7 +17,6 @@
  */
 package tst.x.aggregates;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
@@ -27,13 +26,10 @@ import org.fuin.objects4j.common.Contract;
  */
 public abstract class AbstractAggregateC extends AbstractAggregateRoot<AggregateCId> {
 
-    @NotNull
     private AggregateCId id;
 
-    @NotNull
     private String a;
     
-    @NotNull
     private Integer b;
     
     @Override
@@ -51,7 +47,7 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      * 
      * @param id Unique aggregate identifier.
      */
-    protected final void setId(@NotNull final AggregateCId id) {
+    protected final void setId(final AggregateCId id) {
         Contract.requireArgNotNull("id", id);
         this.id = id;
     }
@@ -61,7 +57,6 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @return Current value.
      */
-    @NotNull
     protected final String getA() {
         return a;
     }
@@ -71,7 +66,6 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @return Current value.
      */
-    @NotNull
     protected final Integer getB() {
         return b;
     }
@@ -81,7 +75,7 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @param a Value to set.
      */
-    protected final void setA(@NotNull final String a) {
+    protected final void setA(final String a) {
         Contract.requireArgNotNull("a", a);
         this.a = a;
     }
@@ -91,7 +85,7 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @param b Value to set.
      */
-    protected final void setB(@NotNull final Integer b) {
+    protected final void setB(final Integer b) {
         Contract.requireArgNotNull("b", b);
         this.b = b;
     }
@@ -101,6 +95,6 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @param event Event to handle.
      */
-    protected abstract void handle(@NotNull final AggregateCCreatedEvent event);
+    protected abstract void handle(final AggregateCCreatedEvent event);
     
 }

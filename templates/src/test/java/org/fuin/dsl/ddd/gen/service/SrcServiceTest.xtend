@@ -84,11 +84,11 @@ class SrcServiceTest {
                  *
                  * @return Value.
                  */
-                public String find(@NotNull final Integer a);
+                public String find(final Integer a);
                 
             }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("java.lang.Integer", "java.lang.String", "jakarta.validation.constraints.NotNull")
+        assertThat(ctx.imports).containsOnly("java.lang.Integer", "java.lang.String")
 
     }
     

@@ -17,7 +17,6 @@
  */
 package tst.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -40,7 +39,7 @@ public final class MyEntity2Id extends AbstractMyEntity2Id {
      *
      * @param id Persistent value.
      */
-    public MyEntity2Id(@NotNull final String id) {
+    public MyEntity2Id(final String id) {
         super(id);
     }
     

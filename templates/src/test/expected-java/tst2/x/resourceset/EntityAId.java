@@ -17,7 +17,6 @@
  */
 package tst2.x.resourceset;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
@@ -26,6 +25,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 @Immutable
 @XmlJavaTypeAdapter(EntityAIdConverter.class)
@@ -33,7 +33,6 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String value;
     
     /**
@@ -48,7 +47,7 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
      *
      * @param value Persistent value.
      */
-    public EntityAId(@NotNull final String value) {
+    public EntityAId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
         
@@ -60,7 +59,6 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
      *
      * @return Current value.
      */
-    @NotNull
     public final String getValue() {
         return value;
     }
@@ -92,7 +90,7 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -109,7 +107,8 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
      * 
      * @return Converted value.
      */
-    public static EntityAId valueOf(final String value) {
+    @Nullable
+    public static EntityAId valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

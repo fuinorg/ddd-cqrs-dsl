@@ -1,6 +1,5 @@
 package tst.x.aggregates;
 
-import jakarta.validation.constraints.NotNull;
 
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -23,7 +22,7 @@ public final class AggregateBId extends AbstractStringValueObject implements
         super();
     }
 
-    public AggregateBId(@NotNull final String value) {
+    public AggregateBId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
 

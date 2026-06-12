@@ -17,7 +17,6 @@
  */
 package tst.x.aggregateid;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -41,7 +40,7 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyAggregate4Id(@NotNull final String a, @NotNull final String b) {
+    public MyAggregate4Id(final String a, final String b) {
         super(a, b);
     }
     

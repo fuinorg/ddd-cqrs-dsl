@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
@@ -34,7 +33,6 @@ public final class EntityAId extends AbstractStringValueObject implements
     /** Name that identifies the entity uniquely within the context. */
     public static final EntityType TYPE = new StringBasedEntityType("EntityA");
 
-    @NotNull
     private String value;
 
     /**
@@ -50,7 +48,7 @@ public final class EntityAId extends AbstractStringValueObject implements
      * @param value
      *            Persistent value.
      */
-    public EntityAId(@NotNull final String value) {
+    public EntityAId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
 
@@ -62,7 +60,6 @@ public final class EntityAId extends AbstractStringValueObject implements
      * 
      * @return Current value.
      */
-    @NotNull
     public final String getValue() {
         return value;
     }

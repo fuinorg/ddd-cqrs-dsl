@@ -17,7 +17,6 @@
  */
 package tst2.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
@@ -26,6 +25,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Entity ID multiple attributes and base.
@@ -36,10 +36,8 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -55,7 +53,7 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyEntity3Id(@NotNull final String a, @NotNull final String b) {
+    public MyEntity3Id(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -69,7 +67,6 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -79,7 +76,6 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }
@@ -112,7 +108,7 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -129,7 +125,8 @@ public final class MyEntity3Id extends AbstractStringValueObject implements Enti
      * 
      * @return Converted value.
      */
-    public static MyEntity3Id valueOf(final String value) {
+    @Nullable
+    public static MyEntity3Id valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

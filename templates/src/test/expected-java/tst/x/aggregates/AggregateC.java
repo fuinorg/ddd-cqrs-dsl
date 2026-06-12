@@ -17,7 +17,6 @@
  */
 package tst.x.aggregates;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.ApplyEvent;
 
 /**
@@ -40,7 +39,7 @@ public final class AggregateC extends AbstractAggregateC {
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateC(@NotNull final String a, @NotNull final Integer b) throws AnyConstraintViolatedException {
+    public AggregateC(final String a, final Integer b) throws AnyConstraintViolatedException {
         super();
         // TODO Implement!
     }
@@ -52,7 +51,7 @@ public final class AggregateC extends AbstractAggregateC {
      */
     @Override
     @ApplyEvent
-    protected final void handle(@NotNull final AggregateCCreatedEvent event) {
+    protected final void handle(final AggregateCCreatedEvent event) {
         // TODO Handle event!
     }
     

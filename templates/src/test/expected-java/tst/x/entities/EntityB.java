@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.objects4j.common.Contract;
 
@@ -32,7 +31,7 @@ public final class EntityB extends AbstractEntityB {
      * @param rootAggregate The root aggregate of this entity.
      * @param id Unique entity identifier.
      */
-    public EntityB(@NotNull final AggregateX rootAggregate, @NotNull final EntityBId id) {
+    public EntityB(final AggregateX rootAggregate, final EntityBId id) {
         super(rootAggregate, id);
     }
     
@@ -51,10 +50,8 @@ public final class EntityB extends AbstractEntityB {
      */
     public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityBId, EntityB, Builder> {
     
-        @NotNull
         private String a;
         
-        @NotNull
         private Integer b;
         
         private Builder() {
@@ -67,7 +64,7 @@ public final class EntityB extends AbstractEntityB {
          * @param a Value to set.
          * @return This builder.
          */
-        public Builder a(@NotNull final String a) {
+        public Builder a(final String a) {
             Contract.requireArgNotNull("a", a);
             this.a = a;
             return this;
@@ -79,7 +76,7 @@ public final class EntityB extends AbstractEntityB {
          * @param b Value to set.
          * @return This builder.
          */
-        public Builder b(@NotNull final Integer b) {
+        public Builder b(final Integer b) {
             Contract.requireArgNotNull("b", b);
             this.b = b;
             return this;

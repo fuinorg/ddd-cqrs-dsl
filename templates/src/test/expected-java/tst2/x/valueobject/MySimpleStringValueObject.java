@@ -24,7 +24,6 @@ import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.Serial;
 import java.io.Serializable;
@@ -41,6 +40,7 @@ import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
 import org.fuin.objects4j.common.HasPublicStaticValueOfMethod;
 import org.fuin.objects4j.common.ValueObjectWithBaseType;
 import org.fuin.objects4j.ui.Examples;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Simple value object single attribute and base.
@@ -57,7 +57,6 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
 
     private static final int MAX_LENGTH = 100;
 
-    @NotNull
     @MySimpleStringValueObjectStr
     private String value;
 
@@ -121,7 +120,6 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
     }
 
     @Override
-    @NotNull
     public Class<String> getBaseType() {
         return String.class;
     }
@@ -157,7 +155,7 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
      * @throws ConstraintViolationException
      *             The value was not valid.
      */
-    public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+    public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
 
         if (!isValid(value)) {
             throw new ConstraintViolationException("The argument '" + name
@@ -221,7 +219,8 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
          * 
          * @return Value object of type MySimpleStringValueObject.
          */
-        public MySimpleStringValueObject toVO(final String value) {
+        @Nullable
+        public MySimpleStringValueObject toVO(@Nullable final String value) {
             if (value == null) {
                 return null;
             }
@@ -236,7 +235,8 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
          * 
          * @return String.
          */
-        public String fromVO(final MySimpleStringValueObject value) {
+        @Nullable
+        public String fromVO(@Nullable final MySimpleStringValueObject value) {
             if (value == null) {
                 return null;
             }

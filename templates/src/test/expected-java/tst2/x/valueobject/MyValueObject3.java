@@ -17,12 +17,12 @@
  */
 package tst2.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Value object multiple attributes and base.
@@ -32,10 +32,8 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
     @Serial
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -51,7 +49,7 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyValueObject3(@NotNull final String a, @NotNull final String b) {
+    public MyValueObject3(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -65,7 +63,6 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -75,7 +72,6 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }
@@ -95,7 +91,7 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -112,7 +108,8 @@ public final class MyValueObject3 extends AbstractStringValueObject implements V
      * 
      * @return Converted value.
      */
-    public static MyValueObject3 valueOf(final String value) {
+    @Nullable
+    public static MyValueObject3 valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

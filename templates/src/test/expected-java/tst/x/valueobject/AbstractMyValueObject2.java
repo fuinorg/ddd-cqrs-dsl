@@ -17,7 +17,6 @@
  */
 package tst.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
@@ -29,7 +28,6 @@ public abstract class AbstractMyValueObject2 implements ValueObject, Serializabl
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String id;
     
     /**
@@ -44,7 +42,7 @@ public abstract class AbstractMyValueObject2 implements ValueObject, Serializabl
      *
      * @param id Persistent value.
      */
-    public AbstractMyValueObject2(@NotNull final String id) {
+    public AbstractMyValueObject2(final String id) {
         super();
         Contract.requireArgNotNull("id", id);
         
@@ -56,7 +54,6 @@ public abstract class AbstractMyValueObject2 implements ValueObject, Serializabl
      *
      * @return Current value.
      */
-    @NotNull
     public final String getId() {
         return id;
     }

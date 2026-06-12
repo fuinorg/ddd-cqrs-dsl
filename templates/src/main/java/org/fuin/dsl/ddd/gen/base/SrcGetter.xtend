@@ -22,22 +22,20 @@ class SrcGetter implements CodeSnippet {
         this.modifiers = modifiers
         this.variable = variable
         
-        if (variable.nullable === null) {
-            ctx.requiresImport("jakarta.validation.constraints.NotNull")        
-        } else {
-            ctx.requiresImport("jakarta.annotation.Nullable")        
+        if (variable.nullable !== null && !variable.isPrimitive(ctx)) {
+            ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(variable, ctx)
     }
 
     override toString() {
-        '''    
+        '''
             /**
              * Returns: «variable.superDoc.text»
              *
              * @return Current value.
              */
-            «IF variable.nullable === null»@NotNull«ELSE»@Nullable«ENDIF»
+            «IF variable.nullable !== null && !variable.isPrimitive(ctx)»@Nullable«ENDIF»
             «modifiers» «variable.type(ctx)» get«variable.name.toFirstUpper»() {
                 return «variable.name»;
             }

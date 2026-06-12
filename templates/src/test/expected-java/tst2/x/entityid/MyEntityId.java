@@ -17,7 +17,6 @@
  */
 package tst2.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
@@ -26,6 +25,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Entity ID single attribute and base.
@@ -36,7 +36,6 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String value;
     
     /**
@@ -51,7 +50,7 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
      *
      * @param value Persistent value.
      */
-    public MyEntityId(@NotNull final String value) {
+    public MyEntityId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
         
@@ -63,7 +62,6 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
      *
      * @return Current value.
      */
-    @NotNull
     public final String getValue() {
         return value;
     }
@@ -95,7 +93,7 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -112,7 +110,8 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
      * 
      * @return Converted value.
      */
-    public static MyEntityId valueOf(final String value) {
+    @Nullable
+    public static MyEntityId valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

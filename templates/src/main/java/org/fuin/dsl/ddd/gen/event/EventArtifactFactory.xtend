@@ -100,7 +100,6 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	        if (options.jackson) {
 	            ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractDomainEvent")        
 	        }
-            ctx.requiresImport("jakarta.validation.constraints.NotNull")        
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)

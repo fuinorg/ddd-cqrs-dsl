@@ -48,12 +48,11 @@ class SrcGetterTest {
                  *
                  * @return Current value.
                  */
-                @NotNull
                 public String getName() {
                     return name;
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "java.lang.String")
+        assertThat(ctx.imports).containsOnly("java.lang.String")
 
     }
 
@@ -78,12 +77,11 @@ class SrcGetterTest {
                  *
                  * @return Current value.
                  */
-                @NotNull
                 public List<String> getNames() {
                     return names;
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "java.util.List", "java.lang.String")
+        assertThat(ctx.imports).containsOnly("java.util.List", "java.lang.String")
 
     }
 

@@ -1,6 +1,5 @@
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -23,7 +22,7 @@ public final class AggregateXId extends AbstractStringValueObject implements
         super();
     }
 
-    public AggregateXId(@NotNull final String value) {
+    public AggregateXId(final String value) {
         super();
         Contract.requireArgNotNull("value", value);
 

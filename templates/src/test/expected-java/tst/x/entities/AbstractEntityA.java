@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
@@ -27,7 +26,6 @@ import org.fuin.objects4j.common.Contract;
  */
 public abstract class AbstractEntityA extends AbstractEntity<AggregateXId, AggregateX, EntityAId> {
 
-    @NotNull
     private EntityAId id;
 
     /**
@@ -36,7 +34,7 @@ public abstract class AbstractEntityA extends AbstractEntity<AggregateXId, Aggre
      * @param rootAggregate The root aggregate of this entity.
      * @param id Unique entity identifier.
      */
-    protected AbstractEntityA(@NotNull final AggregateX rootAggregate, @NotNull final EntityAId id) {
+    protected AbstractEntityA(final AggregateX rootAggregate, final EntityAId id) {
         super(rootAggregate);
         Contract.requireArgNotNull("id", id);
         

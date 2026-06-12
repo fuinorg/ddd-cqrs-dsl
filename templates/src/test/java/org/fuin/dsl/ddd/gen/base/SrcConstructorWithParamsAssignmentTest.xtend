@@ -55,7 +55,7 @@ class SrcConstructorWithParamsAssignmentTest {
                  *
                  * @throws ConstraintViolatedException The constraint was violated.
                  */
-                public MyEntity(@NotNull final MyEntityId id, final MyValueObject vo) throws ConstraintViolatedException {
+                public MyEntity(final MyEntityId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException {
                     super();
                     Contract.requireArgNotNull("id", id);
                     
@@ -63,8 +63,8 @@ class SrcConstructorWithParamsAssignmentTest {
                     this.vo = vo;
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyEntityId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.fuin.objects4j.common.Contract")
+        assertThat(ctx.imports).containsOnly("a.b.c.MyEntityId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.fuin.objects4j.common.Contract", "org.jspecify.annotations.Nullable")
 
     }
 

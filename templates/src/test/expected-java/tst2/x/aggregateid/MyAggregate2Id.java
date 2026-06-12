@@ -17,7 +17,6 @@
  */
 package tst2.x.aggregateid;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -33,7 +32,6 @@ public final class MyAggregate2Id implements AggregateRootId, ValueObject {
 
 private static final long serialVersionUID = 1000L;
 
-    @NotNull
     private String id;
     
     /**
@@ -48,7 +46,7 @@ private static final long serialVersionUID = 1000L;
      *
      * @param id Persistent value.
      */
-    public MyAggregate2Id(@NotNull final String id) {
+    public MyAggregate2Id(final String id) {
         super();
         Contract.requireArgNotNull("id", id);
         
@@ -60,7 +58,6 @@ private static final long serialVersionUID = 1000L;
      *
      * @return Current value.
      */
-    @NotNull
     public final String getId() {
         return id;
     }

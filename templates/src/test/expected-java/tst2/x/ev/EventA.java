@@ -17,7 +17,6 @@
  */
 package tst2.x.ev;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.ZonedDateTime;
 import org.fuin.ddd4j.core.EventId;

@@ -31,6 +31,7 @@ class SrcVoBaseMethodsUUID implements CodeSnippet {
         ctx.requiresReference(vo.uniqueName)
         ctx.requiresImport("java.util.UUID")
         ctx.requiresImport("org.fuin.objects4j.core.UUIDStrValidator")
+        ctx.requiresImport("org.jspecify.annotations.Nullable")
     }
 
     override toString() {
@@ -44,7 +45,7 @@ class SrcVoBaseMethodsUUID implements CodeSnippet {
              * 
              * @return TRUE if it's a valid string, else FALSE.
              */
-            public static boolean isValid(final String value) {
+            public static boolean isValid(@Nullable final String value) {
                 return UUIDStrValidator.isValid(value);
             }
             
@@ -57,7 +58,8 @@ class SrcVoBaseMethodsUUID implements CodeSnippet {
              * 
              * @return Converted value.
              */
-            public static «typeName» valueOf(final String value) {
+            @Nullable
+            public static «typeName» valueOf(@Nullable final String value) {
                 if (value == null) {
                     return null;
                 }

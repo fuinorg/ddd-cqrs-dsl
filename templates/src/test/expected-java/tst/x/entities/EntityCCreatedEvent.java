@@ -17,13 +17,12 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.ddd4j.core.EntityIdPath;
 import org.fuin.ddd4j.core.EventType;
+import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 
@@ -39,11 +38,9 @@ public final class EntityCCreatedEvent extends AbstractDomainEvent<EntityCId> {
     public static final EventType EVENT_TYPE = new EventType(
             "EntityCCreatedEvent");
 
-    @NotNull
     @XmlAttribute(name = "a")
     private String a;
 
-    @NotNull
     @XmlAttribute(name = "b")
     private Integer b;
 
@@ -65,8 +62,8 @@ public final class EntityCCreatedEvent extends AbstractDomainEvent<EntityCId> {
      * @param b
      *            Integer
      */
-    public EntityCCreatedEvent(@NotNull final EntityIdPath entityIdPath,
-            @NotNull final String a, @NotNull final Integer b) {
+    public EntityCCreatedEvent(final EntityIdPath entityIdPath,
+            final String a, final Integer b) {
         super(entityIdPath);
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -85,7 +82,6 @@ public final class EntityCCreatedEvent extends AbstractDomainEvent<EntityCId> {
      * 
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -95,7 +91,6 @@ public final class EntityCCreatedEvent extends AbstractDomainEvent<EntityCId> {
      * 
      * @return Current value.
      */
-    @NotNull
     public final Integer getB() {
         return b;
     }

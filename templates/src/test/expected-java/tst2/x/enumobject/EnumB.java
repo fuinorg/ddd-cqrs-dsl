@@ -17,10 +17,9 @@
  */
 package tst2.x.enumobject;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.fuin.objects4j.common.Contract;
+import org.jspecify.annotations.Nullable;
 
 /** Enumeration type B - With variables. */
 public enum EnumB {
@@ -36,13 +35,10 @@ public enum EnumB {
     
     ;
     
-    @NotNull
     private Integer id;
     
-    @NotNull
     private String shortName;
     
-    @NotNull
     private String longName;
     
     /**
@@ -50,7 +46,6 @@ public enum EnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public Integer getId() {
         return id;
     }
@@ -60,7 +55,6 @@ public enum EnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public String getShortName() {
         return shortName;
     }
@@ -70,7 +64,6 @@ public enum EnumB {
      *
      * @return Current value.
      */
-    @NotNull
     public String getLongName() {
         return longName;
     }
@@ -89,7 +82,7 @@ public enum EnumB {
     public static final List<EnumB> DEPRECATED = List.of(
     );
     
-    private EnumB(@NotNull final Integer id, @NotNull final String shortName, @NotNull final String longName) {
+    private EnumB(final Integer id, final String shortName, final String longName) {
         Contract.requireArgNotNull("id", id);
         Contract.requireArgNotNull("shortName", shortName);
         Contract.requireArgNotNull("longName", longName);

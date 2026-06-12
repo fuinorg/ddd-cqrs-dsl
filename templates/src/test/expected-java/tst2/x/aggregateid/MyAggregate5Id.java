@@ -24,7 +24,6 @@ import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.Serial;
 import java.lang.annotation.Documented;
@@ -41,6 +40,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.ConstraintViolationException;
 import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
 import org.fuin.objects4j.common.HasPublicStaticValueOfMethod;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Aggregate ID no attribute and with UUID base.
@@ -71,7 +71,7 @@ public final class MyAggregate5Id extends AggregateRootUuid {
      * @param value
      *            Persistent value.
      */
-    public MyAggregate5Id(@NotNull final UUID value) {
+    public MyAggregate5Id(final UUID value) {
         super(TYPE, value);
     }
 
@@ -84,7 +84,8 @@ public final class MyAggregate5Id extends AggregateRootUuid {
      * 
      * @return Converted value.
      */
-    public static MyAggregate5Id valueOf(final String value) {
+    @Nullable
+    public static MyAggregate5Id valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }
@@ -118,7 +119,7 @@ public final class MyAggregate5Id extends AggregateRootUuid {
      * @throws ConstraintViolationException
      *             The value was not valid.
      */
-    public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+    public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
         if (!isValid(value)) {
             throw new ConstraintViolationException("The argument '" + name + "' is not valid: '" + value + "'");
         }
@@ -176,7 +177,8 @@ public final class MyAggregate5Id extends AggregateRootUuid {
          * 
          * @return Value object of type MyAggregate5Id.
          */
-        public MyAggregate5Id toVO(final UUID value) {
+        @Nullable
+        public MyAggregate5Id toVO(@Nullable final UUID value) {
             if (value == null) {
                 return null;
             }
@@ -191,7 +193,8 @@ public final class MyAggregate5Id extends AggregateRootUuid {
          * 
          * @return UUID.
          */
-        public UUID fromVO(final MyAggregate5Id value) {
+        @Nullable
+        public UUID fromVO(@Nullable final MyAggregate5Id value) {
             if (value == null) {
                 return null;
             }

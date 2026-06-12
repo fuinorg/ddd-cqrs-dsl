@@ -47,8 +47,8 @@ class SrcParamDeclTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("@NoArgConstraint @NotNull final String a")
-        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String", "jakarta.validation.constraints.NotNull")
+        assertThat(result).isEqualTo("@NoArgConstraint final String a")
+        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String")
 
     }
 
@@ -69,8 +69,8 @@ class SrcParamDeclTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("@NoArgConstraint final String b")
-        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String")
+        assertThat(result).isEqualTo("@NoArgConstraint @Nullable final String b")
+        assertThat(ctx.imports).containsOnly("a.b.c.NoArgConstraint", "java.lang.String", "org.jspecify.annotations.Nullable")
 
     }
     
@@ -90,8 +90,8 @@ class SrcParamDeclTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("@NotNull final String c")
-        assertThat(ctx.imports).containsOnly("java.lang.String", "jakarta.validation.constraints.NotNull")
+        assertThat(result).isEqualTo("final String c")
+        assertThat(ctx.imports).containsOnly("java.lang.String")
 
     }
     
@@ -111,8 +111,8 @@ class SrcParamDeclTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("final String d")
-        assertThat(ctx.imports).containsOnly("java.lang.String")
+        assertThat(result).isEqualTo("@Nullable final String d")
+        assertThat(ctx.imports).containsOnly("java.lang.String", "org.jspecify.annotations.Nullable")
 
     }
 

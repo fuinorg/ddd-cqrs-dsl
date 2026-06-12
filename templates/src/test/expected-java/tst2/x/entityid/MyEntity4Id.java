@@ -17,7 +17,6 @@
  */
 package tst2.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
@@ -33,10 +32,8 @@ public final class MyEntity4Id implements EntityId, ValueObject {
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -52,7 +49,7 @@ public final class MyEntity4Id implements EntityId, ValueObject {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyEntity4Id(@NotNull final String a, @NotNull final String b) {
+    public MyEntity4Id(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -66,7 +63,6 @@ public final class MyEntity4Id implements EntityId, ValueObject {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -76,7 +72,6 @@ public final class MyEntity4Id implements EntityId, ValueObject {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }

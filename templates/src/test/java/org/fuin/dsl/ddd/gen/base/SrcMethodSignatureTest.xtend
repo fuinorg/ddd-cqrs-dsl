@@ -45,9 +45,9 @@ class SrcMethodSignatureTest {
 
         // VERIFY
         assertThat(result).isEqualTo(
-            '''public void doSomething(@NotNull final MyAggregateId id, final MyValueObject vo) throws ConstraintViolatedException'''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyAggregateId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException")
+            '''public void doSomething(final MyAggregateId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException'''.toString)
+        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.jspecify.annotations.Nullable")
 
     }
 
@@ -69,9 +69,9 @@ class SrcMethodSignatureTest {
 
         // VERIFY
         assertThat(result).isEqualTo(
-            '''public abstract void doSomething(@NotNull final MyAggregateId id, final MyValueObject vo) throws ConstraintViolatedException'''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyAggregateId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException")
+            '''public abstract void doSomething(final MyAggregateId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException'''.toString)
+        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.jspecify.annotations.Nullable")
 
     }
 

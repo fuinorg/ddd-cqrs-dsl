@@ -17,13 +17,11 @@
  */
 package tst.x.enumobject;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.objects4j.common.Contract;
 
 /** Enumeration type D - With integer base type. */
 public abstract class AbstractEnumD {
     
-    @NotNull
     private Integer id;
     
     /**
@@ -31,7 +29,7 @@ public abstract class AbstractEnumD {
      *
      * @param id Identifier.
      */
-    protected AbstractEnumD(@NotNull final Integer id) {
+    protected AbstractEnumD(final Integer id) {
         Contract.requireArgNotNull("id", id);
         
         this.id = id;
@@ -42,7 +40,6 @@ public abstract class AbstractEnumD {
      *
      * @return Current value.
      */
-    @NotNull
     public final Integer getId() {
         return id;
     }

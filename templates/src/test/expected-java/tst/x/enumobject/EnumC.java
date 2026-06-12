@@ -17,8 +17,8 @@
  */
 package tst.x.enumobject;
 
-import jakarta.annotation.Nullable;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /** Enumeration type C - With deprecated instance. */
 public final class EnumC {

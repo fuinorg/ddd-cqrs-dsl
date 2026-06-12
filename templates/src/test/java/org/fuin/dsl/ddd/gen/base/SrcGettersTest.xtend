@@ -49,7 +49,6 @@ class SrcGettersTest {
                  *
                  * @return Current value.
                  */
-                @NotNull
                 public String getName() {
                     return name;
                 }
@@ -65,8 +64,7 @@ class SrcGettersTest {
                 }
                 
             '''.toString)
-        assertThat(ctx.imports).containsOnly("java.lang.String", "java.util.Locale",
-            "jakarta.validation.constraints.NotNull", "jakarta.annotation.Nullable")
+        assertThat(ctx.imports).containsOnly("java.lang.String", "java.util.Locale", "org.jspecify.annotations.Nullable")
 
     }
 

@@ -57,12 +57,12 @@ class SrcMethodTest {
                  */
                 @One
                 @Two("2")
-                public void doSomething(@NotNull final MyAggregateId id, final MyValueObject vo) throws ConstraintViolatedException {
+                public void doSomething(final MyAggregateId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException {
                     // TODO Implement!
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyAggregateId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException")
+        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.jspecify.annotations.Nullable")
 
     }
 
@@ -93,10 +93,10 @@ class SrcMethodTest {
                  *
                  * @throws ConstraintViolatedException The constraint was violated.
                  */
-                public abstract void doSomething(@NotNull final MyAggregateId id, final MyValueObject vo) throws ConstraintViolatedException;
+                public abstract void doSomething(final MyAggregateId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyAggregateId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException")
+        assertThat(ctx.imports).containsOnly("a.b.c.MyAggregateId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.jspecify.annotations.Nullable")
 
     }
 

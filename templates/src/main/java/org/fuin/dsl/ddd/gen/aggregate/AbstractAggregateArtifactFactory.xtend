@@ -62,7 +62,6 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
 
     def addImports(CodeSnippetContext ctx) {
         ctx.requiresImport("org.fuin.ddd4j.core.AbstractAggregateRoot")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityType")
         ctx.requiresImport("org.fuin.objects4j.common.Contract")
     }
@@ -78,8 +77,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
         val String src = ''' 
             «new SrcJavaDocType(aggregate)»
             public abstract class «className» extends AbstractAggregateRoot<«aggregate.idTypeNullsafe.name»> {
-            
-                @NotNull
+
                 private «aggregate.idTypeNullsafe.name» id;
             
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate)»
@@ -98,7 +96,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
                  * 
                  * @param id Unique aggregate identifier.
                  */
-                protected final void setId(@NotNull final «aggregate.idTypeNullsafe.name» id) {
+                protected final void setId(final «aggregate.idTypeNullsafe.name» id) {
                     Contract.requireArgNotNull("id", id);
                     this.id = id;
                 }

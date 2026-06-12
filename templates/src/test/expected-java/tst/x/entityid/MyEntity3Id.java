@@ -17,9 +17,9 @@
  */
 package tst.x.entityid;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
+import org.jspecify.annotations.Nullable;
 import tst2.x.entityid.MyEntity3IdConverter;
 
 /**
@@ -44,7 +44,7 @@ public final class MyEntity3Id extends AbstractMyEntity3Id {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyEntity3Id(@NotNull final String a, @NotNull final String b) {
+    public MyEntity3Id(final String a, final String b) {
         super(a, b);
     }
     
@@ -63,7 +63,7 @@ public final class MyEntity3Id extends AbstractMyEntity3Id {
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -80,7 +80,8 @@ public final class MyEntity3Id extends AbstractMyEntity3Id {
      * 
      * @return Converted value.
      */
-    public static MyEntity3Id valueOf(final String value) {
+    @Nullable
+    public static MyEntity3Id valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

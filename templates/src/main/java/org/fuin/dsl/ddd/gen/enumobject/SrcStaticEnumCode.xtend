@@ -14,7 +14,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
-import jakarta.annotation.Nullable
 
 /**
  * Creates static source code for an enumeration.
@@ -36,7 +35,7 @@ class SrcStaticEnumCode implements CodeSnippet {
         this.baseVar = CqrsCollectionExtensions.<Attribute>first(attributes.nullSafe)
         this.instances = enumObject.instances
         this.base = enumObject.base
-        ctx.requiresImport(Nullable.name)
+        ctx.requiresImport("org.jspecify.annotations.Nullable")
         ctx.requiresImport(List.name)
     }
     

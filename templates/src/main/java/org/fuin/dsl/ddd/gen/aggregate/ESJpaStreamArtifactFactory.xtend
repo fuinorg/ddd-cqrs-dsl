@@ -54,7 +54,6 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
         ctx.requiresImport("jakarta.persistence.Id")
         ctx.requiresImport("jakarta.persistence.Table")
         ctx.requiresImport("jakarta.persistence.Column")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("org.fuin.ddd4j.eventstore.jpa.Stream")
         ctx.requiresImport("org.fuin.objects4j.common.Contract")
         ctx.requiresImport("org.fuin.ddd4j.eventstore.jpa.StreamEvent")
@@ -75,7 +74,6 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
             public class «className» extends Stream {
             
                 @Id
-                @NotNull
                 @Column(name = "«aggregate.name.toSqlUpper»_ID")
                 private String «aggregate.name.toFirstLower»Id;
             
@@ -94,7 +92,7 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
                  * @param «aggregate.name.toFirstLower»Id
                  *            Unique «aggregate.name.toFirstLower» identifier.
                  */
-                public «className»(@NotNull final «aggregate.name»Id «aggregate.name.toFirstLower»Id) {
+                public «className»(final «aggregate.name»Id «aggregate.name.toFirstLower»Id) {
                     super();
                     Contract.requireArgNotNull("«aggregate.name.toFirstLower»Id", «aggregate.name.toFirstLower»Id);
                     this.«aggregate.name.toFirstLower»Id = «aggregate.name.toFirstLower»Id.asString();
@@ -130,7 +128,7 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
                  * 
                  * @return JPA entity.
                  */
-                public final StreamEvent createEvent(@NotNull final EventEntry eventEntry) {
+                public final StreamEvent createEvent(final EventEntry eventEntry) {
                     incVersion();
                     return new «aggregate.name»Event(getId(), getVersion(), eventEntry);
               }

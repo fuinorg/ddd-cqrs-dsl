@@ -22,7 +22,6 @@ class SrcHandleEventMethod implements CodeSnippet {
     new(CodeSnippetContext ctx, Event event) {
         this.name = event.name
         ctx.requiresReference(event.uniqueName)
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("org.fuin.ddd4j.core.ApplyEvent")
     }
 
@@ -35,7 +34,7 @@ class SrcHandleEventMethod implements CodeSnippet {
              */
             @Override
             @ApplyEvent
-            protected final void handle(@NotNull final «name» event) {
+            protected final void handle(final «name» event) {
                 // TODO Handle event!
             }
         '''

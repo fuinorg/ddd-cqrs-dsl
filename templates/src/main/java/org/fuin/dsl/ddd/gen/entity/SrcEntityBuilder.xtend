@@ -39,10 +39,9 @@ class SrcEntityBuilder implements CodeSnippet {
         ctx.requiresReference(entity.rootNullsafe.idTypeNullsafe.uniqueName)
         for (attribute : entity.attributes) {
             if (attribute.nullable === null) {
-                ctx.requiresImport("jakarta.validation.constraints.NotNull")
                 ctx.requiresImport("org.fuin.objects4j.common.Contract")
-            } else {
-                ctx.requiresImport("jakarta.annotation.Nullable")
+            } else if (!attribute.isPrimitive(ctx)) {
+                ctx.requiresImport("org.jspecify.annotations.Nullable")
             }
             addRequiredReferences(attribute, ctx)
         }
@@ -73,7 +72,7 @@ class SrcEntityBuilder implements CodeSnippet {
              * @param «variable.name» Value to set.
              * @return This builder.
              */
-            public Builder «variable.name.toFirstLower»(«IF variable.nullable === null»@NotNull «ELSE»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
+            public Builder «variable.name.toFirstLower»(«IF variable.nullable !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
                 «IF variable.nullable === null»
                 Contract.requireArgNotNull("«variable.name»", «variable.name»);
                 «ENDIF»

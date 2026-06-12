@@ -46,12 +46,12 @@ class SrcChildEntityLocatorMethodTest {
             '''
                 @Override
                 @ChildEntityLocator
-                protected final MyEntity findMyEntity(@NotNull final MyEntityId myEntityId) {
+                protected final MyEntity findMyEntity(final MyEntityId myEntityId) {
                     // TODO Implement!
                     return null;
                 }
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull",
+        assertThat(ctx.imports).containsOnly(
             "org.fuin.ddd4j.ddd.ChildEntityLocator", "a.b.c.MyEntity", "a.b.c.MyEntityId")
 
     }

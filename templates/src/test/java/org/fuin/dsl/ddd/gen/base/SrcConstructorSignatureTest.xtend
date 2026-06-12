@@ -46,9 +46,9 @@ class SrcConstructorSignatureTest {
 
         // VERIFY
         assertThat(result).isEqualTo(
-            '''public MyEntity(@NotNull final MyEntityId id, final MyValueObject vo) throws ConstraintViolatedException'''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.MyEntityId",
-            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException")
+            '''public MyEntity(final MyEntityId id, @Nullable final MyValueObject vo) throws ConstraintViolatedException'''.toString)
+        assertThat(ctx.imports).containsOnly("a.b.c.MyEntityId",
+            "a.b.c.MyValueObject", "a.b.c.ConstraintViolatedException", "org.jspecify.annotations.Nullable")
 
     }
 

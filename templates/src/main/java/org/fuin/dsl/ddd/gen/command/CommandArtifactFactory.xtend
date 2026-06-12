@@ -101,7 +101,6 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 	        if (options.jackson) {
 	            ctx.requiresImport("org.fuin.cqrs4j.jackson.AbstractAggregateCommand")        
 	        }
-            ctx.requiresImport("jakarta.validation.constraints.NotNull")        
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)

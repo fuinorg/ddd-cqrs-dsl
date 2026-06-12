@@ -47,10 +47,9 @@ class SrcVarDeclTest {
         assertThat(result).isEqualTo(
             '''
                 @AnyConstraint
-                @NotNull
                 private String str;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "x.y.z.AnyConstraint",
+        assertThat(ctx.imports).containsOnly("x.y.z.AnyConstraint",
             "java.lang.String")
 
     }
@@ -74,10 +73,9 @@ class SrcVarDeclTest {
         // VERIFY
         assertThat(result).isEqualTo(
             '''
-                @NotNull
                 private String str2;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "java.lang.String")
+        assertThat(ctx.imports).containsOnly("java.lang.String")
 
     }
 
@@ -101,7 +99,7 @@ class SrcVarDeclTest {
             '''@Nullable
 private String str3;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("java.lang.String", "jakarta.annotation.Nullable")
+        assertThat(ctx.imports).containsOnly("java.lang.String", "org.jspecify.annotations.Nullable")
 
     }
 
@@ -124,12 +122,11 @@ private String str3;
         // VERIFY
         assertThat(result).isEqualTo(
             '''
-                @NotNull
                 @XmlAttribute(name = "abc-def-ghi")
                 @JsonbProperty("abc-def-ghi")
                 private String abcDefGhi;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull",
+        assertThat(ctx.imports).containsOnly(
             "jakarta.xml.bind.annotation.XmlAttribute", "jakarta.json.bind.annotation.JsonbProperty", 
             "java.lang.String")
 
@@ -154,12 +151,11 @@ private String str3;
         // VERIFY
         assertThat(result).isEqualTo(
             '''
-                @NotNull
                 @XmlElement(name = "abc-def-ghi")
                 @JsonbProperty("abc-def-ghi")
                 private String abcDefGhi;
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull",
+        assertThat(ctx.imports).containsOnly(
             "jakarta.xml.bind.annotation.XmlElement", "jakarta.json.bind.annotation.JsonbProperty", 
             "java.lang.String")
 

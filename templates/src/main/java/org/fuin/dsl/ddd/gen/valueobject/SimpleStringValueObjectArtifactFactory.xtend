@@ -54,12 +54,13 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
     }
 
     def addImports(CodeSnippetContext ctx, ValueObject vo) {
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("jakarta.validation.Constraint")
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
         ctx.requiresImport("jakarta.validation.Payload")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
+        if (vo.attributes.iterator.next.nullable !== null || options.jaxb || options.jsonb || options.jpa) {
+            ctx.requiresImport("org.jspecify.annotations.Nullable")
+        }
         ctx.requiresImport("java.io.Serial");
         ctx.requiresImport("java.lang.annotation.Documented")
         ctx.requiresImport("java.lang.annotation.ElementType")
@@ -102,9 +103,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
             
                 private static final int MAX_LENGTH = 100;
             
-                «IF vo.attributes.iterator.next.nullable === null»
-                @NotNull
-                «ELSE»
+                «IF vo.attributes.iterator.next.nullable !== null»
                 @Nullable
                 «ENDIF»
                 @«className»Str
@@ -170,7 +169,6 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                 }
 
                 @Override
-                @NotNull
                 public Class<String> getBaseType() {
                     return String.class;
                 }
@@ -206,7 +204,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                  * @throws ConstraintViolationException
                  *             The value was not valid.
                  */
-                public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+                public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
             
                     if (!isValid(value)) {
                         throw new ConstraintViolationException("The argument '" + name
@@ -271,7 +269,8 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                      * 
                      * @return Value object of type «className».
                      */
-                    public «className» toVO(final String value) {
+                    @Nullable
+                    public «className» toVO(@Nullable final String value) {
                         if (value == null) {
                             return null;
                         }
@@ -286,7 +285,8 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                      * 
                      * @return String.
                      */
-                    public String fromVO(final «className» value) {
+                    @Nullable
+                    public String fromVO(@Nullable final «className» value) {
                         if (value == null) {
                             return null;
                         }

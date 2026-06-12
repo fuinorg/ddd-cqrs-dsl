@@ -77,6 +77,23 @@ class VariableExtensions {
         }
         ctx.requiresReference(variable.type.uniqueName)
     }
-    
+
+    /**
+     * Determines if the variable's type is a Java primitive. A primitive can never be
+     * {@code null}, so it must not be annotated with {@link org.jspecify.annotations.Nullable}.
+     * Variables with a multiplicity (rendered as a generic collection) are never primitive.
+     *
+     * @param variable Variable.
+     * @param ctx Context.
+     *
+     * @return {@code true} if the resolved type is one of the eight Java primitives.
+     */
+    def static boolean isPrimitive(Variable variable, CodeSnippetContext ctx) {
+        if (variable.generics !== null) {
+            return false
+        }
+        return #{"boolean", "byte", "char", "short", "int", "long", "float", "double"}.contains(
+            variable.type.simpleName(ctx))
+    }
 
 }

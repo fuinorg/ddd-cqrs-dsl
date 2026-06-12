@@ -48,9 +48,9 @@ class SrcAbstractHandleEventMethodTest {
              *
              * @param event Event to handle.
              */
-            protected abstract void handle(@NotNull final DidSomethingEvent event);
+            protected abstract void handle(final DidSomethingEvent event);
             '''.toString)
-        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NotNull", "a.b.c.DidSomethingEvent")
+        assertThat(ctx.imports).containsOnly("a.b.c.DidSomethingEvent")
 
     }
 

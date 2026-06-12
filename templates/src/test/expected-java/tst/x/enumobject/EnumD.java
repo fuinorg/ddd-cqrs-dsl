@@ -17,9 +17,8 @@
  */
 package tst.x.enumobject;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /** Enumeration type D - With integer base type. */
 public final class EnumD extends AbstractEnumD {
@@ -91,7 +90,7 @@ public final class EnumD extends AbstractEnumD {
         throw new IllegalArgumentException("Unknown value: " + value);
     }
     
-    private EnumD(@NotNull final Integer id) {
+    private EnumD(final Integer id) {
         super(id);
     }
     

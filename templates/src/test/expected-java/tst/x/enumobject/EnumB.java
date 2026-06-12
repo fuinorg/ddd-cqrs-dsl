@@ -17,9 +17,8 @@
  */
 package tst.x.enumobject;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /** Enumeration type B - With variables. */
 public final class EnumB extends AbstractEnumB {
@@ -47,7 +46,7 @@ public final class EnumB extends AbstractEnumB {
     public static final List<EnumB> DEPRECATED = List.of(
     );
     
-    private EnumB(@NotNull final Integer id, @NotNull final String shortName, @NotNull final String longName) {
+    private EnumB(final Integer id, final String shortName, final String longName) {
         super(id, shortName, longName);
     }
     

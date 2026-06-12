@@ -18,7 +18,6 @@
 package tst2.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.ZonedDateTime;
 import org.fuin.ddd4j.core.EventId;
@@ -39,12 +38,10 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
     /** Unique name used to store the event. */
     public static final EventType EVENT_TYPE = new EventType("EventC");
     
-    @NotNull
     @JsonbProperty("a")
     @Examples(value = { "Abc" })
     private String a;
     
-    @NotNull
     @JsonbProperty("b")
     @Examples(value = { "123" })
     private Integer b;
@@ -60,7 +57,6 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
      *
      * @return Current value.
      */
-    @NotNull
     public String getA() {
         return a;
     }
@@ -70,7 +66,6 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
      *
      * @return Current value.
      */
-    @NotNull
     public Integer getB() {
         return b;
     }
@@ -112,7 +107,7 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
          * @param a Value to set.
          * @return This builder.
          */
-        public Builder a(@NotNull final String a) {
+        public Builder a(final String a) {
             Contract.requireArgNotNull("a", a);
             delegate.a = a;
             return this;
@@ -124,7 +119,7 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
          * @param b Value to set.
          * @return This builder.
          */
-        public Builder b(@NotNull final Integer b) {
+        public Builder b(final Integer b) {
             Contract.requireArgNotNull("b", b);
             delegate.b = b;
             return this;

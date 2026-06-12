@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.ddd4j.core.ApplyEvent;
 import org.fuin.objects4j.common.Contract;
@@ -37,7 +36,7 @@ public final class EntityC extends AbstractEntityC {
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public EntityC(@NotNull final AggregateX rootAggregate, @NotNull final EntityCId id, @NotNull final String a, @NotNull final Integer b) throws AnyConstraintViolatedException {
+    public EntityC(final AggregateX rootAggregate, final EntityCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
         super(rootAggregate, id, a, b);
     }
     
@@ -48,7 +47,7 @@ public final class EntityC extends AbstractEntityC {
      */
     @Override
     @ApplyEvent
-    protected final void handle(@NotNull final EntityCCreatedEvent event) {
+    protected final void handle(final EntityCCreatedEvent event) {
         // TODO Handle event!
     }
     
@@ -67,10 +66,8 @@ public final class EntityC extends AbstractEntityC {
      */
     public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityCId, EntityC, Builder> {
     
-        @NotNull
         private String a;
         
-        @NotNull
         private Integer b;
         
         private Builder() {
@@ -83,7 +80,7 @@ public final class EntityC extends AbstractEntityC {
          * @param a Value to set.
          * @return This builder.
          */
-        public Builder a(@NotNull final String a) {
+        public Builder a(final String a) {
             Contract.requireArgNotNull("a", a);
             this.a = a;
             return this;
@@ -95,7 +92,7 @@ public final class EntityC extends AbstractEntityC {
          * @param b Value to set.
          * @return This builder.
          */
-        public Builder b(@NotNull final Integer b) {
+        public Builder b(final Integer b) {
             Contract.requireArgNotNull("b", b);
             this.b = b;
             return this;

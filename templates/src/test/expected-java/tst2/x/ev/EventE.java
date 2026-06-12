@@ -18,7 +18,6 @@
 package tst2.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
 import org.fuin.objects4j.common.Contract;
@@ -36,11 +35,9 @@ public final class EventE extends AbstractEvent {
     /** Unique name used to store the event. */
     public static final EventType EVENT_TYPE = new EventType("EventE");
     
-    @NotNull
     @JsonbProperty("a")
     private MyString a;
     
-    @NotNull
     @JsonbProperty("b")
     @Examples(value = { "123","456" })
     private MyString b;
@@ -59,7 +56,7 @@ public final class EventE extends AbstractEvent {
     * @param a Field A 
     * @param b Field B 
     */
-    public EventE(@NotNull final MyString a, @NotNull final MyString b) {
+    public EventE(final MyString a, final MyString b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -78,7 +75,6 @@ public final class EventE extends AbstractEvent {
      *
      * @return Current value.
      */
-    @NotNull
     public MyString getA() {
         return a;
     }
@@ -88,7 +84,6 @@ public final class EventE extends AbstractEvent {
      *
      * @return Current value.
      */
-    @NotNull
     public MyString getB() {
         return b;
     }

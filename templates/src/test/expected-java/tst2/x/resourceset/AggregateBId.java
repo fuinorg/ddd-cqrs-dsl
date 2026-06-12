@@ -17,7 +17,6 @@
  */
 package tst2.x.resourceset;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.AggregateRootId;
@@ -26,6 +25,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
+import org.jspecify.annotations.Nullable;
 
 @Immutable
 @XmlJavaTypeAdapter(AggregateBIdConverter.class)
@@ -33,10 +33,8 @@ public final class AggregateBId extends AbstractStringValueObject implements Agg
 
 private static final long serialVersionUID = 1000L;
 
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -52,7 +50,7 @@ private static final long serialVersionUID = 1000L;
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public AggregateBId(@NotNull final String a, @NotNull final String b) {
+    public AggregateBId(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -66,7 +64,6 @@ private static final long serialVersionUID = 1000L;
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -76,7 +73,6 @@ private static final long serialVersionUID = 1000L;
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }
@@ -109,7 +105,7 @@ private static final long serialVersionUID = 1000L;
      * 
      * @return TRUE if it's a valid string, else FALSE.
      */
-    public static boolean isValid(final String value) {
+    public static boolean isValid(@Nullable final String value) {
         if (value == null) {
             return true;
         }
@@ -126,7 +122,8 @@ private static final long serialVersionUID = 1000L;
      * 
      * @return Converted value.
      */
-    public static AggregateBId valueOf(final String value) {
+    @Nullable
+    public static AggregateBId valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }

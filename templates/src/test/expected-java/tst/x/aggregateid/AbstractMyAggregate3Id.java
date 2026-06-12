@@ -17,7 +17,6 @@
  */
 package tst.x.aggregateid;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.core.StringBasedEntityType;
@@ -32,10 +31,8 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
 
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     private String a;
     
-    @NotNull
     private String b;
     
     /**
@@ -51,7 +48,7 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public AbstractMyAggregate3Id(@NotNull final String a, @NotNull final String b) {
+    public AbstractMyAggregate3Id(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -65,7 +62,6 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -75,7 +71,6 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }

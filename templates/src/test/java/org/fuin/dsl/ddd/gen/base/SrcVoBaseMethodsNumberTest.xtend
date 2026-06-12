@@ -54,7 +54,7 @@ class SrcVoBaseMethodsNumberTest {
                  * 
                  * @return TRUE if it's a valid Long, else FALSE.
                  */
-                public static boolean isValid(final Long value) {
+                public static boolean isValid(@Nullable final Long value) {
                     if (value == null) {
                         return true;
                     }
@@ -75,7 +75,8 @@ class SrcVoBaseMethodsNumberTest {
                  * 
                  * @return Converted value.
                  */
-                public static MyEntityId valueOf(final Long value) {
+                @Nullable
+                public static MyEntityId valueOf(@Nullable final Long value) {
                     if (value == null) {
                         return null;
                     }
@@ -91,7 +92,8 @@ class SrcVoBaseMethodsNumberTest {
                  * 
                  * @return Converted value.
                  */
-                public static MyEntityId valueOf(final String value) {
+                @Nullable
+                public static MyEntityId valueOf(@Nullable final String value) {
                     if (value == null) {
                         return null;
                     }
@@ -100,7 +102,7 @@ class SrcVoBaseMethodsNumberTest {
                 
             '''.toString
         )
-        assertThat(ctx.imports).containsOnly("a.b.c.MyEntityId", "java.lang.Long")
+        assertThat(ctx.imports).containsOnly("a.b.c.MyEntityId", "java.lang.Long", "org.jspecify.annotations.Nullable")
 
     }
 

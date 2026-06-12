@@ -22,7 +22,6 @@ class SrcAbstractHandleEventMethod implements CodeSnippet {
     new(CodeSnippetContext ctx, Event event) {
         this.name = event.name
         ctx.requiresReference(event.uniqueName)
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
     }
 
     override toString() {
@@ -32,7 +31,7 @@ class SrcAbstractHandleEventMethod implements CodeSnippet {
              *
              * @param event Event to handle.
              */
-            protected abstract void handle(@NotNull final «name» event);
+            protected abstract void handle(final «name» event);
         '''
     }
 

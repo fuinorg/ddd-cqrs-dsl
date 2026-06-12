@@ -54,12 +54,11 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
     }
 
     def addImports(CodeSnippetContext ctx, EntityId aggregateId) {
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("jakarta.validation.Constraint")
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
         ctx.requiresImport("jakarta.validation.Payload")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
+        ctx.requiresImport("org.jspecify.annotations.Nullable")
         ctx.requiresImport("java.io.Serial");
         ctx.requiresImport("java.lang.annotation.Documented")
         ctx.requiresImport("java.lang.annotation.ElementType")
@@ -117,11 +116,11 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                  * @param value
                  *            Persistent value.
                  */
-                public «className»(@NotNull final Integer value) {
+                public «className»(final Integer value) {
                     this(value, true);
                 }
             
-                private «className»(@NotNull final Integer value, final boolean strict) {
+                private «className»(final Integer value, final boolean strict) {
                     super(TYPE, value);
                     if (strict & !isValid(value)) {
                         throw new ConstraintViolationException("The argument 'value' is not valid: '" + value + "'");            
@@ -137,7 +136,8 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                  * 
                  * @return Converted value.
                  */
-                public static «className» valueOf(final String value) {
+                @Nullable
+                public static «className» valueOf(@Nullable final String value) {
                     if (value == null) {
                         return null;
                     }
@@ -199,7 +199,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                  * @throws ConstraintViolationException
                  *             The value was not valid.
                  */
-                public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+                public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
                     if (!isValid(value)) {
                         throw new ConstraintViolationException("The argument '" + name + "' is not valid: '" + value + "'");
                     }
@@ -258,7 +258,8 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                      * 
                      * @return Value object of type «className».
                      */
-                    public «className» toVO(final Integer value) {
+                    @Nullable
+                    public «className» toVO(@Nullable final Integer value) {
                         if (value == null) {
                             return null;
                         }
@@ -273,7 +274,8 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                      * 
                      * @return Integer.
                      */
-                    public Integer fromVO(final «className» value) {
+                    @Nullable
+                    public Integer fromVO(@Nullable final «className» value) {
                         if (value == null) {
                             return null;
                         }

@@ -55,7 +55,6 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
         ctx.requiresImport("jakarta.persistence.Id")
         ctx.requiresImport("jakarta.persistence.IdClass")
         ctx.requiresImport("jakarta.persistence.Table")
-        ctx.requiresImport("jakarta.validation.constraints.NotNull")
         ctx.requiresImport("org.fuin.ddd4j.eventstore.jpa.EventEntry")
         ctx.requiresImport("org.fuin.ddd4j.eventstore.jpa.StreamEvent")
         ctx.requiresImport("org.fuin.objects4j.common.Contract")
@@ -78,12 +77,10 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
             public class «className» extends StreamEvent {
             
                 @Id
-                @NotNull
                 @Column(name = "«aggregate.idTypeNullsafe.name.toSqlUpper»")
                 private String «aggregate.idTypeNullsafe.name.toFirstLower»;
             
                 @Id
-                @NotNull
                 @Column(name = "EVENT_NUMBER")
                 private Integer eventNumber;
             
@@ -106,8 +103,8 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
                  * @param eventEntry
                  *            Event entry to connect.
                  */
-                public «aggregate.name»Event(@NotNull final «aggregate.idTypeNullsafe.name» «aggregate.idTypeNullsafe.name.toFirstLower»,
-                 @NotNull final Integer version, final EventEntry eventEntry) {
+                public «aggregate.name»Event(final «aggregate.idTypeNullsafe.name» «aggregate.idTypeNullsafe.name.toFirstLower»,
+                 final Integer version, final EventEntry eventEntry) {
                     super(eventEntry);
                     Contract.requireArgNotNull("«aggregate.idTypeNullsafe.name.toFirstLower»", «aggregate.idTypeNullsafe.name.toFirstLower»);
                     Contract.requireArgNotNull("version", version);

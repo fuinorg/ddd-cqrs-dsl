@@ -17,8 +17,7 @@
  */
 package tst2.x.enumobject;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import org.fuin.objects4j.common.Contract;
 
@@ -36,7 +35,6 @@ public enum EnumD {
 
     ;
 
-    @NotNull
     private Integer id;
 
     /** All instances. */
@@ -79,7 +77,7 @@ public enum EnumD {
      * 
      * @return Instance
      */
-    @NotNull
+    @Nullable
     public static EnumD valueOf(@Nullable final Integer value) {
         if (value == null) {
             return null;
@@ -92,7 +90,7 @@ public enum EnumD {
         throw new IllegalArgumentException("Unknown value: " + value);
     }
 
-    private EnumD(@NotNull final Integer id) {
+    private EnumD(final Integer id) {
         Contract.requireArgNotNull("id", id);
 
         this.id = id;

@@ -18,7 +18,6 @@
 package tst2.x.valueobject;
 
 import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serial;
@@ -44,7 +43,6 @@ public final class FullName implements ValueObject, Serializable {
     @Serial
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     @XmlAttribute(name = "first-name")
     @JsonbProperty("first-name")
     @ShortLabel(key = "firstName.slabel", value = "First")
@@ -54,7 +52,6 @@ public final class FullName implements ValueObject, Serializable {
     @Examples(value = { "Peter","Mary Jane","Harry" })
     private String firstName;
     
-    @NotNull
     @XmlAttribute(name = "last-name")
     @JsonbProperty("last-name")
     @ShortLabel(key = "lastName.slabel", value = "Last")
@@ -77,7 +74,7 @@ public final class FullName implements ValueObject, Serializable {
      * @param firstName First name.
      * @param lastName Last name.
      */
-    public FullName(@NotNull final String firstName, @NotNull final String lastName) {
+    public FullName(final String firstName, final String lastName) {
         super();
         Contract.requireArgNotNull("firstName", firstName);
         Contract.requireArgNotNull("lastName", lastName);
@@ -91,7 +88,6 @@ public final class FullName implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getFirstName() {
         return firstName;
     }
@@ -101,7 +97,6 @@ public final class FullName implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getLastName() {
         return lastName;
     }

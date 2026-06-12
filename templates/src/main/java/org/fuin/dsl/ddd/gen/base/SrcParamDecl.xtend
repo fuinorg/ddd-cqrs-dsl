@@ -25,17 +25,17 @@ class SrcParamDecl implements CodeSnippet {
     new(CodeSnippetContext ctx, GenerateOptions options, Parameter parameter) {
         this.ctx = ctx
         this.parameter = parameter
-        if (parameter.nullable === null) {
-            ctx.requiresImport("jakarta.validation.constraints.NotNull")
+        if (parameter.nullable !== null && !parameter.isPrimitive(ctx)) {
+            ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(parameter, ctx)
     }
 
     override toString() {
         if (parameter.preconditions !== null && parameter.preconditions.constraintInstances.nullSafe.size > 0) {
-            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, cc)»«ENDFOR» «IF parameter.nullable === null»@NotNull «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
+            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, cc)»«ENDFOR» «IF parameter.nullable !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         } else {
-            '''«IF parameter.nullable === null»@NotNull «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
+            '''«IF parameter.nullable !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         }
     }
 

@@ -17,7 +17,6 @@
  */
 package tst2.x.services;
 
-import jakarta.validation.constraints.NotNull;
 
 /**
  * Service B - Single method.
@@ -31,6 +30,6 @@ public interface ServiceB {
      *
      * @return Value.
      */
-    public String find(@NotNull final Integer a);
+    public String find(final Integer a);
     
 }

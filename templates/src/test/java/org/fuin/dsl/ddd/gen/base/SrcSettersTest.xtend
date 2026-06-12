@@ -47,7 +47,7 @@ class SrcSettersTest {
                  *
                  * @param name Value to set.
                  */
-                public void setName(@NotNull final String name) {
+                public void setName(final String name) {
                     Contract.requireArgNotNull("name", name);
                     this.name = name;
                 }
@@ -62,8 +62,7 @@ class SrcSettersTest {
                 }
                 
             '''.toString)
-        assertThat(ctx.imports).containsOnly("java.lang.String", "java.util.Locale",
-            "jakarta.validation.constraints.NotNull", "org.fuin.objects4j.common.Contract", "jakarta.annotation.Nullable")
+        assertThat(ctx.imports).containsOnly("java.lang.String", "java.util.Locale", "org.fuin.objects4j.common.Contract", "org.jspecify.annotations.Nullable")
 
     }
 

@@ -46,18 +46,15 @@ class SrcVarsDeclTest {
         // VERIFY
         assertThat(result).isEqualTo(
             '''
-                @NotNull
                 private String a;
                 
-                @NotNull
                 private Integer b;
                 
                 @Nullable
                 private Boolean c;
                 
             '''.toString)
-        assertThat(ctx.imports).containsOnly("java.lang.String", "java.lang.Integer", "java.lang.Boolean",
-            "jakarta.validation.constraints.NotNull", "jakarta.annotation.Nullable")
+        assertThat(ctx.imports).containsOnly("java.lang.String", "java.lang.Integer", "java.lang.Boolean", "org.jspecify.annotations.Nullable")
     }
 
     def DomainModel createModel() {

@@ -18,7 +18,6 @@
 package tst2.x.valueobject;
 
 import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serial;
@@ -35,12 +34,10 @@ public final class MyValueObject4 implements ValueObject, Serializable {
     @Serial
     private static final long serialVersionUID = 1000L;
     
-    @NotNull
     @XmlAttribute(name = "a")
     @JsonbProperty("a")
     private String a;
     
-    @NotNull
     @XmlAttribute(name = "b")
     @JsonbProperty("b")
     private String b;
@@ -58,7 +55,7 @@ public final class MyValueObject4 implements ValueObject, Serializable {
      * @param a Persistent value A.
      * @param b Persistent value B.
      */
-    public MyValueObject4(@NotNull final String a, @NotNull final String b) {
+    public MyValueObject4(final String a, final String b) {
         super();
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -72,7 +69,6 @@ public final class MyValueObject4 implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getA() {
         return a;
     }
@@ -82,7 +78,6 @@ public final class MyValueObject4 implements ValueObject, Serializable {
      *
      * @return Current value.
      */
-    @NotNull
     public final String getB() {
         return b;
     }

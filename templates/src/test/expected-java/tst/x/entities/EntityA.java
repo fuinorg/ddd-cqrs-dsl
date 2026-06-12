@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 
 /**
@@ -31,7 +30,7 @@ public final class EntityA extends AbstractEntityA {
      * @param rootAggregate The root aggregate of this entity.
      * @param id Unique entity identifier.
      */
-    public EntityA(@NotNull final AggregateX rootAggregate, @NotNull final EntityAId id) {
+    public EntityA(final AggregateX rootAggregate, final EntityAId id) {
         super(rootAggregate, id);
     }
     

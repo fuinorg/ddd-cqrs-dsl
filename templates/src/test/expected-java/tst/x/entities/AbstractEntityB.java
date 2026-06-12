@@ -17,7 +17,6 @@
  */
 package tst.x.entities;
 
-import jakarta.validation.constraints.NotNull;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
@@ -27,13 +26,10 @@ import org.fuin.objects4j.common.Contract;
  */
 public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, AggregateX, EntityBId> {
 
-    @NotNull
     private EntityBId id;
 
-    @NotNull
     private String a;
     
-    @NotNull
     private Integer b;
     
     /**
@@ -42,7 +38,7 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
      * @param rootAggregate The root aggregate of this entity.
      * @param id Unique entity identifier.
      */
-    protected AbstractEntityB(@NotNull final AggregateX rootAggregate, @NotNull final EntityBId id) {
+    protected AbstractEntityB(final AggregateX rootAggregate, final EntityBId id) {
         super(rootAggregate);
         Contract.requireArgNotNull("id", id);
         
@@ -64,7 +60,6 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
      *
      * @return Current value.
      */
-    @NotNull
     protected final String getA() {
         return a;
     }
@@ -74,7 +69,6 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
      *
      * @return Current value.
      */
-    @NotNull
     protected final Integer getB() {
         return b;
     }
@@ -84,7 +78,7 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
      *
      * @param a Value to set.
      */
-    protected final void setA(@NotNull final String a) {
+    protected final void setA(final String a) {
         Contract.requireArgNotNull("a", a);
         this.a = a;
     }
@@ -94,7 +88,7 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
      *
      * @param b Value to set.
      */
-    protected final void setB(@NotNull final Integer b) {
+    protected final void setB(final Integer b) {
         Contract.requireArgNotNull("b", b);
         this.b = b;
     }

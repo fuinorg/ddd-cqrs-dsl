@@ -24,7 +24,6 @@ import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.Serial;
 import java.lang.annotation.Documented;
@@ -42,6 +41,7 @@ import org.fuin.ddd4j.core.StringBasedEntityType;
 import org.fuin.objects4j.common.ConstraintViolationException;
 import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
 import org.fuin.objects4j.common.HasPublicStaticValueOfMethod;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Entity ID no attribute and base Integer.
@@ -67,11 +67,11 @@ public final class MyEntity5Id extends IntegerEntityId {
      * @param value
      *            Persistent value.
      */
-    public MyEntity5Id(@NotNull final Integer value) {
+    public MyEntity5Id(final Integer value) {
         this(value, true);
     }
 
-    private MyEntity5Id(@NotNull final Integer value, final boolean strict) {
+    private MyEntity5Id(final Integer value, final boolean strict) {
         super(TYPE, value);
         if (strict & !isValid(value)) {
             throw new ConstraintViolationException("The argument 'value' is not valid: '" + value + "'");            
@@ -87,7 +87,8 @@ public final class MyEntity5Id extends IntegerEntityId {
      * 
      * @return Converted value.
      */
-    public static MyEntity5Id valueOf(final String value) {
+    @Nullable
+    public static MyEntity5Id valueOf(@Nullable final String value) {
         if (value == null) {
             return null;
         }
@@ -149,7 +150,7 @@ public final class MyEntity5Id extends IntegerEntityId {
      * @throws ConstraintViolationException
      *             The value was not valid.
      */
-    public static void requireArgValid(@NotNull final String name, @NotNull final String value) throws ConstraintViolationException {
+    public static void requireArgValid(final String name, final String value) throws ConstraintViolationException {
         if (!isValid(value)) {
             throw new ConstraintViolationException("The argument '" + name + "' is not valid: '" + value + "'");
         }
@@ -207,7 +208,8 @@ public final class MyEntity5Id extends IntegerEntityId {
          * 
          * @return Value object of type MyEntity5Id.
          */
-        public MyEntity5Id toVO(final Integer value) {
+        @Nullable
+        public MyEntity5Id toVO(@Nullable final Integer value) {
             if (value == null) {
                 return null;
             }
@@ -222,7 +224,8 @@ public final class MyEntity5Id extends IntegerEntityId {
          * 
          * @return Integer.
          */
-        public Integer fromVO(final MyEntity5Id value) {
+        @Nullable
+        public Integer fromVO(@Nullable final MyEntity5Id value) {
             if (value == null) {
                 return null;
             }

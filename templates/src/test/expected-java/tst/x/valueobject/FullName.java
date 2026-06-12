@@ -17,7 +17,6 @@
  */
 package tst.x.valueobject;
 
-import jakarta.validation.constraints.NotNull;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.objects4j.ui.Examples;
 import org.fuin.objects4j.ui.Label;
@@ -49,7 +48,7 @@ public final class FullName extends AbstractFullName {
      * @param firstName First name.
      * @param lastName Last name.
      */
-    public FullName(@NotNull final String firstName, @NotNull final String lastName) {
+    public FullName(final String firstName, final String lastName) {
         super(firstName, lastName);
     }
     
