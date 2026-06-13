@@ -352,20 +352,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 			}
 		}
 
-		if ((parameter.businessRules !== null) && (parameter.businessRules.businessRuleInstances !== null)) {
-			for (businessRuleInstance : parameter.businessRules.businessRuleInstances) {
-				if (!businessRuleInstance.businessRule.attributes.contains(parameter.type)) {
-					error(
-						"The input type of the business rule (" + businessRuleInstance.businessRule.attributes.types.typeNames +
-							") does not match the parameter type",
-						businessRuleInstance,
-						CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
-						PARAMETER_CONSTRAINT_WRONG_TARGET_TYPE
-					)
-				}
-			}
-		}
-
 	}
 
 	@Check

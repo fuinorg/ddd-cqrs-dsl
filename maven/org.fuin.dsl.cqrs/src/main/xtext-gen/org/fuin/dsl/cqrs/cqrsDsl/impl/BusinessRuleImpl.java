@@ -3,12 +3,8 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
-import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -16,10 +12,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
@@ -35,7 +27,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getDoc <em>Doc</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getException <em>Exception</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getConsistency <em>Consistency</em>}</li>
  * </ul>
  *
@@ -92,16 +83,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
    * @ordered
    */
   protected org.fuin.dsl.cqrs.cqrsDsl.Exception exception;
-
-  /**
-   * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAttributes()
-   * @generated
-   * @ordered
-   */
-  protected EList<Attribute> attributes;
 
   /**
    * The cached value of the '{@link #getConsistency() <em>Consistency</em>}' containment reference.
@@ -235,21 +216,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
    * @generated
    */
   @Override
-  public EList<Attribute> getAttributes()
-  {
-    if (attributes == null)
-    {
-      attributes = new EObjectContainmentEList<Attribute>(Attribute.class, this, CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES);
-    }
-    return attributes;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Consistency getConsistency()
   {
     return consistency;
@@ -304,8 +270,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
-        return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return basicSetConsistency(null, msgs);
     }
@@ -329,8 +293,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         if (resolve) return getException();
         return basicGetException();
-      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
-        return getAttributes();
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return getConsistency();
     }
@@ -342,7 +304,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -356,10 +317,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
         return;
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)newValue);
-        return;
-      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
-        getAttributes().clear();
-        getAttributes().addAll((Collection<? extends Attribute>)newValue);
         return;
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         setConsistency((Consistency)newValue);
@@ -387,9 +344,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)null);
         return;
-      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
-        getAttributes().clear();
-        return;
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         setConsistency((Consistency)null);
         return;
@@ -413,8 +367,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         return exception != null;
-      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
-        return attributes != null && !attributes.isEmpty();
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return consistency != null;
     }

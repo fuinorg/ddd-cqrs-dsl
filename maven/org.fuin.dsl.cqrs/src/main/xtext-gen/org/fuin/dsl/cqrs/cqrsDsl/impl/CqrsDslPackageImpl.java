@@ -1142,20 +1142,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getBusinessRule_Attributes()
-  {
-    return (EReference)businessRuleEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getBusinessRule_Consistency()
   {
-    return (EReference)businessRuleEClass.getEStructuralFeatures().get(4);
+    return (EReference)businessRuleEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -2458,7 +2447,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEAttribute(businessRuleEClass, BUSINESS_RULE__DOC);
     createEAttribute(businessRuleEClass, BUSINESS_RULE__NAME);
     createEReference(businessRuleEClass, BUSINESS_RULE__EXCEPTION);
-    createEReference(businessRuleEClass, BUSINESS_RULE__ATTRIBUTES);
     createEReference(businessRuleEClass, BUSINESS_RULE__CONSISTENCY);
 
     annotationEClass = createEClass(ANNOTATION);
@@ -2739,7 +2727,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEAttribute(getBusinessRule_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBusinessRule_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBusinessRule_Exception(), this.getException(), null, "exception", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBusinessRule_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBusinessRule_Consistency(), this.getConsistency(), null, "consistency", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(annotationEClass, Annotation.class, "Annotation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -351,11 +351,26 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BusinessRule returns BusinessRule
 	 *
 	 * Constraint:
-	 *     (doc=DOC name=ID exception=[Exception|FQN] attributes+=Attribute* consistency=Consistency)
+	 *     (doc=DOC name=ID exception=[Exception|FQN] consistency=Consistency)
 	 * </pre>
 	 */
 	protected void sequence_BusinessRule(ISerializationContext context, BusinessRule semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__DOC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__DOC));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__NAME));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__CONSISTENCY) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__CONSISTENCY));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getBusinessRuleAccess().getDocDOCTerminalRuleCall_0_0(), semanticObject.getDoc());
+		feeder.accept(grammarAccess.getBusinessRuleAccess().getNameIDTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getBusinessRuleAccess().getExceptionExceptionFQNParserRuleCall_4_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION, false));
+		feeder.accept(grammarAccess.getBusinessRuleAccess().getConsistencyConsistencyParserRuleCall_6_0(), semanticObject.getConsistency());
+		feeder.finish();
 	}
 	
 	

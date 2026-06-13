@@ -3,8 +3,6 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -19,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getDoc <em>Doc</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}</li>
  * </ul>
  *
@@ -94,18 +91,6 @@ public interface BusinessRule extends EObject
    * @generated
    */
   void setException(org.fuin.dsl.cqrs.cqrsDsl.Exception value);
-
-  /**
-   * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Attribute}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Attributes</em>' containment reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRule_Attributes()
-   * @model containment="true"
-   * @generated
-   */
-  EList<Attribute> getAttributes();
 
   /**
    * Returns the value of the '<em><b>Consistency</b></em>' containment reference.

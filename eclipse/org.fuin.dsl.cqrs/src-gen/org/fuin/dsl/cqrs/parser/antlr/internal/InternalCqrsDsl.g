@@ -1254,28 +1254,9 @@ ruleBusinessRule returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getBusinessRuleAccess().getAttributesAttributeParserRuleCall_6_0());
+					newCompositeNode(grammarAccess.getBusinessRuleAccess().getConsistencyConsistencyParserRuleCall_6_0());
 				}
-				lv_attributes_6_0=ruleAttribute
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getBusinessRuleRule());
-					}
-					add(
-						$current,
-						"attributes",
-						lv_attributes_6_0,
-						"org.fuin.dsl.cqrs.CqrsDsl.Attribute");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)*
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getBusinessRuleAccess().getConsistencyConsistencyParserRuleCall_7_0());
-				}
-				lv_consistency_7_0=ruleConsistency
+				lv_consistency_6_0=ruleConsistency
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getBusinessRuleRule());
@@ -1283,15 +1264,15 @@ ruleBusinessRule returns [EObject current=null]
 					set(
 						$current,
 						"consistency",
-						lv_consistency_7_0,
+						lv_consistency_6_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Consistency");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_8='}'
+		otherlv_7='}'
 		{
-			newLeafNode(otherlv_8, grammarAccess.getBusinessRuleAccess().getRightCurlyBracketKeyword_8());
+			newLeafNode(otherlv_7, grammarAccess.getBusinessRuleAccess().getRightCurlyBracketKeyword_7());
 		}
 	)
 ;

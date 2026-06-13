@@ -939,22 +939,13 @@ public interface CqrsDslPackage extends EPackage
   int BUSINESS_RULE__EXCEPTION = 2;
 
   /**
-   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BUSINESS_RULE__ATTRIBUTES = 3;
-
-  /**
    * The feature id for the '<em><b>Consistency</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__CONSISTENCY = 4;
+  int BUSINESS_RULE__CONSISTENCY = 3;
 
   /**
    * The number of structural features of the '<em>Business Rule</em>' class.
@@ -963,7 +954,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE_FEATURE_COUNT = 5;
+  int BUSINESS_RULE_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AnnotationImpl <em>Annotation</em>}' class.
@@ -3774,17 +3765,6 @@ public interface CqrsDslPackage extends EPackage
   EReference getBusinessRule_Exception();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getAttributes <em>Attributes</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Attributes</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getAttributes()
-   * @see #getBusinessRule()
-   * @generated
-   */
-  EReference getBusinessRule_Attributes();
-
-  /**
    * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5448,14 +5428,6 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference BUSINESS_RULE__EXCEPTION = eINSTANCE.getBusinessRule_Exception();
-
-    /**
-     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BUSINESS_RULE__ATTRIBUTES = eINSTANCE.getBusinessRule_Attributes();
 
     /**
      * The meta object literal for the '<em><b>Consistency</b></em>' containment reference feature.

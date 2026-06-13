@@ -694,24 +694,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final CrossReference cExceptionExceptionCrossReference_4_0 = (CrossReference)cExceptionAssignment_4.eContents().get(0);
 		private final RuleCall cExceptionExceptionFQNParserRuleCall_4_0_1 = (RuleCall)cExceptionExceptionCrossReference_4_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cAttributesAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cAttributesAttributeParserRuleCall_6_0 = (RuleCall)cAttributesAssignment_6.eContents().get(0);
-		private final Assignment cConsistencyAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cConsistencyConsistencyParserRuleCall_7_0 = (RuleCall)cConsistencyAssignment_7.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		private final Assignment cConsistencyAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cConsistencyConsistencyParserRuleCall_6_0 = (RuleCall)cConsistencyAssignment_6.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		///** Defines a business rule that must be satisfied. */
 		//BusinessRule:
 		//    doc=DOC
 		//    'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
-		//        attributes+=Attribute*
 		//        consistency=Consistency
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC
 		//'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
-		//    attributes+=Attribute*
 		//    consistency=Consistency
 		//'}'
 		public Group getGroup() { return cGroup; }
@@ -746,20 +742,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
 		
-		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_6() { return cAttributesAssignment_6; }
-		
-		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_6_0() { return cAttributesAttributeParserRuleCall_6_0; }
-		
 		//consistency=Consistency
-		public Assignment getConsistencyAssignment_7() { return cConsistencyAssignment_7; }
+		public Assignment getConsistencyAssignment_6() { return cConsistencyAssignment_6; }
 		
 		//Consistency
-		public RuleCall getConsistencyConsistencyParserRuleCall_7_0() { return cConsistencyConsistencyParserRuleCall_7_0; }
+		public RuleCall getConsistencyConsistencyParserRuleCall_6_0() { return cConsistencyConsistencyParserRuleCall_6_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 	public class AnnotationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Annotation");
@@ -4172,7 +4162,6 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//BusinessRule:
 	//    doc=DOC
 	//    'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
-	//        attributes+=Attribute*
 	//        consistency=Consistency
 	//    '}';
 	public BusinessRuleElements getBusinessRuleAccess() {

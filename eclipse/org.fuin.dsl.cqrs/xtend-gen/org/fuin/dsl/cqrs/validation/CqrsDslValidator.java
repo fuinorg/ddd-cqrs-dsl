@@ -29,7 +29,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId;
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
-import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
@@ -329,22 +328,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
             ") does not match the parameter type");
           this.error(_plus_1, constraintInstance, 
             CqrsDslPackage.Literals.CONSTRAINT_INSTANCE__CONSTRAINT, 
-            CqrsDslValidator.PARAMETER_CONSTRAINT_WRONG_TARGET_TYPE);
-        }
-      }
-    }
-    if (((parameter.getBusinessRules() != null) && (parameter.getBusinessRules().getBusinessRuleInstances() != null))) {
-      EList<BusinessRuleInstance> _businessRuleInstances = parameter.getBusinessRules().getBusinessRuleInstances();
-      for (final BusinessRuleInstance businessRuleInstance : _businessRuleInstances) {
-        boolean _contains_1 = businessRuleInstance.getBusinessRule().getAttributes().contains(parameter.getType());
-        boolean _not_1 = (!_contains_1);
-        if (_not_1) {
-          String _typeNames_1 = CqrsDslValidator.typeNames(CqrsDslValidator.types(businessRuleInstance.getBusinessRule().getAttributes()));
-          String _plus_2 = ("The input type of the business rule (" + _typeNames_1);
-          String _plus_3 = (_plus_2 + 
-            ") does not match the parameter type");
-          this.error(_plus_3, businessRuleInstance, 
-            CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
             CqrsDslValidator.PARAMETER_CONSTRAINT_WRONG_TARGET_TYPE);
         }
       }

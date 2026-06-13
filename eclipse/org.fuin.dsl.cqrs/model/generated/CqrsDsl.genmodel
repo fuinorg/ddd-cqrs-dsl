@@ -96,7 +96,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//BusinessRule/doc"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//BusinessRule/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/exception"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/attributes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/consistency"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Annotation">
