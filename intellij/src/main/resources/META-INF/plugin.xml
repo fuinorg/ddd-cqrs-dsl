@@ -3,19 +3,8 @@
     <name>CQRS DSL</name>
     <vendor email="info@fuin.org" url="https://www.fuin.org">fuin.org</vendor>
 
-    <description><![CDATA[
-        Editor support for the DDD/CQRS DSL (<code>*.cqrs</code> files): syntax highlighting and
-        code completion for contexts, namespaces, value-objects, entities, aggregates, events,
-        commands, exceptions and more.
-        <ul>
-            <li>Syntax highlighting (keywords, strings, numbers, comments, doc comments).</li>
-            <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
-            <li>Structure view of the domain model.</li>
-            <li>Resolution of remote references via a <code>.remote-scope.json</code> catalog,
-                interoperable with the Eclipse plugin's <code>.remote-scope-cache</code>.</li>
-        </ul>
-        Licensed under LGPL v3.
-    ]]></description>
+    <!-- The <description> and <change-notes> are injected at build time from build.gradle
+         (pluginConfiguration) so the same text also feeds the custom repository's updatePlugins.xml. -->
 
     <depends>com.intellij.modules.platform</depends>
 

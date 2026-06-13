@@ -10,15 +10,27 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import org.fuin.dsl.cqrs.intellij.CqrsIcons;
 import org.fuin.dsl.cqrs.intellij.CqrsLanguage;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateId;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEnumObject;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
+import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,11 +58,42 @@ public final class CqrsCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
-                        for (String keyword : keywordsFor(parameters.getPosition())) {
+                        PsiElement position = parameters.getPosition();
+                        for (String keyword : keywordsFor(position)) {
                             result.addElement(LookupElementBuilder.create(keyword).bold());
+                        }
+                        // At the start of a new attribute or parameter the half-typed identifier is
+                        // not yet parsed as a type_ref, so the reference's getVariants() never runs.
+                        // Offer the visible type declarations here so types show up alongside keywords.
+                        if (allowsTypeRef(position)) {
+                            addTypeVariants(position, result);
                         }
                     }
                 });
+    }
+
+    /** Whether a {@code type_ref} (attribute/parameter type) may legally begin at the caret. */
+    private static boolean allowsTypeRef(PsiElement position) {
+        return PsiTreeUtil.getParentOfType(position,
+                CqrsConstructorDef.class, CqrsMethodDef.class,
+                CqrsValueObject.class, CqrsEntityId.class, CqrsAggregateId.class,
+                CqrsEnumObject.class, CqrsEntityDef.class, CqrsAggregateDef.class,
+                CqrsConstraintDef.class, CqrsAnnotationDef.class, CqrsExceptionDef.class,
+                CqrsEventDef.class, CqrsCommandDef.class) != null;
+    }
+
+    /** Adds every visible named declaration as a type candidate (mirrors {@code CqrsReference.getVariants}). */
+    private static void addTypeVariants(PsiElement position, @NotNull CompletionResultSet result) {
+        Set<String> seen = new HashSet<>();
+        for (CqrsNamedElement decl : CqrsResolveUtil.visibleDeclarations(position)) {
+            String name = decl.getName();
+            if (name == null || !seen.add(name)) {
+                continue;
+            }
+            result.addElement(LookupElementBuilder.create(name)
+                    .withIcon(CqrsIcons.FILE)
+                    .withTypeText(CqrsResolveUtil.getQualifiedName(decl), true));
+        }
     }
 
     private static Set<String> keywordsFor(PsiElement position) {

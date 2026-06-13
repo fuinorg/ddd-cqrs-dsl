@@ -98,8 +98,31 @@ tasks.named('compileJava') {
     dependsOn generateCqrsLexer, generateCqrsParser
 }
 
+// Single source of truth for the marketplace texts. These feed both the patched plugin.xml
+// (Overview / What's new for an installed plugin) and the custom repository's updatePlugins.xml
+// (Overview / What's new shown while browsing the repository before install).
+ext.pluginDescription = '''\
+Editor support for the DDD/CQRS DSL (<code>*.cqrs</code> files): syntax highlighting and
+code completion for contexts, namespaces, value-objects, entities, aggregates, events,
+commands, exceptions and more.
+<ul>
+    <li>Syntax highlighting (keywords, strings, numbers, comments, doc comments).</li>
+    <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
+    <li>Structure view of the domain model.</li>
+    <li>Resolution of remote references via a <code>.remote-scope.json</code> catalog,
+        interoperable with the Eclipse plugin's <code>.remote-scope-cache</code>.</li>
+</ul>
+Licensed under LGPL v3.'''
+
+ext.pluginChangeNotes = '''\
+<ul>
+    <li><b>1.0.0</b> &ndash; Initial release.</li>
+</ul>'''
+
 intellijPlatform {
     pluginConfiguration {
+        description = project.ext.pluginDescription
+        changeNotes = project.ext.pluginChangeNotes
         ideaVersion {
             sinceBuild = providers.gradleProperty('pluginSinceBuild')
             untilBuild = provider { null }
@@ -139,11 +162,14 @@ String artifactoryPath() {
     return (System.getenv('ARTIFACTORY_PATH') ?: findProperty('artifactoryPath') ?: 'cqrs-dsl-intellij').toString()
 }
 
-String updatePluginsXml(String id, String name, String version, String sinceBuild, String downloadUrl) {
+String updatePluginsXml(String id, String name, String version, String sinceBuild, String downloadUrl,
+                        String description, String changeNotes) {
     return """<?xml version="1.0" encoding="UTF-8"?>
 <plugins>
   <plugin id="${id}" url="${downloadUrl}" version="${version}">
     <name>${name}</name>
+    <description><![CDATA[${description}]]></description>
+    <change-notes><![CDATA[${changeNotes}]]></change-notes>
     <idea-version since-build="${sinceBuild}"/>
   </plugin>
 </plugins>
@@ -180,7 +206,8 @@ def generateUpdatePlugins = tasks.register('generateUpdatePlugins') {
         def downloadUrl = "${artifactoryBase()}/${artifactoryPath()}/latest/${zipName}"
         def target = outFile.get().asFile
         target.parentFile.mkdirs()
-        target.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl)
+        target.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl,
+                project.ext.pluginDescription, project.ext.pluginChangeNotes)
         logger.lifecycle("Wrote ${target} (download URL: ${downloadUrl})")
     }
 }
@@ -214,7 +241,8 @@ tasks.register('publishToArtifactory') {
             def downloadUrl = "${destBase}/${zipName}"
             def xmlFile = stageDir.get().file("${destPrefix}/updatePlugins.xml").asFile
             xmlFile.parentFile.mkdirs()
-            xmlFile.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl)
+            xmlFile.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl,
+                    project.ext.pluginDescription, project.ext.pluginChangeNotes)
 
             logger.lifecycle("Publishing ${zipName} to ${destBase}")
             httpPut(downloadUrl, zip, user, token)
