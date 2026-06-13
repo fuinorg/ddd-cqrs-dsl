@@ -65,7 +65,7 @@ class RemoteScopeResolutionTest {
 		try {
 			val port = server.address.port
 			Files.writeString(root.resolve(".remote-scope.json"), '''
-				{ "com.acme.sales": { "com.acme.billing": "http://127.0.0.1:«port»/billing.cqrs" } }
+				[ { "com.acme.billing": "http://127.0.0.1:«port»/billing.cqrs" } ]
 			''')
 
 			val model = parse(root, LOCAL_SALES)
@@ -86,13 +86,13 @@ class RemoteScopeResolutionTest {
 		val root = Files.createTempDirectory("remote-scope-offline")
 		// Unreachable URL: it must never be contacted because the cache already has the model.
 		Files.writeString(root.resolve(".remote-scope.json"), '''
-			{ "com.acme.sales": { "com.acme.billing": "http://127.0.0.1:1/billing.cqrs" } }
+			[ { "com.acme.billing": "http://127.0.0.1:1/billing.cqrs" } ]
 		''')
 		val cacheDir = Files.createDirectory(root.resolve(".remote-scope-cache"))
 		Files.writeString(cacheDir.resolve("billing-cached.cqrs"), REMOTE_BILLING.toString)
 		Files.writeString(cacheDir.resolve("index.json"), '''
 			{ "entries": [
-				{ "context": "com.acme.sales", "namespace": "com.acme.billing",
+				{ "namespace": "com.acme.billing",
 				  "url": "http://127.0.0.1:1/billing.cqrs", "file": "billing-cached.cqrs" }
 			] }
 		''')
@@ -108,6 +108,17 @@ class RemoteScopeResolutionTest {
 		EcoreUtil.resolveAll(model.eResource)
 		Assertions.assertFalse(model.eResource.errors.empty,
 			"reference to remote type must stay unresolved without a catalog")
+	}
+
+	/** An empty (or otherwise unparseable) catalog must degrade gracefully instead of breaking editing. */
+	@Test
+	def void fallsBackWithEmptyCatalog() {
+		val root = Files.createTempDirectory("remote-scope-empty")
+		Files.writeString(root.resolve(".remote-scope.json"), "")
+		val model = parse(root, LOCAL_SALES)
+		EcoreUtil.resolveAll(model.eResource)
+		Assertions.assertFalse(model.eResource.errors.empty,
+			"reference to remote type must stay unresolved when the catalog cannot be parsed")
 	}
 
 	private def DomainModel parse(Path root, CharSequence text) {

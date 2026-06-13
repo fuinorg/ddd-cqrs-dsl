@@ -118,9 +118,9 @@ public class RemoteScopeResolutionTest {
         final int port = server.getAddress().getPort();
         Path _resolve = root.resolve(".remote-scope.json");
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("{ \"com.acme.sales\": { \"com.acme.billing\": \"http://127.0.0.1:");
+        _builder.append("[ { \"com.acme.billing\": \"http://127.0.0.1:");
         _builder.append(port);
-        _builder.append("/billing.cqrs\" } }");
+        _builder.append("/billing.cqrs\" } ]");
         _builder.newLineIfNotEmpty();
         Files.writeString(_resolve, _builder);
         final DomainModel model = this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES);
@@ -149,7 +149,7 @@ public class RemoteScopeResolutionTest {
       final Path root = Files.createTempDirectory("remote-scope-offline");
       Path _resolve = root.resolve(".remote-scope.json");
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("{ \"com.acme.sales\": { \"com.acme.billing\": \"http://127.0.0.1:1/billing.cqrs\" } }");
+      _builder.append("[ { \"com.acme.billing\": \"http://127.0.0.1:1/billing.cqrs\" } ]");
       _builder.newLine();
       Files.writeString(_resolve, _builder);
       final Path cacheDir = Files.createDirectory(root.resolve(".remote-scope-cache"));
@@ -159,7 +159,7 @@ public class RemoteScopeResolutionTest {
       _builder_1.append("{ \"entries\": [");
       _builder_1.newLine();
       _builder_1.append("\t");
-      _builder_1.append("{ \"context\": \"com.acme.sales\", \"namespace\": \"com.acme.billing\",");
+      _builder_1.append("{ \"namespace\": \"com.acme.billing\",");
       _builder_1.newLine();
       _builder_1.append("\t  ");
       _builder_1.append("\"url\": \"http://127.0.0.1:1/billing.cqrs\", \"file\": \"billing-cached.cqrs\" }");
@@ -184,6 +184,23 @@ public class RemoteScopeResolutionTest {
       EcoreUtil.resolveAll(model.eResource());
       Assertions.assertFalse(model.eResource().getErrors().isEmpty(), 
         "reference to remote type must stay unresolved without a catalog");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * An empty (or otherwise unparseable) catalog must degrade gracefully instead of breaking editing.
+   */
+  @Test
+  public void fallsBackWithEmptyCatalog() {
+    try {
+      final Path root = Files.createTempDirectory("remote-scope-empty");
+      Files.writeString(root.resolve(".remote-scope.json"), "");
+      final DomainModel model = this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES);
+      EcoreUtil.resolveAll(model.eResource());
+      Assertions.assertFalse(model.eResource().getErrors().isEmpty(), 
+        "reference to remote type must stay unresolved when the catalog cannot be parsed");
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }

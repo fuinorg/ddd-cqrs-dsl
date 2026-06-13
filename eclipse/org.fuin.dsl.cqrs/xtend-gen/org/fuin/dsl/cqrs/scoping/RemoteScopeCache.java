@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
@@ -46,17 +47,14 @@ import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 public class RemoteScopeCache {
   @Data
   public static class CacheEntry {
-    private final String context;
-
     private final String namespace;
 
     private final String url;
 
     private final String file;
 
-    public CacheEntry(final String context, final String namespace, final String url, final String file) {
+    public CacheEntry(final String namespace, final String url, final String file) {
       super();
-      this.context = context;
       this.namespace = namespace;
       this.url = url;
       this.file = file;
@@ -67,7 +65,6 @@ public class RemoteScopeCache {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((this.context== null) ? 0 : this.context.hashCode());
       result = prime * result + ((this.namespace== null) ? 0 : this.namespace.hashCode());
       result = prime * result + ((this.url== null) ? 0 : this.url.hashCode());
       return prime * result + ((this.file== null) ? 0 : this.file.hashCode());
@@ -83,11 +80,6 @@ public class RemoteScopeCache {
       if (getClass() != obj.getClass())
         return false;
       RemoteScopeCache.CacheEntry other = (RemoteScopeCache.CacheEntry) obj;
-      if (this.context == null) {
-        if (other.context != null)
-          return false;
-      } else if (!this.context.equals(other.context))
-        return false;
       if (this.namespace == null) {
         if (other.namespace != null)
           return false;
@@ -110,16 +102,10 @@ public class RemoteScopeCache {
     @Pure
     public String toString() {
       ToStringBuilder b = new ToStringBuilder(this);
-      b.add("context", this.context);
       b.add("namespace", this.namespace);
       b.add("url", this.url);
       b.add("file", this.file);
       return b.toString();
-    }
-
-    @Pure
-    public String getContext() {
-      return this.context;
     }
 
     @Pure
@@ -148,11 +134,11 @@ public class RemoteScopeCache {
   private final Map<File, Map<String, RemoteScopeCache.CacheEntry>> indexByDir = CollectionLiterals.<File, Map<String, RemoteScopeCache.CacheEntry>>newHashMap();
 
   /**
-   * Returns the local cache URI of the remote model configured for the (context, namespace) pair,
-   * downloading and caching it on a miss, or <code>null</code> when nothing is configured (so the
-   * caller falls back to the standard mechanism).
+   * Returns the local cache URI of the remote model that provides the given namespace, downloading
+   * and caching it on a miss, or <code>null</code> when nothing is configured (so the caller falls
+   * back to the standard mechanism).
    */
-  public URI getCachedModelUri(final ResourceSet rs, final URI modelUri, final String context, final String namespace, final RemoteScopeCatalog catalog) {
+  public URI getCachedModelUri(final ResourceSet rs, final URI modelUri, final String namespace, final RemoteScopeCatalog catalog) {
     final URI root = catalog.rootDir(rs, modelUri);
     if ((root == null)) {
       return null;
@@ -162,28 +148,26 @@ public class RemoteScopeCache {
       return null;
     }
     final String ns = RemoteScopeCatalog.stripWildcard(namespace);
-    final String key = ((context + " ") + ns);
-    final Map<String, RemoteScopeCache.CacheEntry> index = this.indexFor(cacheDir);
-    final RemoteScopeCache.CacheEntry existing = index.get(key);
-    if ((existing != null)) {
-      final File cached = new File(cacheDir, existing.file);
-      boolean _exists = cached.exists();
-      if (_exists) {
-        return URI.createFileURI(cached.getAbsolutePath());
-      }
-    }
-    final String url = catalog.lookupUrl(rs, modelUri, context, namespace);
+    final String url = catalog.lookupUrl(rs, modelUri, namespace);
     boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(url);
     if (_isNullOrEmpty) {
       return null;
+    }
+    final Map<String, RemoteScopeCache.CacheEntry> index = this.indexFor(cacheDir);
+    final RemoteScopeCache.CacheEntry existing = index.get(ns);
+    if (((existing != null) && Objects.equals(existing.url, url))) {
+      final File cached = new File(cacheDir, existing.file);
+      if ((cached.exists() && this.upToDate(url, cached))) {
+        return URI.createFileURI(cached.getAbsolutePath());
+      }
     }
     String _sha1 = this.sha1(url);
     String _plus = ((ns + "-") + _sha1);
     final String fileName = (_plus + ".cqrs");
     final File target = new File(cacheDir, fileName);
     this.download(url, target);
-    RemoteScopeCache.CacheEntry _cacheEntry = new RemoteScopeCache.CacheEntry(context, ns, url, fileName);
-    index.put(key, _cacheEntry);
+    RemoteScopeCache.CacheEntry _cacheEntry = new RemoteScopeCache.CacheEntry(ns, url, fileName);
+    index.put(ns, _cacheEntry);
     this.persist(cacheDir, index);
     return URI.createFileURI(target.getAbsolutePath());
   }
@@ -209,12 +193,11 @@ public class RemoteScopeCache {
             for (final JsonElement element : entries) {
               {
                 final JsonObject obj = element.getAsJsonObject();
-                String _asString = obj.get("context").getAsString();
-                String _asString_1 = obj.get("namespace").getAsString();
-                String _asString_2 = obj.get("url").getAsString();
-                String _asString_3 = obj.get("file").getAsString();
-                final RemoteScopeCache.CacheEntry entry = new RemoteScopeCache.CacheEntry(_asString, _asString_1, _asString_2, _asString_3);
-                map.put(((entry.context + " ") + entry.namespace), entry);
+                String _asString = obj.get("namespace").getAsString();
+                String _asString_1 = obj.get("url").getAsString();
+                String _asString_2 = obj.get("file").getAsString();
+                final RemoteScopeCache.CacheEntry entry = new RemoteScopeCache.CacheEntry(_asString, _asString_1, _asString_2);
+                map.put(entry.namespace, entry);
               }
             }
           }
@@ -236,7 +219,6 @@ public class RemoteScopeCache {
       for (final RemoteScopeCache.CacheEntry entry : _values) {
         {
           final JsonObject obj = new JsonObject();
-          obj.addProperty("context", entry.context);
           obj.addProperty("namespace", entry.namespace);
           obj.addProperty("url", entry.url);
           obj.addProperty("file", entry.file);
@@ -256,6 +238,38 @@ public class RemoteScopeCache {
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * A cached file is current unless its source is a local <code>file:</code> that has been modified
+   * more recently. Non-file sources (e.g. HTTP) are always treated as up to date.
+   */
+  private boolean upToDate(final String url, final File cached) {
+    final File source = this.sourceFile(url);
+    return ((source == null) || (source.lastModified() <= cached.lastModified()));
+  }
+
+  /**
+   * Returns the local source file for a <code>file:</code> URL, or <code>null</code> for other schemes.
+   */
+  private File sourceFile(final String url) {
+    try {
+      final java.net.URI uri = new java.net.URI(url);
+      File _xifexpression = null;
+      boolean _equals = "file".equals(uri.getScheme());
+      if (_equals) {
+        _xifexpression = new File(uri);
+      } else {
+        _xifexpression = null;
+      }
+      return _xifexpression;
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        return null;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
     }
   }
 

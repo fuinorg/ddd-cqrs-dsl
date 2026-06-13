@@ -41,34 +41,31 @@ class RemoteScopeCache {
 	val Map<File, Map<String, CacheEntry>> indexByDir = newHashMap
 
 	/**
-	 * Returns the local cache URI of the remote model configured for the (context, namespace) pair,
-	 * downloading and caching it on a miss, or <code>null</code> when nothing is configured (so the
-	 * caller falls back to the standard mechanism).
+	 * Returns the local cache URI of the remote model that provides the given namespace, downloading
+	 * and caching it on a miss, or <code>null</code> when nothing is configured (so the caller falls
+	 * back to the standard mechanism).
 	 */
-	def URI getCachedModelUri(ResourceSet rs, URI modelUri, String context, String namespace,
-		RemoteScopeCatalog catalog) {
+	def URI getCachedModelUri(ResourceSet rs, URI modelUri, String namespace, RemoteScopeCatalog catalog) {
 		val root = catalog.rootDir(rs, modelUri)
 		if(root === null) return null
 		val cacheDir = toFile(rs, root.appendSegment(CACHE_DIR_NAME))
 		if(cacheDir === null) return null
 
 		val ns = RemoteScopeCatalog.stripWildcard(namespace)
-		val key = context + " " + ns
-		val index = indexFor(cacheDir)
-
-		val existing = index.get(key)
-		if (existing !== null) {
-			val cached = new File(cacheDir, existing.file)
-			if(cached.exists) return URI.createFileURI(cached.absolutePath)
-		}
-
-		val url = catalog.lookupUrl(rs, modelUri, context, namespace)
+		val url = catalog.lookupUrl(rs, modelUri, namespace)
 		if(url.nullOrEmpty) return null
+
+		val index = indexFor(cacheDir)
+		val existing = index.get(ns)
+		if (existing !== null && existing.url == url) {
+			val cached = new File(cacheDir, existing.file)
+			if(cached.exists && upToDate(url, cached)) return URI.createFileURI(cached.absolutePath)
+		}
 
 		val fileName = ns + "-" + sha1(url) + ".cqrs"
 		val target = new File(cacheDir, fileName)
 		download(url, target)
-		index.put(key, new CacheEntry(context, ns, url, fileName))
+		index.put(ns, new CacheEntry(ns, url, fileName))
 		persist(cacheDir, index)
 		return URI.createFileURI(target.absolutePath)
 	}
@@ -87,9 +84,9 @@ class RemoteScopeCache {
 				if (entries !== null) {
 					for (element : entries) {
 						val obj = element.asJsonObject
-						val entry = new CacheEntry(obj.get("context").asString, obj.get("namespace").asString,
-							obj.get("url").asString, obj.get("file").asString)
-						map.put(entry.context + " " + entry.namespace, entry)
+						val entry = new CacheEntry(obj.get("namespace").asString, obj.get("url").asString,
+							obj.get("file").asString)
+						map.put(entry.namespace, entry)
 					}
 				}
 			} finally {
@@ -104,7 +101,6 @@ class RemoteScopeCache {
 		val array = new JsonArray
 		for (entry : index.values) {
 			val obj = new JsonObject
-			obj.addProperty("context", entry.context)
 			obj.addProperty("namespace", entry.namespace)
 			obj.addProperty("url", entry.url)
 			obj.addProperty("file", entry.file)
@@ -118,6 +114,25 @@ class RemoteScopeCache {
 			new GsonBuilder().setPrettyPrinting.create.toJson(root, writer)
 		} finally {
 			writer.close
+		}
+	}
+
+	/**
+	 * A cached file is current unless its source is a local <code>file:</code> that has been modified
+	 * more recently. Non-file sources (e.g. HTTP) are always treated as up to date.
+	 */
+	private def boolean upToDate(String url, File cached) {
+		val source = sourceFile(url)
+		return source === null || source.lastModified <= cached.lastModified
+	}
+
+	/** Returns the local source file for a <code>file:</code> URL, or <code>null</code> for other schemes. */
+	private def File sourceFile(String url) {
+		try {
+			val uri = new java.net.URI(url)
+			return if("file".equals(uri.scheme)) new File(uri) else null
+		} catch (Exception ex) {
+			return null
 		}
 	}
 
@@ -146,7 +161,6 @@ class RemoteScopeCache {
 
 	@Data
 	static class CacheEntry {
-		String context
 		String namespace
 		String url
 		String file

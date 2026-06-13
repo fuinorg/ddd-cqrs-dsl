@@ -23,4 +23,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.fuin.dsl.cqrs.ui.quickfix,
  org.fuin.dsl.cqrs.ui.contentassist,
  org.fuin.dsl.cqrs.ui.internal
-Bundle-Activator: org.fuin.dsl.cqrs.ui.internal.CqrsActivator
+Bundle-Activator: org.fuin.dsl.cqrs.ui.internal.CqrsDslUiActivator

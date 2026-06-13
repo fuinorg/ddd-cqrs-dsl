@@ -45,8 +45,8 @@ class CqrsDslGlobalScopeProvider extends DefaultGlobalScopeProvider {
 				for (context : model.contexts) {
 					for (namespace : context.namespaces) {
 						for (^import : namespace.imports) {
-							val uri = cache.getCachedModelUri(rs, resource.URI, context.name,
-								^import.importedNamespace, catalog)
+							val uri = cache.getCachedModelUri(rs, resource.URI, ^import.importedNamespace,
+								catalog)
 							if(uri !== null) remoteUris.add(uri)
 						}
 					}

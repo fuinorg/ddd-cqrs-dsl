@@ -42,17 +42,17 @@ the provisioned Eclipse from the headless build (`.eclipse-build-cache/eclipse`)
 
 > After regenerating, the Xtext generator may rewrite tracked `src-gen`/`plugin.xml`/`MANIFEST.MF`
 > files — review the diff and commit it. It manages `Require-Bundle`; manual `Import-Package` entries
-> (e.g. `com.google.gson`, see [below](#resolving-references-against-remote-http-only-models)) are
+> (e.g. `com.google.gson`, see [below](#resolving-references-against-remote-url-addressed-models)) are
 > left untouched.
 
 ---
 
-## Resolving references against remote (HTTP-only) models
+## Resolving references against remote (URL-addressed) models
 
 By default Xtext resolves cross-references (`[Type|FQN]`, `[Exception|FQN]`, …) only against models
-that live in the workspace / on the local file system. `CqrsDslGlobalScopeProvider` extends that so a
-model can reference types defined in another `.cqrs` model that is **only available over HTTP** — for
-example a shared, centrally published model that is never checked out locally.
+that live in the workspace. `CqrsDslGlobalScopeProvider` extends that so a model can reference types
+defined in another `.cqrs` model that is addressed by **URL** — typically a shared, centrally published
+model fetched over `http(s):`, but any URL works, including a `file:` to a model outside the workspace.
 
 ### How it works
 
@@ -63,15 +63,16 @@ to scoping* — split across three classes in
 
 | Class | Responsibility |
 |-------|----------------|
-| `RemoteScopeCatalog`        | Reads the `.remote-scope.json` catalog and answers *(context, namespace) → URL*. |
+| `RemoteScopeCatalog`        | Reads the `.remote-scope.json` catalog and answers *namespace → URL*. |
 | `RemoteScopeCache`          | Downloads the remote `.cqrs`, caches it under `.remote-scope-cache/`, and serves it from disk on later runs. |
 | `CqrsDslGlobalScopeProvider`| The `IGlobalScopeProvider`. For every `import` it consults the catalog/cache and adds the remote model's elements to the global scope. |
 
-For each `import` in a model, the provider forms the key **(enclosing `context` name, imported
-namespace)**, looks it up in the catalog, loads the matching remote model (from the local cache, or
-downloading it once on a miss), and exposes its objects **by fully qualified name** on top of the
-normal local scope. Because the elements are added *directly* — not through the workspace index, which
-never contains an HTTP resource — resolution behaves identically in the **Eclipse editor** and in the
+For each `import` in a model, the provider takes the **imported namespace**, looks it up in the
+catalog, loads the matching remote model (from the local cache, or downloading it once on a miss), and
+exposes its objects **by fully qualified name** on top of the normal local scope. The catalog declares
+*where a namespace lives*, so the same entry serves every model that imports it — the importing context
+is irrelevant. Because the elements are added *directly* — not through the workspace index, which never
+contains a remote resource — resolution behaves identically in the **Eclipse editor** and in the
 **headless / standalone generator**. The provider is bound once in
 [`CqrsDslRuntimeModule`](org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/CqrsDslRuntimeModule.xtend), which both
 contexts share.
@@ -88,31 +89,32 @@ and degrades to the local scope, so editing and generation never break.
 **1. The catalog — `.remote-scope.json`**
 
 Place it in your project root (it is discovered by walking up the directory tree from the model being
-edited). It is a nested object *context → namespace → url*:
+edited). It is a JSON **array** of single-entry objects, each mapping a fully qualified namespace to
+the URL of the model that provides it:
 
 ```json
-{
-  "com.acme.sales": {
-    "com.acme.billing":  "http://models.acme.com/billing.cqrs",
-    "com.acme.shipping": "http://models.acme.com/shipping.cqrs"
-  },
-  "com.acme.support": {
-    "com.acme.billing":  "http://models.acme.com/billing.cqrs"
-  }
-}
+[
+  { "com.acme.billing":  "http://models.acme.com/billing.cqrs" },
+  { "com.acme.shipping": "http://models.acme.com/shipping.cqrs" }
+]
 ```
 
-- The **context** key is the bounded context that contains the `import` (the enclosing `context …`).
-- The **namespace** key is the imported namespace. A trailing `.*` is ignored, so `import a.b` and
-  `import a.b.*` map to the same entry.
-- The **value** is the URL of the remote `.cqrs` file (must end in `.cqrs`).
+- The **key** is the provided namespace — the fully qualified `context.namespace` exactly as it is
+  written in an `import`. It says *where that namespace lives*, independent of who imports it, so one
+  entry serves every importing model. A trailing `.*` is ignored, so `import a.b` and `import a.b.*`
+  match the entry `a.b`.
+- The **value** is the URL of the remote `.cqrs` file. `http(s):` and `file:` URLs are both supported.
+
+The catalog is re-read automatically when the file's modification time changes, so edits take effect on
+the next reconcile — **no Eclipse restart needed**. (Adding a catalog where none existed before is the
+one exception: a model that previously found no catalog still needs a restart.)
 
 **2. The cache — `.remote-scope-cache/`**
 
-Created automatically next to `.remote-scope.json`. On first use its `index.json` is read into memory
-for fast key lookups; downloaded models are stored as `<namespace>-<sha1(url)>.cqrs`. After the first
-fetch everything is served from disk, so editing keeps working **offline**. To force a refresh, delete
-the cached file (or the whole directory).
+Created automatically next to `.remote-scope.json`. On first use its `index.json` (entries of
+`{ namespace, url, file }`) is read into memory for fast lookups; downloaded models are stored as
+`<namespace>-<sha1(url)>.cqrs`. After the first fetch everything is served from disk, so editing keeps
+working **offline**.
 
 ```
 <project root>/
@@ -121,6 +123,11 @@ the cached file (or the whole directory).
     ├── index.json
     └── com.acme.billing-3f9a1c…​.cqrs
 ```
+
+A cached model is re-downloaded automatically when it goes stale: when the catalog repoints the
+namespace to a **different URL**, or — for a `file:` source — when the **source file is newer** than the
+cached copy. For an unchanged `http(s):` URL whose remote content changed, delete the cached file (or
+the whole directory) to force a refresh.
 
 **3. Optional system property**
 
@@ -143,7 +150,7 @@ context com.acme {
 `.remote-scope.json` in the local project root:
 
 ```json
-{ "com.acme.sales": { "com.acme.billing": "http://models.acme.com/billing.cqrs" } }
+[ { "com.acme.billing": "http://models.acme.com/billing.cqrs" } ]
 ```
 
 Local model that references the remote `Money` type:
@@ -161,9 +168,9 @@ context com.acme.sales {
 
 `Money`'s fully qualified name is `com.acme.billing.Money` (context `com.acme` + namespace `billing` +
 `Money`). The `import com.acme.billing.*` therefore makes it visible as the simple name `Money`, and
-the catalog entry for *(context `com.acme.sales`, namespace `com.acme.billing`)* tells the provider
-where to download the model defining it. The cross-reference resolves exactly as if `Money` were a
-local type — `F3` navigates into the cached copy, and content assist proposes it.
+the catalog entry for the namespace `com.acme.billing` tells the provider where to download the model
+defining it. The cross-reference resolves exactly as if `Money` were a local type — `F3` navigates into
+the cached copy, and content assist proposes it.
 
 > The import path must match the remote type's FQN prefix, just as it would for a local model. The
 > provider only handles *loading*; name resolution stays standard Xtext.
