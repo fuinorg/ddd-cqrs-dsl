@@ -1,0 +1,26 @@
+// UI metadata can be attached to a type and overridden per attribute.
+//   slabel  - short label
+//   label   - long label
+//   tooltip - hover text
+//   prompt  - input hint
+//   examples - sample values
+// A trailing { ... } block after an attribute overrides the metadata for it.
+context meta {
+	namespace m {
+		type String
+
+		value-object FullName {
+			slabel "Name"
+			label "Full name"
+			tooltip "A person's full name"
+			examples "Peter Parker" "Mary Jane"
+
+			String first {
+				label "First name"
+				prompt "Enter your first name"
+				examples "Peter"
+			}
+			String last
+		}
+	}
+}

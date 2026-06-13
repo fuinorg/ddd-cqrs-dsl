@@ -1,0 +1,23 @@
+// A constructor creates an aggregate/entity. It may declare parameters, list
+// the events it 'fires', and declare those events inline. Parameters can be
+// 'nullable'.
+context ctor {
+	namespace m {
+		type String
+		type Integer
+
+		aggregate-id ItemId identifies Item {}
+		aggregate Item identifier ItemId {
+
+			constructor create fires ItemCreatedEvent {
+				String name
+				nullable Integer quantity
+
+				event ItemCreatedEvent {
+					String name
+					message "Item ${name} created"
+				}
+			}
+		}
+	}
+}

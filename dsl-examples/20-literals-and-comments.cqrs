@@ -1,0 +1,27 @@
+// Comment styles and literal values.
+//   // line comment
+//   /* block comment */
+//   /** documentation comment -- attaches to the element that follows */
+// Literals are strings, numbers, booleans (true/false) and null. They appear in
+// 'examples' and as constraint/business-rule parameters.
+context literals {
+	namespace m {
+		type String
+		type Integer
+
+		/** A documentation comment, shown by the editor for this constraint. */
+		constraint Length input String {
+			Integer min
+			Integer max
+			message "Bad length"
+		}
+
+		/* a block comment */
+		value-object Sample base String {
+			// number literals as parameters; mixed literals as examples
+			String value invariants Length(1, 50) {
+				examples "abc" 123 true null
+			}
+		}
+	}
+}

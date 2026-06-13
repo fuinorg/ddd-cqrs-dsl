@@ -1,0 +1,24 @@
+context x {
+	namespace types {
+		type String
+		type Integer
+	}
+
+	namespace services {
+		import x.types.*
+
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
+		}
+
+		service ServiceA {
+		}
+
+		service ServiceB {
+			method find {
+				Integer a
+				returns String
+			}
+		}
+	}
+}

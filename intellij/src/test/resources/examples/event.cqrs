@@ -1,0 +1,57 @@
+context x {
+	namespace types {
+		type UUID
+		type String
+		type Integer
+	}
+
+	namespace ev {
+		import x.types.*
+
+		aggregate-id CustomerId identifies Customer base UUID {
+			examples "42705de0-91a1-11e4-b4a9-0800200c9a6"
+		}
+
+		aggregate Customer identifier CustomerId {
+			constructor create fires EventA, EventB, EventC {
+				event EventA {
+					message "Event A [${#entityIdPath}]"
+				}
+			}
+
+			event EventB {
+				String a {
+					examples "Abc"
+				}
+				message "Event B: ${a} [${#entityIdPath}]"
+			}
+
+			event EventC {
+				String a {
+					examples "Abc"
+				}
+				Integer b {
+					examples 123
+				}
+				message "Event C: ${a} / ${b} [${#entityIdPath}]"
+			}
+		}
+
+		event EventD {
+			message "Something interesting happened!"
+		}
+
+		value-object MyString base String {
+			examples "abc" "def"
+			String value
+		}
+
+		event EventE {
+			MyString a
+			MyString b {
+				examples "123" "456"
+			}
+			message "Something interesting happened!"
+		}
+	}
+}

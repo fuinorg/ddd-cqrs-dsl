@@ -1,0 +1,18 @@
+// An exception describes an error condition. A 'message' is mandatory; an
+// optional client id ('cid') and attributes can be added. Attributes can be
+// referenced in the message with ${...}.
+context errors {
+	namespace m {
+		type String
+		type Integer
+
+		exception NotFoundException {
+			message "Entity not found"
+		}
+
+		exception LimitExceededException cid 1001 {
+			Integer limit
+			message "Limit ${limit} exceeded"
+		}
+	}
+}

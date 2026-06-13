@@ -1,0 +1,225 @@
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+import org.jetbrains.grammarkit.tasks.GenerateParserTask
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij.platform' version '2.16.0'
+    id 'org.jetbrains.grammarkit' version '2022.3.2.2'
+}
+
+group = providers.gradleProperty('pluginGroup').get()
+version = providers.gradleProperty('pluginVersion').get()
+
+repositories {
+    mavenCentral()
+    // Grammar-Kit generator tool + its IntelliJ-core (223) dependencies, including the
+    // transitive ai.grazie.* artifacts pulled in by the 223 platform used for code generation.
+    maven { url = 'https://cache-redirector.jetbrains.com/intellij-dependencies' }
+    maven { url = 'https://cache-redirector.jetbrains.com/packages.jetbrains.team/maven/p/grazi/grazie-platform-public' }
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+
+dependencies {
+    intellijPlatform {
+        // Since 2025.3 (253) the separate Community artifact (ideaIC) is no longer published;
+        // 2026.1 uses the unified IntelliJ IDEA distribution.
+        intellijIdea providers.gradleProperty('platformVersion')
+        testFramework TestFrameworkType.Platform.INSTANCE
+    }
+    // Gson is bundled with the IntelliJ Platform, so it is provided at runtime; compile against it only.
+    compileOnly 'com.google.code.gson:gson:2.11.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.google.code.gson:gson:2.11.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Grammar-Kit: generate the lexer (JFlex) and the parser/PSI (BNF).
+// Both are emitted under build/generated/sources/grammarkit, which is added to
+// the main source set below.
+// ---------------------------------------------------------------------------
+// The Grammar-Kit generator's LightPsi bootstrap needs a 2022.3 (build 223) IntelliJ core on its
+// classpath (it is not self-contained). Rather than pull the whole platform via intellijRelease
+// (which drags in unresolvable transitive deps), add just the minimal core artifact. This only
+// affects code generation — the compiled plugin targets 2026.1.
+dependencies {
+    grammarKitClassPath 'org.jetbrains:grammar-kit:2022.3.2'
+    grammarKitClassPath 'org.jetbrains.intellij.deps.jflex:jflex:1.9.2'
+    grammarKitClassPath 'com.jetbrains.intellij.platform:core-impl:223.8836.41'
+    grammarKitClassPath 'com.jetbrains.intellij.platform:lang:223.8836.41'
+    grammarKitClassPath 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4'
+    // Grammar-Kit reads PSI method signatures via ASM; without it the reflection fallback throws
+    // a ClassCastException that aborts PSI-impl generation.
+    grammarKitClassPath 'org.jetbrains.intellij.deps:asm-all:9.2'
+}
+
+def generatedRoot = layout.buildDirectory.dir('generated/sources/grammarkit')
+
+// The 223 core predates JDK 25; pin the generation tasks to a Java 21 toolchain.
+def generatorLauncher = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(21)
+}
+
+def generateCqrsParser = tasks.register('generateCqrsParser', GenerateParserTask) {
+    sourceFile = file('src/main/grammar/CqrsDsl.bnf')
+    targetRootOutputDir = generatedRoot
+    pathToParser = 'org/fuin/dsl/cqrs/intellij/parser/CqrsParser.java'
+    pathToPsiRoot = 'org/fuin/dsl/cqrs/intellij/psi'
+    purgeOldFiles = true
+    javaLauncher = generatorLauncher
+}
+
+def generateCqrsLexer = tasks.register('generateCqrsLexer', GenerateLexerTask) {
+    sourceFile = file('src/main/grammar/CqrsDsl.flex')
+    // JFlex writes <class>.java directly into this directory, so it must match the package path.
+    targetOutputDir = generatedRoot.map { it.dir('org/fuin/dsl/cqrs/intellij/lexer') }
+    purgeOldFiles = true
+    javaLauncher = generatorLauncher
+    dependsOn generateCqrsParser
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir generatedRoot
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn generateCqrsLexer, generateCqrsParser
+}
+
+intellijPlatform {
+    pluginConfiguration {
+        ideaVersion {
+            sinceBuild = providers.gradleProperty('pluginSinceBuild')
+            untilBuild = provider { null }
+        }
+    }
+}
+
+tasks.named('test', Test) {
+    // The IntelliJ test fixtures expect the platform's own assertions enabled.
+    useJUnit()
+}
+
+// ---------------------------------------------------------------------------
+// Publishing to JFrog Artifactory as a custom IntelliJ plugin repository.
+//
+// The plugin zip and an `updatePlugins.xml` descriptor are uploaded to
+//   <ARTIFACTORY_BASE>/<ARTIFACTORY_PATH>/<version>/   (immutable, versioned) and
+//   <ARTIFACTORY_BASE>/<ARTIFACTORY_PATH>/latest/      (stable)
+// so users can register the repository URL
+//   <ARTIFACTORY_BASE>/<ARTIFACTORY_PATH>/latest/updatePlugins.xml
+// under Settings | Plugins | Manage Plugin Repositories and install directly.
+//
+// Defaults mirror the Eclipse plugin publishing; the same P2_USER / P2_TOKEN
+// credentials are reused. Override via env vars or -PartifactoryBase / -PartifactoryPath.
+// ---------------------------------------------------------------------------
+
+ext.pluginId = 'org.fuin.dsl.cqrs'
+ext.pluginDisplayName = 'CQRS DSL'
+
+String artifactoryBase() {
+    def value = System.getenv('ARTIFACTORY_BASE') ?: findProperty('artifactoryBase') ?:
+            'https://fuinorg.jfrog.io/artifactory/ddd-cqrs-dsl'
+    return value.toString().replaceAll('/+$', '')
+}
+
+String artifactoryPath() {
+    return (System.getenv('ARTIFACTORY_PATH') ?: findProperty('artifactoryPath') ?: 'cqrs-dsl-intellij').toString()
+}
+
+String updatePluginsXml(String id, String name, String version, String sinceBuild, String downloadUrl) {
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+  <plugin id="${id}" url="${downloadUrl}" version="${version}">
+    <name>${name}</name>
+    <idea-version since-build="${sinceBuild}"/>
+  </plugin>
+</plugins>
+"""
+}
+
+void httpPut(String urlStr, File file, String user, String token) {
+    def client = java.net.http.HttpClient.newHttpClient()
+    def auth = Base64.encoder.encodeToString("${user}:${token}".getBytes('UTF-8'))
+    def request = java.net.http.HttpRequest.newBuilder()
+            .uri(java.net.URI.create(urlStr))
+            .header('Authorization', "Basic ${auth}")
+            .PUT(java.net.http.HttpRequest.BodyPublishers.ofFile(file.toPath()))
+            .build()
+    def response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString())
+    int code = response.statusCode()
+    if (code < 200 || code >= 300) {
+        throw new GradleException("Upload failed (HTTP ${code}) for ${urlStr}\n${response.body()}")
+    }
+    logger.lifecycle("  ${urlStr} -> ${code}")
+}
+
+def generateUpdatePlugins = tasks.register('generateUpdatePlugins') {
+    description = 'Generates the updatePlugins.xml descriptor for the custom plugin repository.'
+    group = 'intellij platform'
+    dependsOn 'buildPlugin'
+    def outFile = layout.buildDirectory.file('distributions/updatePlugins.xml')
+    def sinceBuild = providers.gradleProperty('pluginSinceBuild')
+    def version = project.version.toString()
+    def zipFile = tasks.named('buildPlugin').flatMap { it.archiveFile }
+    outputs.file(outFile)
+    doLast {
+        def zipName = zipFile.get().asFile.name
+        def downloadUrl = "${artifactoryBase()}/${artifactoryPath()}/latest/${zipName}"
+        def target = outFile.get().asFile
+        target.parentFile.mkdirs()
+        target.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl)
+        logger.lifecycle("Wrote ${target} (download URL: ${downloadUrl})")
+    }
+}
+
+// Produce updatePlugins.xml whenever the plugin is assembled.
+tasks.named('buildPlugin') { finalizedBy generateUpdatePlugins }
+tasks.named('build') { dependsOn generateUpdatePlugins }
+
+tasks.register('publishToArtifactory') {
+    description = 'Uploads the plugin zip and updatePlugins.xml to JFrog Artifactory.'
+    group = 'publishing'
+    dependsOn 'buildPlugin'
+    def sinceBuild = providers.gradleProperty('pluginSinceBuild')
+    def version = project.version.toString()
+    def zipFile = tasks.named('buildPlugin').flatMap { it.archiveFile }
+    def stageDir = layout.buildDirectory.dir('artifactory')
+    doLast {
+        def user = System.getenv('P2_USER')
+        def token = System.getenv('P2_TOKEN')
+        if (!user || !token) {
+            throw new GradleException('Set P2_USER and P2_TOKEN (Artifactory credentials) in the environment.')
+        }
+        def base = artifactoryBase()
+        def path = artifactoryPath()
+        def zip = zipFile.get().asFile
+        def zipName = zip.name
+
+        // Upload an immutable versioned copy and refresh the stable 'latest' copy.
+        [version, 'latest'].each { destPrefix ->
+            def destBase = "${base}/${path}/${destPrefix}"
+            def downloadUrl = "${destBase}/${zipName}"
+            def xmlFile = stageDir.get().file("${destPrefix}/updatePlugins.xml").asFile
+            xmlFile.parentFile.mkdirs()
+            xmlFile.text = updatePluginsXml(pluginId, pluginDisplayName, version, sinceBuild.get(), downloadUrl)
+
+            logger.lifecycle("Publishing ${zipName} to ${destBase}")
+            httpPut(downloadUrl, zip, user, token)
+            httpPut("${destBase}/updatePlugins.xml", xmlFile, user, token)
+        }
+        logger.lifecycle("Done. Plugin repository URL: ${base}/${path}/latest/updatePlugins.xml")
+    }
+}

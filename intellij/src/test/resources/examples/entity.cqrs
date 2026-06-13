@@ -1,0 +1,48 @@
+context x {
+	namespace types {
+		type String
+		type Integer
+	}
+
+	namespace entities {
+		import x.types.*
+
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
+		}
+
+		aggregate-id AggregateXId identifies AggregateX {}
+		aggregate AggregateX identifier AggregateXId {}
+
+		entity-id EntityAId identifies EntityA {}
+		entity EntityA identifier EntityAId root AggregateX {
+		}
+
+		entity-id EntityBId identifies EntityB {}
+		entity EntityB identifier EntityBId root AggregateX {
+			String a
+			Integer b
+		}
+
+		entity-id EntityCId identifies EntityC {}
+		entity EntityC identifier EntityCId root AggregateX {
+			String a
+			Integer b
+
+			business-rule AnyConstraint exception AnyConstraintViolatedException {
+				consistency strong
+			}
+
+			constructor create business-rules AnyConstraint fires EntityCCreatedEvent {
+				String a
+				Integer b
+
+				event EntityCCreatedEvent {
+					String a
+					Integer b
+					message "Entity C was created: ${a} / ${b} [${#entityIdPath}]"
+				}
+			}
+		}
+	}
+}

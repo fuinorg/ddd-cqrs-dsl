@@ -1,0 +1,71 @@
+<idea-plugin>
+    <id>org.fuin.dsl.cqrs</id>
+    <name>CQRS DSL</name>
+    <vendor email="info@fuin.org" url="https://www.fuin.org">fuin.org</vendor>
+
+    <description><![CDATA[
+        Editor support for the DDD/CQRS DSL (<code>*.cqrs</code> files): syntax highlighting and
+        code completion for contexts, namespaces, value-objects, entities, aggregates, events,
+        commands, exceptions and more.
+        <ul>
+            <li>Syntax highlighting (keywords, strings, numbers, comments, doc comments).</li>
+            <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
+            <li>Structure view of the domain model.</li>
+            <li>Resolution of remote references via a <code>.remote-scope.json</code> catalog,
+                interoperable with the Eclipse plugin's <code>.remote-scope-cache</code>.</li>
+        </ul>
+        Licensed under LGPL v3.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="CQRS DSL"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsFileType"
+                fieldName="INSTANCE"
+                language="CqrsDsl"
+                extensions="cqrs"/>
+
+        <lang.parserDefinition
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.highlighting.CqrsSyntaxHighlighterFactory"/>
+
+        <colorSettingsPage
+                implementation="org.fuin.dsl.cqrs.intellij.highlighting.CqrsColorSettingsPage"/>
+
+        <lang.braceMatcher
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsBraceMatcher"/>
+
+        <lang.commenter
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsCommenter"/>
+
+        <completion.contributor
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.completion.CqrsCompletionContributor"/>
+
+        <lang.psiStructureViewFactory
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.structure.CqrsStructureViewFactory"/>
+
+        <lang.elementManipulator
+                forClass="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsTypeRefImpl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.reference.CqrsTypeRefManipulator"/>
+
+        <annotator
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsAnnotator"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener
+                class="org.fuin.dsl.cqrs.intellij.remote.CqrsRemoteScopeFileListener"
+                topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </applicationListeners>
+</idea-plugin>

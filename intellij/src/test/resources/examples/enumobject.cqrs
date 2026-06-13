@@ -1,0 +1,49 @@
+context x {
+	namespace types {
+		type String
+		type Integer
+		type Boolean
+	}
+
+	namespace enumobject {
+		import x.types.*
+
+		enum EnumA {
+			instances {
+				A
+				B
+				C
+			}
+		}
+
+		enum EnumB {
+			Integer id
+			String shortName
+			String longName
+
+			instances {
+				A(1, "a", "First")
+				B(2, "b", "Second")
+				C(3, "c", "Third")
+			}
+		}
+
+		enum EnumC {
+			instances {
+				A
+				deprecated B
+				C
+			}
+		}
+
+		enum EnumD base Integer {
+			Integer id
+
+			instances {
+				A(1)
+				B(2)
+				C(3)
+			}
+		}
+	}
+}

@@ -1,0 +1,15 @@
+// An entity has identity but lives inside an aggregate. 'root' points to the
+// owning aggregate; entity-id works like aggregate-id.
+context inventory {
+	namespace m {
+		type String
+
+		aggregate-id BasketId identifies Basket {}
+		aggregate Basket identifier BasketId {}
+
+		entity-id LineItemId identifies LineItem {}
+		entity LineItem identifier LineItemId root Basket {
+			String product
+		}
+	}
+}

@@ -1,0 +1,355 @@
+{
+  parserClass='org.fuin.dsl.cqrs.intellij.parser.CqrsParser'
+  parserUtilClass='org.fuin.dsl.cqrs.intellij.psi.CqrsParserUtil'
+
+  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+
+  psiClassPrefix='Cqrs'
+  psiImplClassSuffix='Impl'
+  psiPackage='org.fuin.dsl.cqrs.intellij.psi'
+  psiImplPackage='org.fuin.dsl.cqrs.intellij.psi.impl'
+
+  elementTypeHolderClass='org.fuin.dsl.cqrs.intellij.psi.CqrsTypes'
+  elementTypeClass='org.fuin.dsl.cqrs.intellij.psi.CqrsElementType'
+  tokenTypeClass='org.fuin.dsl.cqrs.intellij.psi.CqrsTokenType'
+
+  tokens=[
+    // Structural keywords
+    KW_CONTEXT='context'
+    KW_NAMESPACE='namespace'
+    KW_IMPORT='import'
+    KW_TYPE='type'
+    KW_ELEMENT='element'
+    KW_GENERICS='generics'
+    KW_CONSTRAINT='constraint'
+    KW_INPUT='input'
+    KW_EXCEPTION='exception'
+    KW_BUSINESS_RULE='business-rule'
+    KW_ANNOTATION='annotation'
+    KW_CID='cid'
+    KW_MESSAGE='message'
+    KW_VALUE_OBJECT='value-object'
+    KW_BASE='base'
+    KW_ENTITY_ID='entity-id'
+    KW_IDENTIFIES='identifies'
+    KW_AGGREGATE_ID='aggregate-id'
+    KW_ENUM='enum'
+    KW_INSTANCES='instances'
+    KW_DEPRECATED='deprecated'
+    KW_EVENT='event'
+    KW_COPIES_ATTRIBUTES_OF='copies-attributes-of'
+    KW_ENTITY='entity'
+    KW_IDENTIFIER='identifier'
+    KW_ROOT='root'
+    KW_AGGREGATE='aggregate'
+    KW_CONSTRUCTOR='constructor'
+    KW_FIRES='fires'
+    KW_RETURNS='returns'
+    KW_METHOD='method'
+    KW_REF='ref'
+    KW_SLABEL='slabel'
+    KW_LABEL='label'
+    KW_TOOLTIP='tooltip'
+    KW_PROMPT='prompt'
+    KW_EXAMPLES='examples'
+    KW_INVARIANTS='invariants'
+    KW_PRECONDITIONS='preconditions'
+    KW_BUSINESS_RULES='business-rules'
+    KW_SERVICE='service'
+    KW_COMMAND='command'
+    KW_TARGET='target'
+    KW_SLA='sla'
+    KW_COMMAND_HANDLER='command-handler'
+    KW_HANDLES='handles'
+    KW_USES='uses'
+    KW_PROJECTION='projection'
+    KW_VIEW='view'
+    KW_CONSISTENCY='consistency'
+    KW_ACCEPTABLE='acceptable'
+    KW_DETECTION='detection'
+    KW_RESOLUTION='resolution'
+    KW_NULLABLE='nullable'
+
+    // Time unit keywords
+    KW_MILLIS='millis'
+    KW_SECONDS='seconds'
+    KW_MINUTES='minutes'
+    KW_HOURS='hours'
+    KW_DAYS='days'
+
+    // Consistency / detection / resolution value keywords
+    KW_WEAK='weak'
+    KW_STRONG='strong'
+    KW_NEVER='never'
+    KW_MANUALLY='manually'
+    KW_AUTOMATIC='automatic'
+    KW_WORKFLOW='workflow'
+
+    // Literal keywords
+    KW_TRUE='true'
+    KW_FALSE='false'
+    KW_NULL='null'
+
+    // Punctuation
+    LBRACE='{'
+    RBRACE='}'
+    LPAREN='('
+    RPAREN=')'
+    LT='<'
+    GT='>'
+    AT='@'
+    COMMA=','
+    DOT='.'
+    PIPE='|'
+    STAR='*'
+
+    // Terminals (the actual matching is done by the JFlex lexer)
+    ID='regexp:[A-Za-z][A-Za-z_0-9]*'
+    STRING='regexp:"([^\\"]|\\.)*"'
+    NUMBER='regexp:[0-9][0-9_]*'
+    LINE_COMMENT='regexp://[^\r\n]*'
+    BLOCK_COMMENT='regexp:/\*([^*]|\*+[^*/])*\*+/'
+    DOC_COMMENT='regexp:/\*\*([^*]|\*+[^*/])*\*+/'
+  ]
+}
+
+// =========================================================================
+// Root
+// =========================================================================
+
+domainModel ::= context_def*
+
+context_def ::= KW_CONTEXT qualified_name LBRACE namespace_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+namespace_def ::= KW_NAMESPACE qualified_name LBRACE import_decl* element* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+import_decl ::= KW_IMPORT import_fqn {
+  pin=1
+}
+
+import_fqn ::= ID (DOT ID)* (DOT STAR)?
+
+// =========================================================================
+// Elements
+// =========================================================================
+
+element ::= constraint_def
+          | annotation_def
+          | external_type
+          | service_def
+          | value_object
+          | entity_id
+          | aggregate_id
+          | enum_object
+          | entity_def
+          | aggregate_def
+          | exception_def
+          | event_def
+          | command_def
+          | command_handler
+          | projection_def
+          | view_def {
+  recoverWhile=element_recover
+}
+
+private element_recover ::= !(RBRACE | element_start)
+// 'AT' (@) starts an annotation instance prefixing a value-object/event, so it must end recovery.
+private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
+          | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
+          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW
+
+external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+constraint_def ::= KW_CONSTRAINT ID (KW_INPUT type_ref (PIPE type_ref)*)? (KW_EXCEPTION type_ref)? LBRACE attribute* (KW_MESSAGE STRING)? RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+annotation_def ::= KW_ANNOTATION ID LBRACE attribute* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE STRING RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+  pin=2
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+entity_id ::= KW_ENTITY_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+aggregate_id ::= KW_AGGREGATE_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* KW_INSTANCES LBRACE enum_instance+ RBRACE RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+enum_instance ::= KW_DEPRECATED? ID (LPAREN literal (COMMA literal)* RPAREN)? {
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+event_def ::= annotation_instance* KW_EVENT ID (KW_COPIES_ATTRIBUTES_OF type_ref)? LBRACE attribute* (KW_MESSAGE STRING)? RBRACE {
+  pin=2
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+service_def ::= KW_SERVICE ID LBRACE business_rule* method_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+command_def ::= KW_COMMAND ID (KW_TARGET type_ref)? (KW_SLA duration)? LBRACE attribute* (KW_MESSAGE STRING)? RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+command_handler ::= KW_COMMAND_HANDLER ID KW_HANDLES type_ref (COMMA type_ref)* (KW_USES type_ref (COMMA type_ref)*)? {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+projection_def ::= KW_PROJECTION ID (KW_INPUT type_ref (COMMA type_ref)*)? {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+view_def ::= KW_VIEW ID KW_USES type_ref {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+// =========================================================================
+// Members
+// =========================================================================
+
+business_rule ::= KW_BUSINESS_RULE ID KW_EXCEPTION type_ref LBRACE consistency RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE parameter* event_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE parameter* return_type? service_def* event_def* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+return_type ::= KW_RETURNS type_ref { pin=1 }
+
+attribute ::= KW_NULLABLE? type_ref generic_args? ID invariants? overridden_meta? {
+  pin=4
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+parameter ::= KW_NULLABLE? type_ref generic_args? ID preconditions? business_rules? overridden_meta? {
+  pin=4
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+type_meta_info ::= (KW_SLABEL STRING)? (KW_LABEL STRING)? (KW_TOOLTIP STRING)? (KW_PROMPT STRING)? (KW_EXAMPLES literal*)?
+
+overridden_meta ::= LBRACE type_meta_info RBRACE { pin=1 }
+
+generic_args ::= LT type_ref (COMMA type_ref)* GT { pin=1 }
+
+invariants ::= KW_INVARIANTS constraint_instance (COMMA constraint_instance)* { pin=1 }
+
+preconditions ::= KW_PRECONDITIONS constraint_instance (COMMA constraint_instance)* { pin=1 }
+
+business_rules ::= KW_BUSINESS_RULES business_rule_instance (COMMA business_rule_instance)* { pin=1 }
+
+business_rule_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
+
+constraint_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
+
+annotation_instance ::= AT type_ref (LPAREN literal (COMMA literal)* RPAREN)? { pin=1 }
+
+// =========================================================================
+// Consistency
+// =========================================================================
+
+consistency ::= KW_CONSISTENCY consistency_level (LBRACE weak_consistency RBRACE)? { pin=1 }
+
+consistency_level ::= KW_WEAK | KW_STRONG
+
+weak_consistency ::= KW_ACCEPTABLE duration KW_DETECTION inconsistency_detection KW_RESOLUTION inconsistency_resolution { pin=1 }
+
+inconsistency_detection ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC
+
+inconsistency_resolution ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC | KW_WORKFLOW
+
+duration ::= NUMBER time_unit
+
+time_unit ::= KW_MILLIS | KW_SECONDS | KW_MINUTES | KW_HOURS | KW_DAYS
+
+// =========================================================================
+// References, names and literals
+// =========================================================================
+
+// A cross-reference to another named element, by simple name or fully qualified name.
+type_ref ::= ID (DOT ID)* {
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsReferenceElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsReferenceElementImpl"
+}
+
+// The declared (defining) name of a context or namespace.
+qualified_name ::= ID (DOT ID)*
+
+literal ::= KW_NULL | KW_TRUE | KW_FALSE | NUMBER | STRING

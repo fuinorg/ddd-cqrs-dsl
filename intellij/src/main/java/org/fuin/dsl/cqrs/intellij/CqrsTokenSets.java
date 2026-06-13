@@ -1,0 +1,54 @@
+package org.fuin.dsl.cqrs.intellij;
+
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
+
+/** Shared token-set definitions used by the parser definition and the syntax highlighter. */
+public final class CqrsTokenSets {
+
+    public static final TokenSet COMMENTS = TokenSet.create(
+            CqrsTypes.LINE_COMMENT, CqrsTypes.BLOCK_COMMENT, CqrsTypes.DOC_COMMENT);
+
+    public static final TokenSet STRINGS = TokenSet.create(CqrsTypes.STRING);
+
+    public static final TokenSet NUMBERS = TokenSet.create(CqrsTypes.NUMBER);
+
+    public static final TokenSet IDENTIFIERS = TokenSet.create(CqrsTypes.ID);
+
+    /** Every reserved word in the language (structural, value and literal keywords). */
+    public static final TokenSet KEYWORDS = TokenSet.create(
+            CqrsTypes.KW_CONTEXT, CqrsTypes.KW_NAMESPACE, CqrsTypes.KW_IMPORT, CqrsTypes.KW_TYPE,
+            CqrsTypes.KW_ELEMENT, CqrsTypes.KW_GENERICS, CqrsTypes.KW_CONSTRAINT, CqrsTypes.KW_INPUT,
+            CqrsTypes.KW_EXCEPTION, CqrsTypes.KW_BUSINESS_RULE, CqrsTypes.KW_ANNOTATION, CqrsTypes.KW_CID,
+            CqrsTypes.KW_MESSAGE, CqrsTypes.KW_VALUE_OBJECT, CqrsTypes.KW_BASE, CqrsTypes.KW_ENTITY_ID,
+            CqrsTypes.KW_IDENTIFIES, CqrsTypes.KW_AGGREGATE_ID, CqrsTypes.KW_ENUM, CqrsTypes.KW_INSTANCES,
+            CqrsTypes.KW_DEPRECATED, CqrsTypes.KW_EVENT, CqrsTypes.KW_COPIES_ATTRIBUTES_OF,
+            CqrsTypes.KW_ENTITY, CqrsTypes.KW_IDENTIFIER, CqrsTypes.KW_ROOT, CqrsTypes.KW_AGGREGATE,
+            CqrsTypes.KW_CONSTRUCTOR, CqrsTypes.KW_FIRES, CqrsTypes.KW_RETURNS, CqrsTypes.KW_METHOD,
+            CqrsTypes.KW_REF, CqrsTypes.KW_SLABEL, CqrsTypes.KW_LABEL, CqrsTypes.KW_TOOLTIP,
+            CqrsTypes.KW_PROMPT, CqrsTypes.KW_EXAMPLES, CqrsTypes.KW_INVARIANTS, CqrsTypes.KW_PRECONDITIONS,
+            CqrsTypes.KW_BUSINESS_RULES, CqrsTypes.KW_SERVICE, CqrsTypes.KW_COMMAND, CqrsTypes.KW_TARGET,
+            CqrsTypes.KW_SLA, CqrsTypes.KW_COMMAND_HANDLER, CqrsTypes.KW_HANDLES, CqrsTypes.KW_USES,
+            CqrsTypes.KW_PROJECTION, CqrsTypes.KW_VIEW, CqrsTypes.KW_CONSISTENCY, CqrsTypes.KW_ACCEPTABLE,
+            CqrsTypes.KW_DETECTION, CqrsTypes.KW_RESOLUTION, CqrsTypes.KW_NULLABLE,
+            CqrsTypes.KW_MILLIS, CqrsTypes.KW_SECONDS, CqrsTypes.KW_MINUTES, CqrsTypes.KW_HOURS,
+            CqrsTypes.KW_DAYS, CqrsTypes.KW_WEAK, CqrsTypes.KW_STRONG, CqrsTypes.KW_NEVER,
+            CqrsTypes.KW_MANUALLY, CqrsTypes.KW_AUTOMATIC, CqrsTypes.KW_WORKFLOW,
+            CqrsTypes.KW_TRUE, CqrsTypes.KW_FALSE, CqrsTypes.KW_NULL);
+
+    public static final TokenSet BRACES = TokenSet.create(CqrsTypes.LBRACE, CqrsTypes.RBRACE);
+
+    public static final TokenSet PARENS = TokenSet.create(CqrsTypes.LPAREN, CqrsTypes.RPAREN);
+
+    public static final TokenSet OPERATORS = TokenSet.create(
+            CqrsTypes.LT, CqrsTypes.GT, CqrsTypes.AT, CqrsTypes.COMMA, CqrsTypes.DOT,
+            CqrsTypes.PIPE, CqrsTypes.STAR);
+
+    private CqrsTokenSets() {
+    }
+
+    public static boolean isKeyword(IElementType type) {
+        return KEYWORDS.contains(type);
+    }
+}

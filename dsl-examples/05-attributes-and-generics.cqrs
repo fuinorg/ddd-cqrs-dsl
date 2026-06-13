@@ -1,0 +1,16 @@
+// Attribute variants: optional ('nullable') and generic type arguments via < >.
+context attrs {
+	namespace m {
+		type String
+		type Integer
+		type List generics 1
+		type Map generics 2
+
+		value-object Profile {
+			String name                   // required
+			nullable Integer age          // optional
+			List<String> tags             // generic with one argument
+			Map<String, Integer> scores   // generic with two arguments
+		}
+	}
+}

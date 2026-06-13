@@ -1,0 +1,24 @@
+// A command is a request to change state.
+//   'target' links it to the constructor/method that carries it out
+//   'sla'    sets a processing time budget (a duration: <number> <unit>)
+// A command-handler 'handles' one or more commands and 'uses' aggregates.
+context commands {
+	namespace m {
+		type String
+
+		aggregate-id TaskId identifies Task {}
+		aggregate Task identifier TaskId {
+			constructor create fires CreatedEvent {
+				String title
+				event CreatedEvent { message "created" }
+			}
+		}
+
+		command CreateTask target create sla 2 seconds {
+			String title
+			message "Create a new task"
+		}
+
+		command-handler TaskHandler handles CreateTask uses Task
+	}
+}

@@ -32,6 +32,24 @@ Here are the steps to install the plugin in an Eclipse IDE:
    * Restart the IDE to finalize the installation
 3. Open a project with "*.cqrs" files and start editing.
 
+### IntelliJ IDEA Plugin
+The [intellij](intellij) plugin brings the same `*.cqrs` editing experience to IntelliJ IDEA:
+syntax highlighting, reference-aware code completion, go-to-definition, find-usages, rename, a
+structure view, and resolution of remote references via a `.remote-scope.json` catalog (interoperable
+with the Eclipse plugin's `.remote-scope-cache`). It is standalone (no dependency on the other
+modules) and built with Gradle.
+
+To install it in IntelliJ IDEA, add the custom plugin repository under
+*Settings | Plugins | ⚙ | Manage Plugin Repositories…*:
+
+```
+https://fuinorg.jfrog.io/artifactory/ddd-cqrs-dsl/cqrs-dsl-intellij/latest/updatePlugins.xml
+```
+
+then install **CQRS DSL** from the Marketplace tab. Alternatively build it yourself with
+`./gradlew buildPlugin` inside the `intellij` folder and install the zip from disk. See the
+[module README](intellij/README.md) for details.
+
 ### Maven JAR file
 You can use the Maven artifact to parse files in the DSL format without using Eclipse.
 An example of this is the [templates](templates) module in this repository.
@@ -49,6 +67,7 @@ The repository contains the following projects:
 
 - [eclipse](eclipse) = Standard Eclipse project that contains everything that will be used inside Eclipse (built separately via PDE, see [eclipse-build](eclipse-build)).
 - [maven](maven) = Maven project that generates the DSL parser artifacts that will be used outside Eclipse.
+- [intellij](intellij) = Standalone IntelliJ IDEA plugin (Gradle build) providing syntax highlighting and code completion for `*.cqrs` files.
 - [templates](templates) = Xtend based DDD/CQRS code generation templates (for use with SrcGen4J) that build on top of the DSL.
 
 The [maven](maven) and [templates](templates) projects form the Maven reactor built from the root `pom.xml`, while

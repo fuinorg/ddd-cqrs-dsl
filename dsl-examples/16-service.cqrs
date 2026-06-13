@@ -1,0 +1,24 @@
+// A service groups related methods that are not tied to a single aggregate.
+// It may also declare business rules.
+context services {
+	namespace m {
+		type String
+		type Boolean
+
+		exception DeniedException { message "Access denied" }
+
+		service AuthService {
+
+			/** Credentials must be valid. */
+			business-rule CredentialsValid exception DeniedException {
+				consistency strong
+			}
+
+			method login business-rules CredentialsValid {
+				String user
+				String password
+				returns Boolean
+			}
+		}
+	}
+}

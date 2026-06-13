@@ -1,0 +1,25 @@
+// A constraint validates an input. It can accept several alternative input
+// types (separated by '|'), declare its own parameters (attributes), reference
+// the exception thrown on violation, and carry a message.
+context constraints {
+	namespace m {
+		type String
+		type Integer
+
+		exception ConstraintViolation {
+			message "Invalid value"
+		}
+
+		// Validates a String, parameterized by a min/max length
+		constraint Length input String exception ConstraintViolation {
+			Integer min
+			Integer max
+			message "Length must be between ${min} and ${max}"
+		}
+
+		// Accepts more than one input type
+		constraint NotEmpty input String | Integer {
+			message "Must not be empty"
+		}
+	}
+}

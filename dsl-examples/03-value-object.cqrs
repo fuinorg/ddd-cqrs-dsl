@@ -1,0 +1,20 @@
+// A value-object has no identity; it is defined only by its attributes.
+//   - with 'base' it wraps a single external type
+//   - otherwise it groups one or more attributes
+context vo {
+	namespace m {
+		type String
+		type Integer
+
+		// Wraps a single primitive type
+		value-object EmailAddress base String {
+			String value
+		}
+
+		// Groups several attributes
+		value-object Money {
+			Integer amount
+			String currency
+		}
+	}
+}

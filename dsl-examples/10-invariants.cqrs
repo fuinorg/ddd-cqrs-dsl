@@ -1,0 +1,25 @@
+// Invariants attach constraint instances (with optional parameters) to a type
+// or to an individual attribute. An invariant is a rule that must always hold.
+// (Preconditions work the same way but are placed on method parameters -- see
+// 15-method.cqrs.)
+context inv {
+	namespace m {
+		type String
+		type Integer
+
+		constraint NotBlank input String {
+			message "Must not be blank"
+		}
+
+		constraint Length input String {
+			Integer min
+			Integer max
+			message "Bad length"
+		}
+
+		// type-level invariant + attribute-level invariant (with parameters)
+		value-object Name base String invariants NotBlank {
+			String value invariants Length(1, 100)
+		}
+	}
+}

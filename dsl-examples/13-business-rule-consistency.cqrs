@@ -1,0 +1,36 @@
+// A business-rule is a checked condition tied to an exception and a consistency
+// level. A doc comment (/** ... */) is required directly before it.
+//   'strong' consistency: the rule is never violated
+//   'weak'   consistency: a temporary violation is allowed; describe the time
+//            budget ('acceptable'), how it is 'detection'-ed and 'resolution'-ed
+// Rules are applied to constructors/methods via 'business-rules' (with optional
+// parameters).
+context banking {
+	namespace m {
+		type String
+
+		exception OverdrawnException { message "Overdrawn" }
+		exception StaleException { message "Stale" }
+
+		aggregate-id AccountId identifies Account {}
+		aggregate Account identifier AccountId {
+
+			/** The balance must never go negative. */
+			business-rule NotOverdrawn exception OverdrawnException {
+				consistency strong
+			}
+
+			/** A read model may lag behind for a short while. */
+			business-rule EventuallyConsistent exception StaleException {
+				consistency weak {
+					acceptable 5 minutes
+					detection automatic
+					resolution workflow
+				}
+			}
+
+			method withdraw business-rules NotOverdrawn {
+			}
+		}
+	}
+}

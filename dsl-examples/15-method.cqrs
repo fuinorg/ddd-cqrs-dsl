@@ -1,0 +1,33 @@
+// A method models behavior on an aggregate/entity. It may declare parameters,
+// a 'returns' type, the events it 'fires', 'preconditions' on a parameter, and
+// a 'ref' to another method.
+context behavior {
+	namespace m {
+		type String
+		type Boolean
+
+		constraint NotBlank input String { message "Blank" }
+
+		aggregate-id DocId identifies Doc {}
+		aggregate Doc identifier DocId {
+
+			// parameter precondition + fired event declared inline
+			method rename fires RenamedEvent {
+				String newName preconditions NotBlank
+				event RenamedEvent {
+					String newName
+					message "Renamed to ${newName}"
+				}
+			}
+
+			// 'returns' a type
+			method isEmpty {
+				returns Boolean
+			}
+
+			// 'ref' links to another method
+			method forceRename ref rename {
+			}
+		}
+	}
+}

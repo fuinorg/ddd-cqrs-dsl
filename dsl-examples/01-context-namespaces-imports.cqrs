@@ -1,0 +1,19 @@
+// Top-level structure.
+// A "context" groups one or more "namespaces". A namespace holds imports and
+// elements. Names from another namespace are pulled in with an import, either a
+// ".*" wildcard or a specific namespace path.
+context shop {
+
+	namespace types {
+		type String
+	}
+
+	namespace catalog {
+		import shop.types.*   // wildcard: make everything in shop.types visible
+		import shop.types     // a specific namespace by its fully qualified name
+
+		value-object ProductName base String {
+			String value
+		}
+	}
+}
