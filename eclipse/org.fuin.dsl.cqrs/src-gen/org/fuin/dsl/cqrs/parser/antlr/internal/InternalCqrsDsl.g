@@ -4686,9 +4686,28 @@ ruleService returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getServiceAccess().getBusinessRulesBusinessRuleParserRuleCall_4_0());
 				}
-				lv_methods_4_0=ruleMethod
+				lv_businessRules_4_0=ruleBusinessRule
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getServiceRule());
+					}
+					add(
+						$current,
+						"businessRules",
+						lv_businessRules_4_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.BusinessRule");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_5_0());
+				}
+				lv_methods_5_0=ruleMethod
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getServiceRule());
@@ -4696,15 +4715,15 @@ ruleService returns [EObject current=null]
 					add(
 						$current,
 						"methods",
-						lv_methods_4_0,
+						lv_methods_5_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Method");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_5='}'
+		otherlv_6='}'
 		{
-			newLeafNode(otherlv_5, grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_5());
+			newLeafNode(otherlv_6, grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_6());
 		}
 	)
 ;

@@ -907,7 +907,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Service returns Service
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID methods+=Method*)
+	 *     (doc=DOC? name=ID businessRules+=BusinessRule* methods+=Method*)
 	 * </pre>
 	 */
 	protected void sequence_Service(ISerializationContext context, Service semanticObject) {

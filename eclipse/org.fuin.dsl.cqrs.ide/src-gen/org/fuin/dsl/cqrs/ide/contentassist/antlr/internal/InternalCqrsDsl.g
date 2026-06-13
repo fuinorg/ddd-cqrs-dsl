@@ -10664,9 +10664,9 @@ rule__Service__Group__4__Impl
 	}
 :
 (
-	{ before(grammarAccess.getServiceAccess().getMethodsAssignment_4()); }
-	(rule__Service__MethodsAssignment_4)*
-	{ after(grammarAccess.getServiceAccess().getMethodsAssignment_4()); }
+	{ before(grammarAccess.getServiceAccess().getBusinessRulesAssignment_4()); }
+	(rule__Service__BusinessRulesAssignment_4)*
+	{ after(grammarAccess.getServiceAccess().getBusinessRulesAssignment_4()); }
 )
 ;
 finally {
@@ -10679,6 +10679,7 @@ rule__Service__Group__5
 	}
 :
 	rule__Service__Group__5__Impl
+	rule__Service__Group__6
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -10690,9 +10691,35 @@ rule__Service__Group__5__Impl
 	}
 :
 (
-	{ before(grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_5()); }
+	{ before(grammarAccess.getServiceAccess().getMethodsAssignment_5()); }
+	(rule__Service__MethodsAssignment_5)*
+	{ after(grammarAccess.getServiceAccess().getMethodsAssignment_5()); }
+)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Service__Group__6
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	rule__Service__Group__6__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Service__Group__6__Impl
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+(
+	{ before(grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_6()); }
 	'}'
-	{ after(grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_5()); }
+	{ after(grammarAccess.getServiceAccess().getRightCurlyBracketKeyword_6()); }
 )
 ;
 finally {
@@ -15086,15 +15113,30 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Service__MethodsAssignment_4
+rule__Service__BusinessRulesAssignment_4
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_4_0()); }
+		{ before(grammarAccess.getServiceAccess().getBusinessRulesBusinessRuleParserRuleCall_4_0()); }
+		ruleBusinessRule
+		{ after(grammarAccess.getServiceAccess().getBusinessRulesBusinessRuleParserRuleCall_4_0()); }
+	)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Service__MethodsAssignment_5
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	(
+		{ before(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_5_0()); }
 		ruleMethod
-		{ after(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_4_0()); }
+		{ after(grammarAccess.getServiceAccess().getMethodsMethodParserRuleCall_5_0()); }
 	)
 ;
 finally {

@@ -2938,20 +2938,24 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cMethodsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cMethodsMethodParserRuleCall_4_0 = (RuleCall)cMethodsAssignment_4.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cBusinessRulesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_4_0 = (RuleCall)cBusinessRulesAssignment_4.eContents().get(0);
+		private final Assignment cMethodsAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cMethodsMethodParserRuleCall_5_0 = (RuleCall)cMethodsAssignment_5.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		///** Collection of methods with a unique name. */
 		//Service:
 		//    doc=DOC?
 		//    'service' name=ID '{'
+		//        businessRules+=BusinessRule*
 		//        methods+=Method*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
 		//'service' name=ID '{'
+		//    businessRules+=BusinessRule*
 		//    methods+=Method*
 		//'}'
 		public Group getGroup() { return cGroup; }
@@ -2974,14 +2978,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
 		
+		//businessRules+=BusinessRule*
+		public Assignment getBusinessRulesAssignment_4() { return cBusinessRulesAssignment_4; }
+		
+		//BusinessRule
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_4_0() { return cBusinessRulesBusinessRuleParserRuleCall_4_0; }
+		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_4() { return cMethodsAssignment_4; }
+		public Assignment getMethodsAssignment_5() { return cMethodsAssignment_5; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_4_0() { return cMethodsMethodParserRuleCall_4_0; }
+		public RuleCall getMethodsMethodParserRuleCall_5_0() { return cMethodsMethodParserRuleCall_5_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
+		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
 	}
 	public class CommandElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Command");
@@ -4563,6 +4573,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//Service:
 	//    doc=DOC?
 	//    'service' name=ID '{'
+	//        businessRules+=BusinessRule*
 	//        methods+=Method*
 	//    '}';
 	public ServiceElements getServiceAccess() {

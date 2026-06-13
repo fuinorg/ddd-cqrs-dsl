@@ -251,6 +251,8 @@
         eType="#//Literal" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Service" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="businessRules" upperBound="-1"
+        eType="#//BusinessRule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
         eType="#//Method" containment="true"/>
   </eClassifiers>

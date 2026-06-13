@@ -14,6 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Service#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Service#getMethods <em>Methods</em>}</li>
  * </ul>
  *
@@ -23,6 +24,18 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Service extends Type
 {
+  /**
+   * Returns the value of the '<em><b>Business Rules</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Business Rules</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getService_BusinessRules()
+   * @model containment="true"
+   * @generated
+   */
+  EList<BusinessRule> getBusinessRules();
+
   /**
    * Returns the value of the '<em><b>Methods</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Method}.

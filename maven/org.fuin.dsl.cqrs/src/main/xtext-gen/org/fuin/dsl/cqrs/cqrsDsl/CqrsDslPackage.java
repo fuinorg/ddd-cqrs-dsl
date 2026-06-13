@@ -2757,13 +2757,22 @@ public interface CqrsDslPackage extends EPackage
   int SERVICE__NAME = TYPE__NAME;
 
   /**
+   * The feature id for the '<em><b>Business Rules</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SERVICE__BUSINESS_RULES = TYPE_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Methods</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SERVICE__METHODS = TYPE_FEATURE_COUNT + 0;
+  int SERVICE__METHODS = TYPE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Service</em>' class.
@@ -2772,7 +2781,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SERVICE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 1;
+  int SERVICE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl <em>Command</em>}' class.
@@ -4695,6 +4704,17 @@ public interface CqrsDslPackage extends EPackage
   EClass getService();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Service#getBusinessRules <em>Business Rules</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Business Rules</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Service#getBusinessRules()
+   * @see #getService()
+   * @generated
+   */
+  EReference getService_BusinessRules();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Service#getMethods <em>Methods</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6178,6 +6198,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EClass SERVICE = eINSTANCE.getService();
+
+    /**
+     * The meta object literal for the '<em><b>Business Rules</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SERVICE__BUSINESS_RULES = eINSTANCE.getService_BusinessRules();
 
     /**
      * The meta object literal for the '<em><b>Methods</b></em>' containment reference list feature.

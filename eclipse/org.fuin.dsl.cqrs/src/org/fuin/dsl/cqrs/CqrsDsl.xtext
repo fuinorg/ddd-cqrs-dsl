@@ -329,6 +329,7 @@ AnnotationInstance:
 Service:
 	doc=DOC? 
 	'service' name=ID '{'
+		businessRules+=BusinessRule*
 		methods+=Method*
 	'}';
 

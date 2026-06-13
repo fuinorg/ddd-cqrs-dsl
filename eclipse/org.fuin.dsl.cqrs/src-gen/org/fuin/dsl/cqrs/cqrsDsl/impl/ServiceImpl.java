@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -27,6 +28,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Service;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ServiceImpl#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ServiceImpl#getMethods <em>Methods</em>}</li>
  * </ul>
  *
@@ -34,6 +36,16 @@ import org.fuin.dsl.cqrs.cqrsDsl.Service;
  */
 public class ServiceImpl extends TypeImpl implements Service
 {
+  /**
+   * The cached value of the '{@link #getBusinessRules() <em>Business Rules</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getBusinessRules()
+   * @generated
+   * @ordered
+   */
+  protected EList<BusinessRule> businessRules;
+
   /**
    * The cached value of the '{@link #getMethods() <em>Methods</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -71,6 +83,21 @@ public class ServiceImpl extends TypeImpl implements Service
    * @generated
    */
   @Override
+  public EList<BusinessRule> getBusinessRules()
+  {
+    if (businessRules == null)
+    {
+      businessRules = new EObjectContainmentEList<BusinessRule>(BusinessRule.class, this, CqrsDslPackage.SERVICE__BUSINESS_RULES);
+    }
+    return businessRules;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Method> getMethods()
   {
     if (methods == null)
@@ -90,6 +117,8 @@ public class ServiceImpl extends TypeImpl implements Service
   {
     switch (featureID)
     {
+      case CqrsDslPackage.SERVICE__BUSINESS_RULES:
+        return ((InternalEList<?>)getBusinessRules()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.SERVICE__METHODS:
         return ((InternalEList<?>)getMethods()).basicRemove(otherEnd, msgs);
     }
@@ -106,6 +135,8 @@ public class ServiceImpl extends TypeImpl implements Service
   {
     switch (featureID)
     {
+      case CqrsDslPackage.SERVICE__BUSINESS_RULES:
+        return getBusinessRules();
       case CqrsDslPackage.SERVICE__METHODS:
         return getMethods();
     }
@@ -123,6 +154,10 @@ public class ServiceImpl extends TypeImpl implements Service
   {
     switch (featureID)
     {
+      case CqrsDslPackage.SERVICE__BUSINESS_RULES:
+        getBusinessRules().clear();
+        getBusinessRules().addAll((Collection<? extends BusinessRule>)newValue);
+        return;
       case CqrsDslPackage.SERVICE__METHODS:
         getMethods().clear();
         getMethods().addAll((Collection<? extends Method>)newValue);
@@ -141,6 +176,9 @@ public class ServiceImpl extends TypeImpl implements Service
   {
     switch (featureID)
     {
+      case CqrsDslPackage.SERVICE__BUSINESS_RULES:
+        getBusinessRules().clear();
+        return;
       case CqrsDslPackage.SERVICE__METHODS:
         getMethods().clear();
         return;
@@ -158,6 +196,8 @@ public class ServiceImpl extends TypeImpl implements Service
   {
     switch (featureID)
     {
+      case CqrsDslPackage.SERVICE__BUSINESS_RULES:
+        return businessRules != null && !businessRules.isEmpty();
       case CqrsDslPackage.SERVICE__METHODS:
         return methods != null && !methods.isEmpty();
     }

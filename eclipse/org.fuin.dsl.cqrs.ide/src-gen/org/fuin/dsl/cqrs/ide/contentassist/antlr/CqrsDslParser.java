@@ -316,7 +316,8 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getParamsAssignment_2_2_1(), "rule__AnnotationInstance__ParamsAssignment_2_2_1");
 			builder.put(grammarAccess.getServiceAccess().getDocAssignment_0(), "rule__Service__DocAssignment_0");
 			builder.put(grammarAccess.getServiceAccess().getNameAssignment_2(), "rule__Service__NameAssignment_2");
-			builder.put(grammarAccess.getServiceAccess().getMethodsAssignment_4(), "rule__Service__MethodsAssignment_4");
+			builder.put(grammarAccess.getServiceAccess().getBusinessRulesAssignment_4(), "rule__Service__BusinessRulesAssignment_4");
+			builder.put(grammarAccess.getServiceAccess().getMethodsAssignment_5(), "rule__Service__MethodsAssignment_5");
 			builder.put(grammarAccess.getCommandAccess().getDocAssignment_0(), "rule__Command__DocAssignment_0");
 			builder.put(grammarAccess.getCommandAccess().getNameAssignment_2(), "rule__Command__NameAssignment_2");
 			builder.put(grammarAccess.getCommandAccess().getTargetAssignment_3_1(), "rule__Command__TargetAssignment_3_1");

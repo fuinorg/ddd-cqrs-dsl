@@ -209,6 +209,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AnnotationInstance/params"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Service">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Service/businessRules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Service/methods"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Command">
