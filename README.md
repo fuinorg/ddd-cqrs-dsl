@@ -1,14 +1,22 @@
 # ddd-cqrs-dsl
-DSL and tooling for DDD/CQRS with XText
+DSL and tooling for Domain-driven Design (DDD) and Command Query Responsibility Segregation (CQRS).
 
 [![Java Maven Build](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/maven.yml/badge.svg)](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/maven.yml)
 [![Eclipse Plugin Build](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/eclipse.yml/badge.svg)](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/eclipse.yml)
+[![IntelliJ Plugin Build](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/intellij.yml/badge.svg)](https://github.com/fuinorg/ddd-cqrs-dsl/actions/workflows/intellij.yml)
 [![LGPLv3 License](http://img.shields.io/badge/license-LGPLv3-blue.svg)](https://www.gnu.org/licenses/lgpl.html)
-[![Java Development Kit 21](https://img.shields.io/badge/JDK-21-green.svg)](https://openjdk.java.net/projects/jdk/21/)
+[![Java Development Kit 25](https://img.shields.io/badge/JDK-25-green.svg)](https://openjdk.java.net/projects/jdk/25/)
 
 Defines a DSL for defining DDD/CQRS things like aggregates, entities or value objects. 
 To make editing of these files easier, there is an Eclipse plugin that supports syntax highlighting and code completion.
 There are also pre-defined templates for generating Java code based on the DSL files.
+
+The components are:
+- [Eclipse Plugin](#eclipse-plugin) - Syntax highlighting and code completion for Eclipse.
+- [IntelliJ IDEA Plugin](#intellij-idea-plugin) - Syntax highlighting and code completion for IntelliJ IDEA.
+- [Maven Library](#maven-jar-file) - Allows "standalone" parsing of "*.cqrs" files.
+- [Templates](#ddd-templates-jar-file) - Xtend-based DDD/CQRS Java code generation templates for [SrcGen4J](https://github.com/fuinorg/srcgen4j).
+- [DSL Examples](dsl-examples) - Examples of the DDD/CQRS DSL you can open and edit after installing the above Eclipse or IntelliJ IDEA plugin.
 
 ## Artifacts
 
@@ -63,13 +71,6 @@ The [templates](templates) module provides several artifact factories that gener
 from an Xtext based DDD/CQRS DSL model. See the [module README](templates/README.md) for the full list of available factories.
 
 ## Projects
-The repository contains the following projects:
-
-- [eclipse](eclipse) = Standard Eclipse project that contains everything that will be used inside Eclipse (built separately via PDE, see [eclipse-build](eclipse-build)).
-- [maven](maven) = Maven project that generates the DSL parser artifacts that will be used outside Eclipse.
-- [intellij](intellij) = Standalone IntelliJ IDEA plugin (Gradle build) providing syntax highlighting and code completion for `*.cqrs` files.
-- [templates](templates) = Xtend based DDD/CQRS code generation templates (for use with SrcGen4J) that build on top of the DSL.
-
 The [maven](maven) and [templates](templates) projects form the Maven reactor built from the root `pom.xml`, while
 the [eclipse](eclipse) project is built separately.
 
@@ -112,5 +113,5 @@ You need to keep the main code of the two projects aligned by copying it from [e
 8. Commit and push changes to Git
 
 > [!WARNING]  
-> The [IntelliJ IDEA plugin](intellij) is not updated automatically in any way.
+> The [IntelliJ IDEA plugin](intellij) is **not** updated automatically in any way.
 > Changes in the Eclipse DSL must be added manually to IntelliJ!
