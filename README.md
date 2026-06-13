@@ -110,3 +110,7 @@ You need to keep the main code of the two projects aligned by copying it from [e
    changes from `eclipse` to `maven` — but do **NOT** copy `GenerateCqrsDsl.mwe2`!)
 7. On the console run `./mvnw clean verify` in the [maven](maven) directory
 8. Commit and push changes to Git
+
+> [!WARNING]  
+> The [IntelliJ IDEA plugin](intellij) is not updated automatically in any way.
+> Changes in the Eclipse DSL must be added manually to IntelliJ!
