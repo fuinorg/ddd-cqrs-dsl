@@ -44,11 +44,6 @@ class FinalValueObjectArtifactFactoryTest {
     }    
 
     @Test
-    def void testCreateMyValueObject3() {
-        testCreate("MyValueObject3")
-    }
-    
-    @Test
     def void testCreateMyValueObject4() {
         testCreate("MyValueObject4")
     }

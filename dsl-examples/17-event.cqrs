@@ -1,27 +1,37 @@
-// A domain event records something that happened. It carries attributes and a
-// message template, and can copy the attributes of a constructor/method with
-// 'copies-attributes-of'.
 context events {
+	
 	namespace m {
+		
 		type String
 
 		aggregate-id UserId identifies User {}
+		
 		aggregate User identifier UserId {
 
+			// A domain event records something that happened.
+			// It is 'fired' in case the construction or method call was successful.
+
 			constructor register fires UserRegisteredEvent {
+				
 				String email
-				// copies the 'email' attribute from the 'register' constructor
+				
+				// Copies the all attributes from the 'register' constructor
+				// Therefore it is not necessary to declare these here again.
 				event UserRegisteredEvent copies-attributes-of register {
 					message "User ${email} registered"
 				}
+				
 			}
 
-			// a standalone event with its own attributes
+			// An event with its own attributes (not copying the ones from a method/constructor).
 			event UserRenamedEvent {
 				String oldName
 				String newName
 				message "Renamed ${oldName} to ${newName}"
 			}
+			
 		}
+		
 	}
+	
 }

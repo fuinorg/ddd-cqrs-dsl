@@ -43,6 +43,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance
 import java.util.Collections
@@ -128,6 +129,10 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val VAR_GENERICS_COUNT_MISMATCH = "varGenericsCountMismatch"
 
 	public static val ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch"
+
+	public static val VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE = "valueObjectBaseRequiresSingleMatchingAttribute"
+
+	public static val VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods"
 
 	@Inject
 	IContainer.Manager containerManager
@@ -269,7 +274,12 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	@Check
 	def checkVariablesInEventMessage(Event event) {
 		if (event.message !== null) {
-			val name = findUnknownVar(event.attributes.asNames, event.message);
+			val List<String> vars = new ArrayList<String>(event.attributes.asNames)
+			// Attributes copied from a constructor/method via 'copies-attributes-of' are also valid
+			if (event.origin !== null) {
+				vars.addAll(event.origin.parameters.asNames)
+			}
+			val name = findUnknownVar(vars, event.message);
 			if (name !== null) {
 				error(
 					"A variable with the name '" + name + "' is unknown",
@@ -635,6 +645,44 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		}
 	}
 	
+	@Check
+	def checkValueObjectBaseHasSingleMatchingAttribute(ValueObject vo) {
+		if (vo.base !== null) {
+			val attributes = vo.attributes.nullSafe
+			if (attributes.size != 1 || attributes.get(0).type != vo.base) {
+				error(
+					"A value object with a 'base' is only allowed to have exactly one attribute with the same type as the 'base' (" +
+						vo.base.name + ")",
+					vo,
+					CqrsDslPackage.Literals::ABSTRACT_VO__BASE,
+					VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE
+				)
+			}
+		}
+	}
+
+	@Check
+	def checkValueObjectBaseHasNoConstructorsOrMethods(ValueObject vo) {
+		if (vo.base !== null) {
+			if (!vo.constructors.nullSafe.empty) {
+				error(
+					"A value object with a 'base' is not allowed to have constructors",
+					vo,
+					CqrsDslPackage.Literals::ABSTRACT_VO__CONSTRUCTORS,
+					VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS
+				)
+			}
+			if (!vo.methods.nullSafe.empty) {
+				error(
+					"A value object with a 'base' is not allowed to have methods",
+					vo,
+					CqrsDslPackage.Literals::ABSTRACT_VO__METHODS,
+					VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS
+				)
+			}
+		}
+	}
+
 	private def getAllExceptions(EObject obj) {
 		val Set<Exception> list = new HashSet<Exception>()
 		val resource = obj.eResource

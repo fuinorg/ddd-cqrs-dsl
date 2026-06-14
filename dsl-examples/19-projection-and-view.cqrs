@@ -1,10 +1,11 @@
-// A projection consumes one or more events to build a read model.
-// A view is the result produced by a projection.
 context readmodel {
+	
 	namespace m {
+	
 		type String
 
 		aggregate-id UserId identifies User {}
+	
 		aggregate User identifier UserId {
 			constructor create fires UserCreatedEvent {
 				String name
@@ -12,8 +13,12 @@ context readmodel {
 			}
 		}
 
-		projection UserList input UserCreatedEvent
+		// A projection consumes one or more events to build a read model.
+		projection UserList input User.create.UserCreatedEvent
 
+		// A view is the result produced by a projection.
 		view UserListView uses UserList
+
 	}
+	
 }

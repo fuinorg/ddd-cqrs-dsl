@@ -1,23 +1,27 @@
-// An enum has a fixed set of named instances.
-//   - instances may carry parameters (when the enum declares attributes)
-//   - an instance can be marked 'deprecated'
-//   - an enum may have a 'base' external type
 context enums {
+	
 	namespace m {
+	
 		type String
 		type Integer
 
 		// Simplest form: just names
 		enum Color {
+		
 			instances {
 				RED
 				GREEN
-				deprecated BLUE
+				deprecated BLUE // Marked to be 'deprecated' 
 			}
+			
 		}
 
 		// With attributes -> each instance provides values
+		// The 'base' type is possibly used for persisting the
+		// enumeration value (like in a database column).
+		// It's expected to be stable over time (never changing). 
 		enum Priority base Integer {
+
 			Integer code
 			String title
 
@@ -25,6 +29,9 @@ context enums {
 				LOW(1, "low")
 				HIGH(2, "high")
 			}
+			
 		}
+		
 	}
+	
 }

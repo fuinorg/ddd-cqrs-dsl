@@ -23,4 +23,7 @@ eclipse-build/test-results/
 # Keep the env template tracked (the real .env stays ignored by the .* rule above)
 !eclipse-build/.env.example
 
+# Others
 /templates/src/main/generated-sources/
+/templates/src/test/resources/.project
+/dsl-examples/.project

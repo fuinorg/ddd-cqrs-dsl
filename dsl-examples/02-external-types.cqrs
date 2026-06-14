@@ -1,12 +1,22 @@
-// External types are types defined outside the model (JDK or library classes).
-//   - plain:          type String
-//   - "element" type: marked with the 'element' keyword
-//   - generic type:   declare the number of type parameters with 'generics'
 context ext {
+
 	namespace types {
+
+        // A type is a link to an external type defined
+        // outside the model (JDK or library classes).
+
+        // Simple type
 		type String
+		
+		// -TBD-
 		type element Serializable
+		
+		// Generic type with one parameter (like 'List<String>' in Java).
 		type List generics 1
+		
+		// Generic type with two parameters (like 'Map<String, Object>' in Java).
 		type Map generics 2
+
 	}
+
 }

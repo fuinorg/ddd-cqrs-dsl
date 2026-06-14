@@ -1,14 +1,17 @@
-// A service groups related methods that are not tied to a single aggregate.
-// It may also declare business rules.
 context services {
+
 	namespace m {
+
 		type String
 		type Boolean
 
 		exception DeniedException { message "Access denied" }
 
+         // A service groups related methods that are not tied to a single aggregate.
 		service AuthService {
 
+            // It may also declare business rules.
+            
 			/** Credentials must be valid. */
 			business-rule CredentialsValid exception DeniedException {
 				consistency strong
@@ -19,6 +22,9 @@ context services {
 				String password
 				returns Boolean
 			}
+
 		}
+
 	}
+
 }

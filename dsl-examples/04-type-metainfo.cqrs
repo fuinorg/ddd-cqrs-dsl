@@ -1,26 +1,28 @@
-// UI metadata can be attached to a type and overridden per attribute.
-//   slabel  - short label
-//   label   - long label
-//   tooltip - hover text
-//   prompt  - input hint
-//   examples - sample values
-// A trailing { ... } block after an attribute overrides the metadata for it.
 context meta {
+
 	namespace m {
+
 		type String
 
 		value-object FullName {
-			slabel "Name"
-			label "Full name"
-			tooltip "A person's full name"
-			examples "Peter Parker" "Mary Jane"
+
+            // UI metadata can be attached to a type and overridden per attribute.
+			
+			slabel "Name"                        // Abbreviation label to be shown in the UI
+			label "Full name"                    // Label to be shown in a UI
+			tooltip "A person's full name"       // Tooltipp to be shown in a UI
+			examples "Peter Parker" "Mary Jane"  // Examples that may be used for test code or in UI
 
 			String first {
-				label "First name"
-				prompt "Enter your first name"
-				examples "Peter"
+				label "First name"               // Overrides the label defined above
+				prompt "Enter your first name"   // Defines a prompt just for this field
+				examples "Peter"                 // Overrides examples from above
 			}
-			String last
+
+			String last                          // Inherits meta data from above
+
 		}
+
 	}
+
 }

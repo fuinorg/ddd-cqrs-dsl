@@ -1,19 +1,25 @@
-// Top-level structure.
-// A "context" groups one or more "namespaces". A namespace holds imports and
-// elements. Names from another namespace are pulled in with an import, either a
-// ".*" wildcard or a specific namespace path.
+// The Bounded Context is a conceptual boundary within which a specific
+// domain model is defined and applicable. It groups one or more namespaces.
 context shop {
 
+    // A namespace is logical grouping used to organize and isolate different
+    // layers, sub-domains, or technical components within the Bounded Context.
 	namespace types {
 		type String
 	}
 
+    // A namespace holds imports and elements.
+    // Names from another namespace are pulled in with an import, 
+    // either a ".*" wildcard or a specific namespace path.
 	namespace catalog {
-		import shop.types.*   // wildcard: make everything in shop.types visible
-		import shop.types     // a specific namespace by its fully qualified name
+		
+		import shop.types.*   // Wildcard: make everything in shop.types visible
+		import shop.types     // A specific namespace by its fully qualified name
 
 		value-object ProductName base String {
 			String value
 		}
+		
 	}
+
 }

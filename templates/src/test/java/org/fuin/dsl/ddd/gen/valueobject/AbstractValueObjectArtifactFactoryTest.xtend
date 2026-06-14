@@ -44,11 +44,6 @@ class AbstractValueObjectArtifactFactoryTest {
     }    
 
     @Test
-    def void testCreateAbstractMyValueObject3() {
-        testCreate("MyValueObject3")
-    }
-
-    @Test
     def void testCreateAbstractMyValueObject4() {
         testCreate("MyValueObject4")
     }    

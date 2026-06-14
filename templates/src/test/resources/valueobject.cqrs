@@ -25,17 +25,6 @@ context x {
 			
 		}
 
-		/** Value object multiple attributes and base. */
-		value-object MyValueObject3 base String {
-			
-			/** Persistent value A. */
-			String a 
-			
-			/** Persistent value B. */
-			String b
-			 
-		}
-
 		/** Value object multiple attribute and without base. */
 		value-object MyValueObject4  {
 			

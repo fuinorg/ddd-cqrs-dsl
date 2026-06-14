@@ -1,21 +1,25 @@
-// An annotation is reusable metadata. It is declared with optional attributes
-// and applied to a value-object or event with '@Name' or '@Name(args)'.
 context anno {
+
 	namespace m {
+
 		type String
 		type Integer
 
 		annotation Encrypted {
 		}
 
+        // It can be declared with attributes.
 		annotation MaxLength {
 			Integer value
 		}
 
+        // It may be applied to a value-object or event
 		@Encrypted
 		@MaxLength(50)
 		value-object Secret base String {
 			String value
 		}
+		
 	}
+	
 }

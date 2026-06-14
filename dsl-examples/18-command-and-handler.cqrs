@@ -1,24 +1,46 @@
-// A command is a request to change state.
-//   'target' links it to the constructor/method that carries it out
-//   'sla'    sets a processing time budget (a duration: <number> <unit>)
-// A command-handler 'handles' one or more commands and 'uses' aggregates.
 context commands {
+
 	namespace m {
+
 		type String
 
 		aggregate-id TaskId identifies Task {}
+
 		aggregate Task identifier TaskId {
 			constructor create fires CreatedEvent {
 				String title
-				event CreatedEvent { message "created" }
+				event CreatedEvent {
+					message "created"
+				}
 			}
 		}
 
-		command CreateTask target create sla 2 seconds {
+        
+        // An immutable object that represents a user's intent to mutate the system's state.
+        // It may target an aggregate's method which should be executed.
+        // The 'sla' defines a 'service level agreement', e.g. the maximum time between receiving
+        // the command and returning after executing it.
+        
+        /**
+         * Creates a task using the 'create' constructor of the 'Task' aggregate.
+         */         
+		command CreateTask target Task.create sla 2 seconds {
+			
 			String title
+			
 			message "Create a new task"
+			
 		}
 
+         // A stateless worker that handles on one or more specific commands and executes
+         // some application logic to complete the request. The handler can be independent
+         // of agggreates or use to one or more aggregates.
+         
+        /**
+         * Handles the create task command using the Task aggregate.
+         */        
 		command-handler TaskHandler handles CreateTask uses Task
+		
 	}
+
 }

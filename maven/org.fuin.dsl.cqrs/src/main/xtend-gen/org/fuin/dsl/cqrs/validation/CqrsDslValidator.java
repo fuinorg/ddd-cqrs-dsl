@@ -25,6 +25,7 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId;
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
@@ -34,6 +35,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint;
 import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
@@ -55,6 +57,7 @@ import org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension;
 import org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions;
+import org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions;
 
 /**
  * This class contains custom validation rules.
@@ -136,6 +139,10 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String VAR_GENERICS_COUNT_MISMATCH = "varGenericsCountMismatch";
 
   public static final String ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch";
+
+  public static final String VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE = "valueObjectBaseRequiresSingleMatchingAttribute";
+
+  public static final String VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods";
 
   @Inject
   private IContainer.Manager containerManager;
@@ -260,7 +267,14 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     String _message = event.getMessage();
     boolean _tripleNotEquals = (_message != null);
     if (_tripleNotEquals) {
-      final String name = CqrsDslValidator.findUnknownVar(CqrsAttributeExtensions.asNames(event.getAttributes()), event.getMessage());
+      List<String> _asNames = CqrsAttributeExtensions.asNames(event.getAttributes());
+      final List<String> vars = new ArrayList<String>(_asNames);
+      AbstractMethod _origin = event.getOrigin();
+      boolean _tripleNotEquals_1 = (_origin != null);
+      if (_tripleNotEquals_1) {
+        vars.addAll(CqrsParameterExtensions.asNames(event.getOrigin().getParameters()));
+      }
+      final String name = CqrsDslValidator.findUnknownVar(vars, event.getMessage());
       if ((name != null)) {
         this.error(
           (("A variable with the name \'" + name) + "\' is unknown"), event, 
@@ -587,6 +601,47 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       this.error(_plus, ai, 
         CqrsDslPackage.Literals.ANNOTATION_INSTANCE__PARAMS, 
         CqrsDslValidator.ANNOTATION_PARAM_COUNT_MISMATCH);
+    }
+  }
+
+  @Check
+  public void checkValueObjectBaseHasSingleMatchingAttribute(final ValueObject vo) {
+    ExternalType _base = vo.getBase();
+    boolean _tripleNotEquals = (_base != null);
+    if (_tripleNotEquals) {
+      final List<Attribute> attributes = CqrsCollectionExtensions.<Attribute>nullSafe(vo.getAttributes());
+      if (((attributes.size() != 1) || (!Objects.equals(attributes.get(0).getType(), vo.getBase())))) {
+        String _name = vo.getBase().getName();
+        String _plus = ("A value object with a \'base\' is only allowed to have exactly one attribute with the same type as the \'base\' (" + _name);
+        String _plus_1 = (_plus + ")");
+        this.error(_plus_1, vo, 
+          CqrsDslPackage.Literals.ABSTRACT_VO__BASE, 
+          CqrsDslValidator.VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE);
+      }
+    }
+  }
+
+  @Check
+  public void checkValueObjectBaseHasNoConstructorsOrMethods(final ValueObject vo) {
+    ExternalType _base = vo.getBase();
+    boolean _tripleNotEquals = (_base != null);
+    if (_tripleNotEquals) {
+      boolean _isEmpty = CqrsCollectionExtensions.<Constructor>nullSafe(vo.getConstructors()).isEmpty();
+      boolean _not = (!_isEmpty);
+      if (_not) {
+        this.error(
+          "A value object with a \'base\' is not allowed to have constructors", vo, 
+          CqrsDslPackage.Literals.ABSTRACT_VO__CONSTRUCTORS, 
+          CqrsDslValidator.VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS);
+      }
+      boolean _isEmpty_1 = CqrsCollectionExtensions.<Method>nullSafe(vo.getMethods()).isEmpty();
+      boolean _not_1 = (!_isEmpty_1);
+      if (_not_1) {
+        this.error(
+          "A value object with a \'base\' is not allowed to have methods", vo, 
+          CqrsDslPackage.Literals.ABSTRACT_VO__METHODS, 
+          CqrsDslValidator.VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS);
+      }
     }
   }
 

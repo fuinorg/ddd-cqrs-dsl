@@ -1,23 +1,32 @@
-// A constructor creates an aggregate/entity. It may declare parameters, list
-// the events it 'fires', and declare those events inline. Parameters can be
-// 'nullable'.
 context ctor {
+	
 	namespace m {
+	
 		type String
 		type Integer
 
 		aggregate-id ItemId identifies Item {}
+		
 		aggregate Item identifier ItemId {
 
+			// A constructor creates an aggregate/entity.
 			constructor create fires ItemCreatedEvent {
+				
+				// Parameters
 				String name
+				
 				nullable Integer quantity
 
+                // Inline defined event(s) to be fired on success 
 				event ItemCreatedEvent {
 					String name
 					message "Item ${name} created"
 				}
+				
 			}
+			
 		}
+		
 	}
+	
 }
