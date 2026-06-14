@@ -7,7 +7,6 @@ import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.security.MessageDigest
 import java.util.Map
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -24,8 +23,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 /**
  * Verifies that cross-references are resolved against remote {@code .cqrs} models declared in the
- * typed {@code dependencies.json} catalog and cached under the {@code .dependencies-cache} directory,
- * for both the {@code simple} (single file) and {@code maven} (tar.gz artifact) source types.
+ * {@code dependencies.json} catalog: a {@code maven} artifact (tar.gz) cached once per GAV under the
+ * {@code .dependencies-cache} directory, and a {@code local} directory that is read directly.
  */
 @ExtendWith(InjectionExtension)
 @InjectWith(CqrsDslInjectorProvider)
@@ -75,54 +74,10 @@ class RemoteScopeResolutionTest {
 	@Inject ParseHelper<DomainModel> parseHelper
 	@Inject Provider<XtextResourceSet> resourceSetProvider
 
-	/** Fetches a {@code simple} model over HTTP, caches it on disk and resolves the cross-reference. */
-	@Test
-	def void resolvesSimpleTypeOverHttpAndCaches() {
-		val root = Files.createTempDirectory("remote-scope-http")
-		val server = serve(#{"/billing.cqrs" -> REMOTE_BILLING.toString.getBytes(StandardCharsets.UTF_8)})
-		server.start
-		try {
-			val url = "http://127.0.0.1:" + server.address.port + "/billing.cqrs"
-			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "simple", "namespaces": ["com.acme.billing"], "data": { "url": "«url»" } } ]
-			''')
-
-			assertResolvesToMoney(parse(root, LOCAL_SALES))
-
-			val cacheDir = root.resolve(".dependencies-cache")
-			Assertions.assertTrue(Files.exists(cacheDir.resolve("index.json")), "cache index must be written")
-			Assertions.assertTrue(Files.walk(cacheDir).anyMatch[toString.endsWith(".cqrs")],
-				"downloaded .cqrs must be cached")
-		} finally {
-			server.stop(0)
-		}
-	}
-
-	/** With a pre-populated cache and no reachable server, resolution is served from disk (offline). */
-	@Test
-	def void resolvesFromCacheWhenOffline() {
-		val root = Files.createTempDirectory("remote-scope-offline")
-		// Unreachable URL: it must never be contacted because the cache already has the model.
-		val url = "http://127.0.0.1:1/billing.cqrs"
-		Files.writeString(root.resolve("dependencies.json"), '''
-			[ { "type": "simple", "namespaces": ["com.acme.billing"], "data": { "url": "«url»" } } ]
-		''')
-		val dirName = "com.acme.billing-" + sha1(url)
-		val entryDir = Files.createDirectories(root.resolve(".dependencies-cache").resolve(dirName))
-		Files.writeString(entryDir.resolve("model.cqrs"), REMOTE_BILLING.toString)
-		Files.writeString(root.resolve(".dependencies-cache").resolve("index.json"), '''
-			{ "entries": [
-				{ "namespace": "com.acme.billing", "source": "«url»", "dir": "«dirName»" }
-			] }
-		''')
-
-		assertResolvesToMoney(parse(root, LOCAL_SALES))
-	}
-
 	/**
 	 * Fetches a {@code maven} artifact (tar.gz) over HTTP, unpacks all models and resolves types from
-	 * <em>two</em> namespaces declared by a single catalog entry; also checks the version is part of the
-	 * cache directory name.
+	 * <em>two</em> namespaces declared by a single catalog entry. The artifact is cached once per GAV,
+	 * so both namespaces share a single <code>&lt;artifactId&gt;-&lt;version&gt;-&lt;sha1&gt;</code> dir.
 	 */
 	@Test
 	def void resolvesMavenArtifactOverHttpAndCaches() {
@@ -157,10 +112,12 @@ class RemoteScopeResolutionTest {
 
 			val cacheDirs = Files.list(root.resolve(".dependencies-cache")).filter[Files.isDirectory(it)].collect(
 				java.util.stream.Collectors.toList)
-			Assertions.assertTrue(cacheDirs.forall[Files.list(it).filter[toString.endsWith(".cqrs")].count == 2],
-				"both .cqrs files from the tar.gz must be unpacked for each namespace")
-			Assertions.assertTrue(cacheDirs.forall[fileName.toString.contains("-0.1.0-SNAPSHOT-")],
-				"the maven version must be part of the cache directory name")
+			Assertions.assertEquals(1, cacheDirs.size,
+				"the artifact must be cached once per GAV, shared by both namespaces (no duplication)")
+			Assertions.assertTrue(cacheDirs.head.fileName.toString.startsWith("cqrs-model-0.1.0-SNAPSHOT-"),
+				"cache dir name must be <artifactId>-<version>-<sha1>")
+			Assertions.assertEquals(2, Files.list(cacheDirs.head).filter[toString.endsWith(".cqrs")].count,
+				"both .cqrs files from the tar.gz must be unpacked once")
 		} finally {
 			System.clearProperty("cqrs.maven.repo.snapshots")
 			System.clearProperty("maven.repo.local")
@@ -190,6 +147,29 @@ class RemoteScopeResolutionTest {
 		} finally {
 			System.clearProperty("cqrs.maven.repo.snapshots")
 			System.clearProperty("maven.repo.local")
+		}
+	}
+
+	/** A {@code local} directory is read directly: models resolve and no cache directory is created. */
+	@Test
+	def void resolvesFromLocalDirectory() {
+		val root = Files.createTempDirectory("remote-scope-local")
+		val localDir = Files.createTempDirectory("local-models")
+		Files.writeString(localDir.resolve("billing.cqrs"), REMOTE_BILLING.toString)
+		// Unreachable remote base: it must never be contacted because a local directory is configured.
+		System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/")
+		try {
+			Files.writeString(root.resolve("dependencies.json"), '''
+				[ { "type": "maven", "namespaces": ["com.acme.billing"], "data": {
+					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT",
+					"local": "«localDir.toString»" } } ]
+			''')
+
+			assertResolvesToMoney(parse(root, LOCAL_SALES))
+			Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")),
+				"a local directory must be read directly without creating a cache")
+		} finally {
+			System.clearProperty("cqrs.maven.repo.snapshots")
 		}
 	}
 
@@ -243,13 +223,6 @@ class RemoteScopeResolutionTest {
 			]
 		}
 		return server
-	}
-
-	private def static String sha1(String value) {
-		val bytes = MessageDigest.getInstance("SHA-1").digest(value.getBytes(StandardCharsets.UTF_8))
-		val sb = new StringBuilder
-		for (b : bytes) sb.append(String.format("%02x", b))
-		return sb.toString
 	}
 
 	private def DomainModel parse(Path root, CharSequence text) {

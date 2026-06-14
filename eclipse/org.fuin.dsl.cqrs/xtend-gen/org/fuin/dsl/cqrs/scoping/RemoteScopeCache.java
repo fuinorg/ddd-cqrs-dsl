@@ -13,8 +13,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,34 +40,31 @@ import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
  * catalog and caches them on disk under a <code>.dependencies-cache</code> directory placed next to
  * the catalog.
  * 
- * <p>Each resolved namespace is cached in its own sub-directory that holds one or more
- * <code>.cqrs</code> files: a {@code simple} source contributes the single downloaded file under
- * <code>&lt;namespace&gt;-&lt;sha1(source)&gt;</code>, a {@code maven} source contributes every
- * <code>.cqrs</code> unpacked from the artifact's <code>tar.gz</code> under
- * <code>&lt;namespace&gt;-&lt;version&gt;-&lt;sha1(source)&gt;</code> (the version is part of the name
- * so different versions of the same artifact stay distinct on disk). The cache index
- * (<code>.dependencies-cache/index.json</code>) is
- * read into memory the first time a cache directory is seen and held for the session, so subsequent
- * lookups serve files from disk without any network access.</p>
+ * <p>Each Maven artifact is cached once in its own sub-directory
+ * <code>&lt;artifactId&gt;-&lt;version&gt;-&lt;sha1(gav)&gt;</code> holding every <code>.cqrs</code>
+ * file unpacked from the artifact's <code>tar.gz</code>. Keying the cache by the Maven coordinate
+ * (rather than by namespace) means an artifact that provides several namespaces is downloaded and
+ * unpacked only once and shared by all of them. The cache index
+ * (<code>.dependencies-cache/index.json</code>) is read into memory the first time a cache directory
+ * is seen and held for the session, so subsequent lookups serve files from disk without any network
+ * access. {@code maven} artifacts (including SNAPSHOTs) are treated as up to date once cached &mdash;
+ * delete the cache directory or bump the version to force a refresh.</p>
  * 
- * <p>A <code>file:</code> based {@code simple} source is refreshed when its source file changes;
- * <code>http(s):</code> sources and {@code maven} artifacts (including SNAPSHOTs) are treated as up to
- * date once cached &mdash; delete the cache directory or bump the version to force a refresh.</p>
+ * <p>When an entry declares a <code>local</code> directory the <code>.cqrs</code> files are read
+ * straight from that folder (resolved relative to the catalog when not absolute); nothing is
+ * downloaded or cached.</p>
  */
 @Singleton
 @SuppressWarnings("all")
 public class RemoteScopeCache {
   @Data
   public static class CacheEntry {
-    private final String namespace;
-
     private final String source;
 
     private final String dir;
 
-    public CacheEntry(final String namespace, final String source, final String dir) {
+    public CacheEntry(final String source, final String dir) {
       super();
-      this.namespace = namespace;
       this.source = source;
       this.dir = dir;
     }
@@ -79,7 +74,6 @@ public class RemoteScopeCache {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((this.namespace== null) ? 0 : this.namespace.hashCode());
       result = prime * result + ((this.source== null) ? 0 : this.source.hashCode());
       return prime * result + ((this.dir== null) ? 0 : this.dir.hashCode());
     }
@@ -94,11 +88,6 @@ public class RemoteScopeCache {
       if (getClass() != obj.getClass())
         return false;
       RemoteScopeCache.CacheEntry other = (RemoteScopeCache.CacheEntry) obj;
-      if (this.namespace == null) {
-        if (other.namespace != null)
-          return false;
-      } else if (!this.namespace.equals(other.namespace))
-        return false;
       if (this.source == null) {
         if (other.source != null)
           return false;
@@ -116,15 +105,9 @@ public class RemoteScopeCache {
     @Pure
     public String toString() {
       ToStringBuilder b = new ToStringBuilder(this);
-      b.add("namespace", this.namespace);
       b.add("source", this.source);
       b.add("dir", this.dir);
       return b.toString();
-    }
-
-    @Pure
-    public String getNamespace() {
-      return this.namespace;
     }
 
     @Pure
@@ -143,95 +126,109 @@ public class RemoteScopeCache {
   private static final String INDEX_FILE_NAME = "index.json";
 
   /**
-   * File name of the single model cached for a {@code simple} source.
-   */
-  private static final String SIMPLE_FILE_NAME = "model.cqrs";
-
-  /**
-   * In-memory cache index per cache directory: key {@code namespace} &rarr; entry.
+   * In-memory cache index per cache directory: key {@code source} (the Maven GAV) &rarr; entry.
    */
   private final Map<File, Map<String, RemoteScopeCache.CacheEntry>> indexByDir = CollectionLiterals.<File, Map<String, RemoteScopeCache.CacheEntry>>newHashMap();
 
   /**
-   * Returns the local cache URIs of the <code>.cqrs</code> models that provide the given namespace,
-   * downloading and caching them on a miss, or an empty list when nothing is configured (so the
-   * caller falls back to the standard mechanism).
+   * Returns the local URIs of the <code>.cqrs</code> models that provide the given namespace,
+   * downloading and caching the Maven artifact on a miss (or reading a {@code local} directory
+   * directly), or an empty list when nothing is configured (so the caller falls back to the
+   * standard mechanism).
    */
   public List<URI> getCachedModelUris(final ResourceSet rs, final URI modelUri, final String namespace, final RemoteScopeCatalog catalog) {
+    final RemoteScopeEntry entry = catalog.lookupEntry(rs, modelUri, namespace);
+    if ((entry == null)) {
+      return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+    }
     final URI root = catalog.rootDir(rs, modelUri);
     if ((root == null)) {
       return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+    }
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(entry.getLocal());
+    boolean _not = (!_isNullOrEmpty);
+    if (_not) {
+      return this.localModelUris(rs, root, entry.getLocal());
     }
     final File cacheDir = this.toFile(rs, root.appendSegment(RemoteScopeCache.CACHE_DIR_NAME));
     if ((cacheDir == null)) {
       return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
     }
-    final String ns = RemoteScopeCatalog.stripWildcard(namespace);
-    final RemoteScopeEntry entry = catalog.lookupEntry(rs, modelUri, namespace);
-    if ((entry == null)) {
-      return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
-    }
     final String source = entry.getSourceId();
-    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(source);
-    if (_isNullOrEmpty) {
+    boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(source);
+    if (_isNullOrEmpty_1) {
       return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
     }
-    String _xifexpression = null;
-    String _type = entry.getType();
-    boolean _equals = Objects.equals(_type, RemoteScopeEntry.TYPE_MAVEN);
-    if (_equals) {
-      String _version = entry.getVersion();
-      String _plus = ((ns + "-") + _version);
-      String _plus_1 = (_plus + "-");
-      String _sha1 = this.sha1(source);
-      _xifexpression = (_plus_1 + _sha1);
-    } else {
-      String _sha1_1 = this.sha1(source);
-      _xifexpression = ((ns + "-") + _sha1_1);
-    }
-    final String dirName = _xifexpression;
+    String _artifactId = entry.getArtifactId();
+    String _plus = (_artifactId + "-");
+    String _version = entry.getVersion();
+    String _plus_1 = (_plus + _version);
+    String _plus_2 = (_plus_1 + "-");
+    String _sha1 = this.sha1(source);
+    final String dirName = (_plus_2 + _sha1);
     final File targetDir = new File(cacheDir, dirName);
     final Map<String, RemoteScopeCache.CacheEntry> index = this.indexFor(cacheDir);
-    final RemoteScopeCache.CacheEntry existing = index.get(ns);
-    if (((((existing != null) && Objects.equals(existing.source, source)) && targetDir.isDirectory()) && this.upToDate(entry, targetDir))) {
+    final RemoteScopeCache.CacheEntry existing = index.get(source);
+    if ((((existing != null) && Objects.equals(existing.source, source)) && targetDir.isDirectory())) {
       final List<URI> cached = this.cqrsFiles(targetDir);
       boolean _isEmpty = cached.isEmpty();
-      boolean _not = (!_isEmpty);
-      if (_not) {
+      boolean _not_1 = (!_isEmpty);
+      if (_not_1) {
         return cached;
       }
     }
     this.materialize(entry, targetDir);
-    RemoteScopeCache.CacheEntry _cacheEntry = new RemoteScopeCache.CacheEntry(ns, source, dirName);
-    index.put(ns, _cacheEntry);
+    RemoteScopeCache.CacheEntry _cacheEntry = new RemoteScopeCache.CacheEntry(source, dirName);
+    index.put(source, _cacheEntry);
     this.persist(cacheDir, index);
     return this.cqrsFiles(targetDir);
   }
 
   /**
-   * Downloads / unpacks the entry's model(s) into <code>targetDir</code>, replacing any stale content.
+   * Reads the <code>.cqrs</code> files of a {@code local} directory (relative to the catalog root).
+   */
+  private List<URI> localModelUris(final ResourceSet rs, final URI root, final String local) {
+    final File candidate = new File(local);
+    File _xifexpression = null;
+    boolean _isAbsolute = candidate.isAbsolute();
+    if (_isAbsolute) {
+      _xifexpression = candidate;
+    } else {
+      File _xblockexpression = null;
+      {
+        final File rootFile = this.toFile(rs, root);
+        File _xifexpression_1 = null;
+        if ((rootFile == null)) {
+          _xifexpression_1 = null;
+        } else {
+          _xifexpression_1 = new File(rootFile, local);
+        }
+        _xblockexpression = _xifexpression_1;
+      }
+      _xifexpression = _xblockexpression;
+    }
+    final File dir = _xifexpression;
+    List<URI> _xifexpression_1 = null;
+    if (((dir != null) && dir.isDirectory())) {
+      _xifexpression_1 = this.cqrsFiles(dir);
+    } else {
+      _xifexpression_1 = Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+    }
+    return _xifexpression_1;
+  }
+
+  /**
+   * Downloads and unpacks the artifact's model(s) into <code>targetDir</code>, replacing stale content.
    */
   private void materialize(final RemoteScopeEntry entry, final File targetDir) {
     try {
       this.cleanDir(targetDir);
       targetDir.mkdirs();
-      String _type = entry.getType();
-      if (_type != null) {
-        switch (_type) {
-          case RemoteScopeEntry.TYPE_SIMPLE:
-            String _url = entry.getUrl();
-            File _file = new File(targetDir, RemoteScopeCache.SIMPLE_FILE_NAME);
-            this.download(_url, _file);
-            break;
-          case RemoteScopeEntry.TYPE_MAVEN:
-            final InputStream stream = new MavenArtifactResolver().openArtifact(entry.getGroupId(), entry.getArtifactId(), entry.getVersion());
-            try {
-              TarGz.extractCqrsFiles(stream, targetDir);
-            } finally {
-              stream.close();
-            }
-            break;
-        }
+      final InputStream stream = new MavenArtifactResolver().openArtifact(entry.getGroupId(), entry.getArtifactId(), entry.getVersion());
+      try {
+        TarGz.extractCqrsFiles(stream, targetDir);
+      } finally {
+        stream.close();
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -289,12 +286,11 @@ public class RemoteScopeCache {
             for (final JsonElement element : entries) {
               {
                 final JsonObject obj = element.getAsJsonObject();
-                if (((obj.has("namespace") && obj.has("source")) && obj.has("dir"))) {
-                  String _asString = obj.get("namespace").getAsString();
-                  String _asString_1 = obj.get("source").getAsString();
-                  String _asString_2 = obj.get("dir").getAsString();
-                  final RemoteScopeCache.CacheEntry entry = new RemoteScopeCache.CacheEntry(_asString, _asString_1, _asString_2);
-                  map.put(entry.namespace, entry);
+                if ((obj.has("source") && obj.has("dir"))) {
+                  String _asString = obj.get("source").getAsString();
+                  String _asString_1 = obj.get("dir").getAsString();
+                  final RemoteScopeCache.CacheEntry entry = new RemoteScopeCache.CacheEntry(_asString, _asString_1);
+                  map.put(entry.source, entry);
                 }
               }
             }
@@ -317,7 +313,6 @@ public class RemoteScopeCache {
       for (final RemoteScopeCache.CacheEntry entry : _values) {
         {
           final JsonObject obj = new JsonObject();
-          obj.addProperty("namespace", entry.namespace);
           obj.addProperty("source", entry.source);
           obj.addProperty("dir", entry.dir);
           array.add(obj);
@@ -333,62 +328,6 @@ public class RemoteScopeCache {
         new GsonBuilder().setPrettyPrinting().create().toJson(root, writer);
       } finally {
         writer.close();
-      }
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-
-  /**
-   * A cached {@code simple} entry whose source is a local <code>file:</code> is stale once that file
-   * has been modified more recently than the cached copy. All other sources (<code>http(s):</code>
-   * and {@code maven}) are treated as up to date.
-   */
-  private boolean upToDate(final RemoteScopeEntry entry, final File targetDir) {
-    String _type = entry.getType();
-    boolean _notEquals = (!Objects.equals(_type, RemoteScopeEntry.TYPE_SIMPLE));
-    if (_notEquals) {
-      return true;
-    }
-    final File source = this.sourceFile(entry.getUrl());
-    if ((source == null)) {
-      return true;
-    }
-    final File cached = new File(targetDir, RemoteScopeCache.SIMPLE_FILE_NAME);
-    return (cached.exists() && (source.lastModified() <= cached.lastModified()));
-  }
-
-  /**
-   * Returns the local source file for a <code>file:</code> URL, or <code>null</code> for other schemes.
-   */
-  private File sourceFile(final String url) {
-    try {
-      final java.net.URI uri = new java.net.URI(url);
-      File _xifexpression = null;
-      boolean _equals = "file".equals(uri.getScheme());
-      if (_equals) {
-        _xifexpression = new File(uri);
-      } else {
-        _xifexpression = null;
-      }
-      return _xifexpression;
-    } catch (final Throwable _t) {
-      if (_t instanceof Exception) {
-        return null;
-      } else {
-        throw Exceptions.sneakyThrow(_t);
-      }
-    }
-  }
-
-  private void download(final String url, final File target) {
-    try {
-      target.getParentFile().mkdirs();
-      final InputStream input = new java.net.URI(url).toURL().openStream();
-      try {
-        Files.copy(input, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-      } finally {
-        input.close();
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

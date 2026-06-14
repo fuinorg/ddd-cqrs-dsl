@@ -110,13 +110,17 @@ commands, exceptions and more.
     <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
     <li>Structure view of the domain model.</li>
     <li>Resolution of remote references via a <code>dependencies.json</code> catalog &ndash; from a
-        single file (<code>simple</code>) or a Maven <code>tar.gz</code> artifact (<code>maven</code>)
-        &ndash; interoperable with the Eclipse plugin's <code>.dependencies-cache</code>.</li>
+        Maven <code>tar.gz</code> artifact (or a <code>local</code> directory) &ndash; interoperable
+        with the Eclipse plugin's <code>.dependencies-cache</code>.</li>
 </ul>
 Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.2.0</b> &ndash; Dependency catalog is now Maven-only (the <code>simple</code> URL source
+        was removed). Artifacts are cached once per Maven coordinate (GAV) instead of per namespace,
+        so an artifact providing several namespaces is unpacked only once. A new <code>local</code>
+        directory field reads <code>.cqrs</code> models straight from a folder without downloading.</li>
     <li><b>1.1.0</b> &ndash; Remote scope catalog now supports typed entries: a <code>simple</code>
         single-file source and a <code>maven</code> artifact (classifier <code>cqrs</code>,
         <code>tar.gz</code>) whose models are resolved and unpacked.</li>

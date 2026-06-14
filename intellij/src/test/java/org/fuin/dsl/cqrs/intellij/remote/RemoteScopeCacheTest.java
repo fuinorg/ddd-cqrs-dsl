@@ -8,30 +8,27 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Verifies that {@link RemoteScopeCache} and {@link RemoteScopeCatalog} reproduce the Eclipse
- * plugin's on-disk contract: a {@code <namespace>-<sha1(source)>} cache sub-directory (with the
- * version added for {@code maven} sources) holding the model file(s), an {@code index.json}, offline
- * serving, {@code file:} staleness handling and unpacking of {@code maven} {@code tar.gz} artifacts.
+ * plugin's on-disk contract: a {@code <artifactId>-<version>-<sha1(gav)>} cache sub-directory per
+ * Maven artifact (shared by all the namespaces it provides), an {@code index.json}, offline serving,
+ * unpacking of {@code maven} {@code tar.gz} artifacts, and a {@code local} directory read directly.
  */
 public class RemoteScopeCacheTest extends BasePlatformTestCase {
 
+    private static final String GROUP_ID = "org.fuin.test";
+    private static final String ARTIFACT_ID = "cqrs-model";
+    private static final String VERSION = "0.1.0-SNAPSHOT";
+
     private Path workDir;
     private Path catalogDir;
-    private Path remoteSource;
-    private String url;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         workDir = Files.createTempDirectory("cqrs-remote-test");
         catalogDir = Files.createDirectories(workDir.resolve("project"));
-        remoteSource = workDir.resolve("billing.cqrs");
-        Files.writeString(remoteSource,
-                "context com.acme { namespace billing { type Money } }", StandardCharsets.UTF_8);
-        url = remoteSource.toUri().toString();
     }
 
     @Override
@@ -47,68 +44,8 @@ public class RemoteScopeCacheTest extends BasePlatformTestCase {
         }
     }
 
-    public void testDownloadsAndCachesInSha1Directory() throws Exception {
-        RemoteScopeCache cache = new RemoteScopeCache();
-        RemoteScopeEntry entry = RemoteScopeEntry.simple(url);
-        List<Path> cached = cache.getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
-
-        assertEquals("Expected the single model to be downloaded", 1, cached.size());
-        Path file = cached.get(0);
-        assertEquals(RemoteScopeCache.SIMPLE_FILE_NAME, file.getFileName().toString());
-        assertEquals("com.acme.billing-" + sha1(url), file.getParent().getFileName().toString());
-        assertTrue(Files.exists(file));
-
-        Path index = catalogDir.resolve(RemoteScopeCache.CACHE_DIR_NAME)
-                .resolve(RemoteScopeCache.INDEX_FILE_NAME);
-        assertTrue("index.json must be written", Files.exists(index));
-        String indexJson = Files.readString(index);
-        assertTrue(indexJson.contains("com.acme.billing"));
-        assertTrue(indexJson.contains(url));
-        assertTrue(indexJson.contains("com.acme.billing-" + sha1(url)));
-    }
-
-    public void testServesFromCacheOfflineAfterRestart() throws Exception {
-        RemoteScopeEntry entry = RemoteScopeEntry.simple(url);
-        new RemoteScopeCache().getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
-
-        // A fresh instance simulates an IDE restart: it must serve from disk without downloading.
-        RemoteScopeCache restarted = new RemoteScopeCache();
-        List<Path> cached = restarted.getCachedModelFiles(catalogDir, "com.acme.billing", entry, false);
-        assertEquals("Cached model must be served offline", 1, cached.size());
-        assertTrue(Files.exists(cached.get(0)));
-    }
-
-    public void testWildcardImportResolvesViaCatalog() throws Exception {
-        Files.writeString(catalogDir.resolve(RemoteScopeCatalog.DEFAULT_FILE_NAME),
-                "[ { \"type\": \"simple\", \"namespaces\": [\"com.acme.billing\"], \"data\": { \"url\": \""
-                        + url + "\" } } ]", StandardCharsets.UTF_8);
-        Path nested = Files.createDirectories(catalogDir.resolve("sub").resolve("deep"));
-
-        RemoteScopeCatalog catalog = new RemoteScopeCatalog();
-        assertEquals(url, catalog.lookupEntry(nested, "com.acme.billing.*").getUrl());
-        assertEquals(url, catalog.lookupEntry(nested, "com.acme.billing").getUrl());
-        assertEquals(catalogDir, catalog.rootDir(nested));
-    }
-
-    public void testReDownloadsWhenFileSourceIsNewer() throws Exception {
-        RemoteScopeCache cache = new RemoteScopeCache();
-        RemoteScopeEntry entry = RemoteScopeEntry.simple(url);
-        assertEquals(1, cache.getCachedModelFiles(catalogDir, "com.acme.billing", entry, true).size());
-
-        // Change the source and mark it newer than the cached copy.
-        Files.writeString(remoteSource,
-                "context com.acme { namespace billing { type Money type Tax } }", StandardCharsets.UTF_8);
-        Files.setLastModifiedTime(remoteSource,
-                java.nio.file.attribute.FileTime.from(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5),
-                        TimeUnit.MILLISECONDS));
-
-        List<Path> refreshed = cache.getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
-        assertEquals(1, refreshed.size());
-        assertTrue("Stale file: source should have been re-downloaded",
-                Files.readString(refreshed.get(0)).contains("Tax"));
-    }
-
-    public void testUnpacksMavenTarGzFromLocalRepository() throws Exception {
+    /** Installs the test artifact into a fresh local repository under {@code workDir} and returns it. */
+    private Path installArtifact() throws Exception {
         Path localRepo = Files.createDirectories(workDir.resolve("m2"));
         Path artifactDir = Files.createDirectories(
                 localRepo.resolve("org/fuin/test/cqrs-model/0.1.0-SNAPSHOT"));
@@ -116,13 +53,20 @@ public class RemoteScopeCacheTest extends BasePlatformTestCase {
                 TarGzTestSupport.tarGz(Map.of(
                         "money.cqrs", "context com.acme { namespace billing { type Money } }",
                         "sku.cqrs", "context com.acme { namespace catalog { type Sku } }")));
+        return localRepo;
+    }
 
+    private static RemoteScopeEntry mavenEntry() {
+        return RemoteScopeEntry.maven(GROUP_ID, ARTIFACT_ID, VERSION);
+    }
+
+    public void testUnpacksMavenAndCachesByGav() throws Exception {
+        Path localRepo = installArtifact();
         // Unreachable remote base: the local repository must be used instead.
         System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/");
         System.setProperty("maven.repo.local", localRepo.toString());
         try {
-            RemoteScopeEntry entry = RemoteScopeEntry.maven("org.fuin.test",
-                    "cqrs-model", "0.1.0-SNAPSHOT");
+            RemoteScopeEntry entry = mavenEntry();
             List<Path> cached = new RemoteScopeCache()
                     .getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
 
@@ -130,13 +74,89 @@ public class RemoteScopeCacheTest extends BasePlatformTestCase {
             assertTrue(cached.stream().allMatch(Files::exists));
             assertTrue(cached.stream().anyMatch(p -> p.getFileName().toString().equals("money.cqrs")));
             assertTrue(cached.stream().anyMatch(p -> p.getFileName().toString().equals("sku.cqrs")));
-            assertEquals("the maven version must be part of the cache directory name",
-                    "com.acme.billing-0.1.0-SNAPSHOT-" + sha1(entry.getSourceId()),
+
+            assertEquals("cache dir must be keyed by <artifactId>-<version>-<sha1(gav)>",
+                    ARTIFACT_ID + "-" + VERSION + "-" + sha1(entry.getSourceId()),
                     cached.get(0).getParent().getFileName().toString());
+
+            Path index = catalogDir.resolve(RemoteScopeCache.CACHE_DIR_NAME)
+                    .resolve(RemoteScopeCache.INDEX_FILE_NAME);
+            assertTrue("index.json must be written", Files.exists(index));
+            String indexJson = Files.readString(index);
+            assertTrue("index must record the GAV source", indexJson.contains(entry.getSourceId()));
         } finally {
             System.clearProperty("cqrs.maven.repo.snapshots");
             System.clearProperty("maven.repo.local");
         }
+    }
+
+    public void testTwoNamespacesShareOneCacheDir() throws Exception {
+        Path localRepo = installArtifact();
+        System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/");
+        System.setProperty("maven.repo.local", localRepo.toString());
+        try {
+            RemoteScopeCache cache = new RemoteScopeCache();
+            RemoteScopeEntry entry = mavenEntry();
+            cache.getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
+            cache.getCachedModelFiles(catalogDir, "com.acme.catalog", entry, true);
+
+            try (var dirs = Files.list(catalogDir.resolve(RemoteScopeCache.CACHE_DIR_NAME))) {
+                long cacheDirs = dirs.filter(Files::isDirectory).count();
+                assertEquals("the artifact must be cached once per GAV, shared by both namespaces",
+                        1, cacheDirs);
+            }
+        } finally {
+            System.clearProperty("cqrs.maven.repo.snapshots");
+            System.clearProperty("maven.repo.local");
+        }
+    }
+
+    public void testServesFromCacheOfflineAfterRestart() throws Exception {
+        Path localRepo = installArtifact();
+        System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/");
+        System.setProperty("maven.repo.local", localRepo.toString());
+        try {
+            new RemoteScopeCache().getCachedModelFiles(catalogDir, "com.acme.billing", mavenEntry(), true);
+        } finally {
+            System.clearProperty("cqrs.maven.repo.snapshots");
+            System.clearProperty("maven.repo.local");
+        }
+
+        // A fresh instance simulates an IDE restart: with downloads disabled it must serve from disk.
+        RemoteScopeCache restarted = new RemoteScopeCache();
+        List<Path> cached = restarted.getCachedModelFiles(catalogDir, "com.acme.billing", mavenEntry(), false);
+        assertEquals("cached models must be served offline", 2, cached.size());
+        assertTrue(cached.stream().allMatch(Files::exists));
+    }
+
+    public void testWildcardImportResolvesViaCatalog() throws Exception {
+        Files.writeString(catalogDir.resolve(RemoteScopeCatalog.DEFAULT_FILE_NAME),
+                "[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\"], \"data\": {"
+                        + " \"groupId\": \"" + GROUP_ID + "\", \"artifactId\": \"" + ARTIFACT_ID
+                        + "\", \"version\": \"" + VERSION + "\" } } ]", StandardCharsets.UTF_8);
+        Path nested = Files.createDirectories(catalogDir.resolve("sub").resolve("deep"));
+
+        RemoteScopeCatalog catalog = new RemoteScopeCatalog();
+        // A trailing .* wildcard resolves to the same entry as the bare namespace.
+        assertEquals(ARTIFACT_ID, catalog.lookupEntry(nested, "com.acme.billing.*").getArtifactId());
+        assertEquals(VERSION, catalog.lookupEntry(nested, "com.acme.billing").getVersion());
+        assertEquals(catalogDir, catalog.rootDir(nested));
+    }
+
+    public void testLocalDirectoryServedDirectly() throws Exception {
+        Path localModels = Files.createDirectories(workDir.resolve("local-models"));
+        Files.writeString(localModels.resolve("billing.cqrs"),
+                "context com.acme { namespace billing { type Money } }", StandardCharsets.UTF_8);
+
+        RemoteScopeEntry entry = RemoteScopeEntry.maven(GROUP_ID, ARTIFACT_ID, VERSION, localModels.toString());
+        // No maven repository configured: a local directory must never touch the network.
+        List<Path> served = new RemoteScopeCache().getCachedModelFiles(catalogDir, "com.acme.billing", entry, true);
+
+        assertEquals("the local model must be served directly", 1, served.size());
+        assertEquals("billing.cqrs", served.get(0).getFileName().toString());
+        assertTrue(Files.exists(served.get(0)));
+        assertFalse("a local directory must not create a cache",
+                Files.exists(catalogDir.resolve(RemoteScopeCache.CACHE_DIR_NAME)));
     }
 
     private static String sha1(String value) throws Exception {

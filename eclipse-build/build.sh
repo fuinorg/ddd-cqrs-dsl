@@ -20,7 +20,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
 # --- 2. Determine the version --------------------------------------------------------
 QUALIFIER="${BUILD_QUALIFIER:-$(date -u +%Y%m%d%H%M)}"
-VERSION="1.0.0.${QUALIFIER}"
+VERSION="1.2.0.${QUALIFIER}"
 log "Building version ${VERSION}"
 
 # --- 3. Assemble the PDE build workspace ---------------------------------------------

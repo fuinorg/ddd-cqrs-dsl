@@ -42,19 +42,18 @@ the provisioned Eclipse from the headless build (`.eclipse-build-cache/eclipse`)
 
 > After regenerating, the Xtext generator may rewrite tracked `src-gen`/`plugin.xml`/`MANIFEST.MF`
 > files — review the diff and commit it. It manages `Require-Bundle`; manual `Import-Package` entries
-> (e.g. `com.google.gson`, see [below](#resolving-references-against-remote-url-addressed-models)) are
+> (e.g. `com.google.gson`, see [below](#resolving-references-against-remote-maven-addressed-models)) are
 > left untouched.
 
 ---
 
-## Resolving references against remote (URL-addressed) models
+## Resolving references against remote (Maven-addressed) models
 
 By default Xtext resolves cross-references (`[Type|FQN]`, `[Exception|FQN]`, …) only against models
 that live in the workspace. `CqrsDslGlobalScopeProvider` extends that so a model can reference types
-defined in another `.cqrs` model that is declared in a catalog, by one of two **source types**: a
-`simple` single file addressed by **URL** (`http(s):` or `file:`), or a `maven` artifact (classifier
+defined in another `.cqrs` model declared in a catalog. The source is a `maven` artifact (classifier
 `cqrs`, type `tar.gz`) whose archive bundles one or more `.cqrs` models — typically a shared, centrally
-published model.
+published model — or, as an override, a `local` directory of `.cqrs` files read directly.
 
 ### How it works
 
@@ -66,7 +65,7 @@ to scoping* — split across three classes in
 | Class | Responsibility |
 |-------|----------------|
 | `RemoteScopeCatalog`        | Reads the `dependencies.json` catalog and answers *namespace → typed source* (`RemoteScopeEntry`). |
-| `RemoteScopeCache`          | Materializes the remote `.cqrs` model(s) — downloading a `simple` file or resolving + unpacking a `maven` artifact — caches them under `.dependencies-cache/`, and serves them from disk on later runs. |
+| `RemoteScopeCache`          | Materializes the remote `.cqrs` model(s) — resolving + unpacking a `maven` artifact (or reading a `local` directory directly) — caches each artifact once per GAV under `.dependencies-cache/`, and serves them from disk on later runs. |
 | `MavenArtifactResolver` / `TarGz` | Resolve a Maven artifact (local `~/.m2` first, then Maven Central / Sonatype Snapshots) and unpack its `tar.gz`. JDK only — no Aether or Commons Compress. |
 | `CqrsDslGlobalScopeProvider`| The `IGlobalScopeProvider`. For every `import` it consults the catalog/cache and adds the remote model's elements to the global scope. |
 
@@ -93,31 +92,31 @@ and degrades to the local scope, so editing and generation never break.
 
 Place it in your project root (it is discovered by walking up the directory tree from the model being
 edited). It is a JSON **array** of typed objects, each declaring the fully qualified `namespaces` it
-provides, a `type` discriminator and a type-specific `data` block:
+provides, a `type` discriminator (always `maven`) and a `data` block:
 
 ```json
 [
-  { "type": "simple", "namespaces": ["com.acme.billing", "com.acme.catalog"],
-    "data": { "url": "http://models.acme.com/billing.cqrs" } },
-  { "type": "maven", "namespaces": ["com.acme.shipping"],
+  { "type": "maven", "namespaces": ["com.acme.billing", "com.acme.catalog"],
     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
-              "artifactId": "cqrs-shipping-model", "version": "0.1.0-SNAPSHOT" } }
+              "artifactId": "cqrs-billing-model", "version": "0.1.0-SNAPSHOT" } },
+  { "type": "maven", "namespaces": ["dev.workinprogress"],
+    "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
+              "local": "../wip-model/src/main/cqrs" } }
 ]
 ```
 
 - `namespaces` lists the provided namespaces — the fully qualified `context.namespace` values exactly
   as they are written in an `import`. They say *where those namespaces live*, independent of who imports
   them, so one entry serves every importing model. Listing several namespaces in one entry is handy
-  because a single `.cqrs` file or Maven artifact often holds more than one context and namespace. A
-  trailing `.*` is ignored, so `import a.b` and `import a.b.*` match the entry that lists `a.b`.
-- `type` selects the source and the shape of `data`:
-  - **`simple`** — `data.url` is the URL of a single remote `.cqrs` file (`http(s):` and `file:` are
-    both supported).
-  - **`maven`** — `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with
-    classifier `cqrs` and type `tar.gz`. The artifact is resolved from the local repository
-    (`~/.m2/repository`) first, otherwise downloaded from Maven Central (releases) or Sonatype
-    Snapshots (`-SNAPSHOT` versions), and every `.cqrs` file in the archive is unpacked and made
-    available for the namespace.
+  because a single Maven artifact often holds more than one context and namespace. A trailing `.*` is
+  ignored, so `import a.b` and `import a.b.*` match the entry that lists `a.b`.
+- `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
+  `cqrs` and type `tar.gz`. The artifact is resolved from the local repository (`~/.m2/repository`)
+  first, otherwise downloaded from Maven Central (releases) or Sonatype Snapshots (`-SNAPSHOT`
+  versions), and every `.cqrs` file in the archive is unpacked.
+- `data.local` (optional) is a local directory of `.cqrs` files (relative to the catalog when not
+  absolute). When set, those files are read **directly** from that folder instead of downloading the
+  artifact — handy while developing a model that is not published yet.
 
 The catalog is re-read automatically when the file's modification time changes, so edits take effect on
 the next reconcile — **no Eclipse restart needed**. (Adding a catalog where none existed before is the
@@ -126,26 +125,25 @@ one exception: a model that previously found no catalog still needs a restart.)
 **2. The cache — `.dependencies-cache/`**
 
 Created automatically next to `dependencies.json`. On first use its `index.json` (entries of
-`{ namespace, source, dir }`) is read into memory for fast lookups; each resolved namespace's model(s)
-are stored in a sub-directory `<namespace>-<sha1(source)>/` (a single `model.cqrs` for a `simple`
-source), or `<namespace>-<version>-<sha1(source)>/` for a `maven` source — the version is part of the
-name so different versions of the same artifact stay distinct — holding every `.cqrs` unpacked from the
-archive. After the first fetch everything is served from disk, so editing keeps working **offline**.
+`{ source, dir }`) is read into memory for fast lookups; each Maven artifact is stored once in a
+sub-directory `<artifactId>-<version>-<sha1(gav)>/` holding every `.cqrs` unpacked from the archive.
+Keying by the Maven coordinate (not by namespace) means an artifact that provides several namespaces
+is unpacked only once and shared by all of them. After the first fetch everything is served from disk,
+so editing keeps working **offline**.
 
 ```
 <project root>/
 ├── dependencies.json
 └── .dependencies-cache/
     ├── index.json
-    └── com.acme.billing-3f9a1c…​/
-        └── model.cqrs
+    └── cqrs-billing-model-0.1.0-SNAPSHOT-3f9a1c…​/
+        ├── billing.cqrs
+        └── catalog.cqrs
 ```
 
-A cached model is re-materialized automatically when it goes stale: when the catalog repoints the
-namespace to a **different source**, or — for a `simple` `file:` source — when the **source file is
-newer** than the cached copy. For an unchanged `http(s):` URL or a `maven` artifact (including a
-re-published `-SNAPSHOT`) whose content changed, delete the entry's cache directory (or the whole
-`.dependencies-cache/`) to force a refresh.
+A `maven` artifact (including a re-published `-SNAPSHOT`) is treated as up to date once cached; delete
+the entry's cache directory (or the whole `.dependencies-cache/`) to force a refresh. A `local`
+directory is read directly and never cached.
 
 **3. Optional system property**
 
@@ -155,7 +153,9 @@ re-published `-SNAPSHOT`) whose content changed, delete the entry's cache direct
 
 ### Worked example
 
-Remote model published at `http://models.acme.com/billing.cqrs`:
+Remote model published as the Maven artifact
+`org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT` (classifier `cqrs`, type `tar.gz`),
+bundling a `billing.cqrs`:
 
 ```
 context com.acme {
@@ -168,16 +168,18 @@ context com.acme {
 `dependencies.json` in the local project root:
 
 ```json
-[ { "type": "simple", "namespaces": ["com.acme.billing"],
-    "data": { "url": "http://models.acme.com/billing.cqrs" } } ]
-```
-
-(Or, to consume the same namespace from a published Maven artifact instead:)
-
-```json
 [ { "type": "maven", "namespaces": ["com.acme.billing"],
     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } } ]
+```
+
+(Or, while developing that model locally, point at its source folder instead — its `.cqrs` files are
+read directly, no build or publish needed:)
+
+```json
+[ { "type": "maven", "namespaces": ["com.acme.billing"],
+    "data": { "groupId": "org.fuin.dsl.cqrs.contexts", "artifactId": "cqrs-common-model",
+              "version": "0.1.0-SNAPSHOT", "local": "../cqrs-common-model/src/main/cqrs" } } ]
 ```
 
 Local model that references the remote `Money` type:
@@ -201,3 +203,11 @@ the cached copy, and content assist proposes it.
 
 > The import path must match the remote type's FQN prefix, just as it would for a local model. The
 > provider only handles *loading*; name resolution stays standard Xtext.
+
+## Version history
+
+- **1.2.0** — The dependency catalog is now Maven-only (the `simple` URL source type was removed).
+  Artifacts are cached once per Maven coordinate (GAV) instead of per namespace, so an artifact that
+  provides several namespaces is downloaded and unpacked only once. A new `local` directory field
+  reads `.cqrs` models straight from a folder without downloading.
+- **1.1.0** — Remote scope catalog with typed entries (`simple` URL and `maven` `tar.gz` sources).

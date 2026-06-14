@@ -62,10 +62,13 @@ while IFS= read -r j; do CP="$CP:$j"; done < <(find "$REPO_OUT/plugins" -maxdept
 CP="${CP#:}"
 
 # --- 2. Compile the test bundle(s) -------------------------------------------------------
+# Compile the generated Java (src-gen + xtend-gen; the .xtend is already translated and checked
+# in) plus any hand-written Java test helpers under src (e.g. TarGzTestSupport) that the
+# generated tests reference. The .xtend sources in src are skipped (only *.java is collected).
 log "Compiling test sources for: ${TEST_BUNDLES[*]}"
 JAVAC_SOURCES=()
 for b in "${TEST_BUNDLES[@]}"; do
-  for root in src-gen xtend-gen; do
+  for root in src src-gen xtend-gen; do
     [ -d "$REPO_ROOT/eclipse/$b/$root" ] || continue
     while IFS= read -r f; do JAVAC_SOURCES+=("$f"); done < <(find "$REPO_ROOT/eclipse/$b/$root" -name '*.java')
   done

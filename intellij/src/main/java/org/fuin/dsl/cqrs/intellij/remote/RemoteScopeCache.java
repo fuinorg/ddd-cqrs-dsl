@@ -12,12 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,13 +25,14 @@ import java.util.stream.Stream;
 
 /**
  * Materializes remote {@code .cqrs} models and caches them under a {@code .dependencies-cache}
- * directory next to the {@code dependencies.json} catalog. Each resolved namespace is cached in its
- * own sub-directory holding one or more {@code .cqrs} files: a {@code simple} source uses
- * {@code <namespace>-<sha1(source)>} with the single downloaded file, a {@code maven} source uses
- * {@code <namespace>-<version>-<sha1(source)>} with every {@code .cqrs} unpacked from the
- * {@code tar.gz} (the version is part of the name so versions stay distinct on disk). Mirrors the
- * Eclipse {@code RemoteScopeCache}: same directory naming, same {@code index.json} shape and the
- * same per-entry layout, so the on-disk cache is interoperable.
+ * directory next to the {@code dependencies.json} catalog. Each Maven artifact is cached once in its
+ * own {@code <artifactId>-<version>-<sha1(gav)>} sub-directory holding every {@code .cqrs} unpacked
+ * from the {@code tar.gz}. Keying the cache by the Maven coordinate (rather than by namespace) means
+ * an artifact that provides several namespaces is downloaded and unpacked only once and shared by all
+ * of them. When an entry declares a {@code local} directory the {@code .cqrs} files are read straight
+ * from that folder (resolved relative to the catalog when not absolute); nothing is downloaded or
+ * cached. Mirrors the Eclipse {@code RemoteScopeCache}: same directory naming and {@code index.json}
+ * shape, so the on-disk cache is interoperable.
  */
 public final class RemoteScopeCache {
 
@@ -43,40 +41,39 @@ public final class RemoteScopeCache {
     public static final String CACHE_DIR_NAME = ".dependencies-cache";
     public static final String INDEX_FILE_NAME = "index.json";
 
-    /** File name of the single model cached for a {@code simple} source. */
-    public static final String SIMPLE_FILE_NAME = "model.cqrs";
-
-    public record CacheEntry(String namespace, String source, String dir) {
+    public record CacheEntry(String source, String dir) {
     }
 
-    /** In-memory index per cache directory: namespace -> entry. */
+    /** In-memory index per cache directory: source (the Maven GAV) -> entry. */
     private final Map<Path, Map<String, CacheEntry>> indexByDir = new ConcurrentHashMap<>();
 
     /**
      * Returns the cached model files providing {@code namespace}, or an empty list when nothing is
      * cached (and downloading is disabled or fails). When {@code allowDownload} is {@code false} this
-     * never touches the network &mdash; safe to call on the resolve path (EDT / read action).
+     * never touches the network &mdash; safe to call on the resolve path (EDT / read action). A
+     * {@code local} entry is always read directly from its folder regardless of {@code allowDownload}.
      */
     public List<Path> getCachedModelFiles(@Nullable Path catalogDir, String namespace,
                                           @Nullable RemoteScopeEntry entry, boolean allowDownload) {
         if (catalogDir == null || entry == null) {
             return List.of();
         }
+        // A local directory overrides the artifact: read its models directly, no download or cache.
+        if (entry.getLocal() != null && !entry.getLocal().isEmpty()) {
+            Path local = Path.of(entry.getLocal());
+            return cqrsFiles(local.isAbsolute() ? local : catalogDir.resolve(local));
+        }
         String source = entry.getSourceId();
         if (source == null || source.isEmpty()) {
             return List.of();
         }
         Path cacheDir = catalogDir.resolve(CACHE_DIR_NAME);
-        String ns = RemoteScopeCatalog.stripWildcard(namespace);
-        String dirName = RemoteScopeEntry.TYPE_MAVEN.equals(entry.getType())
-                ? ns + "-" + entry.getVersion() + "-" + sha1(source)
-                : ns + "-" + sha1(source);
+        String dirName = entry.getArtifactId() + "-" + entry.getVersion() + "-" + sha1(source);
         Path targetDir = cacheDir.resolve(dirName);
 
         Map<String, CacheEntry> index = indexFor(cacheDir);
-        CacheEntry existing = index.get(ns);
-        if (existing != null && existing.source().equals(source)
-                && Files.isDirectory(targetDir) && upToDate(entry, targetDir)) {
+        CacheEntry existing = index.get(source);
+        if (existing != null && existing.source().equals(source) && Files.isDirectory(targetDir)) {
             List<Path> cached = cqrsFiles(targetDir);
             if (!cached.isEmpty()) {
                 return cached;
@@ -93,22 +90,18 @@ public final class RemoteScopeCache {
             LOG.warn("Failed to materialize remote CQRS source '" + source + "'", ex);
             return cqrsFiles(targetDir);
         }
-        index.put(ns, new CacheEntry(ns, source, dirName));
+        index.put(source, new CacheEntry(source, dirName));
         persist(cacheDir, index);
         return cqrsFiles(targetDir);
     }
 
-    /** Downloads / unpacks the entry's model(s) into {@code targetDir}, replacing any stale content. */
+    /** Downloads and unpacks the artifact's model(s) into {@code targetDir}, replacing stale content. */
     private static void materialize(RemoteScopeEntry entry, Path targetDir) throws Exception {
         cleanDir(targetDir);
         Files.createDirectories(targetDir);
-        if (RemoteScopeEntry.TYPE_SIMPLE.equals(entry.getType())) {
-            download(entry.getUrl(), targetDir.resolve(SIMPLE_FILE_NAME));
-        } else if (RemoteScopeEntry.TYPE_MAVEN.equals(entry.getType())) {
-            try (InputStream in = new MavenArtifactResolver().openArtifact(entry.getGroupId(),
-                    entry.getArtifactId(), entry.getVersion())) {
-                TarGz.extractCqrsFiles(in, targetDir.toFile());
-            }
+        try (InputStream in = new MavenArtifactResolver().openArtifact(entry.getGroupId(),
+                entry.getArtifactId(), entry.getVersion())) {
+            TarGz.extractCqrsFiles(in, targetDir.toFile());
         }
     }
 
@@ -154,10 +147,10 @@ public final class RemoteScopeCache {
             if (entries != null) {
                 for (var element : entries) {
                     JsonObject obj = element.getAsJsonObject();
-                    if (obj.has("namespace") && obj.has("source") && obj.has("dir")) {
-                        CacheEntry entry = new CacheEntry(obj.get("namespace").getAsString(),
-                                obj.get("source").getAsString(), obj.get("dir").getAsString());
-                        map.put(entry.namespace(), entry);
+                    if (obj.has("source") && obj.has("dir")) {
+                        CacheEntry entry = new CacheEntry(obj.get("source").getAsString(),
+                                obj.get("dir").getAsString());
+                        map.put(entry.source(), entry);
                     }
                 }
             }
@@ -174,7 +167,6 @@ public final class RemoteScopeCache {
             JsonArray array = new JsonArray();
             for (CacheEntry entry : index.values()) {
                 JsonObject obj = new JsonObject();
-                obj.addProperty("namespace", entry.namespace());
                 obj.addProperty("source", entry.source());
                 obj.addProperty("dir", entry.dir());
                 array.add(obj);
@@ -188,45 +180,6 @@ public final class RemoteScopeCache {
             }
         } catch (IOException ex) {
             LOG.warn("Failed to persist remote scope cache index in '" + cacheDir + "'", ex);
-        }
-    }
-
-    /**
-     * A cached {@code simple} entry whose source is a local {@code file:} is stale once that file has
-     * been modified more recently than the cached copy. All other sources ({@code http(s):} and
-     * {@code maven}) are treated as up to date (delete the cache directory to force a refresh).
-     */
-    private static boolean upToDate(RemoteScopeEntry entry, Path targetDir) {
-        if (!RemoteScopeEntry.TYPE_SIMPLE.equals(entry.getType())) {
-            return true;
-        }
-        Path source = sourceFile(entry.getUrl());
-        if (source == null) {
-            return true;
-        }
-        Path cached = targetDir.resolve(SIMPLE_FILE_NAME);
-        try {
-            return Files.isRegularFile(cached) && Files.getLastModifiedTime(source).toMillis()
-                    <= Files.getLastModifiedTime(cached).toMillis();
-        } catch (IOException e) {
-            return true;
-        }
-    }
-
-    private static @Nullable Path sourceFile(String url) {
-        try {
-            URI uri = new URI(url);
-            return "file".equals(uri.getScheme()) ? Path.of(uri) : null;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    private static void download(String url, Path target) throws Exception {
-        Files.createDirectories(target.getParent());
-        URL source = new URI(url).toURL();
-        try (var in = source.openStream()) {
-            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

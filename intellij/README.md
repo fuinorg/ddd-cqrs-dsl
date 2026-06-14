@@ -86,34 +86,37 @@ are overridable:
 By default cross-references resolve against `.cqrs` files in the project. To also resolve against a
 remote model, add a `dependencies.json` catalog to your project (it is discovered by walking up the
 directory tree from the model being edited). It is a JSON **array of typed objects**, each declaring the
-fully qualified `namespaces` it provides, a `type` discriminator and a type-specific `data` block:
+fully qualified `namespaces` it provides, a `type` discriminator (always `maven`) and a `data` block:
 
 ```json
 [
-  { "type": "simple", "namespaces": ["com.acme.billing", "com.acme.catalog"],
-    "data": { "url": "http://models.acme.com/billing.cqrs" } },
-  { "type": "maven", "namespaces": ["com.acme.shipping"],
+  { "type": "maven", "namespaces": ["com.acme.billing", "com.acme.catalog"],
     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
-              "artifactId": "cqrs-shipping-model", "version": "0.1.0-SNAPSHOT" } }
+              "artifactId": "cqrs-billing-model", "version": "0.1.0-SNAPSHOT" } },
+  { "type": "maven", "namespaces": ["dev.workinprogress"],
+    "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
+              "local": "../wip-model/src/main/cqrs" } }
 ]
 ```
 
 - `namespaces` lists the provided namespaces exactly as written in an `import` (a trailing `.*` is
   ignored, so `import a.b` and `import a.b.*` both match the entry that lists `a.b`). One entry can
-  list several namespaces, which is handy because a single `.cqrs` file or Maven artifact often holds
-  more than one context and namespace.
-- `type` selects the source: **`simple`** uses `data.url` (a single `.cqrs` file, `http(s):` or
-  `file:`); **`maven`** uses `data.groupId` / `data.artifactId` / `data.version` to resolve an artifact
-  with classifier `cqrs` and type `tar.gz` — from the local `~/.m2/repository` first, otherwise Maven
-  Central (releases) or Sonatype Snapshots (`-SNAPSHOT`) — and unpacks every `.cqrs` it contains.
+  list several namespaces, which is handy because a single Maven artifact often holds more than one
+  context and namespace.
+- `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
+  `cqrs` and type `tar.gz` — resolved from the local `~/.m2/repository` first, otherwise Maven
+  Central (releases) or Sonatype Snapshots (`-SNAPSHOT`) — whose every `.cqrs` is unpacked.
+- `data.local` (optional) points at a local directory of `.cqrs` files (relative to the catalog when
+  not absolute). When set, those files are read **directly** from that folder instead of downloading
+  the artifact — handy while developing a model that is not published yet.
 
-Models are cached next to the catalog under `.dependencies-cache/` (an `index.json` plus one
-sub-directory per resolved namespace — `<namespace>-<sha1(source)>/` for `simple`, or
-`<namespace>-<version>-<sha1(source)>/` for `maven` so versions stay distinct), so editing keeps
-working **offline** after the
-first fetch. A cached `simple` `file:` source is refreshed when it becomes newer; for an unchanged
-`http(s):` URL or `maven` artifact whose content changed, delete the entry's cache directory to force a
-refresh. This is the same layout the Eclipse plugin uses, so the two can share a cache directory.
+Downloaded artifacts are cached next to the catalog under `.dependencies-cache/` (an `index.json`
+plus one `<artifactId>-<version>-<sha1>/` sub-directory **per Maven artifact**, shared by every
+namespace it provides), so editing keeps working **offline** after the first fetch. A `maven`
+artifact (including a re-published `-SNAPSHOT`) is treated as up to date once cached — delete the
+entry's cache directory or bump the version to force a refresh. A `local` directory is read directly
+and never cached. This is the same layout the Eclipse plugin uses, so the two can share a cache
+directory.
 
 | System property | Default | Effect |
 |-----------------|---------|--------|

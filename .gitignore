@@ -8,6 +8,7 @@
 # Maven
 !.mvn
 target
+**/test-bin/**
 
 # Eclipse
 !.classpath

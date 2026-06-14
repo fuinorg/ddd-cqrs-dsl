@@ -23,15 +23,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code RemoteScopeCatalog} contract so the on-disk layout is interoperable.
  *
  * <p>The catalog is a JSON array of typed objects. Each entry lists the namespaces it provides in a
- * {@code namespaces} array, which lets a single {@code .cqrs} file or Maven artifact that holds
- * several contexts/namespaces be declared once:</p>
+ * {@code namespaces} array (a single Maven artifact often holds several contexts/namespaces), with
+ * the artifact's {@code groupId}/{@code artifactId}/{@code version} in {@code data}. An optional
+ * {@code local} directory overrides the artifact and is read directly:</p>
  * <pre>
  * [
- *   { "type": "simple", "namespaces": ["com.acme.billing", "com.acme.catalog"],
- *     "data": { "url": "http://models.acme.com/billing.cqrs" } },
- *   { "type": "maven", "namespaces": ["com.acme.common"],
+ *   { "type": "maven", "namespaces": ["com.acme.billing", "com.acme.catalog"],
  *     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
- *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } }
+ *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } },
+ *   { "type": "maven", "namespaces": ["dev.workinprogress"],
+ *     "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
+ *               "local": "../wip-model/src/main/cqrs" } }
  * ]
  * </pre>
  */
@@ -167,11 +169,9 @@ public final class RemoteScopeCatalog {
             throw new IllegalStateException("Each catalog entry needs 'type', 'namespaces' and 'data': " + obj);
         }
         switch (type) {
-            case RemoteScopeEntry.TYPE_SIMPLE:
-                return RemoteScopeEntry.simple(required(data, "url"));
             case RemoteScopeEntry.TYPE_MAVEN:
                 return RemoteScopeEntry.maven(required(data, "groupId"),
-                        required(data, "artifactId"), required(data, "version"));
+                        required(data, "artifactId"), required(data, "version"), string(data, "local"));
             default:
                 LOG.warn("Ignoring remote scope entry with unknown type '" + type + "': " + obj);
                 return null;

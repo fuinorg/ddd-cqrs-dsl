@@ -24,28 +24,31 @@ import org.eclipse.xtext.xbase.lib.Pair;
 
 /**
  * Reads the local <code>dependencies.json</code> catalog that declares <em>where a namespace
- * lives</em>, mapping it to the URL of the remote <code>.cqrs</code> model that provides it.
+ * lives</em>, mapping it to the Maven artifact that provides the remote <code>.cqrs</code> model(s).
  * 
  * <p>The catalog file is discovered by walking up the directory hierarchy starting at the model
  * resource's URI. Its name defaults to <code>dependencies.json</code> and can be overridden with
  * the system property <code>cqrs.dependencies.file</code>. The JSON structure is an array of typed
  * objects, each declaring the fully qualified namespaces it <strong>provides</strong> (the
  * <code>context.namespace</code> values, not the importer) as a <code>namespaces</code> array, a
- * <code>type</code> discriminator and a type-specific <code>data</code> block. Listing several
- * namespaces in one entry is handy because a single <code>.cqrs</code> file (or Maven artifact)
- * often holds more than one context and namespace:</p>
+ * <code>type</code> discriminator (always <code>maven</code>) and a <code>data</code> block with the
+ * artifact's <code>groupId</code>/<code>artifactId</code>/<code>version</code>. Listing several
+ * namespaces in one entry is handy because a single Maven artifact often holds more than one context
+ * and namespace. An optional <code>local</code> directory overrides the artifact and is read
+ * directly &mdash; useful while developing a model that is not published yet:</p>
  * 
  * <pre>
  * [
- *   { "type": "simple", "namespaces": ["common.basics", "common.events"],
- *     "data": { "url": "http://models.acme.com/common/basics.cqrs" } },
  *   { "type": "maven", "namespaces": ["common.types", "common.refs"],
  *     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
- *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } }
+ *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } },
+ *   { "type": "maven", "namespaces": ["dev.workinprogress"],
+ *     "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
+ *               "local": "../wip-model/src/main/cqrs" } }
  * ]
  * </pre>
  * 
- * <p>So <em>any</em> model that contains <code>import common.basics.*</code> resolves to that source,
+ * <p>So <em>any</em> model that contains <code>import common.types.*</code> resolves to that source,
  * regardless of the importing context. A namespace that is not present in the catalog yields
  * <code>null</code>, which lets the caller fall back to the standard file-based scoping mechanism.</p>
  */
@@ -336,12 +339,9 @@ public class RemoteScopeCatalog {
       RemoteScopeEntry _switchResult = null;
       if (type != null) {
         switch (type) {
-          case RemoteScopeEntry.TYPE_SIMPLE:
-            _switchResult = RemoteScopeEntry.simple(RemoteScopeCatalog.required(data, "url"));
-            break;
           case RemoteScopeEntry.TYPE_MAVEN:
             _switchResult = RemoteScopeEntry.maven(RemoteScopeCatalog.required(data, "groupId"), RemoteScopeCatalog.required(data, "artifactId"), 
-              RemoteScopeCatalog.required(data, "version"));
+              RemoteScopeCatalog.required(data, "version"), RemoteScopeCatalog.string(data, "local"));
             break;
           default:
             Object _xblockexpression_1 = null;

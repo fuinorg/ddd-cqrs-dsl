@@ -10,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +43,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Verifies that cross-references are resolved against remote {@code .cqrs} models declared in the
- * typed {@code dependencies.json} catalog and cached under the {@code .dependencies-cache} directory,
- * for both the {@code simple} (single file) and {@code maven} (tar.gz artifact) source types.
+ * {@code dependencies.json} catalog: a {@code maven} artifact (tar.gz) cached once per GAV under the
+ * {@code .dependencies-cache} directory, and a {@code local} directory that is read directly.
  */
 @ExtendWith(InjectionExtension.class)
 @InjectWith(CqrsDslInjectorProvider.class)
@@ -169,86 +168,9 @@ public class RemoteScopeResolutionTest {
   private Provider<XtextResourceSet> resourceSetProvider;
 
   /**
-   * Fetches a {@code simple} model over HTTP, caches it on disk and resolves the cross-reference.
-   */
-  @Test
-  public void resolvesSimpleTypeOverHttpAndCaches() {
-    try {
-      final Path root = Files.createTempDirectory("remote-scope-http");
-      byte[] _bytes = RemoteScopeResolutionTest.REMOTE_BILLING.toString().getBytes(StandardCharsets.UTF_8);
-      Pair<String, byte[]> _mappedTo = Pair.<String, byte[]>of("/billing.cqrs", _bytes);
-      final HttpServer server = RemoteScopeResolutionTest.serve(Collections.<String, byte[]>unmodifiableMap(CollectionLiterals.<String, byte[]>newHashMap(_mappedTo)));
-      server.start();
-      try {
-        int _port = server.getAddress().getPort();
-        String _plus = ("http://127.0.0.1:" + Integer.valueOf(_port));
-        final String url = (_plus + "/billing.cqrs");
-        Path _resolve = root.resolve("dependencies.json");
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append("[ { \"type\": \"simple\", \"namespaces\": [\"com.acme.billing\"], \"data\": { \"url\": \"");
-        _builder.append(url);
-        _builder.append("\" } } ]");
-        _builder.newLineIfNotEmpty();
-        Files.writeString(_resolve, _builder);
-        this.assertResolvesToMoney(this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES));
-        final Path cacheDir = root.resolve(".dependencies-cache");
-        Assertions.assertTrue(Files.exists(cacheDir.resolve("index.json")), "cache index must be written");
-        final Predicate<Path> _function = (Path it) -> {
-          return it.toString().endsWith(".cqrs");
-        };
-        Assertions.assertTrue(Files.walk(cacheDir).anyMatch(_function), 
-          "downloaded .cqrs must be cached");
-      } finally {
-        server.stop(0);
-      }
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-
-  /**
-   * With a pre-populated cache and no reachable server, resolution is served from disk (offline).
-   */
-  @Test
-  public void resolvesFromCacheWhenOffline() {
-    try {
-      final Path root = Files.createTempDirectory("remote-scope-offline");
-      final String url = "http://127.0.0.1:1/billing.cqrs";
-      Path _resolve = root.resolve("dependencies.json");
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("[ { \"type\": \"simple\", \"namespaces\": [\"com.acme.billing\"], \"data\": { \"url\": \"");
-      _builder.append(url);
-      _builder.append("\" } } ]");
-      _builder.newLineIfNotEmpty();
-      Files.writeString(_resolve, _builder);
-      String _sha1 = RemoteScopeResolutionTest.sha1(url);
-      final String dirName = ("com.acme.billing-" + _sha1);
-      final Path entryDir = Files.createDirectories(root.resolve(".dependencies-cache").resolve(dirName));
-      Files.writeString(entryDir.resolve("model.cqrs"), RemoteScopeResolutionTest.REMOTE_BILLING.toString());
-      Path _resolve_1 = root.resolve(".dependencies-cache").resolve("index.json");
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append("{ \"entries\": [");
-      _builder_1.newLine();
-      _builder_1.append("\t");
-      _builder_1.append("{ \"namespace\": \"com.acme.billing\", \"source\": \"");
-      _builder_1.append(url, "\t");
-      _builder_1.append("\", \"dir\": \"");
-      _builder_1.append(dirName, "\t");
-      _builder_1.append("\" }");
-      _builder_1.newLineIfNotEmpty();
-      _builder_1.append("] }");
-      _builder_1.newLine();
-      Files.writeString(_resolve_1, _builder_1);
-      this.assertResolvesToMoney(this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES));
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-
-  /**
    * Fetches a {@code maven} artifact (tar.gz) over HTTP, unpacks all models and resolves types from
-   * <em>two</em> namespaces declared by a single catalog entry; also checks the version is part of the
-   * cache directory name.
+   * <em>two</em> namespaces declared by a single catalog entry. The artifact is cached once per GAV,
+   * so both namespaces share a single <code>&lt;artifactId&gt;-&lt;version&gt;-&lt;sha1&gt;</code> dir.
    */
   @Test
   public void resolvesMavenArtifactOverHttpAndCaches() {
@@ -308,24 +230,15 @@ public class RemoteScopeResolutionTest {
         };
         final List<Path> cacheDirs = Files.list(root.resolve(".dependencies-cache")).filter(_function_3).collect(
           Collectors.<Path>toList());
-        final Function1<Path, Boolean> _function_4 = (Path it) -> {
-          try {
-            final Predicate<Path> _function_5 = (Path it_1) -> {
-              return it_1.toString().endsWith(".cqrs");
-            };
-            long _count = Files.list(it).filter(_function_5).count();
-            return Boolean.valueOf((_count == 2));
-          } catch (Throwable _e) {
-            throw Exceptions.sneakyThrow(_e);
-          }
+        Assertions.assertEquals(1, cacheDirs.size(), 
+          "the artifact must be cached once per GAV, shared by both namespaces (no duplication)");
+        Assertions.assertTrue(IterableExtensions.<Path>head(cacheDirs).getFileName().toString().startsWith("cqrs-model-0.1.0-SNAPSHOT-"), 
+          "cache dir name must be <artifactId>-<version>-<sha1>");
+        final Predicate<Path> _function_4 = (Path it) -> {
+          return it.toString().endsWith(".cqrs");
         };
-        Assertions.assertTrue(IterableExtensions.<Path>forall(cacheDirs, _function_4), 
-          "both .cqrs files from the tar.gz must be unpacked for each namespace");
-        final Function1<Path, Boolean> _function_5 = (Path it) -> {
-          return Boolean.valueOf(it.getFileName().toString().contains("-0.1.0-SNAPSHOT-"));
-        };
-        Assertions.assertTrue(IterableExtensions.<Path>forall(cacheDirs, _function_5), 
-          "the maven version must be part of the cache directory name");
+        Assertions.assertEquals(2, Files.list(IterableExtensions.<Path>head(cacheDirs)).filter(_function_4).count(), 
+          "both .cqrs files from the tar.gz must be unpacked once");
       } finally {
         System.clearProperty("cqrs.maven.repo.snapshots");
         System.clearProperty("maven.repo.local");
@@ -365,6 +278,42 @@ public class RemoteScopeResolutionTest {
       } finally {
         System.clearProperty("cqrs.maven.repo.snapshots");
         System.clearProperty("maven.repo.local");
+      }
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * A {@code local} directory is read directly: models resolve and no cache directory is created.
+   */
+  @Test
+  public void resolvesFromLocalDirectory() {
+    try {
+      final Path root = Files.createTempDirectory("remote-scope-local");
+      final Path localDir = Files.createTempDirectory("local-models");
+      Files.writeString(localDir.resolve("billing.cqrs"), RemoteScopeResolutionTest.REMOTE_BILLING.toString());
+      System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/");
+      try {
+        Path _resolve = root.resolve("dependencies.json");
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\"], \"data\": {");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("\"groupId\": \"org.fuin.test\", \"artifactId\": \"cqrs-model\", \"version\": \"0.1.0-SNAPSHOT\",");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("\"local\": \"");
+        String _string = localDir.toString();
+        _builder.append(_string, "\t");
+        _builder.append("\" } } ]");
+        _builder.newLineIfNotEmpty();
+        Files.writeString(_resolve, _builder);
+        this.assertResolvesToMoney(this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES));
+        Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")), 
+          "a local directory must be read directly without creating a cache");
+      } finally {
+        System.clearProperty("cqrs.maven.repo.snapshots");
       }
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -469,19 +418,6 @@ public class RemoteScopeResolutionTest {
         }
       }
       return server;
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-
-  private static String sha1(final String value) {
-    try {
-      final byte[] bytes = MessageDigest.getInstance("SHA-1").digest(value.getBytes(StandardCharsets.UTF_8));
-      final StringBuilder sb = new StringBuilder();
-      for (final byte b : bytes) {
-        sb.append(String.format("%02x", Byte.valueOf(b)));
-      }
-      return sb.toString();
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
