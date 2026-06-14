@@ -115,3 +115,4 @@ You need to keep the main code of the two projects aligned by copying it from [e
 > [!WARNING]  
 > The [IntelliJ IDEA plugin](intellij) is **not** updated automatically in any way.
 > Changes in the Eclipse DSL must be added manually to IntelliJ!
+> The same applies to changes in Eclipse [CqrsDslValidator](eclipse/org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/validation/CqrsDslValidator.xtend). 
