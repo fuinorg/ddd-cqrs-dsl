@@ -50,6 +50,10 @@
         <annotator
                 language="CqrsDsl"
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsAnnotator"/>
+
+        <annotator
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsValidationAnnotator"/>
     </extensions>
 
     <applicationListeners>
