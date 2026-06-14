@@ -37,6 +37,7 @@ public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject imp
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyAggregate6Id() {
         super();
     }

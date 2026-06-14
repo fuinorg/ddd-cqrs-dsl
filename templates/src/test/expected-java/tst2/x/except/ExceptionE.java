@@ -17,6 +17,7 @@
  */
 package tst2.x.except;
 
+import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.UniquelyNumberedException;
 import org.fuin.objects4j.core.KeyValue;
@@ -36,7 +37,7 @@ public final class ExceptionE extends UniquelyNumberedException {
      * @param a A.
      */
     public ExceptionE(final String a) {
-        super(124, KeyValue.replace("Exception C: ${a}",  new KeyValue("a", a)));
+        super(124, Objects.requireNonNull(KeyValue.replace("Exception C: ${a}",  new KeyValue("a", a))));
         Contract.requireArgNotNull("a", a);
         
         this.a = a;

@@ -36,6 +36,7 @@ public abstract class AbstractMyAggregateId extends AbstractStringValueObject im
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyAggregateId() {
         super();
     }

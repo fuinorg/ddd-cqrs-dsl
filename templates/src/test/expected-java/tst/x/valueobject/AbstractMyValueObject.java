@@ -34,6 +34,7 @@ public abstract class AbstractMyValueObject extends AbstractStringValueObject im
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyValueObject() {
         super();
     }

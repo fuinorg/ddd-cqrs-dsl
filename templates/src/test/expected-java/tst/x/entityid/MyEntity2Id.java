@@ -30,6 +30,7 @@ public final class MyEntity2Id extends AbstractMyEntity2Id {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyEntity2Id() {
         super();
     }

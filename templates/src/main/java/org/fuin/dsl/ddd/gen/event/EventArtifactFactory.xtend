@@ -192,6 +192,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
                     /**
                      * Protected default constructor for deserialization.
                      */
+                    @SuppressWarnings("NullAway.Init")
                     protected «event.name»() {
                         super();
                     }

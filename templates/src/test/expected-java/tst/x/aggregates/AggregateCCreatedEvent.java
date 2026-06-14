@@ -48,6 +48,7 @@ public final class AggregateCCreatedEvent extends
     /**
      * Protected default constructor for deserialization.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AggregateCCreatedEvent() {
         super();
     }

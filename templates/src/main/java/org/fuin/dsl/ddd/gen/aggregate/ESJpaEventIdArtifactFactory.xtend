@@ -74,6 +74,7 @@ class ESJpaEventIdArtifactFactory extends AbstractSource<Aggregate> implements A
                 /**
                  * Default constructor for JPA. <b><i>CAUTION:</i> DO NOT USE IN APPLICATION CODE.</b>
                  */
+                @SuppressWarnings("NullAway.Init")
                 public «aggregate.name»EventId() {
                     super();
               }

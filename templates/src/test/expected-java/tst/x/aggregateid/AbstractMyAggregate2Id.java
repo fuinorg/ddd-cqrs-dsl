@@ -35,6 +35,7 @@ public abstract class AbstractMyAggregate2Id implements AggregateRootId, ValueOb
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyAggregate2Id() {
         super();
     }

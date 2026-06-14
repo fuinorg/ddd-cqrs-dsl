@@ -37,6 +37,7 @@ public abstract class AbstractMyEntity4Id implements EntityId, ValueObject {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyEntity4Id() {
         super();
     }

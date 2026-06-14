@@ -110,6 +110,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                 /**
                  * Default constructor.
                  */
+                @SuppressWarnings("NullAway.Init")
                 protected «className»() {
                     super(TYPE);
                 }

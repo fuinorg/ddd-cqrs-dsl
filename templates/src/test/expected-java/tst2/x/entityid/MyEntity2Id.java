@@ -37,6 +37,7 @@ public final class MyEntity2Id implements EntityId, ValueObject {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyEntity2Id() {
         super();
     }

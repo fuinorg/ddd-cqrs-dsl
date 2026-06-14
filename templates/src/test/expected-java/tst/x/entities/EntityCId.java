@@ -38,6 +38,7 @@ public final class EntityCId extends AbstractStringValueObject implements
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected EntityCId() {
         super();
     }

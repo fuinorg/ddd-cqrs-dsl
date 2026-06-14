@@ -82,6 +82,7 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
                 /**
                  * Protected default constructor for JPA.
                  */
+                @SuppressWarnings("NullAway.Init")
                 protected «className»() {
                     super();
                   }

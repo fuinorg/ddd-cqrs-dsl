@@ -36,6 +36,7 @@ public abstract class AbstractMyEntityId extends AbstractStringValueObject imple
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyEntityId() {
         super();
     }

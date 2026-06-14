@@ -18,6 +18,7 @@ public final class AggregateBId extends AbstractStringValueObject implements
 
     private String value;
 
+    @SuppressWarnings("NullAway.Init")
     protected AggregateBId() {
         super();
     }

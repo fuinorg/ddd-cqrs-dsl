@@ -38,6 +38,7 @@ public final class FullName extends AbstractFullName {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected FullName() {
         super();
     }

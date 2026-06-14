@@ -50,6 +50,7 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractFullName() {
         super();
     }

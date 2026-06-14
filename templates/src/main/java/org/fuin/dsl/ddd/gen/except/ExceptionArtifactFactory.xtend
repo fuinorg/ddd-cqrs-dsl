@@ -60,6 +60,9 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
         if (ex.cid > 0) {
             ctx.requiresImport("org.fuin.objects4j.common.UniquelyNumberedException")
         }
+        if (!ex.attributes.empty) {
+            ctx.requiresImport("java.util.Objects")
+        }
     }
 
     def addReferences(CodeSnippetContext ctx, Exception ex) {
@@ -80,7 +83,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), ex)»
                 «new SrcJavaDocMethod(ctx, "Constructs a new instance of the exception.", null, ex.attributes.asParameters, null)»
                 public «ex.name»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), ex.attributes.asParameters)») {
-                    super(«IF ex.cid > 0»«ex.cid», «ENDIF»«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»);
+                    super(«IF ex.cid > 0»«ex.cid», «ENDIF»«IF !ex.attributes.empty»Objects.requireNonNull(«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»)«ELSE»«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»«ENDIF»);
                     «new SrcParamsAssignment(ctx, ex.attributes.asParameters)»
                 }
             

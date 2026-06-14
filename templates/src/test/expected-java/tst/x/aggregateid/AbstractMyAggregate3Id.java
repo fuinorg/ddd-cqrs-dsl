@@ -38,6 +38,7 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyAggregate3Id() {
         super();
     }

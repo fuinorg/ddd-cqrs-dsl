@@ -37,6 +37,7 @@ public final class MyValueObject extends AbstractStringValueObject implements Va
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyValueObject() {
         super();
     }

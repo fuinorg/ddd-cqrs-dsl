@@ -46,6 +46,7 @@ public final class EventE extends AbstractEvent {
     /**
      * Protected default constructor for deserialization.
      */
+    @SuppressWarnings("NullAway.Init")
     protected EventE() {
         super();
     }

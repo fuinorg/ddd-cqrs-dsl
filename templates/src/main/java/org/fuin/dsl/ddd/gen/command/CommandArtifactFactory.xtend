@@ -199,6 +199,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
                     /**
                      * Protected default constructor for deserialization.
                      */
+                    @SuppressWarnings("NullAway.Init")
                     protected «command.name»() {
                         super();
                     }

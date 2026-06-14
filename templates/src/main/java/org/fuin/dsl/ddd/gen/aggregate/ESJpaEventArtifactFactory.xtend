@@ -89,6 +89,7 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
                 /**
                  * Protected default constructor only required for JPA.
                  */
+                @SuppressWarnings("NullAway.Init")
                 protected «aggregate.name»Event() {
                     super();
               }

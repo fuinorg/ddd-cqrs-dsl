@@ -64,6 +64,7 @@ public final class FullName implements ValueObject, Serializable {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected FullName() {
         super();
     }

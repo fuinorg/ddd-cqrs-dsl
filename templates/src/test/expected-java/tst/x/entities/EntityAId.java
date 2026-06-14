@@ -38,6 +38,7 @@ public final class EntityAId extends AbstractStringValueObject implements
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected EntityAId() {
         super();
     }

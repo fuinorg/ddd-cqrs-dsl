@@ -18,6 +18,7 @@ public final class AggregateXId extends AbstractStringValueObject implements
 
     private String value;
 
+    @SuppressWarnings("NullAway.Init")
     protected AggregateXId() {
         super();
     }

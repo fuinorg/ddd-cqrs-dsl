@@ -34,6 +34,7 @@ public final class MyAggregateId extends AbstractMyAggregateId {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyAggregateId() {
         super();
     }

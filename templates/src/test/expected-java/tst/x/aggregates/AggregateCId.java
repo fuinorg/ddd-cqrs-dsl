@@ -18,6 +18,7 @@ public final class AggregateCId extends AbstractStringValueObject implements
 
     private String value;
 
+    @SuppressWarnings("NullAway.Init")
     protected AggregateCId() {
         super();
     }

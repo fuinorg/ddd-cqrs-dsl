@@ -61,6 +61,7 @@ public final class MyAggregate5Id extends AggregateRootUuid {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyAggregate5Id() {
         super(TYPE);
     }

@@ -41,6 +41,7 @@ public final class MyEntityId extends AbstractStringValueObject implements Entit
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyEntityId() {
         super();
     }

@@ -30,6 +30,7 @@ public final class MyAggregate2Id extends AbstractMyAggregate2Id {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyAggregate2Id() {
         super();
     }

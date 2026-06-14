@@ -17,6 +17,7 @@
  */
 package tst2.x.except;
 
+import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 
@@ -38,7 +39,7 @@ public final class ExceptionD extends Exception {
      * @param b B.
      */
     public ExceptionD(final String a, final Integer b) {
-        super(KeyValue.replace("Exception D: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b)));
+        super(Objects.requireNonNull(KeyValue.replace("Exception D: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
         

@@ -34,6 +34,7 @@ public final class MyEntity3Id extends AbstractMyEntity3Id {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyEntity3Id() {
         super();
     }

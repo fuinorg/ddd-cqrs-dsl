@@ -41,6 +41,7 @@ public final class MyValueObject2 implements ValueObject, Serializable {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyValueObject2() {
         super();
     }

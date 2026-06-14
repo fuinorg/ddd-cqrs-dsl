@@ -112,6 +112,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                 /**
                  * Protected default constructor for deserialization.
                  */
+                @SuppressWarnings("NullAway.Init")
                 protected «className»() {
                     super();
                 }

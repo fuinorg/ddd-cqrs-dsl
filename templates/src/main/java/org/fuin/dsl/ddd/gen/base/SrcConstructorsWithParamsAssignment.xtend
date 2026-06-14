@@ -110,7 +110,7 @@ class SrcConstructorsWithParamsAssignment implements CodeSnippet {
             } else {
                 name = vo.name
             }
-            constructors.add(new ConstructorData("/** Default constructor. */", "protected", name, null, null))
+            constructors.add(new ConstructorData("/** Default constructor. */", #["@SuppressWarnings(\"NullAway.Init\")"], "protected", name, null, null))
             if ((vo.constructors === null) || (vo.constructors.size == 0)) {
                 constructors.add(
                     new ConstructorData("/** Constructor with all data. */", modifiers, name, vo.asWrappedParameters(passToSuper), null))

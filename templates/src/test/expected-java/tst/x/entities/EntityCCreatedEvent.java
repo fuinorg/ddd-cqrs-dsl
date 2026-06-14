@@ -47,6 +47,7 @@ public final class EntityCCreatedEvent extends AbstractDomainEvent<EntityCId> {
     /**
      * Protected default constructor for deserialization.
      */
+    @SuppressWarnings("NullAway.Init")
     protected EntityCCreatedEvent() {
         super();
     }

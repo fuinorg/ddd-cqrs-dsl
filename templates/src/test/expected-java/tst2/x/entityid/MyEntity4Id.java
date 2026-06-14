@@ -39,6 +39,7 @@ public final class MyEntity4Id implements EntityId, ValueObject {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyEntity4Id() {
         super();
     }

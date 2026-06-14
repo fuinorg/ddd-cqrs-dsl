@@ -30,6 +30,7 @@ public final class MyValueObject2 extends AbstractMyValueObject2 {
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyValueObject2() {
         super();
     }

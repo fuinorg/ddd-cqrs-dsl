@@ -17,6 +17,7 @@
  */
 package tst2.x.except;
 
+import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 
@@ -35,7 +36,7 @@ public final class ExceptionC extends Exception {
      * @param a A.
      */
     public ExceptionC(final String a) {
-        super(KeyValue.replace("Exception C: ${a}",  new KeyValue("a", a)));
+        super(Objects.requireNonNull(KeyValue.replace("Exception C: ${a}",  new KeyValue("a", a))));
         Contract.requireArgNotNull("a", a);
         
         this.a = a;

@@ -39,6 +39,7 @@ private static final long serialVersionUID = 1000L;
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MyAggregate4Id() {
         super();
     }

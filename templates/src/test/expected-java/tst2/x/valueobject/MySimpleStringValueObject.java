@@ -63,6 +63,7 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
     /**
      * Protected default constructor for deserialization.
      */
+    @SuppressWarnings("NullAway.Init")
     protected MySimpleStringValueObject() {
         super();
     }

@@ -33,6 +33,7 @@ public abstract class AbstractMyValueObject2 implements ValueObject, Serializabl
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyValueObject2() {
         super();
     }

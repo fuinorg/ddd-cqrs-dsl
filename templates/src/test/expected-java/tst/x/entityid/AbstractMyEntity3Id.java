@@ -38,6 +38,7 @@ public abstract class AbstractMyEntity3Id extends AbstractStringValueObject impl
     /**
      * Default constructor.
      */
+    @SuppressWarnings("NullAway.Init")
     protected AbstractMyEntity3Id() {
         super();
     }
