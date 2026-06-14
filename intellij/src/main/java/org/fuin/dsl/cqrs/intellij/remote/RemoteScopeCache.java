@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
@@ -19,66 +20,122 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * Downloads remote {@code .cqrs} models and caches them under a {@code .remote-scope-cache}
- * directory next to the {@code .remote-scope.json} catalog. Mirrors the Eclipse
- * {@code RemoteScopeCache}: same directory name, same {@code index.json} shape and the same
- * {@code <namespace>-<sha1(url)>.cqrs} file naming, so the on-disk cache is interoperable.
+ * Materializes remote {@code .cqrs} models and caches them under a {@code .dependencies-cache}
+ * directory next to the {@code dependencies.json} catalog. Each resolved namespace is cached in its
+ * own sub-directory holding one or more {@code .cqrs} files: a {@code simple} source uses
+ * {@code <namespace>-<sha1(source)>} with the single downloaded file, a {@code maven} source uses
+ * {@code <namespace>-<version>-<sha1(source)>} with every {@code .cqrs} unpacked from the
+ * {@code tar.gz} (the version is part of the name so versions stay distinct on disk). Mirrors the
+ * Eclipse {@code RemoteScopeCache}: same directory naming, same {@code index.json} shape and the
+ * same per-entry layout, so the on-disk cache is interoperable.
  */
 public final class RemoteScopeCache {
 
     private static final Logger LOG = Logger.getInstance(RemoteScopeCache.class);
 
-    public static final String CACHE_DIR_NAME = ".remote-scope-cache";
+    public static final String CACHE_DIR_NAME = ".dependencies-cache";
     public static final String INDEX_FILE_NAME = "index.json";
 
-    public record CacheEntry(String namespace, String url, String file) {
+    /** File name of the single model cached for a {@code simple} source. */
+    public static final String SIMPLE_FILE_NAME = "model.cqrs";
+
+    public record CacheEntry(String namespace, String source, String dir) {
     }
 
     /** In-memory index per cache directory: namespace -> entry. */
     private final Map<Path, Map<String, CacheEntry>> indexByDir = new ConcurrentHashMap<>();
 
     /**
-     * Returns the cached model file for {@code namespace}, or {@code null} when nothing is cached
-     * (and downloading is disabled or fails). When {@code allowDownload} is {@code false} this never
-     * touches the network — safe to call on the resolve path (EDT / read action).
+     * Returns the cached model files providing {@code namespace}, or an empty list when nothing is
+     * cached (and downloading is disabled or fails). When {@code allowDownload} is {@code false} this
+     * never touches the network &mdash; safe to call on the resolve path (EDT / read action).
      */
-    public @Nullable Path getCachedModelFile(Path catalogDir, String namespace, String url,
-                                             boolean allowDownload) {
-        if (catalogDir == null || url == null || url.isEmpty()) {
-            return null;
+    public List<Path> getCachedModelFiles(@Nullable Path catalogDir, String namespace,
+                                          @Nullable RemoteScopeEntry entry, boolean allowDownload) {
+        if (catalogDir == null || entry == null) {
+            return List.of();
+        }
+        String source = entry.getSourceId();
+        if (source == null || source.isEmpty()) {
+            return List.of();
         }
         Path cacheDir = catalogDir.resolve(CACHE_DIR_NAME);
         String ns = RemoteScopeCatalog.stripWildcard(namespace);
+        String dirName = RemoteScopeEntry.TYPE_MAVEN.equals(entry.getType())
+                ? ns + "-" + entry.getVersion() + "-" + sha1(source)
+                : ns + "-" + sha1(source);
+        Path targetDir = cacheDir.resolve(dirName);
 
         Map<String, CacheEntry> index = indexFor(cacheDir);
         CacheEntry existing = index.get(ns);
-        if (existing != null && existing.url().equals(url)) {
-            Path cached = cacheDir.resolve(existing.file());
-            if (Files.isRegularFile(cached) && upToDate(url, cached)) {
+        if (existing != null && existing.source().equals(source)
+                && Files.isDirectory(targetDir) && upToDate(entry, targetDir)) {
+            List<Path> cached = cqrsFiles(targetDir);
+            if (!cached.isEmpty()) {
                 return cached;
             }
         }
         if (!allowDownload) {
-            // Stale or missing, but we must not block on the network here.
-            return existing != null && Files.isRegularFile(cacheDir.resolve(existing.file()))
-                    ? cacheDir.resolve(existing.file()) : null;
+            // Stale or missing, but we must not block on the network here; serve whatever is on disk.
+            return cqrsFiles(targetDir);
         }
 
-        String fileName = ns + "-" + sha1(url) + ".cqrs";
-        Path target = cacheDir.resolve(fileName);
         try {
-            download(url, target);
+            materialize(entry, targetDir);
         } catch (Exception ex) {
-            LOG.warn("Failed to download remote CQRS model '" + url + "'", ex);
-            return Files.isRegularFile(target) ? target : null;
+            LOG.warn("Failed to materialize remote CQRS source '" + source + "'", ex);
+            return cqrsFiles(targetDir);
         }
-        index.put(ns, new CacheEntry(ns, url, fileName));
+        index.put(ns, new CacheEntry(ns, source, dirName));
         persist(cacheDir, index);
-        return target;
+        return cqrsFiles(targetDir);
+    }
+
+    /** Downloads / unpacks the entry's model(s) into {@code targetDir}, replacing any stale content. */
+    private static void materialize(RemoteScopeEntry entry, Path targetDir) throws Exception {
+        cleanDir(targetDir);
+        Files.createDirectories(targetDir);
+        if (RemoteScopeEntry.TYPE_SIMPLE.equals(entry.getType())) {
+            download(entry.getUrl(), targetDir.resolve(SIMPLE_FILE_NAME));
+        } else if (RemoteScopeEntry.TYPE_MAVEN.equals(entry.getType())) {
+            try (InputStream in = new MavenArtifactResolver().openArtifact(entry.getGroupId(),
+                    entry.getArtifactId(), entry.getVersion())) {
+                TarGz.extractCqrsFiles(in, targetDir.toFile());
+            }
+        }
+    }
+
+    /** All {@code .cqrs} files in {@code dir}, sorted by name for a stable order. */
+    private static List<Path> cqrsFiles(Path dir) {
+        if (!Files.isDirectory(dir)) {
+            return List.of();
+        }
+        try (Stream<Path> s = Files.list(dir)) {
+            return s.filter(Files::isRegularFile)
+                    .filter(p -> p.getFileName().toString().endsWith(".cqrs"))
+                    .sorted()
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            return List.of();
+        }
+    }
+
+    private static void cleanDir(Path dir) throws IOException {
+        if (!Files.isDirectory(dir)) {
+            return;
+        }
+        try (Stream<Path> s = Files.list(dir)) {
+            for (Path p : (Iterable<Path>) s::iterator) {
+                Files.deleteIfExists(p);
+            }
+        }
     }
 
     private Map<String, CacheEntry> indexFor(Path cacheDir) {
@@ -97,9 +154,11 @@ public final class RemoteScopeCache {
             if (entries != null) {
                 for (var element : entries) {
                     JsonObject obj = element.getAsJsonObject();
-                    CacheEntry entry = new CacheEntry(obj.get("namespace").getAsString(),
-                            obj.get("url").getAsString(), obj.get("file").getAsString());
-                    map.put(entry.namespace(), entry);
+                    if (obj.has("namespace") && obj.has("source") && obj.has("dir")) {
+                        CacheEntry entry = new CacheEntry(obj.get("namespace").getAsString(),
+                                obj.get("source").getAsString(), obj.get("dir").getAsString());
+                        map.put(entry.namespace(), entry);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -116,8 +175,8 @@ public final class RemoteScopeCache {
             for (CacheEntry entry : index.values()) {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("namespace", entry.namespace());
-                obj.addProperty("url", entry.url());
-                obj.addProperty("file", entry.file());
+                obj.addProperty("source", entry.source());
+                obj.addProperty("dir", entry.dir());
                 array.add(obj);
             }
             JsonObject root = new JsonObject();
@@ -132,14 +191,22 @@ public final class RemoteScopeCache {
         }
     }
 
-    /** A cached file is current unless a {@code file:} source has been modified more recently. */
-    private static boolean upToDate(String url, Path cached) {
-        Path source = sourceFile(url);
-        if (source == null) {
-            return true; // http(s) is always treated as up to date (manual delete forces refresh)
+    /**
+     * A cached {@code simple} entry whose source is a local {@code file:} is stale once that file has
+     * been modified more recently than the cached copy. All other sources ({@code http(s):} and
+     * {@code maven}) are treated as up to date (delete the cache directory to force a refresh).
+     */
+    private static boolean upToDate(RemoteScopeEntry entry, Path targetDir) {
+        if (!RemoteScopeEntry.TYPE_SIMPLE.equals(entry.getType())) {
+            return true;
         }
+        Path source = sourceFile(entry.getUrl());
+        if (source == null) {
+            return true;
+        }
+        Path cached = targetDir.resolve(SIMPLE_FILE_NAME);
         try {
-            return Files.getLastModifiedTime(source).toMillis()
+            return Files.isRegularFile(cached) && Files.getLastModifiedTime(source).toMillis()
                     <= Files.getLastModifiedTime(cached).toMillis();
         } catch (IOException e) {
             return true;

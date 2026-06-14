@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
+import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.CommonPlugin
 import org.eclipse.emf.common.util.URI
@@ -21,53 +22,103 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtend.lib.annotations.Data
 
 /**
- * Downloads remote <code>.cqrs</code> models and caches them on disk under a
- * <code>.remote-scope-cache</code> directory placed next to the <code>.remote-scope.json</code>
- * catalog.
+ * Materializes remote <code>.cqrs</code> models declared in the <code>dependencies.json</code>
+ * catalog and caches them on disk under a <code>.dependencies-cache</code> directory placed next to
+ * the catalog.
  *
- * <p>The cache index (<code>.remote-scope-cache/index.json</code>) is read into memory the first
- * time a cache directory is seen and is held for the session, so subsequent lookups find the cached
- * file by its (context, namespace) key without any network access. A cache miss triggers a single
- * HTTP download, writes the file, appends an index entry, persists the index and returns the local
- * file URI.</p>
+ * <p>Each resolved namespace is cached in its own sub-directory that holds one or more
+ * <code>.cqrs</code> files: a {@code simple} source contributes the single downloaded file under
+ * <code>&lt;namespace&gt;-&lt;sha1(source)&gt;</code>, a {@code maven} source contributes every
+ * <code>.cqrs</code> unpacked from the artifact's <code>tar.gz</code> under
+ * <code>&lt;namespace&gt;-&lt;version&gt;-&lt;sha1(source)&gt;</code> (the version is part of the name
+ * so different versions of the same artifact stay distinct on disk). The cache index
+ * (<code>.dependencies-cache/index.json</code>) is
+ * read into memory the first time a cache directory is seen and held for the session, so subsequent
+ * lookups serve files from disk without any network access.</p>
+ *
+ * <p>A <code>file:</code> based {@code simple} source is refreshed when its source file changes;
+ * <code>http(s):</code> sources and {@code maven} artifacts (including SNAPSHOTs) are treated as up to
+ * date once cached &mdash; delete the cache directory or bump the version to force a refresh.</p>
  */
 @Singleton
 class RemoteScopeCache {
 
-	static val String CACHE_DIR_NAME = ".remote-scope-cache"
+	static val String CACHE_DIR_NAME = ".dependencies-cache"
 	static val String INDEX_FILE_NAME = "index.json"
 
-	/** In-memory cache index per cache directory: key {@code "context namespace"} &rarr; entry. */
+	/** File name of the single model cached for a {@code simple} source. */
+	static val String SIMPLE_FILE_NAME = "model.cqrs"
+
+	/** In-memory cache index per cache directory: key {@code namespace} &rarr; entry. */
 	val Map<File, Map<String, CacheEntry>> indexByDir = newHashMap
 
 	/**
-	 * Returns the local cache URI of the remote model that provides the given namespace, downloading
-	 * and caching it on a miss, or <code>null</code> when nothing is configured (so the caller falls
-	 * back to the standard mechanism).
+	 * Returns the local cache URIs of the <code>.cqrs</code> models that provide the given namespace,
+	 * downloading and caching them on a miss, or an empty list when nothing is configured (so the
+	 * caller falls back to the standard mechanism).
 	 */
-	def URI getCachedModelUri(ResourceSet rs, URI modelUri, String namespace, RemoteScopeCatalog catalog) {
+	def List<URI> getCachedModelUris(ResourceSet rs, URI modelUri, String namespace, RemoteScopeCatalog catalog) {
 		val root = catalog.rootDir(rs, modelUri)
-		if(root === null) return null
+		if(root === null) return #[]
 		val cacheDir = toFile(rs, root.appendSegment(CACHE_DIR_NAME))
-		if(cacheDir === null) return null
+		if(cacheDir === null) return #[]
 
 		val ns = RemoteScopeCatalog.stripWildcard(namespace)
-		val url = catalog.lookupUrl(rs, modelUri, namespace)
-		if(url.nullOrEmpty) return null
+		val entry = catalog.lookupEntry(rs, modelUri, namespace)
+		if(entry === null) return #[]
+		val source = entry.sourceId
+		if(source.nullOrEmpty) return #[]
 
+		val dirName = if(entry.type == RemoteScopeEntry.TYPE_MAVEN)
+				ns + "-" + entry.version + "-" + sha1(source)
+			else
+				ns + "-" + sha1(source)
+		val targetDir = new File(cacheDir, dirName)
 		val index = indexFor(cacheDir)
 		val existing = index.get(ns)
-		if (existing !== null && existing.url == url) {
-			val cached = new File(cacheDir, existing.file)
-			if(cached.exists && upToDate(url, cached)) return URI.createFileURI(cached.absolutePath)
+		if (existing !== null && existing.source == source && targetDir.directory && upToDate(entry, targetDir)) {
+			val cached = cqrsFiles(targetDir)
+			if(!cached.empty) return cached
 		}
 
-		val fileName = ns + "-" + sha1(url) + ".cqrs"
-		val target = new File(cacheDir, fileName)
-		download(url, target)
-		index.put(ns, new CacheEntry(ns, url, fileName))
+		materialize(entry, targetDir)
+		index.put(ns, new CacheEntry(ns, source, dirName))
 		persist(cacheDir, index)
-		return URI.createFileURI(target.absolutePath)
+		return cqrsFiles(targetDir)
+	}
+
+	/** Downloads / unpacks the entry's model(s) into <code>targetDir</code>, replacing any stale content. */
+	private def void materialize(RemoteScopeEntry entry, File targetDir) {
+		cleanDir(targetDir)
+		targetDir.mkdirs
+		switch entry.type {
+			case RemoteScopeEntry.TYPE_SIMPLE:
+				download(entry.url, new File(targetDir, SIMPLE_FILE_NAME))
+			case RemoteScopeEntry.TYPE_MAVEN: {
+				val stream = new MavenArtifactResolver().openArtifact(entry.groupId, entry.artifactId, entry.version)
+				try {
+					TarGz.extractCqrsFiles(stream, targetDir)
+				} finally {
+					stream.close
+				}
+			}
+		}
+	}
+
+	/** All <code>.cqrs</code> files in <code>dir</code> as file URIs, sorted by name for stable order. */
+	private def List<URI> cqrsFiles(File dir) {
+		val files = dir.listFiles
+		if(files === null) return #[]
+		val result = <URI>newArrayList
+		for (f : files.sortBy[name]) {
+			if(f.isFile && f.name.endsWith(".cqrs")) result.add(URI.createFileURI(f.absolutePath))
+		}
+		return result
+	}
+
+	private def void cleanDir(File dir) {
+		val files = dir.listFiles
+		if(files !== null) for (f : files) f.delete
 	}
 
 	private def Map<String, CacheEntry> indexFor(File cacheDir) {
@@ -84,9 +135,11 @@ class RemoteScopeCache {
 				if (entries !== null) {
 					for (element : entries) {
 						val obj = element.asJsonObject
-						val entry = new CacheEntry(obj.get("namespace").asString, obj.get("url").asString,
-							obj.get("file").asString)
-						map.put(entry.namespace, entry)
+						if (obj.has("namespace") && obj.has("source") && obj.has("dir")) {
+							val entry = new CacheEntry(obj.get("namespace").asString, obj.get("source").asString,
+								obj.get("dir").asString)
+							map.put(entry.namespace, entry)
+						}
 					}
 				}
 			} finally {
@@ -102,8 +155,8 @@ class RemoteScopeCache {
 		for (entry : index.values) {
 			val obj = new JsonObject
 			obj.addProperty("namespace", entry.namespace)
-			obj.addProperty("url", entry.url)
-			obj.addProperty("file", entry.file)
+			obj.addProperty("source", entry.source)
+			obj.addProperty("dir", entry.dir)
 			array.add(obj)
 		}
 		val root = new JsonObject
@@ -118,12 +171,16 @@ class RemoteScopeCache {
 	}
 
 	/**
-	 * A cached file is current unless its source is a local <code>file:</code> that has been modified
-	 * more recently. Non-file sources (e.g. HTTP) are always treated as up to date.
+	 * A cached {@code simple} entry whose source is a local <code>file:</code> is stale once that file
+	 * has been modified more recently than the cached copy. All other sources (<code>http(s):</code>
+	 * and {@code maven}) are treated as up to date.
 	 */
-	private def boolean upToDate(String url, File cached) {
-		val source = sourceFile(url)
-		return source === null || source.lastModified <= cached.lastModified
+	private def boolean upToDate(RemoteScopeEntry entry, File targetDir) {
+		if(entry.type != RemoteScopeEntry.TYPE_SIMPLE) return true
+		val source = sourceFile(entry.url)
+		if(source === null) return true
+		val cached = new File(targetDir, SIMPLE_FILE_NAME)
+		return cached.exists && source.lastModified <= cached.lastModified
 	}
 
 	/** Returns the local source file for a <code>file:</code> URL, or <code>null</code> for other schemes. */
@@ -162,7 +219,7 @@ class RemoteScopeCache {
 	@Data
 	static class CacheEntry {
 		String namespace
-		String url
-		String file
+		String source
+		String dir
 	}
 }

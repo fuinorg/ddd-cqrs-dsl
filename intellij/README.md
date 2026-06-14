@@ -12,7 +12,7 @@ parser) reproducing the language defined by the Xtext grammar.
   entities, aggregates, events, exceptions, …).
 - **Navigation** — go-to-definition (`Ctrl/Cmd+B`), find-usages, rename, and a structure view.
 - **Remote references** — resolves cross-references against remote `.cqrs` models declared in a
-  `.remote-scope.json` catalog (see below), interoperable with the Eclipse plugin's on-disk cache.
+  `dependencies.json` catalog (see below), interoperable with the Eclipse plugin's on-disk cache.
 - Brace matching, line/block commenting (`Ctrl/Cmd+/`) and a color settings page
   (`Settings | Editor | Color Scheme | CQRS DSL`).
 
@@ -81,33 +81,43 @@ are overridable:
 `updatePlugins.xml` is also generated on every `./gradlew buildPlugin` (under
 `build/distributions/`). In CI the publish step runs only on pushes to `main`.
 
-## Remote references (`.remote-scope.json`)
+## Remote references (`dependencies.json`)
 
 By default cross-references resolve against `.cqrs` files in the project. To also resolve against a
-remote model addressed by URL, add a `.remote-scope.json` catalog to your project (it is discovered
-by walking up the directory tree from the model being edited). It is a JSON **array of single-entry
-objects** mapping a fully qualified `context.namespace` to the URL of the model that provides it:
+remote model, add a `dependencies.json` catalog to your project (it is discovered by walking up the
+directory tree from the model being edited). It is a JSON **array of typed objects**, each declaring the
+fully qualified `namespaces` it provides, a `type` discriminator and a type-specific `data` block:
 
 ```json
 [
-  { "com.acme.billing":  "http://models.acme.com/billing.cqrs" },
-  { "com.acme.shipping": "file:/shared/shipping.cqrs" }
+  { "type": "simple", "namespaces": ["com.acme.billing", "com.acme.catalog"],
+    "data": { "url": "http://models.acme.com/billing.cqrs" } },
+  { "type": "maven", "namespaces": ["com.acme.shipping"],
+    "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
+              "artifactId": "cqrs-shipping-model", "version": "0.1.0-SNAPSHOT" } }
 ]
 ```
 
-- The **key** is the provided namespace exactly as written in an `import` (a trailing `.*` is
-  ignored, so `import a.b` and `import a.b.*` both match the entry `a.b`).
-- The **value** is the URL of the remote `.cqrs` file (`http(s):` and `file:` are supported).
+- `namespaces` lists the provided namespaces exactly as written in an `import` (a trailing `.*` is
+  ignored, so `import a.b` and `import a.b.*` both match the entry that lists `a.b`). One entry can
+  list several namespaces, which is handy because a single `.cqrs` file or Maven artifact often holds
+  more than one context and namespace.
+- `type` selects the source: **`simple`** uses `data.url` (a single `.cqrs` file, `http(s):` or
+  `file:`); **`maven`** uses `data.groupId` / `data.artifactId` / `data.version` to resolve an artifact
+  with classifier `cqrs` and type `tar.gz` — from the local `~/.m2/repository` first, otherwise Maven
+  Central (releases) or Sonatype Snapshots (`-SNAPSHOT`) — and unpacks every `.cqrs` it contains.
 
-Downloaded models are cached next to the catalog under `.remote-scope-cache/` (an `index.json` plus
-files named `<namespace>-<sha1(url)>.cqrs`), so editing keeps working **offline** after the first
-fetch. A cached `file:` source is refreshed when it becomes newer; for an unchanged `http(s):` URL
-whose content changed, delete the cached file to force a refresh. This is the same layout the Eclipse
-plugin uses, so the two can share a cache directory.
+Models are cached next to the catalog under `.dependencies-cache/` (an `index.json` plus one
+sub-directory per resolved namespace — `<namespace>-<sha1(source)>/` for `simple`, or
+`<namespace>-<version>-<sha1(source)>/` for `maven` so versions stay distinct), so editing keeps
+working **offline** after the
+first fetch. A cached `simple` `file:` source is refreshed when it becomes newer; for an unchanged
+`http(s):` URL or `maven` artifact whose content changed, delete the entry's cache directory to force a
+refresh. This is the same layout the Eclipse plugin uses, so the two can share a cache directory.
 
 | System property | Default | Effect |
 |-----------------|---------|--------|
-| `cqrs.remote.scope.file` | `.remote-scope.json` | Name of the catalog file to look for. |
+| `cqrs.dependencies.file` | `dependencies.json` | Name of the catalog file to look for. |
 
 Downloads happen on a background thread; while a remote model is being fetched its names resolve once
 the download lands (the editor refreshes automatically). Any failure (missing catalog, offline and

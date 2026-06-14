@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Watches for changes to {@code .remote-scope.json} catalogs and the {@code .remote-scope-cache}
+ * Watches for changes to {@code dependencies.json} catalogs and the {@code .dependencies-cache}
  * directory. When one changes, the in-memory cache index is dropped and the daemon restarted so
  * resolution reflects the new state (mirroring the Eclipse "re-read on modification" behavior).
  */

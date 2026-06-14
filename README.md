@@ -43,8 +43,8 @@ Here are the steps to install the plugin in an Eclipse IDE:
 ### IntelliJ IDEA Plugin
 The [intellij](intellij) plugin brings the same `*.cqrs` editing experience to IntelliJ IDEA:
 syntax highlighting, reference-aware code completion, go-to-definition, find-usages, rename, a
-structure view, and resolution of remote references via a `.remote-scope.json` catalog (interoperable
-with the Eclipse plugin's `.remote-scope-cache`). It is standalone (no dependency on the other
+structure view, and resolution of remote references via a `dependencies.json` catalog (interoperable
+with the Eclipse plugin's `.dependencies-cache`). It is standalone (no dependency on the other
 modules) and built with Gradle.
 
 To install it in IntelliJ IDEA, add the custom plugin repository under

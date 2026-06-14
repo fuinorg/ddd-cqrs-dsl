@@ -109,13 +109,17 @@ commands, exceptions and more.
     <li>Syntax highlighting (keywords, strings, numbers, comments, doc comments).</li>
     <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
     <li>Structure view of the domain model.</li>
-    <li>Resolution of remote references via a <code>.remote-scope.json</code> catalog,
-        interoperable with the Eclipse plugin's <code>.remote-scope-cache</code>.</li>
+    <li>Resolution of remote references via a <code>dependencies.json</code> catalog &ndash; from a
+        single file (<code>simple</code>) or a Maven <code>tar.gz</code> artifact (<code>maven</code>)
+        &ndash; interoperable with the Eclipse plugin's <code>.dependencies-cache</code>.</li>
 </ul>
 Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.1.0</b> &ndash; Remote scope catalog now supports typed entries: a <code>simple</code>
+        single-file source and a <code>maven</code> artifact (classifier <code>cqrs</code>,
+        <code>tar.gz</code>) whose models are resolved and unpacked.</li>
     <li><b>1.0.2</b> &ndash; Code completion now offers available types when starting an attribute
         in a <code>value-object</code> or <code>constraint</code> body.</li>
     <li><b>1.0.1</b> &ndash; Added semantic validation (ported from the Eclipse validator),

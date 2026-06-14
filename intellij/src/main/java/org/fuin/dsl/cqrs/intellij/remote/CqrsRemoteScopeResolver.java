@@ -64,24 +64,26 @@ public final class CqrsRemoteScopeResolver {
         boolean missing = false;
         PsiManager psiManager = PsiManager.getInstance(project);
         for (String namespace : importedNamespaces(file)) {
-            String url = catalog.lookupUrl(startDir, namespace);
-            if (url == null) {
+            RemoteScopeEntry entry = catalog.lookupEntry(startDir, namespace);
+            if (entry == null) {
                 continue;
             }
             Path root = catalog.rootDir(startDir);
-            Path cached = cache.getCachedModelFile(root, namespace, url, false);
-            if (cached == null) {
+            List<Path> cached = cache.getCachedModelFiles(root, namespace, entry, false);
+            if (cached.isEmpty()) {
                 missing = true;
                 continue;
             }
-            VirtualFile vf = LocalFileSystem.getInstance().findFileByNioFile(cached);
-            if (vf == null) {
-                missing = true;
-                continue;
-            }
-            PsiFile remote = psiManager.findFile(vf);
-            if (remote instanceof CqrsFile) {
-                result.addAll(PsiTreeUtil.findChildrenOfType(remote, CqrsNamedElement.class));
+            for (Path modelPath : cached) {
+                VirtualFile vf = LocalFileSystem.getInstance().findFileByNioFile(modelPath);
+                if (vf == null) {
+                    missing = true;
+                    continue;
+                }
+                PsiFile remote = psiManager.findFile(vf);
+                if (remote instanceof CqrsFile) {
+                    result.addAll(PsiTreeUtil.findChildrenOfType(remote, CqrsNamedElement.class));
+                }
             }
         }
         if (missing) {
@@ -126,10 +128,7 @@ public final class CqrsRemoteScopeResolver {
                         .runReadAction((Computable<List<Pending>>) () -> gatherPending(file));
                 List<Path> fetched = new ArrayList<>();
                 for (Pending p : pending) {
-                    Path cached = cache.getCachedModelFile(p.root(), p.namespace(), p.url(), true);
-                    if (cached != null) {
-                        fetched.add(cached);
-                    }
+                    fetched.addAll(cache.getCachedModelFiles(p.root(), p.namespace(), p.entry(), true));
                 }
                 if (!fetched.isEmpty()) {
                     LocalFileSystem.getInstance().refreshNioFiles(fetched);
@@ -147,7 +146,7 @@ public final class CqrsRemoteScopeResolver {
         });
     }
 
-    private record Pending(Path root, String namespace, String url) {
+    private record Pending(Path root, String namespace, RemoteScopeEntry entry) {
     }
 
     private List<Pending> gatherPending(PsiFile file) {
@@ -157,11 +156,11 @@ public final class CqrsRemoteScopeResolver {
         }
         Set<Pending> pending = new LinkedHashSet<>();
         for (String namespace : importedNamespaces(file)) {
-            String url = catalog.lookupUrl(startDir, namespace);
+            RemoteScopeEntry entry = catalog.lookupEntry(startDir, namespace);
             Path root = catalog.rootDir(startDir);
-            if (url != null && root != null
-                    && cache.getCachedModelFile(root, namespace, url, false) == null) {
-                pending.add(new Pending(root, namespace, url));
+            if (entry != null && root != null
+                    && cache.getCachedModelFiles(root, namespace, entry, false).isEmpty()) {
+                pending.add(new Pending(root, namespace, entry));
             }
         }
         return new ArrayList<>(pending);

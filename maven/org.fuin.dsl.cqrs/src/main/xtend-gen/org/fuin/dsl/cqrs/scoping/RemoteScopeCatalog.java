@@ -3,15 +3,17 @@ package org.fuin.dsl.cqrs.scoping;
 import com.google.common.io.CharStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
@@ -21,23 +23,29 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Pair;
 
 /**
- * Reads the local <code>.remote-scope.json</code> catalog that declares <em>where a namespace
+ * Reads the local <code>dependencies.json</code> catalog that declares <em>where a namespace
  * lives</em>, mapping it to the URL of the remote <code>.cqrs</code> model that provides it.
  * 
  * <p>The catalog file is discovered by walking up the directory hierarchy starting at the model
- * resource's URI. Its name defaults to <code>.remote-scope.json</code> and can be overridden with
- * the system property <code>cqrs.remote.scope.file</code>. The JSON structure is an array of
- * single-entry objects that map a fully qualified namespace (the <strong>provided</strong>
- * <code>context.namespace</code>, not the importer) to the URL of the model that provides it:</p>
+ * resource's URI. Its name defaults to <code>dependencies.json</code> and can be overridden with
+ * the system property <code>cqrs.dependencies.file</code>. The JSON structure is an array of typed
+ * objects, each declaring the fully qualified namespaces it <strong>provides</strong> (the
+ * <code>context.namespace</code> values, not the importer) as a <code>namespaces</code> array, a
+ * <code>type</code> discriminator and a type-specific <code>data</code> block. Listing several
+ * namespaces in one entry is handy because a single <code>.cqrs</code> file (or Maven artifact)
+ * often holds more than one context and namespace:</p>
  * 
  * <pre>
  * [
- *   { "common.basics": "http://models.acme.com/common/basics.cqrs" },
- *   { "common.types":  "http://models.acme.com/common/types.cqrs" }
+ *   { "type": "simple", "namespaces": ["common.basics", "common.events"],
+ *     "data": { "url": "http://models.acme.com/common/basics.cqrs" } },
+ *   { "type": "maven", "namespaces": ["common.types", "common.refs"],
+ *     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
+ *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } }
  * ]
  * </pre>
  * 
- * <p>So <em>any</em> model that contains <code>import common.basics.*</code> resolves to that URL,
+ * <p>So <em>any</em> model that contains <code>import common.basics.*</code> resolves to that source,
  * regardless of the importing context. A namespace that is not present in the catalog yields
  * <code>null</code>, which lets the caller fall back to the standard file-based scoping mechanism.</p>
  */
@@ -46,7 +54,7 @@ import org.eclipse.xtext.xbase.lib.Pair;
 public class RemoteScopeCatalog {
   private static final Logger LOG = Logger.getLogger(RemoteScopeCatalog.class);
 
-  private static final String DEFAULT_FILE_NAME = ".remote-scope.json";
+  private static final String DEFAULT_FILE_NAME = "dependencies.json";
 
   /**
    * Sentinel stored in the discovery cache to mark "no catalog found" (maps can't cache null).
@@ -62,12 +70,12 @@ public class RemoteScopeCatalog {
 
   /**
    * Caches the parsed catalog per discovered catalog URI, together with the file's last-modified
-   * time so the catalog is re-read when it is edited: {@code config -> (timestamp -> namespace -> url)}.
+   * time so the catalog is re-read when it is edited: {@code config -> (timestamp -> namespace -> entry)}.
    */
-  private final Map<URI, Pair<Long, Map<String, String>>> catalogByConfig = CollectionLiterals.<URI, Pair<Long, Map<String, String>>>newHashMap();
+  private final Map<URI, Pair<Long, Map<String, RemoteScopeEntry>>> catalogByConfig = CollectionLiterals.<URI, Pair<Long, Map<String, RemoteScopeEntry>>>newHashMap();
 
   public String fileName() {
-    return System.getProperty("cqrs.remote.scope.file", RemoteScopeCatalog.DEFAULT_FILE_NAME);
+    return System.getProperty("cqrs.dependencies.file", RemoteScopeCatalog.DEFAULT_FILE_NAME);
   }
 
   /**
@@ -85,13 +93,13 @@ public class RemoteScopeCatalog {
   }
 
   /**
-   * Resolves the URL of the remote model that provides the given namespace, or <code>null</code>
-   * when no catalog entry exists for it. A trailing <code>.*</code> wildcard is ignored, so
+   * Resolves the catalog entry that provides the given namespace, or <code>null</code> when no
+   * catalog entry exists for it. A trailing <code>.*</code> wildcard is ignored, so
    * <code>import a.b</code> and <code>import a.b.*</code> resolve to the same entry.
    */
-  public String lookupUrl(final ResourceSet rs, final URI modelUri, final String namespace) {
-    final Map<String, String> catalog = this.catalog(rs, modelUri);
-    String _get = null;
+  public RemoteScopeEntry lookupEntry(final ResourceSet rs, final URI modelUri, final String namespace) {
+    final Map<String, RemoteScopeEntry> catalog = this.catalog(rs, modelUri);
+    RemoteScopeEntry _get = null;
     if (catalog!=null) {
       _get=catalog.get(RemoteScopeCatalog.stripWildcard(namespace));
     }
@@ -110,18 +118,18 @@ public class RemoteScopeCatalog {
     return _xifexpression;
   }
 
-  private Map<String, String> catalog(final ResourceSet rs, final URI modelUri) {
+  private Map<String, RemoteScopeEntry> catalog(final ResourceSet rs, final URI modelUri) {
     final URI config = this.configUri(rs, modelUri);
     if ((config == RemoteScopeCatalog.NONE)) {
       return null;
     }
     final long stamp = this.timeStamp(rs, config);
-    final Pair<Long, Map<String, String>> cached = this.catalogByConfig.get(config);
+    final Pair<Long, Map<String, RemoteScopeEntry>> cached = this.catalogByConfig.get(config);
     if (((cached != null) && ((cached.getKey()).longValue() == stamp))) {
       return cached.getValue();
     }
-    final Map<String, String> parsed = this.parse(rs, config);
-    Pair<Long, Map<String, String>> _mappedTo = Pair.<Long, Map<String, String>>of(Long.valueOf(stamp), parsed);
+    final Map<String, RemoteScopeEntry> parsed = this.parse(rs, config);
+    Pair<Long, Map<String, RemoteScopeEntry>> _mappedTo = Pair.<Long, Map<String, RemoteScopeEntry>>of(Long.valueOf(stamp), parsed);
     this.catalogByConfig.put(config, _mappedTo);
     return parsed;
   }
@@ -245,12 +253,13 @@ public class RemoteScopeCatalog {
   }
 
   /**
-   * Parses the catalog into a flat map of fully qualified namespace (<code>context.namespace</code>)
-   * to provider URL.
+   * Parses the catalog into a map of fully qualified namespace (<code>context.namespace</code>) to
+   * its typed {@link RemoteScopeEntry}. Entries with an unknown <code>type</code> are logged and
+   * skipped; a structurally invalid entry aborts the whole parse.
    */
-  private Map<String, String> parse(final ResourceSet rs, final URI configUri) {
+  private Map<String, RemoteScopeEntry> parse(final ResourceSet rs, final URI configUri) {
     try {
-      final LinkedHashMap<String, String> result = CollectionLiterals.<String, String>newLinkedHashMap();
+      final LinkedHashMap<String, RemoteScopeEntry> result = CollectionLiterals.<String, RemoteScopeEntry>newLinkedHashMap();
       InputStream _createInputStream = rs.getURIConverter().createInputStream(configUri, RemoteScopeCatalog.NO_OPTIONS);
       final InputStreamReader reader = new InputStreamReader(_createInputStream, 
         StandardCharsets.UTF_8);
@@ -276,9 +285,13 @@ public class RemoteScopeCatalog {
             if (_not_1) {
               throw new IllegalStateException((("Expected a JSON object entry, but got \'" + element) + "\'"));
             }
-            Set<Map.Entry<String, JsonElement>> _entrySet = element.getAsJsonObject().entrySet();
-            for (final Map.Entry<String, JsonElement> entry : _entrySet) {
-              result.put(entry.getKey(), entry.getValue().getAsString());
+            final JsonObject obj = element.getAsJsonObject();
+            final RemoteScopeEntry entry = this.toEntry(obj);
+            if ((entry != null)) {
+              List<String> _namespaces = RemoteScopeCatalog.namespaces(obj);
+              for (final String ns : _namespaces) {
+                result.put(ns, entry);
+              }
             }
           }
         }
@@ -298,5 +311,105 @@ public class RemoteScopeCatalog {
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
+  }
+
+  /**
+   * Builds a typed source entry from a single catalog object <code>{ type, namespaces, data }</code>.
+   * Returns <code>null</code> for an unknown type (logged and skipped); throws for a missing
+   * <code>type</code> or <code>data</code>, or a missing type-specific field. The
+   * <code>namespaces</code> array is read separately by {@link #namespaces(JsonObject)}.
+   */
+  private RemoteScopeEntry toEntry(final JsonObject obj) {
+    RemoteScopeEntry _xblockexpression = null;
+    {
+      final String type = RemoteScopeCatalog.string(obj, "type");
+      JsonObject _xifexpression = null;
+      if ((obj.has("data") && obj.get("data").isJsonObject())) {
+        _xifexpression = obj.getAsJsonObject("data");
+      } else {
+        _xifexpression = null;
+      }
+      final JsonObject data = _xifexpression;
+      if (((type == null) || (data == null))) {
+        throw new IllegalStateException(("Each catalog entry needs \'type\', \'namespaces\' and \'data\': " + obj));
+      }
+      RemoteScopeEntry _switchResult = null;
+      if (type != null) {
+        switch (type) {
+          case RemoteScopeEntry.TYPE_SIMPLE:
+            _switchResult = RemoteScopeEntry.simple(RemoteScopeCatalog.required(data, "url"));
+            break;
+          case RemoteScopeEntry.TYPE_MAVEN:
+            _switchResult = RemoteScopeEntry.maven(RemoteScopeCatalog.required(data, "groupId"), RemoteScopeCatalog.required(data, "artifactId"), 
+              RemoteScopeCatalog.required(data, "version"));
+            break;
+          default:
+            Object _xblockexpression_1 = null;
+            {
+              RemoteScopeCatalog.LOG.warn(((("Ignoring remote scope entry with unknown type \'" + type) + "\': ") + obj));
+              _xblockexpression_1 = null;
+            }
+            _switchResult = ((RemoteScopeEntry)_xblockexpression_1);
+            break;
+        }
+      } else {
+        Object _xblockexpression_1 = null;
+        {
+          RemoteScopeCatalog.LOG.warn(((("Ignoring remote scope entry with unknown type \'" + type) + "\': ") + obj));
+          _xblockexpression_1 = null;
+        }
+        _switchResult = ((RemoteScopeEntry)_xblockexpression_1);
+      }
+      _xblockexpression = _switchResult;
+    }
+    return _xblockexpression;
+  }
+
+  /**
+   * Reads the required non-empty <code>namespaces</code> string array of a catalog object.
+   */
+  private static List<String> namespaces(final JsonObject obj) {
+    JsonElement _xifexpression = null;
+    boolean _has = obj.has("namespaces");
+    if (_has) {
+      _xifexpression = obj.get("namespaces");
+    } else {
+      _xifexpression = null;
+    }
+    final JsonElement element = _xifexpression;
+    if ((((element == null) || (!element.isJsonArray())) || element.getAsJsonArray().isEmpty())) {
+      throw new IllegalStateException(("Each catalog entry needs a non-empty \'namespaces\' array: " + obj));
+    }
+    final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
+    JsonArray _asJsonArray = element.getAsJsonArray();
+    for (final JsonElement ns : _asJsonArray) {
+      {
+        boolean _isJsonPrimitive = ns.isJsonPrimitive();
+        boolean _not = (!_isJsonPrimitive);
+        if (_not) {
+          throw new IllegalStateException(("\'namespaces\' must contain only strings: " + obj));
+        }
+        result.add(ns.getAsString());
+      }
+    }
+    return result;
+  }
+
+  private static String string(final JsonObject obj, final String name) {
+    String _xifexpression = null;
+    if ((obj.has(name) && obj.get(name).isJsonPrimitive())) {
+      _xifexpression = obj.get(name).getAsString();
+    } else {
+      _xifexpression = null;
+    }
+    return _xifexpression;
+  }
+
+  private static String required(final JsonObject data, final String name) {
+    final String value = RemoteScopeCatalog.string(data, name);
+    if ((value == null)) {
+      throw new IllegalStateException(((("Missing \'" + name) + "\' in \'data\': ") + data));
+    }
+    return value;
   }
 }
