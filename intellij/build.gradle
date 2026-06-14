@@ -116,6 +116,8 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.0.1</b> &ndash; Added semantic validation (ported from the Eclipse validator),
+        including the value-object <code>base</code> rules.</li>
     <li><b>1.0.0</b> &ndash; Initial release.</li>
 </ul>'''
 
