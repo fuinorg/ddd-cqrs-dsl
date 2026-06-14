@@ -90,12 +90,23 @@ fully qualified `namespaces` it provides, a `type` discriminator (always `maven`
 
 ```json
 [
-  { "type": "maven", "namespaces": ["com.acme.billing", "com.acme.catalog"],
-    "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
-              "artifactId": "cqrs-billing-model", "version": "0.1.0-SNAPSHOT" } },
-  { "type": "maven", "namespaces": ["dev.workinprogress"],
-    "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
-              "local": "../wip-model/src/main/cqrs" } }
+  { "type": "maven",
+    "namespaces": ["com.acme.billing", "com.acme.catalog"],
+    "data": {
+      "groupId": "org.fuin.dsl.cqrs.contexts",
+      "artifactId": "cqrs-billing-model",
+      "version": "0.1.0-SNAPSHOT"
+    }
+  },
+  { "type": "maven",
+    "namespaces": ["dev.workinprogress"],
+    "data": {
+      "groupId": "org.acme",
+      "artifactId": "wip-model",
+      "version": "0.0.1-SNAPSHOT",
+      "local": "../wip-model/src/main/cqrs"
+    }
+  }
 ]
 ```
 
