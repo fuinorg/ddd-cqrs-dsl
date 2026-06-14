@@ -92,8 +92,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	public static val INTERNAL_TYPE_INVARIANT_WRONG_TARGET_TYPE = "internalTypeInvariantWrongTargetType"
 
-	public static val SERVICE_NOT_ALLOWED_AS_CONSTRAINT_INPUT = "serviceNotAllowedAsConstraintInput"
-
 	public static val WEAK_CONSISTENCY_REQUIRES_DETAILS = "weakConsistencyRequiresDetails"
 
 	public static val STRONG_CONSISTENCY_DOES_NOT_ALLOW_DETAILS = "strongConsistencyDoesNotAllowDetails"
@@ -381,20 +379,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				}
 			}
 
-		}
-
-	}
-
-	@Check
-	def checkConstraintInputNotService(Constraint constraint) {
-
-		if (constraint.input instanceof Service) {
-			error(
-				"A service is not allowed as input for a constraint",
-				constraint,
-				CqrsDslPackage.Literals::CONSTRAINT__INPUT,
-				SERVICE_NOT_ALLOWED_AS_CONSTRAINT_INPUT
-			)
 		}
 
 	}

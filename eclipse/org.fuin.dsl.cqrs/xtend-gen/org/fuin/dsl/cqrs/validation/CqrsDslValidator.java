@@ -102,8 +102,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   public static final String INTERNAL_TYPE_INVARIANT_WRONG_TARGET_TYPE = "internalTypeInvariantWrongTargetType";
 
-  public static final String SERVICE_NOT_ALLOWED_AS_CONSTRAINT_INPUT = "serviceNotAllowedAsConstraintInput";
-
   public static final String WEAK_CONSISTENCY_REQUIRES_DETAILS = "weakConsistencyRequiresDetails";
 
   public static final String STRONG_CONSISTENCY_DOES_NOT_ALLOW_DETAILS = "strongConsistencyDoesNotAllowDetails";
@@ -365,17 +363,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
             CqrsDslValidator.INTERNAL_TYPE_INVARIANT_WRONG_TARGET_TYPE);
         }
       }
-    }
-  }
-
-  @Check
-  public void checkConstraintInputNotService(final Constraint constraint) {
-    EList<Type> _input = constraint.getInput();
-    if ((_input instanceof Service)) {
-      this.error(
-        "A service is not allowed as input for a constraint", constraint, 
-        CqrsDslPackage.Literals.CONSTRAINT__INPUT, 
-        CqrsDslValidator.SERVICE_NOT_ALLOWED_AS_CONSTRAINT_INPUT);
     }
   }
 
