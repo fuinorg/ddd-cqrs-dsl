@@ -74,12 +74,33 @@ public final class CqrsCompletionContributor extends CompletionContributor {
 
     /** Whether a {@code type_ref} (attribute/parameter type) may legally begin at the caret. */
     private static boolean allowsTypeRef(PsiElement position) {
-        return PsiTreeUtil.getParentOfType(position,
+        return typeMemberContainer(position) != null;
+    }
+
+    /**
+     * The type-declaring block surrounding the caret, or {@code null}. A half-typed attribute is
+     * just one identifier (the type, no name yet), so {@code attribute} (pinned only after its name
+     * ID) rolls back and the caret token can land outside the block node via error recovery. When
+     * the direct ancestor lookup fails we therefore retry from the previous visible leaf, which is
+     * part of the well-formed prefix (the block's {@code &#123;} or a prior member) and so is still
+     * inside the block node.
+     */
+    private static PsiElement typeMemberContainer(PsiElement position) {
+        PsiElement container = enclosingContainer(position);
+        if (container != null) {
+            return container;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        return prev == null ? null : enclosingContainer(prev);
+    }
+
+    private static PsiElement enclosingContainer(PsiElement element) {
+        return PsiTreeUtil.getParentOfType(element,
                 CqrsConstructorDef.class, CqrsMethodDef.class,
                 CqrsValueObject.class, CqrsEntityId.class, CqrsAggregateId.class,
                 CqrsEnumObject.class, CqrsEntityDef.class, CqrsAggregateDef.class,
                 CqrsConstraintDef.class, CqrsAnnotationDef.class, CqrsExceptionDef.class,
-                CqrsEventDef.class, CqrsCommandDef.class) != null;
+                CqrsEventDef.class, CqrsCommandDef.class);
     }
 
     /** Adds every visible named declaration as a type candidate (mirrors {@code CqrsReference.getVariants}). */

@@ -1,0 +1,89 @@
+package org.fuin.dsl.cqrs.intellij;
+
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+
+import java.util.List;
+
+/**
+ * Verifies that basic code completion offers the visible type declarations (not only keywords) when
+ * starting an attribute inside the various type-declaring blocks — in particular {@code value-object}
+ * and {@code constraint} bodies, where the half-typed type identifier is not yet parsed as a
+ * {@code type_ref}.
+ */
+public class CqrsCompletionContributorTest extends BasePlatformTestCase {
+
+    private List<String> lookups(String body) {
+        myFixture.configureByText("test.cqrs", body);
+        myFixture.complete(CompletionType.BASIC);
+        List<String> strings = myFixture.getLookupElementStrings();
+        return strings == null ? List.of() : strings;
+    }
+
+    public void testValueObjectAttributeStartOffersTypes() {
+        assertContainsType(lookups("""
+                context c {
+                  namespace n {
+                    type String
+                    value-object Foo {
+                      <caret>
+                    }
+                  }
+                }
+                """));
+    }
+
+    public void testConstraintAttributeStartOffersTypes() {
+        assertContainsType(lookups("""
+                context c {
+                  namespace n {
+                    type String
+                    constraint NotBlank input String {
+                      <caret>
+                    }
+                  }
+                }
+                """));
+    }
+
+    public void testAggregateAttributeStartOffersTypes() {
+        assertContainsType(lookups("""
+                context c {
+                  namespace n {
+                    type String
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      <caret>
+                    }
+                  }
+                }
+                """));
+    }
+
+    public void testNamespaceLevelDoesNotOfferTypesButOffersElementKeywords() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    type String
+                    <caret>
+                  }
+                }
+                """);
+        assertFalse("namespace level must not offer types: " + lookups, lookups.contains("String"));
+        assertTrue("namespace level must offer element keywords: " + lookups, lookups.contains("value-object"));
+    }
+
+    public void testTopLevelDoesNotOfferTypes() {
+        List<String> lookups = lookups("""
+                context c {
+                  <caret>
+                }
+                """);
+        assertFalse("top level must not offer types: " + lookups, lookups.contains("String"));
+    }
+
+    private static void assertContainsType(List<String> lookups) {
+        assertTrue("expected the declared type 'String' among completions, but got: " + lookups,
+                lookups.contains("String"));
+    }
+}
