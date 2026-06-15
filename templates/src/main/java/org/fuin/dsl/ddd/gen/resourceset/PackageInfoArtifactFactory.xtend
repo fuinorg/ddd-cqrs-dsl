@@ -29,13 +29,13 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
 
     override create(ResourceSet resourceSet, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
-        val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-
-        // Nothing to register in the code reference registry
         if (preparationRun) {
-            return artifacts
+
+            // No code generation during preparation phase
+            return null
         }
 
+        val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
         val Iterator<Namespace> it = resourceSet.allContents.filter(typeof(Namespace))
         while (it.hasNext) {
             val Namespace ns = it.next

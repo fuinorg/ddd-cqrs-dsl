@@ -5,7 +5,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 
 /**
- * Creates source code for the type related methods from {@ org.fuin.ddd4j.core.EntityId}.
+ * Creates source code for the type related methods from 'org.fuin.ddd4j.core.EntityId'.
  */
 class SrcEntityIdTypeMethods implements CodeSnippet {
 

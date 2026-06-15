@@ -44,6 +44,15 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
             // No code generation during preparation phase
             return null
         }
+        
+        val active = context.get(CombinedAbstractValueObjectArtifactFactory.ACTIVE) === null ? false : context.get(CombinedAbstractValueObjectArtifactFactory.ACTIVE) as Boolean 
+        
+        if (active && vo.base !== null && vo.base.name == "String" && vo.attributes.size > 0) {
+        	// In case CombinedAbstractValueObjectArtifactFactory is there an it's a simple string value object
+        	// the SimpleStringValueObjectArtifactFactory will do the work
+        	return List.of()
+        }            
+        
 
         val SimpleCodeSnippetContext ctx = new SimpleCodeSnippetContext(refReg)
         ctx.addImports(vo)
