@@ -66,6 +66,11 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     def String asPackage(Namespace ns) {
+        if (!isPrimary(ns)) {
+            // External (remotely resolved) element: import it from its own context.namespace,
+            // without the local model's base package or pkg.
+            return joinPackage(ns.context.name, ns.name)
+        }
         return joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
     }
 

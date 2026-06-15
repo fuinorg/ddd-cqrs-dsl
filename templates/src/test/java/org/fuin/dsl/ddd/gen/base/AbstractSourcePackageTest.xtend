@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.base
 
+import java.util.Set
 import jakarta.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -11,6 +12,7 @@ import org.fuin.dsl.ddd.gen.resourceset.PackageInfoArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.DefaultContext
 import org.fuin.srcgen4j.commons.Variable
+import org.fuin.srcgen4j.core.emf.PrimaryResources
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
@@ -48,6 +50,23 @@ class AbstractSourcePackageTest {
     def void testAsPackageWithBasePkg() {
         val ns = valueObjectNamespace
         assertThat(createTestee("a.b").asPackage(ns)).isEqualTo("a.b.x.valueobject")
+    }
+
+    @Test
+    def void testAsPackageForRemoteElementUsesOnlyContextNamespace() {
+        // A local model (primary) and a remote model (non-primary) in the SAME resource set.
+        val localModel = parser.parse(Utils.readAsString(class.getResource("/valueobject.cqrs")))
+        val resourceSet = localModel.eResource.resourceSet
+        val remoteModel = parser.parse(Utils.readAsString(class.getResource("/enumobject.cqrs")), resourceSet)
+        PrimaryResources.install(resourceSet, Set.of(localModel.eResource.URI))
+
+        val testee = createTestee("a.b")
+        val localNs = localModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "valueobject"]
+        val remoteNs = remoteModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "enumobject"]
+
+        // Local element keeps the base package; the external element uses only its context.namespace.
+        assertThat(testee.asPackage(localNs)).isEqualTo("a.b.x.valueobject")
+        assertThat(testee.asPackage(remoteNs)).isEqualTo("x.enumobject")
     }
 
     private def Namespace valueObjectNamespace() {
