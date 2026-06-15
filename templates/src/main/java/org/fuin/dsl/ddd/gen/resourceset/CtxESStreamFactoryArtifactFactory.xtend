@@ -79,7 +79,7 @@ class CtxESStreamFactoryArtifactFactory extends AbstractSource<ResourceSet> {
 
     def contextAggregateIdMap(ResourceSet resourceSet) {
         val Map<String, List<AggregateId>> contextEntityIds = new HashMap<String, List<AggregateId>>();
-        val Iterator<AggregateId> iter = resourceSet.getAllContents().filter(typeof(AggregateId))
+        val Iterator<AggregateId> iter = resourceSet.getAllContents().filter(typeof(AggregateId)).filter[isPrimary(it)]
         while (iter.hasNext) {
             val AggregateId aggregateId = iter.next
             var List<AggregateId> aggregateIds = contextEntityIds.get(aggregateId.context.name)

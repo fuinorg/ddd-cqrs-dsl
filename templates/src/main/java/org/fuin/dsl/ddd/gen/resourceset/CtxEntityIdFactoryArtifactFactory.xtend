@@ -80,7 +80,7 @@ class CtxEntityIdFactoryArtifactFactory extends AbstractSource<ResourceSet> {
 
     def contextEntityIdMap(ResourceSet resourceSet) {
         val Map<String, List<AbstractEntityId>> contextEntityIds = new HashMap<String, List<AbstractEntityId>>();
-        val Iterator<AbstractEntityId> iter = resourceSet.getAllContents().filter(typeof(AbstractEntityId))
+        val Iterator<AbstractEntityId> iter = resourceSet.getAllContents().filter(typeof(AbstractEntityId)).filter[isPrimary(it)]
         while (iter.hasNext) {
             val AbstractEntityId entityId = iter.next
             var List<AbstractEntityId> entityIds = contextEntityIds.get(entityId.context.name)

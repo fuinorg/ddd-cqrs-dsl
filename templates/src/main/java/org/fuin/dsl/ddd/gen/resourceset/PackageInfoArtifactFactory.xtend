@@ -36,7 +36,7 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
         }
 
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        val Iterator<Namespace> it = resourceSet.allContents.filter(typeof(Namespace))
+        val Iterator<Namespace> it = resourceSet.allContents.filter(typeof(Namespace)).filter[isPrimary(it)]
         while (it.hasNext) {
             val Namespace ns = it.next
             if (ns.generatesCode) {

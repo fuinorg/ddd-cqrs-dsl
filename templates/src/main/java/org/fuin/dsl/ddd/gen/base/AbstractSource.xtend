@@ -1,9 +1,11 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.Map
+import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
+import org.fuin.srcgen4j.core.emf.PrimaryResources
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
@@ -25,7 +27,19 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     override isIncremental() {
         true
     }
-    
+
+    /**
+     * Determines if an object originates from a model in the source directory (and not from a
+     * remotely resolved dependency model). Only source models should produce generated artifacts.
+     *
+     * @param obj Object to check.
+     *
+     * @return TRUE if the object is part of a primary (source directory) resource.
+     */
+    def boolean isPrimary(EObject obj) {
+        PrimaryResources.isPrimary(obj)
+    }
+
     def String getArtifactName() {
         return artifactName
     }

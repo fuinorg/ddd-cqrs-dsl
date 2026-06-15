@@ -88,7 +88,7 @@ class CtxEventRegistryArtifactFactory extends AbstractSource<ResourceSet> {
 
     def contextEventMap(ResourceSet resourceSet) {
         val Map<String, List<Event>> contextEvents = new HashMap<String, List<Event>>();
-        val Iterator<Event> iter = resourceSet.getAllContents().filter(typeof(Event))
+        val Iterator<Event> iter = resourceSet.getAllContents().filter(typeof(Event)).filter[isPrimary(it)]
         while (iter.hasNext) {
             val Event event = iter.next
             var List<Event> events = contextEvents.get(event.context.name)
