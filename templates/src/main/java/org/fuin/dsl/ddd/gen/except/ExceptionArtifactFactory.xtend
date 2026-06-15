@@ -57,6 +57,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
     }
 
     def addImports(CodeSnippetContext ctx, Exception ex) {
+        ctx.requiresImport("java.io.Serial")
         if (ex.cid > 0) {
             ctx.requiresImport("org.fuin.objects4j.common.UniquelyNumberedException")
         }
@@ -78,6 +79,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
              */
             public final class «className» extends «_uniquelyNumberedException(ex)» {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
             
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), ex)»

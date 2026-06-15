@@ -49,6 +49,7 @@ class ESJpaEventIdArtifactFactory extends AbstractSource<Aggregate> implements A
     }
 
     def addImports(CodeSnippetContext ctx) {
+        ctx.requiresImport("java.io.Serial")
         ctx.requiresImport("java.io.Serializable")
         ctx.requiresImport("org.fuin.objects4j.common.Contract")
     }
@@ -65,6 +66,7 @@ class ESJpaEventIdArtifactFactory extends AbstractSource<Aggregate> implements A
              */
             public class «className» implements Serializable {
             
+                @Serial
                 private static final long serialVersionUID = 0L;
             
                 private String «aggregate.name.toFirstLower»Id;

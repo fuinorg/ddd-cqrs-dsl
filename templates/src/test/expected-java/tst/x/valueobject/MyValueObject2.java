@@ -17,12 +17,14 @@
  */
 package tst.x.valueobject;
 
+import java.io.Serial;
 
 /**
  * Value object single attribute and without base.
  */
 public final class MyValueObject2 extends AbstractMyValueObject2 {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

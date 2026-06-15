@@ -17,6 +17,7 @@
  */
 package tst.x.valueobject;
 
+import java.io.Serial;
 import org.fuin.objects4j.ui.Examples;
 import org.fuin.objects4j.ui.Label;
 import org.fuin.objects4j.ui.ShortLabel;
@@ -31,6 +32,7 @@ import org.fuin.objects4j.ui.Tooltip;
 @Examples(value = { "Peter Parker","Mary Jane Watson","Harry Osborn" })
 public final class FullName extends AbstractFullName {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

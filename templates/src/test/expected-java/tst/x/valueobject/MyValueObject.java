@@ -17,6 +17,7 @@
  */
 package tst.x.valueobject;
 
+import java.io.Serial;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -24,6 +25,7 @@ import org.jspecify.annotations.Nullable;
  */
 public final class MyValueObject extends AbstractMyValueObject {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

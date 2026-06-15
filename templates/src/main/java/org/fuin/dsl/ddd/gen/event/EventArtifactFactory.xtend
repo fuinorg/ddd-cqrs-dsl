@@ -76,6 +76,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Event event) {
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
+        ctx.requiresImport(Serial.name)
         
         if (entity === null) {
 	        if (options.jsonb) {
@@ -103,7 +104,6 @@ class EventArtifactFactory extends AbstractSource<Event> {
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)
-            ctx.requiresImport(Serial.name)
         }
     }
 
@@ -181,6 +181,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             «ENDIF»
             public final class «className» extends AbstractEvent {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
             
                 /** Unique name used to store the event. */

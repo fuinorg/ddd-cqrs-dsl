@@ -18,6 +18,7 @@
 package tst.x.entities;
 
 
+import java.io.Serial;
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.core.StringBasedEntityType;
@@ -28,6 +29,7 @@ import org.fuin.objects4j.core.AbstractStringValueObject;
 public final class EntityAId extends AbstractStringValueObject implements
         EntityId, ValueObject {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Name that identifies the entity uniquely within the context. */

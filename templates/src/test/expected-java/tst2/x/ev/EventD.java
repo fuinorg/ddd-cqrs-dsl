@@ -17,6 +17,7 @@
  */
 package tst2.x.ev;
 
+import java.io.Serial;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
 
@@ -25,6 +26,7 @@ import org.fuin.ddd4j.jsonb.AbstractEvent;
  */
 public final class EventD extends AbstractEvent {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Unique name used to store the event. */

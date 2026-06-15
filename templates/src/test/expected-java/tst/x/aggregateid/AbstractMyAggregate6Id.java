@@ -17,6 +17,7 @@
  */
 package tst.x.aggregateid;
 
+import java.io.Serial;
 import java.util.UUID;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -30,6 +31,7 @@ import org.fuin.objects4j.core.AbstractUuidValueObject;
  */
 public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject implements AggregateRootId, ValueObject {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     private UUID value;

@@ -20,6 +20,7 @@ package tst.x.aggregates;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.Serial;
 import org.fuin.ddd4j.core.EntityIdPath;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
@@ -33,6 +34,7 @@ import org.fuin.objects4j.core.KeyValue;
 public final class AggregateCCreatedEvent extends
         AbstractDomainEvent<AggregateCId> {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Unique name used to store the event. */

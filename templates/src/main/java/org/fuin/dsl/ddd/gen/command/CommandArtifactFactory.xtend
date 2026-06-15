@@ -77,6 +77,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Command command) {
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
+        ctx.requiresImport(Serial.name)
         
         if (entity === null) {
 	        if (options.jsonb) {
@@ -104,7 +105,6 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)
-            ctx.requiresImport(Serial.name)
         }
     }
 
@@ -188,6 +188,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             «ENDIF»
             public final class «className» extends AbstractCommand {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
             
                 /** Unique name used to store the command. */

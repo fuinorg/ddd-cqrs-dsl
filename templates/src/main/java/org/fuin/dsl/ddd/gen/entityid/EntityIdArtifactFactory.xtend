@@ -58,6 +58,7 @@ class EntityIdArtifactFactory extends AbstractSource<EntityId> {
     }
 
     def addImports(CodeSnippetContext ctx, EntityId entityId) {
+        ctx.requiresImport("java.io.Serial")
         if (entityId.base !== null) {
             ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")        
         }
@@ -83,6 +84,7 @@ class EntityIdArtifactFactory extends AbstractSource<EntityId> {
             «ENDIF»
             public final class «className» «new SrcVoBaseOptionalExtends(ctx, id.base)»implements EntityId, ValueObject {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), id)»

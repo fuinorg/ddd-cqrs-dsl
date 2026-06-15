@@ -17,6 +17,7 @@
  */
 package tst.x.aggregateid;
 
+import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -25,6 +26,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class MyAggregate4Id extends AbstractMyAggregate4Id {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

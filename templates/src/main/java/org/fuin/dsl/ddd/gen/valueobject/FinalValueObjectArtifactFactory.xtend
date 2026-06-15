@@ -57,6 +57,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
         val SimpleCodeSnippetContext ctx = new SimpleCodeSnippetContext(refReg)
         ctx.addReferences(vo)
+        ctx.requiresImport("java.io.Serial")
 
         return List.of(new GeneratedArtifact(artifactName, filename,
             create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8")));
@@ -75,6 +76,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
             «ENDIF»
             public final class «className» extends «abstractClassName» {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), vo, false, true)»

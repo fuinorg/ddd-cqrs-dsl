@@ -18,6 +18,7 @@
 package tst2.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
+import java.io.Serial;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
 import org.fuin.objects4j.common.Contract;
@@ -30,6 +31,7 @@ import x.ev.MyString;
  */
 public final class EventE extends AbstractEvent {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Unique name used to store the event. */

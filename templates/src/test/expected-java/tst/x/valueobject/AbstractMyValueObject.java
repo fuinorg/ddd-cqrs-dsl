@@ -17,6 +17,7 @@
  */
 package tst.x.valueobject;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
@@ -27,6 +28,7 @@ import org.fuin.objects4j.core.AbstractStringValueObject;
  */
 public abstract class AbstractMyValueObject extends AbstractStringValueObject implements ValueObject, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     private String value;

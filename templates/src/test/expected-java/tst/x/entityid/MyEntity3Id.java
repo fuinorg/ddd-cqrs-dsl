@@ -18,6 +18,7 @@
 package tst.x.entityid;
 
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
 import tst2.x.entityid.MyEntity3IdConverter;
@@ -29,6 +30,7 @@ import tst2.x.entityid.MyEntity3IdConverter;
 @XmlJavaTypeAdapter(MyEntity3IdConverter.class)
 public final class MyEntity3Id extends AbstractMyEntity3Id {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

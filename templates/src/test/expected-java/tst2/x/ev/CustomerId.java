@@ -17,6 +17,7 @@
  */
 package tst2.x.ev;
 
+import java.io.Serial;
 import java.util.UUID;
 
 
@@ -31,6 +32,7 @@ import org.fuin.objects4j.core.UUIDStrValidator;
 
 public final class CustomerId extends AbstractUuidValueObject implements AggregateRootId {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Name that identifies the entity uniquely within the context. */

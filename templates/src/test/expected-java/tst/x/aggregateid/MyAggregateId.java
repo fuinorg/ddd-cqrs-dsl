@@ -18,6 +18,7 @@
 package tst.x.aggregateid;
 
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
 import tst2.x.aggregateid.MyAggregateIdConverter;
@@ -29,6 +30,7 @@ import tst2.x.aggregateid.MyAggregateIdConverter;
 @XmlJavaTypeAdapter(MyAggregateIdConverter.class)
 public final class MyAggregateId extends AbstractMyAggregateId {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     /**

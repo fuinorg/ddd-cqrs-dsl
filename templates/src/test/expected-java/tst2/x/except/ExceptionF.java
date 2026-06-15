@@ -17,6 +17,7 @@
  */
 package tst2.x.except;
 
+import java.io.Serial;
 import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.UniquelyNumberedException;
@@ -27,6 +28,7 @@ import org.fuin.objects4j.core.KeyValue;
  */
 public final class ExceptionF extends UniquelyNumberedException {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     private String a;

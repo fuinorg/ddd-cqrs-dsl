@@ -17,6 +17,7 @@
  */
 package tst2.x.aggregateid;
 
+import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
@@ -30,6 +31,7 @@ import org.fuin.objects4j.common.ValueObject;
 @Immutable
 public final class MyAggregate2Id implements AggregateRootId, ValueObject {
 
+@Serial
 private static final long serialVersionUID = 1000L;
 
     private String id;

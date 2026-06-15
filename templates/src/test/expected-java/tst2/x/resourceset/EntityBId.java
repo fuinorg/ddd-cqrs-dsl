@@ -18,6 +18,7 @@
 package tst2.x.resourceset;
 
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
@@ -31,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 @XmlJavaTypeAdapter(EntityBIdConverter.class)
 public final class EntityBId extends AbstractStringValueObject implements EntityId, ValueObject {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
     
     private String a;

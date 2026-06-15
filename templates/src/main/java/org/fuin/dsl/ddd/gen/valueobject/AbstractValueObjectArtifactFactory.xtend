@@ -55,6 +55,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     }
 
     def addImports(CodeSnippetContext ctx) {
+        ctx.requiresImport("java.io.Serial")
         ctx.requiresImport(org.fuin.objects4j.common.ValueObject.name)
         ctx.requiresImport(Serializable.name)
     }
@@ -74,6 +75,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
             «new SrcJavaDocType(vo)»
             public abstract class «className» «new SrcVoBaseOptionalExtends(ctx, vo.base)»implements ValueObject, Serializable {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcVarsDecl(ctx, "private", localOptions, vo)»

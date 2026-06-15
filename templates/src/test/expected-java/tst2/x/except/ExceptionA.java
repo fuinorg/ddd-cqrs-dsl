@@ -17,12 +17,14 @@
  */
 package tst2.x.except;
 
+import java.io.Serial;
 
 /**
  * Exception A - No CID - No variables
  */
 public final class ExceptionA extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 1000L;
 
     /**

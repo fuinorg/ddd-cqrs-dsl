@@ -54,6 +54,7 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
     }
 
     def addImports(CodeSnippetContext ctx, AggregateId aggregateId) {
+        ctx.requiresImport("java.io.Serial")
         if (aggregateId.base !== null) {
             ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")
         }
@@ -76,6 +77,7 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
             «ENDIF»
             public final class «className» extends «abstractClassName» {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, false, true)»

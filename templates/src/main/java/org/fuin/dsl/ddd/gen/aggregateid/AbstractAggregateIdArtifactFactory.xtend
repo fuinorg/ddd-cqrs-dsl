@@ -56,6 +56,7 @@ class AbstractAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
     }
 
     def addImports(CodeSnippetContext ctx) {
+        ctx.requiresImport("java.io.Serial")
         ctx.requiresImport("org.fuin.ddd4j.core.AggregateRootId")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityType")
         ctx.requiresImport("org.fuin.ddd4j.core.StringBasedEntityType")
@@ -71,6 +72,7 @@ class AbstractAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
             «new SrcJavaDocType(id)»
             public abstract class «className» «new SrcVoBaseOptionalExtends(ctx, id.base)»implements AggregateRootId, ValueObject {
             
+                @Serial
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), id)»
