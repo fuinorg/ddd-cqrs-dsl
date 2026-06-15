@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.base
 
+import java.util.ArrayList
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
@@ -61,17 +62,30 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     def String contextPkg(String ctxName) {
-        if (getOptions().getPkg() === null) {
-            return getOptions().getBasePkg() + "." + ctxName
-        }
-        return getOptions().getBasePkg() + "." + ctxName + "." + getOptions().getPkg()
+        return joinPackage(getOptions().getBasePkg(), ctxName, getOptions().getPkg())
     }
 
     def String asPackage(Namespace ns) {
-        if (getOptions().getPkg() === null) {
-            return getOptions().getBasePkg() + "." + ns.context.name + "." + ns.name;
+        return joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
+    }
+
+    /**
+     * Joins the given package segments with a dot, skipping segments that are not set (null or
+     * empty). This means an unset base package does not result in a "null." prefix - the package
+     * name then simply starts with the context name.
+     *
+     * @param parts Package segments in order (e.g. base package, context, package, namespace).
+     *
+     * @return Dot separated package name built from the non-empty segments.
+     */
+    protected def String joinPackage(String... parts) {
+        val segments = new ArrayList<String>()
+        for (part : parts) {
+            if (part !== null && !part.empty) {
+                segments.add(part)
+            }
         }
-        return getOptions().getBasePkg() + "." + ns.context.name + "." + getOptions().getPkg() + "." + ns.name;
+        return segments.join(".")
     }
 
 }
