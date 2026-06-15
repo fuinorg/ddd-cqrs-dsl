@@ -3,7 +3,9 @@
  */
 package org.fuin.dsl.cqrs;
 
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.fuin.dsl.cqrs.conversion.CqrsDslValueConverterService;
 import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider;
 
 /**
@@ -17,5 +19,13 @@ public class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
   @Override
   public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
     return CqrsDslGlobalScopeProvider.class;
+  }
+
+  /**
+   * Adds caret ('^') escaping so keywords can be used as identifiers (e.g. '^event').
+   */
+  @Override
+  public Class<? extends IValueConverterService> bindIValueConverterService() {
+    return CqrsDslValueConverterService.class;
   }
 }

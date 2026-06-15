@@ -12,6 +12,7 @@ public final class CqrsPsiUtil {
     /** The imported namespace of an import declaration, e.g. {@code com.acme.billing.*}. */
     public static @Nullable String getImportedNamespace(CqrsImportDecl element) {
         CqrsImportFqn fqn = PsiTreeUtil.getChildOfType(element, CqrsImportFqn.class);
-        return fqn != null ? fqn.getText().replaceAll("\\s+", "") : null;
+        // Strip whitespace and the caret keyword-escape from each segment.
+        return fqn != null ? CqrsNames.unescapeQualified(fqn.getText().replaceAll("\\s+", "")) : null;
     }
 }

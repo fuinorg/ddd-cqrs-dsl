@@ -386,7 +386,7 @@ StringLiteral:
 	{StringLiteral} value=STRING;
 
 terminal ID:
-	('A'..'Z'|'a'..'z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	'^'? ('A'..'Z'|'a'..'z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 	
 terminal STRING: 
 			'"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |

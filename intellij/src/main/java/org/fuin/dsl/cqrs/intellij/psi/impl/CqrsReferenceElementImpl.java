@@ -3,6 +3,7 @@ package org.fuin.dsl.cqrs.intellij.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsReferenceElement;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsReference;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,8 @@ public abstract class CqrsReferenceElementImpl extends ASTWrapperPsiElement impl
 
     @Override
     public @NotNull String getReferencedName() {
-        return getText().replaceAll("\\s+", "");
+        // Strip whitespace and the caret keyword-escape so the name matches the declaration.
+        return CqrsNames.unescapeQualified(getText().replaceAll("\\s+", ""));
     }
 
     @Override

@@ -4704,7 +4704,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//terminal ID:
-	//    ('A'..'Z'|'a'..'z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	//    '^'? ('A'..'Z'|'a'..'z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 	public TerminalRule getIDRule() {
 		return tID;
 	}

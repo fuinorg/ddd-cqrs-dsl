@@ -3,6 +3,7 @@ package org.fuin.dsl.cqrs.intellij.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsElementFactory;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypeRef;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +14,9 @@ public final class CqrsTypeRefManipulator extends AbstractElementManipulator<Cqr
     public CqrsTypeRef handleContentChange(@NotNull CqrsTypeRef element, @NotNull TextRange range,
                                            String newContent) {
         String oldText = element.getText();
+        // Re-add the caret escape if the new (last) segment would otherwise be a keyword.
         String updated = oldText.substring(0, range.getStartOffset())
-                + newContent
+                + CqrsNames.escape(newContent)
                 + oldText.substring(range.getEndOffset());
         CqrsTypeRef replacement = CqrsElementFactory.createTypeRef(element.getProject(), updated);
         if (replacement == null) {

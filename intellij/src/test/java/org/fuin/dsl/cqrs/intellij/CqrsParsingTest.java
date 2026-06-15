@@ -85,6 +85,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("common_types");
     }
 
+    /** Keywords used as identifiers via the '^' escape (e.g. {@code ^event}). */
+    public void testEscapedKeywords() {
+        assertNoErrors("escaped_keywords");
+    }
+
     private void assertNoErrors(String name) {
         String text;
         try {

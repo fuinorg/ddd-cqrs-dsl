@@ -10,6 +10,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import org.fuin.dsl.cqrs.intellij.CqrsIcons;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsReferenceElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +65,9 @@ public final class CqrsReference extends PsiReferenceBase<CqrsReferenceElement>
             if (name == null || !seen.add(name)) {
                 continue;
             }
-            variants.add(LookupElementBuilder.create(name)
+            // Insert the caret-escaped form when the name is a keyword, but show the plain name.
+            variants.add(LookupElementBuilder.create(decl, CqrsNames.escape(name))
+                    .withPresentableText(name)
                     .withIcon(CqrsIcons.FILE)
                     .withTypeText(CqrsResolveUtil.getQualifiedName(decl), true));
         }

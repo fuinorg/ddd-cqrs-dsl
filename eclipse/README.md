@@ -217,6 +217,8 @@ the cached copy, and content assist proposes it.
 
 ## Version history
 
+- **1.3.0** — A keyword can now be used as an identifier by prefixing it with a caret (e.g.
+  `^event`). The caret marks the following word as a plain identifier and is not part of the name.
 - **1.2.0** — The dependency catalog is now Maven-only (the `simple` URL source type was removed).
   Artifacts are cached once per Maven coordinate (GAV) instead of per namespace, so an artifact that
   provides several namespaces is downloaded and unpacked only once. A new `local` directory field

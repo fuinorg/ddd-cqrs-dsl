@@ -9,6 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.fuin.dsl.cqrs.intellij.CqrsIcons;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsElementFactory;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsQualifiedName;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.jetbrains.annotations.Nullable;
@@ -41,16 +42,18 @@ public abstract class CqrsNamedElementImpl extends ASTWrapperPsiElement implemen
     @Override
     public @Nullable String getName() {
         PsiElement id = getNameIdentifier();
-        return id != null ? id.getText() : null;
+        // Strip the caret keyword-escape so the logical name never contains it.
+        return id != null ? CqrsNames.unescapeQualified(id.getText()) : null;
     }
 
     @Override
     public PsiElement setName(String newName) throws IncorrectOperationException {
         PsiElement id = getNameIdentifier();
         if (id != null) {
+            // Re-add the caret escape for segments that would otherwise be a keyword.
             PsiElement replacement = id instanceof CqrsQualifiedName
-                    ? CqrsElementFactory.createQualifiedName(getProject(), newName)
-                    : CqrsElementFactory.createIdentifier(getProject(), newName);
+                    ? CqrsElementFactory.createQualifiedName(getProject(), CqrsNames.escapeQualified(newName))
+                    : CqrsElementFactory.createIdentifier(getProject(), CqrsNames.escape(newName));
             if (replacement != null) {
                 id.replace(replacement);
             }

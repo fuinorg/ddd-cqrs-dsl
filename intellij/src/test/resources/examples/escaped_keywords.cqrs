@@ -1,0 +1,12 @@
+// 'context', 'type' and 'event' are keywords - here used as identifiers via the '^' escape.
+context ^context {
+	namespace ^type {
+		type String
+		value-object ^event {
+			String value
+		}
+		value-object Foo {
+			^event data
+		}
+	}
+}

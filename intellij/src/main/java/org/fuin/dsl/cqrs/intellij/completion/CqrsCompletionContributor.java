@@ -25,6 +25,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
@@ -111,7 +112,9 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             if (name == null || !seen.add(name)) {
                 continue;
             }
-            result.addElement(LookupElementBuilder.create(name)
+            // Insert the caret-escaped form when the name is a keyword, but show the plain name.
+            result.addElement(LookupElementBuilder.create(decl, CqrsNames.escape(name))
+                    .withPresentableText(name)
                     .withIcon(CqrsIcons.FILE)
                     .withTypeText(CqrsResolveUtil.getQualifiedName(decl), true));
         }
