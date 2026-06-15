@@ -20,6 +20,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
+import org.fuin.dsl.ddd.gen.base.SrcXmlRootElement
 
 class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
@@ -55,34 +56,22 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         
 
         val SimpleCodeSnippetContext ctx = new SimpleCodeSnippetContext(refReg)
-        ctx.addImports(vo)
         ctx.addReferences(vo)
 
         return List.of(new GeneratedArtifact(artifactName, filename,
             create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8")));
     }
 
-    def addImports(CodeSnippetContext ctx, ValueObject vo) {
-        if (vo.base !== null) {
-            ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")            
-        }
-        ctx.requiresImport("javax.annotation.concurrent.Immutable")
-    }
-
     def addReferences(CodeSnippetContext ctx, ValueObject vo) {
-        if (vo.base !== null) {
-            ctx.requiresReference(vo.uniqueName + "Converter")            
-        }
         ctx.requiresReference(vo.uniqueAbstractName)
     }
 
     def create(SimpleCodeSnippetContext ctx, Namespace ns, ValueObject vo, String pkg, String className, String abstractClassName) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            @Immutable
             «new SrcMetaAnnotations(ctx, vo.metaInfo, vo.context.name, ns.name + "." + className)»
-            «IF vo.base !== null»
-            @XmlJavaTypeAdapter(«vo.name»Converter.class)
+            «IF vo.base === null && options.jaxb»
+                «new SrcXmlRootElement(ctx, vo)»
             «ENDIF»
             public final class «className» extends «abstractClassName» {
             

@@ -17,16 +17,11 @@
  */
 package tst.x.valueobject;
 
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
-import tst2.x.valueobject.MyValueObjectConverter;
 
 /**
  * Value object single attribute and base.
  */
-@Immutable
-@XmlJavaTypeAdapter(MyValueObjectConverter.class)
 public final class MyValueObject extends AbstractMyValueObject {
 
     private static final long serialVersionUID = 1000L;

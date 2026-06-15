@@ -17,12 +17,10 @@
  */
 package tst.x.valueobject;
 
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Value object multiple attribute and without base.
  */
-@Immutable
 public final class MyValueObject4 extends AbstractMyValueObject4 {
 
     private static final long serialVersionUID = 1000L;

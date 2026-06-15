@@ -64,13 +64,19 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     }
 
     def create(SimpleCodeSnippetContext ctx, ValueObject vo, String pkg, String className) {
+        val GenerateOptions localOptions = new GenerateOptions.Builder()
+            .withJaxb(vo.base === null && options.jaxb)
+            .withJaxbElements(options.jaxbElements)
+            .withJsonb((vo.base === null && options.jsonb))
+            .withJackson((vo.base === null && options.jackson))
+            .create();
         val String src = ''' 
             «new SrcJavaDocType(vo)»
             public abstract class «className» «new SrcVoBaseOptionalExtends(ctx, vo.base)»implements ValueObject, Serializable {
             
                 private static final long serialVersionUID = 1000L;
                 
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), vo)»
+                «new SrcVarsDecl(ctx, "private", localOptions, vo)»
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), vo, true)»
                 «new SrcGetters(ctx, GenerateOptions.empty(), "public final", vo.attributes)»
             }
