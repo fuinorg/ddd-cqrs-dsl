@@ -19,44 +19,30 @@ The components are:
 - [DSL Examples](dsl-examples) - Examples of the DDD/CQRS DSL you can open and edit after installing the above Eclipse or IntelliJ IDEA plugin.
 
 ## Artifacts
+The plugins for IntelliJ IDEA and Eclipse provide several nice features:
+- Syntax highlighting
+- Reference-aware code completion
+- Go-to-definition
+- Find-usages
+- Rename
+- Resolution of remote references via a `dependencies.json` catalog
+
+> [!NOTE]  
+> Check out these [dsl-examples](https://github.com/fuinorg/ddd-cqrs-dsl/tree/main/dsl-examples) for DSL files.
 
 ### Eclipse Plugin
 The Eclipse plugin allows editing "*.cqrs" text files with the DSL and supports syntax highlighting and code completion. 
 
-Here are the steps to install the plugin in an Eclipse IDE:
+<a href="doc/eclipse.png"><img src="doc/eclipse.png" width="293" height="279"></a>
 
-1. Install the "Eclipse IDE for Java and DSL Developers": https://www.eclipse.org/downloads/packages/
-2. Install the Plugin:
-   * Select "Help / Install New Software..." in the top level menu
-   * Click on the "Manage" button on the right upper side
-   * Press the "Add" button to add a new update site
-   * Enter Name "ddd-cqrs-dsl" and Location "https://fuinorg.jfrog.io/artifactory/ddd-cqrs-dsl/cqrs-dsl/latest/"
-   * Click "Apply & Close"
-   * Select the newly added site in the "Work with" dropdown.
-   * Select the "CqrsDsl" shown in the list panel below
-   * Click "Next" and "Finish"
-   * Select "Trust selected" for "https://fuinorg.jfrog.io" update site
-   * Select "Trust selected" for "Trust unsigned content of unknown origin" - This is necessary because the plugin is not signed.
-   * Restart the IDE to finalize the installation
-3. Open a project with "*.cqrs" files and start editing.
+[Installation instructions...](eclipse/INSTALLATION.md)
 
 ### IntelliJ IDEA Plugin
-The [intellij](intellij) plugin brings the same `*.cqrs` editing experience to IntelliJ IDEA:
-syntax highlighting, reference-aware code completion, go-to-definition, find-usages, rename, a
-structure view, and resolution of remote references via a `dependencies.json` catalog (interoperable
-with the Eclipse plugin's `.dependencies-cache`). It is standalone (no dependency on the other
-modules) and built with Gradle.
+The Intellij IDA plugin brings the same `*.cqrs` editing experience to IntelliJ IDEA:
 
-To install it in IntelliJ IDEA, add the custom plugin repository under
-*Settings | Plugins | ⚙ | Manage Plugin Repositories…*:
+<a href="doc/intellij.png"><img src="doc/intellij.png" width="293" height="269"></a>
 
-```
-https://fuinorg.jfrog.io/artifactory/ddd-cqrs-dsl/cqrs-dsl-intellij/latest/updatePlugins.xml
-```
-
-then install **CQRS DSL** from the Marketplace tab. Alternatively build it yourself with
-`./gradlew buildPlugin` inside the `intellij` folder and install the zip from disk. See the
-[module README](intellij/README.md) for details.
+[Installation instructions...](intellij/INSTALLATION.md)
 
 ### Maven JAR file
 You can use the Maven artifact to parse files in the DSL format without using Eclipse.
