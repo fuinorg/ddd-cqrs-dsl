@@ -55,6 +55,9 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "business-rule"           { return KW_BUSINESS_RULE; }
   "command-handler"         { return KW_COMMAND_HANDLER; }
   "copies-attributes-of"    { return KW_COPIES_ATTRIBUTES_OF; }
+  "data-protection"         { return KW_DATA_PROTECTION; }
+  "protected-by"            { return KW_PROTECTED_BY; }
+  "lawful-basis"            { return KW_LAWFUL_BASIS; }
 
   // ---- Structural keywords ----
   "context"                 { return KW_CONTEXT; }
@@ -105,12 +108,23 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "resolution"              { return KW_RESOLUTION; }
   "nullable"                { return KW_NULLABLE; }
 
+  // ---- Data protection keywords ----
+  "protection"              { return KW_PROTECTION; }
+  "category"                { return KW_CATEGORY; }
+  "subject"                 { return KW_SUBJECT; }
+  "purpose"                 { return KW_PURPOSE; }
+  "retention"               { return KW_RETENTION; }
+  "then"                    { return KW_THEN; }
+
   // ---- Time unit keywords ----
   "millis"                  { return KW_MILLIS; }
   "seconds"                 { return KW_SECONDS; }
   "minutes"                 { return KW_MINUTES; }
   "hours"                   { return KW_HOURS; }
   "days"                    { return KW_DAYS; }
+  "weeks"                   { return KW_WEEKS; }
+  "months"                  { return KW_MONTHS; }
+  "years"                   { return KW_YEARS; }
 
   // ---- Consistency / detection / resolution value keywords ----
   "weak"                    { return KW_WEAK; }
@@ -119,6 +133,39 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "manually"                { return KW_MANUALLY; }
   "automatic"               { return KW_AUTOMATIC; }
   "workflow"                { return KW_WORKFLOW; }
+
+  // ---- Protection level value keywords ----
+  "none"                    { return KW_NONE; }
+  "personal"                { return KW_PERSONAL; }
+  "sensitive"               { return KW_SENSITIVE; }
+
+  // ---- Lawful basis value keywords ----
+  "explicit_consent"        { return KW_EXPLICIT_CONSENT; }
+  "consent"                 { return KW_CONSENT; }
+  "contract"                { return KW_CONTRACT; }
+  "legal_obligation"        { return KW_LEGAL_OBLIGATION; }
+  "vital_interests"         { return KW_VITAL_INTERESTS; }
+  "public_task"             { return KW_PUBLIC_TASK; }
+  "legitimate_interests"    { return KW_LEGITIMATE_INTERESTS; }
+
+  // ---- Special category value keywords ----
+  "health"                  { return KW_HEALTH; }
+  "genetic"                 { return KW_GENETIC; }
+  "biometric"               { return KW_BIOMETRIC; }
+  "racial"                  { return KW_RACIAL; }
+  "political"               { return KW_POLITICAL; }
+  "religious"               { return KW_RELIGIOUS; }
+  "philosophical"           { return KW_PHILOSOPHICAL; }
+  "trade_union"             { return KW_TRADE_UNION; }
+  "sex_life"                { return KW_SEX_LIFE; }
+  "sexual_orientation"      { return KW_SEXUAL_ORIENTATION; }
+
+  // ---- Erasure strategy value keywords ----
+  "delete"                  { return KW_DELETE; }
+  "anonymize"               { return KW_ANONYMIZE; }
+  "pseudonymize"            { return KW_PSEUDONYMIZE; }
+  "archive"                 { return KW_ARCHIVE; }
+  "review"                  { return KW_REVIEW; }
 
   // ---- Literal keywords ----
   "true"                    { return KW_TRUE; }

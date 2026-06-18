@@ -46,7 +46,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
     private static final List<String> ELEMENT_KEYWORDS = List.of(
             "type", "value-object", "entity-id", "aggregate-id", "enum", "entity", "aggregate",
             "exception", "event", "command", "command-handler", "projection", "view", "constraint",
-            "annotation", "service");
+            "annotation", "service", "data-protection");
 
     private static final List<String> META_KEYWORDS = List.of(
             "slabel", "label", "tooltip", "prompt", "examples");
@@ -138,6 +138,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
                 || PsiTreeUtil.getParentOfType(position, CqrsEntityDef.class) != null) {
             keywords.addAll(META_KEYWORDS);
             keywords.add("nullable");
+            keywords.add("protected-by");
             keywords.add("business-rule");
             keywords.add("constructor");
             keywords.add("method");
@@ -157,6 +158,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             keywords.addAll(ELEMENT_KEYWORDS);
             keywords.addAll(META_KEYWORDS);
             keywords.add("nullable");
+            keywords.add("protected-by");
             keywords.add("base");
             keywords.add("message");
             keywords.add("constructor");

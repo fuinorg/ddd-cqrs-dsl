@@ -1,0 +1,85 @@
+context healthcare {
+
+	namespace m {
+
+		type String
+		type UUID
+		type LocalDate
+
+		// ------------------------------------------------------------------
+		// Centralized, reusable data protection policies.
+		// The set of all 'data-protection' declarations forms a central
+		// register of processing activities (GDPR Art. 30).
+		// A policy is declared once and applied to types/attributes via
+		// 'protected-by'.
+		// ------------------------------------------------------------------
+
+		/** Ordinary contact data of a customer. */
+		data-protection ContactData {
+
+			// 'protection' is the level of protection and, at the same time, the
+			// personal-data identification:
+			//   none      = not personal data
+			//   personal  = ordinary personal data (GDPR Art. 4(1))
+			//   sensitive = special category (GDPR Art. 9)
+			protection personal
+
+			// Who the data is about (data subject).
+			subject "Customer"
+
+			// Why the data is processed (purpose limitation, Art. 5(1)(b)).
+			purpose "Customer relationship management and billing"
+
+			// Legal ground for processing (Art. 6).
+			lawful-basis contract
+
+			// Storage limitation (Art. 5(1)(e)): kept 10 years, then anonymized
+			// (the 'then' part relates to the right to erasure, Art. 17).
+			retention 10 years then anonymize
+		}
+
+		/** Medical information - a special category under GDPR Art. 9. */
+		data-protection MedicalData {
+			protection sensitive
+
+			// Special categories that apply (only meaningful for 'sensitive').
+			category health, genetic
+
+			subject "Patient"
+			purpose "Medical treatment and diagnosis"
+
+			// Special categories require explicit consent (Art. 9(2)(a)).
+			lawful-basis explicit_consent
+
+			retention 30 years then delete
+		}
+
+		// ------------------------------------------------------------------
+		// Applying policies by reference.
+		// ------------------------------------------------------------------
+
+		// A whole value-object can be classified.
+		value-object EmailAddress base String protected-by ContactData {
+			String value
+		}
+
+		aggregate-id PatientId identifies Patient base UUID {}
+
+		aggregate Patient identifier PatientId {
+
+			// Individual attributes carry their own classification.
+			String name protected-by ContactData
+
+			// The classification can also come from the attribute's type
+			// (EmailAddress is protected-by ContactData above).
+			EmailAddress email
+
+			nullable String diagnosis protected-by MedicalData
+
+			// Non-personal data simply has no policy.
+			LocalDate lastVisit
+		}
+
+	}
+
+}

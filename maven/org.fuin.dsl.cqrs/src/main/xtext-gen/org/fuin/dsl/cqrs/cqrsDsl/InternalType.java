@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getInvariants <em>Invariants</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getDataProtection <em>Data Protection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getAttributes <em>Attributes</em>}</li>
  * </ul>
@@ -46,6 +47,28 @@ public interface InternalType extends Type
    * @generated
    */
   void setInvariants(Invariants value);
+
+  /**
+   * Returns the value of the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Data Protection</em>' containment reference.
+   * @see #setDataProtection(DataProtectionInstance)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getInternalType_DataProtection()
+   * @model containment="true"
+   * @generated
+   */
+  DataProtectionInstance getDataProtection();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getDataProtection <em>Data Protection</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Data Protection</em>' containment reference.
+   * @see #getDataProtection()
+   * @generated
+   */
+  void setDataProtection(DataProtectionInstance value);
 
   /**
    * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.

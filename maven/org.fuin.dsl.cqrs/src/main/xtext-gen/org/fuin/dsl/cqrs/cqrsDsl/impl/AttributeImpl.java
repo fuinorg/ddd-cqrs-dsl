@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
 
 /**
@@ -24,6 +25,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AttributeImpl#getInvariants <em>Invariants</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AttributeImpl#getDataProtection <em>Data Protection</em>}</li>
  * </ul>
  *
  * @generated
@@ -39,6 +41,16 @@ public class AttributeImpl extends VariableImpl implements Attribute
    * @ordered
    */
   protected Invariants invariants;
+
+  /**
+   * The cached value of the '{@link #getDataProtection() <em>Data Protection</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDataProtection()
+   * @generated
+   * @ordered
+   */
+  protected DataProtectionInstance dataProtection;
 
   /**
    * <!-- begin-user-doc -->
@@ -117,12 +129,64 @@ public class AttributeImpl extends VariableImpl implements Attribute
    * @generated
    */
   @Override
+  public DataProtectionInstance getDataProtection()
+  {
+    return dataProtection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetDataProtection(DataProtectionInstance newDataProtection, NotificationChain msgs)
+  {
+    DataProtectionInstance oldDataProtection = dataProtection;
+    dataProtection = newDataProtection;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION, oldDataProtection, newDataProtection);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setDataProtection(DataProtectionInstance newDataProtection)
+  {
+    if (newDataProtection != dataProtection)
+    {
+      NotificationChain msgs = null;
+      if (dataProtection != null)
+        msgs = ((InternalEObject)dataProtection).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION, null, msgs);
+      if (newDataProtection != null)
+        msgs = ((InternalEObject)newDataProtection).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION, null, msgs);
+      msgs = basicSetDataProtection(newDataProtection, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION, newDataProtection, newDataProtection));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
       case CqrsDslPackage.ATTRIBUTE__INVARIANTS:
         return basicSetInvariants(null, msgs);
+      case CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION:
+        return basicSetDataProtection(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -139,6 +203,8 @@ public class AttributeImpl extends VariableImpl implements Attribute
     {
       case CqrsDslPackage.ATTRIBUTE__INVARIANTS:
         return getInvariants();
+      case CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION:
+        return getDataProtection();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -155,6 +221,9 @@ public class AttributeImpl extends VariableImpl implements Attribute
     {
       case CqrsDslPackage.ATTRIBUTE__INVARIANTS:
         setInvariants((Invariants)newValue);
+        return;
+      case CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION:
+        setDataProtection((DataProtectionInstance)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -173,6 +242,9 @@ public class AttributeImpl extends VariableImpl implements Attribute
       case CqrsDslPackage.ATTRIBUTE__INVARIANTS:
         setInvariants((Invariants)null);
         return;
+      case CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION:
+        setDataProtection((DataProtectionInstance)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -189,6 +261,8 @@ public class AttributeImpl extends VariableImpl implements Attribute
     {
       case CqrsDslPackage.ATTRIBUTE__INVARIANTS:
         return invariants != null;
+      case CqrsDslPackage.ATTRIBUTE__DATA_PROTECTION:
+        return dataProtection != null;
     }
     return super.eIsSet(featureID);
   }

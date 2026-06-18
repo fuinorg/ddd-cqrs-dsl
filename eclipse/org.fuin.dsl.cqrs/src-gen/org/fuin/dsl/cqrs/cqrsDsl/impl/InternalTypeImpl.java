@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
@@ -33,6 +34,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getInvariants <em>Invariants</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getDataProtection <em>Data Protection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getAttributes <em>Attributes</em>}</li>
  * </ul>
@@ -50,6 +52,16 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
    * @ordered
    */
   protected Invariants invariants;
+
+  /**
+   * The cached value of the '{@link #getDataProtection() <em>Data Protection</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDataProtection()
+   * @generated
+   * @ordered
+   */
+  protected DataProtectionInstance dataProtection;
 
   /**
    * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
@@ -148,6 +160,56 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
    * @generated
    */
   @Override
+  public DataProtectionInstance getDataProtection()
+  {
+    return dataProtection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetDataProtection(DataProtectionInstance newDataProtection, NotificationChain msgs)
+  {
+    DataProtectionInstance oldDataProtection = dataProtection;
+    dataProtection = newDataProtection;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION, oldDataProtection, newDataProtection);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setDataProtection(DataProtectionInstance newDataProtection)
+  {
+    if (newDataProtection != dataProtection)
+    {
+      NotificationChain msgs = null;
+      if (dataProtection != null)
+        msgs = ((InternalEObject)dataProtection).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION, null, msgs);
+      if (newDataProtection != null)
+        msgs = ((InternalEObject)newDataProtection).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION, null, msgs);
+      msgs = basicSetDataProtection(newDataProtection, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION, newDataProtection, newDataProtection));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public TypeMetaInfo getMetaInfo()
   {
     return metaInfo;
@@ -219,6 +281,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
     {
       case CqrsDslPackage.INTERNAL_TYPE__INVARIANTS:
         return basicSetInvariants(null, msgs);
+      case CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION:
+        return basicSetDataProtection(null, msgs);
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return basicSetMetaInfo(null, msgs);
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
@@ -239,6 +303,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
     {
       case CqrsDslPackage.INTERNAL_TYPE__INVARIANTS:
         return getInvariants();
+      case CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION:
+        return getDataProtection();
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return getMetaInfo();
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
@@ -260,6 +326,9 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
     {
       case CqrsDslPackage.INTERNAL_TYPE__INVARIANTS:
         setInvariants((Invariants)newValue);
+        return;
+      case CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION:
+        setDataProtection((DataProtectionInstance)newValue);
         return;
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         setMetaInfo((TypeMetaInfo)newValue);
@@ -285,6 +354,9 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
       case CqrsDslPackage.INTERNAL_TYPE__INVARIANTS:
         setInvariants((Invariants)null);
         return;
+      case CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION:
+        setDataProtection((DataProtectionInstance)null);
+        return;
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         setMetaInfo((TypeMetaInfo)null);
         return;
@@ -307,6 +379,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
     {
       case CqrsDslPackage.INTERNAL_TYPE__INVARIANTS:
         return invariants != null;
+      case CqrsDslPackage.INTERNAL_TYPE__DATA_PROTECTION:
+        return dataProtection != null;
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return metaInfo != null;
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:

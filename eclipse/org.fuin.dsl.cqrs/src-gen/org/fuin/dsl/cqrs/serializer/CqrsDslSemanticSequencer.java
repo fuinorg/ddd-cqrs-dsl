@@ -31,6 +31,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -119,6 +121,12 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.CONTEXT:
 				sequence_Context(context, (Context) semanticObject); 
+				return; 
+			case CqrsDslPackage.DATA_PROTECTION:
+				sequence_DataProtection(context, (DataProtection) semanticObject); 
+				return; 
+			case CqrsDslPackage.DATA_PROTECTION_INSTANCE:
+				sequence_DataProtectionInstance(context, (DataProtectionInstance) semanticObject); 
 				return; 
 			case CqrsDslPackage.DOMAIN_MODEL:
 				sequence_DomainModel(context, (DomainModel) semanticObject); 
@@ -223,6 +231,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         aggregate=[Aggregate|FQN]? 
 	 *         base=[ExternalType|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         constructors+=Constructor* 
@@ -250,6 +259,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         idType=[AggregateId|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         businessRules+=BusinessRule* 
@@ -307,6 +317,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         generics=GenericArgs? 
 	 *         name=ID 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         overridden=OverriddenTypeMetaInfo?
 	 *     )
 	 * </pre>
@@ -517,6 +528,51 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     DataProtectionInstance returns DataProtectionInstance
+	 *
+	 * Constraint:
+	 *     policy=[DataProtection|FQN]
+	 * </pre>
+	 */
+	protected void sequence_DataProtectionInstance(ISerializationContext context, DataProtectionInstance semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.DATA_PROTECTION_INSTANCE__POLICY) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.DATA_PROTECTION_INSTANCE__POLICY));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getDataProtectionInstanceAccess().getPolicyDataProtectionFQNParserRuleCall_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.DATA_PROTECTION_INSTANCE__POLICY, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     AbstractElement returns DataProtection
+	 *     DataProtection returns DataProtection
+	 *
+	 * Constraint:
+	 *     (
+	 *         doc=DOC? 
+	 *         name=ID 
+	 *         levelDoc=DOC? 
+	 *         level=ProtectionLevel 
+	 *         (categoryDoc=DOC? categories+=SpecialCategory categories+=SpecialCategory*)? 
+	 *         (subjectDoc=DOC? subject=STRING)? 
+	 *         (purposeDoc=DOC? purpose=STRING)? 
+	 *         (basisDoc=DOC? lawfulBasis=LawfulBasis)? 
+	 *         (retentionDoc=DOC? retention=Duration erasure=ErasureStrategy?)?
+	 *     )
+	 * </pre>
+	 */
+	protected void sequence_DataProtection(ISerializationContext context, DataProtection semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     DomainModel returns DomainModel
 	 *
 	 * Constraint:
@@ -568,6 +624,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         entity=[Entity|FQN]? 
 	 *         base=[ExternalType|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         constructors+=Constructor* 
@@ -596,6 +653,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         idType=[EntityId|FQN]? 
 	 *         root=[Aggregate|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         businessRules+=BusinessRule* 
@@ -638,6 +696,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         base=[ExternalType|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         instances+=EnumInstance+
@@ -981,6 +1040,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         base=[ExternalType|FQN]? 
 	 *         invariants=Invariants? 
+	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
 	 *         attributes+=Attribute* 
 	 *         constructors+=Constructor* 

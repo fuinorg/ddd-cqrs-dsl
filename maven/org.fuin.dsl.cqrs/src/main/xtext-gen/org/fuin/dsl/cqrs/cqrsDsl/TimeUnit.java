@@ -68,7 +68,37 @@ public enum TimeUnit implements Enumerator
    * @generated
    * @ordered
    */
-  DAYS(4, "days", "days");
+  DAYS(4, "days", "days"),
+
+  /**
+   * The '<em><b>Weeks</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #WEEKS_VALUE
+   * @generated
+   * @ordered
+   */
+  WEEKS(5, "weeks", "weeks"),
+
+  /**
+   * The '<em><b>Months</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MONTHS_VALUE
+   * @generated
+   * @ordered
+   */
+  MONTHS(6, "months", "months"),
+
+  /**
+   * The '<em><b>Years</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #YEARS_VALUE
+   * @generated
+   * @ordered
+   */
+  YEARS(7, "years", "years");
 
   /**
    * The '<em><b>Millis</b></em>' literal value.
@@ -126,6 +156,39 @@ public enum TimeUnit implements Enumerator
   public static final int DAYS_VALUE = 4;
 
   /**
+   * The '<em><b>Weeks</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #WEEKS
+   * @model name="weeks"
+   * @generated
+   * @ordered
+   */
+  public static final int WEEKS_VALUE = 5;
+
+  /**
+   * The '<em><b>Months</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MONTHS
+   * @model name="months"
+   * @generated
+   * @ordered
+   */
+  public static final int MONTHS_VALUE = 6;
+
+  /**
+   * The '<em><b>Years</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #YEARS
+   * @model name="years"
+   * @generated
+   * @ordered
+   */
+  public static final int YEARS_VALUE = 7;
+
+  /**
    * An array of all the '<em><b>Time Unit</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -139,6 +202,9 @@ public enum TimeUnit implements Enumerator
       MINUTES,
       HOURS,
       DAYS,
+      WEEKS,
+      MONTHS,
+      YEARS,
     };
 
   /**
@@ -208,6 +274,9 @@ public enum TimeUnit implements Enumerator
       case MINUTES_VALUE: return MINUTES;
       case HOURS_VALUE: return HOURS;
       case DAYS_VALUE: return DAYS;
+      case WEEKS_VALUE: return WEEKS;
+      case MONTHS_VALUE: return MONTHS;
+      case YEARS_VALUE: return YEARS;
     }
     return null;
   }

@@ -309,13 +309,22 @@ public interface CqrsDslPackage extends EPackage
   int INTERNAL_TYPE__INVARIANTS = TYPE_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int INTERNAL_TYPE__DATA_PROTECTION = TYPE_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INTERNAL_TYPE__META_INFO = TYPE_FEATURE_COUNT + 1;
+  int INTERNAL_TYPE__META_INFO = TYPE_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
@@ -324,7 +333,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int INTERNAL_TYPE__ATTRIBUTES = TYPE_FEATURE_COUNT + 2;
+  int INTERNAL_TYPE__ATTRIBUTES = TYPE_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Internal Type</em>' class.
@@ -333,7 +342,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int INTERNAL_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 3;
+  int INTERNAL_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractVOImpl <em>Abstract VO</em>}' class.
@@ -371,6 +380,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int ABSTRACT_VO__INVARIANTS = INTERNAL_TYPE__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_VO__DATA_PROTECTION = INTERNAL_TYPE__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -464,6 +482,15 @@ public interface CqrsDslPackage extends EPackage
   int ABSTRACT_ENTITY_ID__INVARIANTS = ABSTRACT_VO__INVARIANTS;
 
   /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_ENTITY_ID__DATA_PROTECTION = ABSTRACT_VO__DATA_PROTECTION;
+
+  /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -553,6 +580,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int ABSTRACT_ENTITY__INVARIANTS = INTERNAL_TYPE__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_ENTITY__DATA_PROTECTION = INTERNAL_TYPE__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -829,6 +865,188 @@ public interface CqrsDslPackage extends EPackage
   int CONSISTENCY_FEATURE_COUNT = 3;
 
   /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionImpl <em>Data Protection</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDataProtection()
+   * @generated
+   */
+  int DATA_PROTECTION = 14;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__DOC = ABSTRACT_ELEMENT__DOC;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__NAME = ABSTRACT_ELEMENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Level Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__LEVEL_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Level</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__LEVEL = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Category Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__CATEGORY_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Categories</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__CATEGORIES = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Subject Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__SUBJECT_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Subject</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__SUBJECT = ABSTRACT_ELEMENT_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>Purpose Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__PURPOSE_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 6;
+
+  /**
+   * The feature id for the '<em><b>Purpose</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__PURPOSE = ABSTRACT_ELEMENT_FEATURE_COUNT + 7;
+
+  /**
+   * The feature id for the '<em><b>Basis Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__BASIS_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 8;
+
+  /**
+   * The feature id for the '<em><b>Lawful Basis</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__LAWFUL_BASIS = ABSTRACT_ELEMENT_FEATURE_COUNT + 9;
+
+  /**
+   * The feature id for the '<em><b>Retention Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__RETENTION_DOC = ABSTRACT_ELEMENT_FEATURE_COUNT + 10;
+
+  /**
+   * The feature id for the '<em><b>Retention</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__RETENTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 11;
+
+  /**
+   * The feature id for the '<em><b>Erasure</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION__ERASURE = ABSTRACT_ELEMENT_FEATURE_COUNT + 12;
+
+  /**
+   * The number of structural features of the '<em>Data Protection</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 13;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionInstanceImpl <em>Data Protection Instance</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionInstanceImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDataProtectionInstance()
+   * @generated
+   */
+  int DATA_PROTECTION_INSTANCE = 15;
+
+  /**
+   * The feature id for the '<em><b>Policy</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION_INSTANCE__POLICY = 0;
+
+  /**
+   * The number of structural features of the '<em>Data Protection Instance</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DATA_PROTECTION_INSTANCE_FEATURE_COUNT = 1;
+
+  /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ConstraintImpl <em>Constraint</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -836,7 +1054,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConstraint()
    * @generated
    */
-  int CONSTRAINT = 14;
+  int CONSTRAINT = 16;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -909,7 +1127,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBusinessRule()
    * @generated
    */
-  int BUSINESS_RULE = 15;
+  int BUSINESS_RULE = 17;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -964,7 +1182,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAnnotation()
    * @generated
    */
-  int ANNOTATION = 16;
+  int ANNOTATION = 18;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1010,7 +1228,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getException()
    * @generated
    */
-  int EXCEPTION = 17;
+  int EXCEPTION = 19;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1074,7 +1292,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getValueObject()
    * @generated
    */
-  int VALUE_OBJECT = 18;
+  int VALUE_OBJECT = 20;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1102,6 +1320,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int VALUE_OBJECT__INVARIANTS = ABSTRACT_VO__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VALUE_OBJECT__DATA_PROTECTION = ABSTRACT_VO__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1174,7 +1401,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEntityId()
    * @generated
    */
-  int ENTITY_ID = 19;
+  int ENTITY_ID = 21;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1202,6 +1429,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int ENTITY_ID__INVARIANTS = ABSTRACT_ENTITY_ID__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENTITY_ID__DATA_PROTECTION = ABSTRACT_ENTITY_ID__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1274,7 +1510,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAggregateId()
    * @generated
    */
-  int AGGREGATE_ID = 20;
+  int AGGREGATE_ID = 22;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1302,6 +1538,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int AGGREGATE_ID__INVARIANTS = ABSTRACT_ENTITY_ID__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int AGGREGATE_ID__DATA_PROTECTION = ABSTRACT_ENTITY_ID__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1374,7 +1619,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEnumObject()
    * @generated
    */
-  int ENUM_OBJECT = 21;
+  int ENUM_OBJECT = 23;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1402,6 +1647,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int ENUM_OBJECT__INVARIANTS = INTERNAL_TYPE__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENUM_OBJECT__DATA_PROTECTION = INTERNAL_TYPE__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1456,7 +1710,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEnumInstance()
    * @generated
    */
-  int ENUM_INSTANCE = 22;
+  int ENUM_INSTANCE = 24;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1511,7 +1765,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEvent()
    * @generated
    */
-  int EVENT = 23;
+  int EVENT = 25;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1584,7 +1838,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEntity()
    * @generated
    */
-  int ENTITY = 24;
+  int ENTITY = 26;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1612,6 +1866,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int ENTITY__INVARIANTS = ABSTRACT_ENTITY__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENTITY__DATA_PROTECTION = ABSTRACT_ENTITY__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1702,7 +1965,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAggregate()
    * @generated
    */
-  int AGGREGATE = 25;
+  int AGGREGATE = 27;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1730,6 +1993,15 @@ public interface CqrsDslPackage extends EPackage
    * @ordered
    */
   int AGGREGATE__INVARIANTS = ABSTRACT_ENTITY__INVARIANTS;
+
+  /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int AGGREGATE__DATA_PROTECTION = ABSTRACT_ENTITY__DATA_PROTECTION;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -1811,7 +2083,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAbstractMethod()
    * @generated
    */
-  int ABSTRACT_METHOD = 26;
+  int ABSTRACT_METHOD = 28;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -1911,7 +2183,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConstructor()
    * @generated
    */
-  int CONSTRUCTOR = 27;
+  int CONSTRUCTOR = 29;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2011,7 +2283,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getReturnType()
    * @generated
    */
-  int RETURN_TYPE = 28;
+  int RETURN_TYPE = 30;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2048,7 +2320,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getMethod()
    * @generated
    */
-  int METHOD = 29;
+  int METHOD = 31;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2166,7 +2438,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTypeMetaInfo()
    * @generated
    */
-  int TYPE_META_INFO = 30;
+  int TYPE_META_INFO = 32;
 
   /**
    * The feature id for the '<em><b>Slabel</b></em>' attribute.
@@ -2230,7 +2502,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getVariable()
    * @generated
    */
-  int VARIABLE = 31;
+  int VARIABLE = 33;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2303,7 +2575,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getGenericArgs()
    * @generated
    */
-  int GENERIC_ARGS = 32;
+  int GENERIC_ARGS = 34;
 
   /**
    * The feature id for the '<em><b>Args</b></em>' reference list.
@@ -2331,7 +2603,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAttribute()
    * @generated
    */
-  int ATTRIBUTE = 33;
+  int ATTRIBUTE = 35;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2397,13 +2669,22 @@ public interface CqrsDslPackage extends EPackage
   int ATTRIBUTE__INVARIANTS = VARIABLE_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Data Protection</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE__DATA_PROTECTION = VARIABLE_FEATURE_COUNT + 1;
+
+  /**
    * The number of structural features of the '<em>Attribute</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 1;
+  int ATTRIBUTE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -2413,7 +2694,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getParameter()
    * @generated
    */
-  int PARAMETER = 34;
+  int PARAMETER = 36;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2504,7 +2785,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInvariants()
    * @generated
    */
-  int INVARIANTS = 35;
+  int INVARIANTS = 37;
 
   /**
    * The feature id for the '<em><b>Constraint Instances</b></em>' containment reference list.
@@ -2532,7 +2813,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getPreconditions()
    * @generated
    */
-  int PRECONDITIONS = 36;
+  int PRECONDITIONS = 38;
 
   /**
    * The feature id for the '<em><b>Constraint Instances</b></em>' containment reference list.
@@ -2560,7 +2841,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBusinessRules()
    * @generated
    */
-  int BUSINESS_RULES = 37;
+  int BUSINESS_RULES = 39;
 
   /**
    * The feature id for the '<em><b>Business Rule Instances</b></em>' containment reference list.
@@ -2588,7 +2869,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getOverriddenTypeMetaInfo()
    * @generated
    */
-  int OVERRIDDEN_TYPE_META_INFO = 38;
+  int OVERRIDDEN_TYPE_META_INFO = 40;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -2616,7 +2897,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConstraintInstance()
    * @generated
    */
-  int CONSTRAINT_INSTANCE = 39;
+  int CONSTRAINT_INSTANCE = 41;
 
   /**
    * The feature id for the '<em><b>Constraint</b></em>' reference.
@@ -2653,7 +2934,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBusinessRuleInstance()
    * @generated
    */
-  int BUSINESS_RULE_INSTANCE = 40;
+  int BUSINESS_RULE_INSTANCE = 42;
 
   /**
    * The feature id for the '<em><b>Business Rule</b></em>' reference.
@@ -2690,7 +2971,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAnnotationInstance()
    * @generated
    */
-  int ANNOTATION_INSTANCE = 41;
+  int ANNOTATION_INSTANCE = 43;
 
   /**
    * The feature id for the '<em><b>Annotation</b></em>' reference.
@@ -2727,7 +3008,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getService()
    * @generated
    */
-  int SERVICE = 42;
+  int SERVICE = 44;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2782,7 +3063,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCommand()
    * @generated
    */
-  int COMMAND = 43;
+  int COMMAND = 45;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2855,7 +3136,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCommandHandler()
    * @generated
    */
-  int COMMAND_HANDLER = 44;
+  int COMMAND_HANDLER = 46;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2910,7 +3191,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProjection()
    * @generated
    */
-  int PROJECTION = 45;
+  int PROJECTION = 47;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2956,7 +3237,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getView()
    * @generated
    */
-  int VIEW = 46;
+  int VIEW = 48;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3002,7 +3283,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLiteral()
    * @generated
    */
-  int LITERAL = 47;
+  int LITERAL = 49;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3030,7 +3311,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 48;
+  int BOOLEAN_LITERAL = 50;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3058,7 +3339,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 49;
+  int NULL_LITERAL = 51;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3086,7 +3367,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNumberLiteral()
    * @generated
    */
-  int NUMBER_LITERAL = 50;
+  int NUMBER_LITERAL = 52;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3114,7 +3395,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 51;
+  int STRING_LITERAL = 53;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3142,7 +3423,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTimeUnit()
    * @generated
    */
-  int TIME_UNIT = 52;
+  int TIME_UNIT = 54;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel <em>Consistency Level</em>}' enum.
@@ -3152,7 +3433,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConsistencyLevel()
    * @generated
    */
-  int CONSISTENCY_LEVEL = 53;
+  int CONSISTENCY_LEVEL = 55;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection <em>Inconsistency Detection</em>}' enum.
@@ -3162,7 +3443,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyDetection()
    * @generated
    */
-  int INCONSISTENCY_DETECTION = 54;
+  int INCONSISTENCY_DETECTION = 56;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution <em>Inconsistency Resolution</em>}' enum.
@@ -3172,7 +3453,47 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyResolution()
    * @generated
    */
-  int INCONSISTENCY_RESOLUTION = 55;
+  int INCONSISTENCY_RESOLUTION = 57;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProtectionLevel()
+   * @generated
+   */
+  int PROTECTION_LEVEL = 58;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLawfulBasis()
+   * @generated
+   */
+  int LAWFUL_BASIS = 59;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getSpecialCategory()
+   * @generated
+   */
+  int SPECIAL_CATEGORY = 60;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getErasureStrategy()
+   * @generated
+   */
+  int ERASURE_STRATEGY = 61;
 
 
   /**
@@ -3354,6 +3675,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EReference getInternalType_Invariants();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getDataProtection <em>Data Protection</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Data Protection</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.InternalType#getDataProtection()
+   * @see #getInternalType()
+   * @generated
+   */
+  EReference getInternalType_DataProtection();
 
   /**
    * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getMetaInfo <em>Meta Info</em>}'.
@@ -3666,6 +3998,180 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EReference getConsistency_WeakConsistency();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection <em>Data Protection</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Data Protection</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection
+   * @generated
+   */
+  EClass getDataProtection();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLevelDoc <em>Level Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Level Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLevelDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_LevelDoc();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLevel <em>Level</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Level</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLevel()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_Level();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getCategoryDoc <em>Category Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Category Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getCategoryDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_CategoryDoc();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getCategories <em>Categories</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Categories</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getCategories()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_Categories();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getSubjectDoc <em>Subject Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Subject Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getSubjectDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_SubjectDoc();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getSubject <em>Subject</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Subject</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getSubject()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_Subject();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getPurposeDoc <em>Purpose Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Purpose Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getPurposeDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_PurposeDoc();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getPurpose <em>Purpose</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Purpose</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getPurpose()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_Purpose();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getBasisDoc <em>Basis Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Basis Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getBasisDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_BasisDoc();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLawfulBasis <em>Lawful Basis</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Lawful Basis</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getLawfulBasis()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_LawfulBasis();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getRetentionDoc <em>Retention Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Retention Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getRetentionDoc()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_RetentionDoc();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getRetention <em>Retention</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Retention</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getRetention()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EReference getDataProtection_Retention();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getErasure <em>Erasure</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Erasure</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection#getErasure()
+   * @see #getDataProtection()
+   * @generated
+   */
+  EAttribute getDataProtection_Erasure();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance <em>Data Protection Instance</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Data Protection Instance</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance
+   * @generated
+   */
+  EClass getDataProtectionInstance();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance#getPolicy <em>Policy</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Policy</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance#getPolicy()
+   * @see #getDataProtectionInstance()
+   * @generated
+   */
+  EReference getDataProtectionInstance_Policy();
 
   /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Constraint <em>Constraint</em>}'.
@@ -4462,6 +4968,17 @@ public interface CqrsDslPackage extends EPackage
   EReference getAttribute_Invariants();
 
   /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Attribute#getDataProtection <em>Data Protection</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Data Protection</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Attribute#getDataProtection()
+   * @see #getAttribute()
+   * @generated
+   */
+  EReference getAttribute_DataProtection();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Parameter <em>Parameter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4935,6 +5452,46 @@ public interface CqrsDslPackage extends EPackage
   EEnum getInconsistencyResolution();
 
   /**
+   * Returns the meta object for enum '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Protection Level</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel
+   * @generated
+   */
+  EEnum getProtectionLevel();
+
+  /**
+   * Returns the meta object for enum '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Lawful Basis</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis
+   * @generated
+   */
+  EEnum getLawfulBasis();
+
+  /**
+   * Returns the meta object for enum '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Special Category</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory
+   * @generated
+   */
+  EEnum getSpecialCategory();
+
+  /**
+   * Returns the meta object for enum '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Erasure Strategy</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy
+   * @generated
+   */
+  EEnum getErasureStrategy();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5106,6 +5663,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference INTERNAL_TYPE__INVARIANTS = eINSTANCE.getInternalType_Invariants();
+
+    /**
+     * The meta object literal for the '<em><b>Data Protection</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference INTERNAL_TYPE__DATA_PROTECTION = eINSTANCE.getInternalType_DataProtection();
 
     /**
      * The meta object literal for the '<em><b>Meta Info</b></em>' containment reference feature.
@@ -5352,6 +5917,138 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference CONSISTENCY__WEAK_CONSISTENCY = eINSTANCE.getConsistency_WeakConsistency();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionImpl <em>Data Protection</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDataProtection()
+     * @generated
+     */
+    EClass DATA_PROTECTION = eINSTANCE.getDataProtection();
+
+    /**
+     * The meta object literal for the '<em><b>Level Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__LEVEL_DOC = eINSTANCE.getDataProtection_LevelDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Level</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__LEVEL = eINSTANCE.getDataProtection_Level();
+
+    /**
+     * The meta object literal for the '<em><b>Category Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__CATEGORY_DOC = eINSTANCE.getDataProtection_CategoryDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Categories</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__CATEGORIES = eINSTANCE.getDataProtection_Categories();
+
+    /**
+     * The meta object literal for the '<em><b>Subject Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__SUBJECT_DOC = eINSTANCE.getDataProtection_SubjectDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Subject</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__SUBJECT = eINSTANCE.getDataProtection_Subject();
+
+    /**
+     * The meta object literal for the '<em><b>Purpose Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__PURPOSE_DOC = eINSTANCE.getDataProtection_PurposeDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Purpose</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__PURPOSE = eINSTANCE.getDataProtection_Purpose();
+
+    /**
+     * The meta object literal for the '<em><b>Basis Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__BASIS_DOC = eINSTANCE.getDataProtection_BasisDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Lawful Basis</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__LAWFUL_BASIS = eINSTANCE.getDataProtection_LawfulBasis();
+
+    /**
+     * The meta object literal for the '<em><b>Retention Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__RETENTION_DOC = eINSTANCE.getDataProtection_RetentionDoc();
+
+    /**
+     * The meta object literal for the '<em><b>Retention</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference DATA_PROTECTION__RETENTION = eINSTANCE.getDataProtection_Retention();
+
+    /**
+     * The meta object literal for the '<em><b>Erasure</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DATA_PROTECTION__ERASURE = eINSTANCE.getDataProtection_Erasure();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionInstanceImpl <em>Data Protection Instance</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DataProtectionInstanceImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDataProtectionInstance()
+     * @generated
+     */
+    EClass DATA_PROTECTION_INSTANCE = eINSTANCE.getDataProtectionInstance();
+
+    /**
+     * The meta object literal for the '<em><b>Policy</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference DATA_PROTECTION_INSTANCE__POLICY = eINSTANCE.getDataProtectionInstance_Policy();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ConstraintImpl <em>Constraint</em>}' class.
@@ -5986,6 +6683,14 @@ public interface CqrsDslPackage extends EPackage
     EReference ATTRIBUTE__INVARIANTS = eINSTANCE.getAttribute_Invariants();
 
     /**
+     * The meta object literal for the '<em><b>Data Protection</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATTRIBUTE__DATA_PROTECTION = eINSTANCE.getAttribute_DataProtection();
+
+    /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ParameterImpl <em>Parameter</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6388,6 +7093,46 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EEnum INCONSISTENCY_RESOLUTION = eINSTANCE.getInconsistencyResolution();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProtectionLevel()
+     * @generated
+     */
+    EEnum PROTECTION_LEVEL = eINSTANCE.getProtectionLevel();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLawfulBasis()
+     * @generated
+     */
+    EEnum LAWFUL_BASIS = eINSTANCE.getLawfulBasis();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getSpecialCategory()
+     * @generated
+     */
+    EEnum SPECIAL_CATEGORY = eINSTANCE.getSpecialCategory();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getErasureStrategy()
+     * @generated
+     */
+    EEnum ERASURE_STRATEGY = eINSTANCE.getErasureStrategy();
 
   }
 

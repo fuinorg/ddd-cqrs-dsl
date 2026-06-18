@@ -36,12 +36,15 @@ import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
+import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
@@ -50,6 +53,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
@@ -59,8 +63,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
+import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TimeUnit;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
@@ -136,6 +142,8 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.DURATION: return createDuration();
       case CqrsDslPackage.WEAK_CONSISTENCY: return createWeakConsistency();
       case CqrsDslPackage.CONSISTENCY: return createConsistency();
+      case CqrsDslPackage.DATA_PROTECTION: return createDataProtection();
+      case CqrsDslPackage.DATA_PROTECTION_INSTANCE: return createDataProtectionInstance();
       case CqrsDslPackage.CONSTRAINT: return createConstraint();
       case CqrsDslPackage.BUSINESS_RULE: return createBusinessRule();
       case CqrsDslPackage.ANNOTATION: return createAnnotation();
@@ -197,6 +205,14 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
         return createInconsistencyDetectionFromString(eDataType, initialValue);
       case CqrsDslPackage.INCONSISTENCY_RESOLUTION:
         return createInconsistencyResolutionFromString(eDataType, initialValue);
+      case CqrsDslPackage.PROTECTION_LEVEL:
+        return createProtectionLevelFromString(eDataType, initialValue);
+      case CqrsDslPackage.LAWFUL_BASIS:
+        return createLawfulBasisFromString(eDataType, initialValue);
+      case CqrsDslPackage.SPECIAL_CATEGORY:
+        return createSpecialCategoryFromString(eDataType, initialValue);
+      case CqrsDslPackage.ERASURE_STRATEGY:
+        return createErasureStrategyFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -220,6 +236,14 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
         return convertInconsistencyDetectionToString(eDataType, instanceValue);
       case CqrsDslPackage.INCONSISTENCY_RESOLUTION:
         return convertInconsistencyResolutionToString(eDataType, instanceValue);
+      case CqrsDslPackage.PROTECTION_LEVEL:
+        return convertProtectionLevelToString(eDataType, instanceValue);
+      case CqrsDslPackage.LAWFUL_BASIS:
+        return convertLawfulBasisToString(eDataType, instanceValue);
+      case CqrsDslPackage.SPECIAL_CATEGORY:
+        return convertSpecialCategoryToString(eDataType, instanceValue);
+      case CqrsDslPackage.ERASURE_STRATEGY:
+        return convertErasureStrategyToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -391,6 +415,30 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     ConsistencyImpl consistency = new ConsistencyImpl();
     return consistency;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public DataProtection createDataProtection()
+  {
+    DataProtectionImpl dataProtection = new DataProtectionImpl();
+    return dataProtection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public DataProtectionInstance createDataProtectionInstance()
+  {
+    DataProtectionInstanceImpl dataProtectionInstance = new DataProtectionInstanceImpl();
+    return dataProtectionInstance;
   }
 
   /**
@@ -933,6 +981,94 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   public String convertInconsistencyResolutionToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ProtectionLevel createProtectionLevelFromString(EDataType eDataType, String initialValue)
+  {
+    ProtectionLevel result = ProtectionLevel.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertProtectionLevelToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LawfulBasis createLawfulBasisFromString(EDataType eDataType, String initialValue)
+  {
+    LawfulBasis result = LawfulBasis.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLawfulBasisToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SpecialCategory createSpecialCategoryFromString(EDataType eDataType, String initialValue)
+  {
+    SpecialCategory result = SpecialCategory.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertSpecialCategoryToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ErasureStrategy createErasureStrategyFromString(EDataType eDataType, String initialValue)
+  {
+    ErasureStrategy result = ErasureStrategy.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertErasureStrategyToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

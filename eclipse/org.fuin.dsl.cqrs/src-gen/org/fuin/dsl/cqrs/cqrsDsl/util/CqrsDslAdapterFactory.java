@@ -32,6 +32,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -195,6 +197,16 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseConsistency(Consistency object)
       {
         return createConsistencyAdapter();
+      }
+      @Override
+      public Adapter caseDataProtection(DataProtection object)
+      {
+        return createDataProtectionAdapter();
+      }
+      @Override
+      public Adapter caseDataProtectionInstance(DataProtectionInstance object)
+      {
+        return createDataProtectionInstanceAdapter();
       }
       @Override
       public Adapter caseConstraint(Constraint object)
@@ -614,6 +626,36 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createConsistencyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtection <em>Data Protection</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtection
+   * @generated
+   */
+  public Adapter createDataProtectionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance <em>Data Protection Instance</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance
+   * @generated
+   */
+  public Adapter createDataProtectionInstanceAdapter()
   {
     return null;
   }

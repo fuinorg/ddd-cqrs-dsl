@@ -12,6 +12,9 @@
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/minutes"/>
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/hours"/>
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/days"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/weeks"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/months"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//TimeUnit/years"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="CqrsDsl.ecore#//ConsistencyLevel">
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ConsistencyLevel/weak"/>
@@ -27,6 +30,39 @@
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//InconsistencyResolution/manually"/>
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//InconsistencyResolution/automatic"/>
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//InconsistencyResolution/workflow"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CqrsDsl.ecore#//ProtectionLevel">
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ProtectionLevel/none"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ProtectionLevel/personal"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ProtectionLevel/sensitive"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CqrsDsl.ecore#//LawfulBasis">
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/consent"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/explicit_consent"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/contract"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/legal_obligation"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/vital_interests"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/public_task"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//LawfulBasis/legitimate_interests"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CqrsDsl.ecore#//SpecialCategory">
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/health"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/genetic"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/biometric"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/racial"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/political"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/religious"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/philosophical"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/trade_union"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/sex_life"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//SpecialCategory/sexual_orientation"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CqrsDsl.ecore#//ErasureStrategy">
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/delete"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/anonymize"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/pseudonymize"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/archive"/>
+      <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/review"/>
     </genEnums>
     <genClasses ecoreClass="CqrsDsl.ecore#//DomainModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DomainModel/contexts"/>
@@ -50,6 +86,7 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//Type"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//InternalType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//InternalType/invariants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//InternalType/dataProtection"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//InternalType/metaInfo"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//InternalType/attributes"/>
     </genClasses>
@@ -85,6 +122,24 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Consistency/doc"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Consistency/level"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Consistency/weakConsistency"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//DataProtection">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/levelDoc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/level"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/categoryDoc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/categories"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/subjectDoc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/subject"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/purposeDoc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/purpose"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/basisDoc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/lawfulBasis"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/retentionDoc"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DataProtection/retention"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//DataProtection/erasure"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//DataProtectionInstance">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DataProtectionInstance/policy"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Constraint">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Constraint/input"/>
@@ -178,6 +233,7 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Attribute">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Attribute/invariants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Attribute/dataProtection"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Parameter">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Parameter/preconditions"/>

@@ -70,12 +70,26 @@
     KW_RESOLUTION='resolution'
     KW_NULLABLE='nullable'
 
+    // Data protection keywords
+    KW_DATA_PROTECTION='data-protection'
+    KW_PROTECTED_BY='protected-by'
+    KW_PROTECTION='protection'
+    KW_CATEGORY='category'
+    KW_SUBJECT='subject'
+    KW_PURPOSE='purpose'
+    KW_LAWFUL_BASIS='lawful-basis'
+    KW_RETENTION='retention'
+    KW_THEN='then'
+
     // Time unit keywords
     KW_MILLIS='millis'
     KW_SECONDS='seconds'
     KW_MINUTES='minutes'
     KW_HOURS='hours'
     KW_DAYS='days'
+    KW_WEEKS='weeks'
+    KW_MONTHS='months'
+    KW_YEARS='years'
 
     // Consistency / detection / resolution value keywords
     KW_WEAK='weak'
@@ -84,6 +98,39 @@
     KW_MANUALLY='manually'
     KW_AUTOMATIC='automatic'
     KW_WORKFLOW='workflow'
+
+    // Protection level value keywords
+    KW_NONE='none'
+    KW_PERSONAL='personal'
+    KW_SENSITIVE='sensitive'
+
+    // Lawful basis value keywords
+    KW_CONSENT='consent'
+    KW_EXPLICIT_CONSENT='explicit_consent'
+    KW_CONTRACT='contract'
+    KW_LEGAL_OBLIGATION='legal_obligation'
+    KW_VITAL_INTERESTS='vital_interests'
+    KW_PUBLIC_TASK='public_task'
+    KW_LEGITIMATE_INTERESTS='legitimate_interests'
+
+    // Special category value keywords
+    KW_HEALTH='health'
+    KW_GENETIC='genetic'
+    KW_BIOMETRIC='biometric'
+    KW_RACIAL='racial'
+    KW_POLITICAL='political'
+    KW_RELIGIOUS='religious'
+    KW_PHILOSOPHICAL='philosophical'
+    KW_TRADE_UNION='trade_union'
+    KW_SEX_LIFE='sex_life'
+    KW_SEXUAL_ORIENTATION='sexual_orientation'
+
+    // Erasure strategy value keywords
+    KW_DELETE='delete'
+    KW_ANONYMIZE='anonymize'
+    KW_PSEUDONYMIZE='pseudonymize'
+    KW_ARCHIVE='archive'
+    KW_REVIEW='review'
 
     // Literal keywords
     KW_TRUE='true'
@@ -156,7 +203,8 @@ element ::= constraint_def
           | command_def
           | command_handler
           | projection_def
-          | view_def {
+          | view_def
+          | data_protection_def {
   recoverWhile=element_recover
 }
 
@@ -164,7 +212,7 @@ private element_recover ::= !(RBRACE | element_start)
 // 'AT' (@) starts an annotation instance prefixing a value-object/event, so it must end recovery.
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
           | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
-          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW
+          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_DATA_PROTECTION
 
 external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
   pin=1
@@ -190,25 +238,25 @@ exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE 
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
   pin=2
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_id ::= KW_ENTITY_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+entity_id ::= KW_ENTITY_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_id ::= KW_AGGREGATE_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+aggregate_id ::= KW_AGGREGATE_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? LBRACE type_meta_info attribute* KW_INSTANCES LBRACE enum_instance+ RBRACE RBRACE {
+enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* KW_INSTANCES LBRACE enum_instance+ RBRACE RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -225,13 +273,13 @@ event_def ::= annotation_instance* KW_EVENT ID (KW_COPIES_ATTRIBUTES_OF type_ref
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -291,7 +339,7 @@ method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (K
 
 return_type ::= KW_RETURNS type_ref { pin=1 }
 
-attribute ::= KW_NULLABLE? type_ref generic_args? ID invariants? overridden_meta? {
+attribute ::= KW_NULLABLE? type_ref generic_args? ID invariants? data_protection_instance? overridden_meta? {
   pin=4
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -337,7 +385,37 @@ inconsistency_resolution ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC | KW_WORKFLOW
 
 duration ::= NUMBER time_unit
 
-time_unit ::= KW_MILLIS | KW_SECONDS | KW_MINUTES | KW_HOURS | KW_DAYS
+// =========================================================================
+// Data protection
+// =========================================================================
+
+data_protection_def ::= KW_DATA_PROTECTION ID LBRACE
+    KW_PROTECTION protection_level
+    (KW_CATEGORY special_category (COMMA special_category)*)?
+    (KW_SUBJECT STRING)?
+    (KW_PURPOSE STRING)?
+    (KW_LAWFUL_BASIS lawful_basis)?
+    (KW_RETENTION duration (KW_THEN erasure_strategy)?)?
+    RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+// Applies a named data protection policy to a type or attribute.
+data_protection_instance ::= KW_PROTECTED_BY type_ref { pin=1 }
+
+protection_level ::= KW_NONE | KW_PERSONAL | KW_SENSITIVE
+
+lawful_basis ::= KW_CONSENT | KW_EXPLICIT_CONSENT | KW_CONTRACT | KW_LEGAL_OBLIGATION
+              | KW_VITAL_INTERESTS | KW_PUBLIC_TASK | KW_LEGITIMATE_INTERESTS
+
+special_category ::= KW_HEALTH | KW_GENETIC | KW_BIOMETRIC | KW_RACIAL | KW_POLITICAL
+              | KW_RELIGIOUS | KW_PHILOSOPHICAL | KW_TRADE_UNION | KW_SEX_LIFE | KW_SEXUAL_ORIENTATION
+
+erasure_strategy ::= KW_DELETE | KW_ANONYMIZE | KW_PSEUDONYMIZE | KW_ARCHIVE | KW_REVIEW
+
+time_unit ::= KW_MILLIS | KW_SECONDS | KW_MINUTES | KW_HOURS | KW_DAYS | KW_WEEKS | KW_MONTHS | KW_YEARS
 
 // =========================================================================
 // References, names and literals

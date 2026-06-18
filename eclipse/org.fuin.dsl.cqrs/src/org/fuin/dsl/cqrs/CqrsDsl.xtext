@@ -27,7 +27,7 @@ Import:
 
 /** Common properties of domain model elements. */
 AbstractElement:
-	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View;
+	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
 
 /** Common properties of all types. */
 Type:
@@ -56,7 +56,7 @@ ExternalType:
 
 /** Standard way of expressing duration. */
 enum TimeUnit:
-	millis | seconds | minutes | hours | days;
+	millis | seconds | minutes | hours | days | weeks | months | years;
 
 /** Determines whether inconsistencies are acceptable or not.  */
 enum ConsistencyLevel:
@@ -105,6 +105,77 @@ Consistency:
 	doc=DOC?
 	'consistency' level=ConsistencyLevel ('{' weakConsistency=WeakConsistency '}')?;
 
+/** Level of protection required for data. Also identifies whether the data is personal data. */
+enum ProtectionLevel:
+	/** No personal data - no special protection required. */
+	none |
+	/** Ordinary personal data (GDPR Art. 4(1)). */
+	personal |
+	/** Special category of personal data requiring higher protection (GDPR Art. 9). */
+	sensitive;
+
+/** Legal ground that makes the processing of personal data lawful (GDPR Art. 6 / Art. 9(2)). */
+enum LawfulBasis:
+	/** The data subject has given consent. */
+	consent |
+	/** The data subject has given explicit consent (required for special categories). */
+	explicit_consent |
+	/** Processing is necessary for the performance of a contract. */
+	contract |
+	/** Processing is necessary to comply with a legal obligation. */
+	legal_obligation |
+	/** Processing is necessary to protect vital interests of a natural person. */
+	vital_interests |
+	/** Processing is necessary for a task carried out in the public interest. */
+	public_task |
+	/** Processing is necessary for the purposes of legitimate interests. */
+	legitimate_interests;
+
+/** Special categories of personal data (GDPR Art. 9). */
+enum SpecialCategory:
+	health | genetic | biometric | racial | political | religious |
+	philosophical | trade_union | sex_life | sexual_orientation;
+
+/** Action taken when the retention period ends (relates to the right to erasure, GDPR Art. 17). */
+enum ErasureStrategy:
+	/** Data is physically deleted. */
+	delete |
+	/** Data is irreversibly anonymized (it is no longer personal data afterwards). */
+	anonymize |
+	/** Direct identifiers are replaced by pseudonyms. */
+	pseudonymize |
+	/** Data is moved to a separate long-term archive. */
+	archive |
+	/** A human decides whether the data may still be kept. */
+	review;
+
+/**
+ * A named, reusable data protection policy capturing the GDPR-relevant properties of a
+ * category of (personal) data. It is declared once and applied to types or attributes
+ * via 'protected-by'. The set of all policies forms a central register of processing
+ * activities (GDPR Art. 30).
+ */
+DataProtection:
+	doc=DOC?
+	'data-protection' name=ID '{'
+		levelDoc=DOC?
+		'protection' level=ProtectionLevel
+
+		(categoryDoc=DOC? 'category' categories+=SpecialCategory (',' categories+=SpecialCategory)*)?
+
+		(subjectDoc=DOC? 'subject' subject=STRING)?
+
+		(purposeDoc=DOC? 'purpose' purpose=STRING)?
+
+		(basisDoc=DOC? 'lawful-basis' lawfulBasis=LawfulBasis)?
+
+		(retentionDoc=DOC? 'retention' retention=Duration ('then' erasure=ErasureStrategy)?)?
+	'}';
+
+/** Assigns a named data protection policy to a type or attribute. */
+DataProtectionInstance:
+	'protected-by' policy=[DataProtection|FQN];
+
 /** Defines a condition that must be satisfied. */
 Constraint:
 	doc=DOC? 
@@ -139,7 +210,7 @@ Exception:
 ValueObject:
 	doc=DOC? 
 	annotations+=AnnotationInstance*
-	'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		constructors+=Constructor*
@@ -149,7 +220,7 @@ ValueObject:
 /** Uniquely identifies an entity. */
 EntityId:
 	doc=DOC?
-	'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		constructors+=Constructor*
@@ -159,7 +230,7 @@ EntityId:
 /** Uniquely identifies an aggregate. */
 AggregateId:
 	doc=DOC?
-	'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		constructors+=Constructor*
@@ -169,7 +240,7 @@ AggregateId:
 /** A type with a limited set of named values. */
 EnumObject:
 	doc=DOC?
-	'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		'instances' '{' instances+=EnumInstance+ '}'
@@ -192,7 +263,7 @@ Event:
 /* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
 Entity:
 	doc=DOC?
-	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? '{'
+	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		businessRules+=BusinessRule*
@@ -208,7 +279,7 @@ Entity:
  */
 Aggregate:
 	doc=DOC?
-	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? '{'
+	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		attributes+=Attribute*
 		businessRules+=BusinessRule*
@@ -266,9 +337,9 @@ GenericArgs:
 
 /** Property of an object. */
 Attribute:
-	doc=DOC? 
-	(nullable='nullable')? 	
-	type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (overridden=OverriddenTypeMetaInfo)?;
+	doc=DOC?
+	(nullable='nullable')?
+	type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 
 /** Property/Argument of a method. */
 Parameter:

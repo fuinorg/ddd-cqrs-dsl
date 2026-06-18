@@ -183,13 +183,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cCommandHandlerParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
 		private final RuleCall cProjectionParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		private final RuleCall cViewParserRuleCall_8 = (RuleCall)cAlternatives.eContents().get(8);
+		private final RuleCall cDataProtectionParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
 		
 		///** Common properties of domain model elements. */
 		//AbstractElement:
-		//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View;
+		//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View
+		//Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Constraint
@@ -218,6 +219,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//View
 		public RuleCall getViewParserRuleCall_8() { return cViewParserRuleCall_8; }
+		
+		//DataProtection
+		public RuleCall getDataProtectionParserRuleCall_9() { return cDataProtectionParserRuleCall_9; }
 	}
 	public class TypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Type");
@@ -548,6 +552,269 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_3_2() { return cRightCurlyBracketKeyword_3_2; }
+	}
+	public class DataProtectionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.DataProtection");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Keyword cDataProtectionKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cLevelDocAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cLevelDocDOCTerminalRuleCall_4_0 = (RuleCall)cLevelDocAssignment_4.eContents().get(0);
+		private final Keyword cProtectionKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cLevelAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cLevelProtectionLevelEnumRuleCall_6_0 = (RuleCall)cLevelAssignment_6.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Assignment cCategoryDocAssignment_7_0 = (Assignment)cGroup_7.eContents().get(0);
+		private final RuleCall cCategoryDocDOCTerminalRuleCall_7_0_0 = (RuleCall)cCategoryDocAssignment_7_0.eContents().get(0);
+		private final Keyword cCategoryKeyword_7_1 = (Keyword)cGroup_7.eContents().get(1);
+		private final Assignment cCategoriesAssignment_7_2 = (Assignment)cGroup_7.eContents().get(2);
+		private final RuleCall cCategoriesSpecialCategoryEnumRuleCall_7_2_0 = (RuleCall)cCategoriesAssignment_7_2.eContents().get(0);
+		private final Group cGroup_7_3 = (Group)cGroup_7.eContents().get(3);
+		private final Keyword cCommaKeyword_7_3_0 = (Keyword)cGroup_7_3.eContents().get(0);
+		private final Assignment cCategoriesAssignment_7_3_1 = (Assignment)cGroup_7_3.eContents().get(1);
+		private final RuleCall cCategoriesSpecialCategoryEnumRuleCall_7_3_1_0 = (RuleCall)cCategoriesAssignment_7_3_1.eContents().get(0);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Assignment cSubjectDocAssignment_8_0 = (Assignment)cGroup_8.eContents().get(0);
+		private final RuleCall cSubjectDocDOCTerminalRuleCall_8_0_0 = (RuleCall)cSubjectDocAssignment_8_0.eContents().get(0);
+		private final Keyword cSubjectKeyword_8_1 = (Keyword)cGroup_8.eContents().get(1);
+		private final Assignment cSubjectAssignment_8_2 = (Assignment)cGroup_8.eContents().get(2);
+		private final RuleCall cSubjectSTRINGTerminalRuleCall_8_2_0 = (RuleCall)cSubjectAssignment_8_2.eContents().get(0);
+		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
+		private final Assignment cPurposeDocAssignment_9_0 = (Assignment)cGroup_9.eContents().get(0);
+		private final RuleCall cPurposeDocDOCTerminalRuleCall_9_0_0 = (RuleCall)cPurposeDocAssignment_9_0.eContents().get(0);
+		private final Keyword cPurposeKeyword_9_1 = (Keyword)cGroup_9.eContents().get(1);
+		private final Assignment cPurposeAssignment_9_2 = (Assignment)cGroup_9.eContents().get(2);
+		private final RuleCall cPurposeSTRINGTerminalRuleCall_9_2_0 = (RuleCall)cPurposeAssignment_9_2.eContents().get(0);
+		private final Group cGroup_10 = (Group)cGroup.eContents().get(10);
+		private final Assignment cBasisDocAssignment_10_0 = (Assignment)cGroup_10.eContents().get(0);
+		private final RuleCall cBasisDocDOCTerminalRuleCall_10_0_0 = (RuleCall)cBasisDocAssignment_10_0.eContents().get(0);
+		private final Keyword cLawfulBasisKeyword_10_1 = (Keyword)cGroup_10.eContents().get(1);
+		private final Assignment cLawfulBasisAssignment_10_2 = (Assignment)cGroup_10.eContents().get(2);
+		private final RuleCall cLawfulBasisLawfulBasisEnumRuleCall_10_2_0 = (RuleCall)cLawfulBasisAssignment_10_2.eContents().get(0);
+		private final Group cGroup_11 = (Group)cGroup.eContents().get(11);
+		private final Assignment cRetentionDocAssignment_11_0 = (Assignment)cGroup_11.eContents().get(0);
+		private final RuleCall cRetentionDocDOCTerminalRuleCall_11_0_0 = (RuleCall)cRetentionDocAssignment_11_0.eContents().get(0);
+		private final Keyword cRetentionKeyword_11_1 = (Keyword)cGroup_11.eContents().get(1);
+		private final Assignment cRetentionAssignment_11_2 = (Assignment)cGroup_11.eContents().get(2);
+		private final RuleCall cRetentionDurationParserRuleCall_11_2_0 = (RuleCall)cRetentionAssignment_11_2.eContents().get(0);
+		private final Group cGroup_11_3 = (Group)cGroup_11.eContents().get(3);
+		private final Keyword cThenKeyword_11_3_0 = (Keyword)cGroup_11_3.eContents().get(0);
+		private final Assignment cErasureAssignment_11_3_1 = (Assignment)cGroup_11_3.eContents().get(1);
+		private final RuleCall cErasureErasureStrategyEnumRuleCall_11_3_1_0 = (RuleCall)cErasureAssignment_11_3_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		
+		///**
+		// * A named, reusable data protection policy capturing the GDPR-relevant properties of a
+		// * category of (personal) data. It is declared once and applied to types or attributes
+		// * via 'protected-by'. The set of all policies forms a central register of processing
+		// * activities (GDPR Art. 30).
+		// */
+		//DataProtection:
+		//    doc=DOC?
+		//    'data-protection' name=ID '{'
+		//        levelDoc=DOC?
+		//        'protection' level=ProtectionLevel
+		//        (categoryDoc=DOC? 'category' categories+=SpecialCategory (',' categories+=SpecialCategory)*)?
+		//        (subjectDoc=DOC? 'subject' subject=STRING)?
+		//        (purposeDoc=DOC? 'purpose' purpose=STRING)?
+		//        (basisDoc=DOC? 'lawful-basis' lawfulBasis=LawfulBasis)?
+		//        (retentionDoc=DOC? 'retention' retention=Duration ('then' erasure=ErasureStrategy)?)?
+		//    '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//'data-protection' name=ID '{'
+		//    levelDoc=DOC?
+		//    'protection' level=ProtectionLevel
+		//    (categoryDoc=DOC? 'category' categories+=SpecialCategory (',' categories+=SpecialCategory)*)?
+		//    (subjectDoc=DOC? 'subject' subject=STRING)?
+		//    (purposeDoc=DOC? 'purpose' purpose=STRING)?
+		//    (basisDoc=DOC? 'lawful-basis' lawfulBasis=LawfulBasis)?
+		//    (retentionDoc=DOC? 'retention' retention=Duration ('then' erasure=ErasureStrategy)?)?
+		//'}'
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//'data-protection'
+		public Keyword getDataProtectionKeyword_1() { return cDataProtectionKeyword_1; }
+		
+		//name=ID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_2_0() { return cNameIDTerminalRuleCall_2_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
+		
+		//levelDoc=DOC?
+		public Assignment getLevelDocAssignment_4() { return cLevelDocAssignment_4; }
+		
+		//DOC
+		public RuleCall getLevelDocDOCTerminalRuleCall_4_0() { return cLevelDocDOCTerminalRuleCall_4_0; }
+		
+		//'protection'
+		public Keyword getProtectionKeyword_5() { return cProtectionKeyword_5; }
+		
+		//level=ProtectionLevel
+		public Assignment getLevelAssignment_6() { return cLevelAssignment_6; }
+		
+		//ProtectionLevel
+		public RuleCall getLevelProtectionLevelEnumRuleCall_6_0() { return cLevelProtectionLevelEnumRuleCall_6_0; }
+		
+		//(categoryDoc=DOC? 'category' categories+=SpecialCategory (',' categories+=SpecialCategory)*)?
+		public Group getGroup_7() { return cGroup_7; }
+		
+		//categoryDoc=DOC?
+		public Assignment getCategoryDocAssignment_7_0() { return cCategoryDocAssignment_7_0; }
+		
+		//DOC
+		public RuleCall getCategoryDocDOCTerminalRuleCall_7_0_0() { return cCategoryDocDOCTerminalRuleCall_7_0_0; }
+		
+		//'category'
+		public Keyword getCategoryKeyword_7_1() { return cCategoryKeyword_7_1; }
+		
+		//categories+=SpecialCategory
+		public Assignment getCategoriesAssignment_7_2() { return cCategoriesAssignment_7_2; }
+		
+		//SpecialCategory
+		public RuleCall getCategoriesSpecialCategoryEnumRuleCall_7_2_0() { return cCategoriesSpecialCategoryEnumRuleCall_7_2_0; }
+		
+		//(',' categories+=SpecialCategory)*
+		public Group getGroup_7_3() { return cGroup_7_3; }
+		
+		//','
+		public Keyword getCommaKeyword_7_3_0() { return cCommaKeyword_7_3_0; }
+		
+		//categories+=SpecialCategory
+		public Assignment getCategoriesAssignment_7_3_1() { return cCategoriesAssignment_7_3_1; }
+		
+		//SpecialCategory
+		public RuleCall getCategoriesSpecialCategoryEnumRuleCall_7_3_1_0() { return cCategoriesSpecialCategoryEnumRuleCall_7_3_1_0; }
+		
+		//(subjectDoc=DOC? 'subject' subject=STRING)?
+		public Group getGroup_8() { return cGroup_8; }
+		
+		//subjectDoc=DOC?
+		public Assignment getSubjectDocAssignment_8_0() { return cSubjectDocAssignment_8_0; }
+		
+		//DOC
+		public RuleCall getSubjectDocDOCTerminalRuleCall_8_0_0() { return cSubjectDocDOCTerminalRuleCall_8_0_0; }
+		
+		//'subject'
+		public Keyword getSubjectKeyword_8_1() { return cSubjectKeyword_8_1; }
+		
+		//subject=STRING
+		public Assignment getSubjectAssignment_8_2() { return cSubjectAssignment_8_2; }
+		
+		//STRING
+		public RuleCall getSubjectSTRINGTerminalRuleCall_8_2_0() { return cSubjectSTRINGTerminalRuleCall_8_2_0; }
+		
+		//(purposeDoc=DOC? 'purpose' purpose=STRING)?
+		public Group getGroup_9() { return cGroup_9; }
+		
+		//purposeDoc=DOC?
+		public Assignment getPurposeDocAssignment_9_0() { return cPurposeDocAssignment_9_0; }
+		
+		//DOC
+		public RuleCall getPurposeDocDOCTerminalRuleCall_9_0_0() { return cPurposeDocDOCTerminalRuleCall_9_0_0; }
+		
+		//'purpose'
+		public Keyword getPurposeKeyword_9_1() { return cPurposeKeyword_9_1; }
+		
+		//purpose=STRING
+		public Assignment getPurposeAssignment_9_2() { return cPurposeAssignment_9_2; }
+		
+		//STRING
+		public RuleCall getPurposeSTRINGTerminalRuleCall_9_2_0() { return cPurposeSTRINGTerminalRuleCall_9_2_0; }
+		
+		//(basisDoc=DOC? 'lawful-basis' lawfulBasis=LawfulBasis)?
+		public Group getGroup_10() { return cGroup_10; }
+		
+		//basisDoc=DOC?
+		public Assignment getBasisDocAssignment_10_0() { return cBasisDocAssignment_10_0; }
+		
+		//DOC
+		public RuleCall getBasisDocDOCTerminalRuleCall_10_0_0() { return cBasisDocDOCTerminalRuleCall_10_0_0; }
+		
+		//'lawful-basis'
+		public Keyword getLawfulBasisKeyword_10_1() { return cLawfulBasisKeyword_10_1; }
+		
+		//lawfulBasis=LawfulBasis
+		public Assignment getLawfulBasisAssignment_10_2() { return cLawfulBasisAssignment_10_2; }
+		
+		//LawfulBasis
+		public RuleCall getLawfulBasisLawfulBasisEnumRuleCall_10_2_0() { return cLawfulBasisLawfulBasisEnumRuleCall_10_2_0; }
+		
+		//(retentionDoc=DOC? 'retention' retention=Duration ('then' erasure=ErasureStrategy)?)?
+		public Group getGroup_11() { return cGroup_11; }
+		
+		//retentionDoc=DOC?
+		public Assignment getRetentionDocAssignment_11_0() { return cRetentionDocAssignment_11_0; }
+		
+		//DOC
+		public RuleCall getRetentionDocDOCTerminalRuleCall_11_0_0() { return cRetentionDocDOCTerminalRuleCall_11_0_0; }
+		
+		//'retention'
+		public Keyword getRetentionKeyword_11_1() { return cRetentionKeyword_11_1; }
+		
+		//retention=Duration
+		public Assignment getRetentionAssignment_11_2() { return cRetentionAssignment_11_2; }
+		
+		//Duration
+		public RuleCall getRetentionDurationParserRuleCall_11_2_0() { return cRetentionDurationParserRuleCall_11_2_0; }
+		
+		//('then' erasure=ErasureStrategy)?
+		public Group getGroup_11_3() { return cGroup_11_3; }
+		
+		//'then'
+		public Keyword getThenKeyword_11_3_0() { return cThenKeyword_11_3_0; }
+		
+		//erasure=ErasureStrategy
+		public Assignment getErasureAssignment_11_3_1() { return cErasureAssignment_11_3_1; }
+		
+		//ErasureStrategy
+		public RuleCall getErasureErasureStrategyEnumRuleCall_11_3_1_0() { return cErasureErasureStrategyEnumRuleCall_11_3_1_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+	}
+	public class DataProtectionInstanceElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.DataProtectionInstance");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cProtectedByKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cPolicyAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final CrossReference cPolicyDataProtectionCrossReference_1_0 = (CrossReference)cPolicyAssignment_1.eContents().get(0);
+		private final RuleCall cPolicyDataProtectionFQNParserRuleCall_1_0_1 = (RuleCall)cPolicyDataProtectionCrossReference_1_0.eContents().get(1);
+		
+		///** Assigns a named data protection policy to a type or attribute. */
+		//DataProtectionInstance:
+		//    'protected-by' policy=[DataProtection|FQN];
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'protected-by' policy=[DataProtection|FQN]
+		public Group getGroup() { return cGroup; }
+		
+		//'protected-by'
+		public Keyword getProtectedByKeyword_0() { return cProtectedByKeyword_0; }
+		
+		//policy=[DataProtection|FQN]
+		public Assignment getPolicyAssignment_1() { return cPolicyAssignment_1; }
+		
+		//[DataProtection|FQN]
+		public CrossReference getPolicyDataProtectionCrossReference_1_0() { return cPolicyDataProtectionCrossReference_1_0; }
+		
+		//FQN
+		public RuleCall getPolicyDataProtectionFQNParserRuleCall_1_0_1() { return cPolicyDataProtectionFQNParserRuleCall_1_0_1; }
 	}
 	public class ConstraintElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Constraint");
@@ -906,22 +1173,24 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cBaseExternalTypeFQNParserRuleCall_4_1_0_1 = (RuleCall)cBaseExternalTypeCrossReference_4_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_5 = (Assignment)cGroup.eContents().get(5);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_5_0 = (RuleCall)cInvariantsAssignment_5.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
-		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
-		private final Assignment cConstructorsAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cConstructorsConstructorParserRuleCall_9_0 = (RuleCall)cConstructorsAssignment_9.eContents().get(0);
-		private final Assignment cMethodsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cMethodsMethodParserRuleCall_10_0 = (RuleCall)cMethodsAssignment_10.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cDataProtectionAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_6_0 = (RuleCall)cDataProtectionAssignment_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cMetaInfoAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_8_0 = (RuleCall)cMetaInfoAssignment_8.eContents().get(0);
+		private final Assignment cAttributesAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cAttributesAttributeParserRuleCall_9_0 = (RuleCall)cAttributesAssignment_9.eContents().get(0);
+		private final Assignment cConstructorsAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cConstructorsConstructorParserRuleCall_10_0 = (RuleCall)cConstructorsAssignment_10.eContents().get(0);
+		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
 		
 		///** An object that describes some characteristic or attribute but carries no concept of identity. */
 		//ValueObject:
 		//    doc=DOC?
 		//    annotations+=AnnotationInstance*
-		//    'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//    'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        constructors+=Constructor*
@@ -931,7 +1200,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC?
 		//annotations+=AnnotationInstance*
-		//'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    constructors+=Constructor*
@@ -981,35 +1250,41 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_5_0() { return cInvariantsInvariantsParserRuleCall_5_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_6() { return cDataProtectionAssignment_6; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_6_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_6_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
+		public Assignment getMetaInfoAssignment_8() { return cMetaInfoAssignment_8; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_8_0() { return cMetaInfoTypeMetaInfoParserRuleCall_8_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
+		public Assignment getAttributesAssignment_9() { return cAttributesAssignment_9; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_9_0() { return cAttributesAttributeParserRuleCall_9_0; }
 		
 		//constructors+=Constructor*
-		public Assignment getConstructorsAssignment_9() { return cConstructorsAssignment_9; }
+		public Assignment getConstructorsAssignment_10() { return cConstructorsAssignment_10; }
 		
 		//Constructor
-		public RuleCall getConstructorsConstructorParserRuleCall_9_0() { return cConstructorsConstructorParserRuleCall_9_0; }
+		public RuleCall getConstructorsConstructorParserRuleCall_10_0() { return cConstructorsConstructorParserRuleCall_10_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_10() { return cMethodsAssignment_10; }
+		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_10_0() { return cMethodsMethodParserRuleCall_10_0; }
+		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 	}
 	public class EntityIdElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EntityId");
@@ -1031,21 +1306,23 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cBaseExternalTypeFQNParserRuleCall_4_1_0_1 = (RuleCall)cBaseExternalTypeCrossReference_4_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_5 = (Assignment)cGroup.eContents().get(5);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_5_0 = (RuleCall)cInvariantsAssignment_5.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
-		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
-		private final Assignment cConstructorsAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cConstructorsConstructorParserRuleCall_9_0 = (RuleCall)cConstructorsAssignment_9.eContents().get(0);
-		private final Assignment cMethodsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cMethodsMethodParserRuleCall_10_0 = (RuleCall)cMethodsAssignment_10.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cDataProtectionAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_6_0 = (RuleCall)cDataProtectionAssignment_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cMetaInfoAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_8_0 = (RuleCall)cMetaInfoAssignment_8.eContents().get(0);
+		private final Assignment cAttributesAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cAttributesAttributeParserRuleCall_9_0 = (RuleCall)cAttributesAssignment_9.eContents().get(0);
+		private final Assignment cConstructorsAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cConstructorsConstructorParserRuleCall_10_0 = (RuleCall)cConstructorsAssignment_10.eContents().get(0);
+		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
 		
 		///** Uniquely identifies an entity. */
 		//EntityId:
 		//    doc=DOC?
-		//    'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//    'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        constructors+=Constructor*
@@ -1054,7 +1331,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    constructors+=Constructor*
@@ -1113,35 +1390,41 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_5_0() { return cInvariantsInvariantsParserRuleCall_5_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_6() { return cDataProtectionAssignment_6; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_6_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_6_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
+		public Assignment getMetaInfoAssignment_8() { return cMetaInfoAssignment_8; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_8_0() { return cMetaInfoTypeMetaInfoParserRuleCall_8_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
+		public Assignment getAttributesAssignment_9() { return cAttributesAssignment_9; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_9_0() { return cAttributesAttributeParserRuleCall_9_0; }
 		
 		//constructors+=Constructor*
-		public Assignment getConstructorsAssignment_9() { return cConstructorsAssignment_9; }
+		public Assignment getConstructorsAssignment_10() { return cConstructorsAssignment_10; }
 		
 		//Constructor
-		public RuleCall getConstructorsConstructorParserRuleCall_9_0() { return cConstructorsConstructorParserRuleCall_9_0; }
+		public RuleCall getConstructorsConstructorParserRuleCall_10_0() { return cConstructorsConstructorParserRuleCall_10_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_10() { return cMethodsAssignment_10; }
+		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_10_0() { return cMethodsMethodParserRuleCall_10_0; }
+		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 	}
 	public class AggregateIdElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AggregateId");
@@ -1163,21 +1446,23 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cBaseExternalTypeFQNParserRuleCall_4_1_0_1 = (RuleCall)cBaseExternalTypeCrossReference_4_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_5 = (Assignment)cGroup.eContents().get(5);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_5_0 = (RuleCall)cInvariantsAssignment_5.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
-		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
-		private final Assignment cConstructorsAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cConstructorsConstructorParserRuleCall_9_0 = (RuleCall)cConstructorsAssignment_9.eContents().get(0);
-		private final Assignment cMethodsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cMethodsMethodParserRuleCall_10_0 = (RuleCall)cMethodsAssignment_10.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cDataProtectionAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_6_0 = (RuleCall)cDataProtectionAssignment_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cMetaInfoAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_8_0 = (RuleCall)cMetaInfoAssignment_8.eContents().get(0);
+		private final Assignment cAttributesAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cAttributesAttributeParserRuleCall_9_0 = (RuleCall)cAttributesAssignment_9.eContents().get(0);
+		private final Assignment cConstructorsAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cConstructorsConstructorParserRuleCall_10_0 = (RuleCall)cConstructorsAssignment_10.eContents().get(0);
+		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
 		
 		///** Uniquely identifies an aggregate. */
 		//AggregateId:
 		//    doc=DOC?
-		//    'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//    'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        constructors+=Constructor*
@@ -1186,7 +1471,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    constructors+=Constructor*
@@ -1245,35 +1530,41 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_5_0() { return cInvariantsInvariantsParserRuleCall_5_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_6() { return cDataProtectionAssignment_6; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_6_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_6_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
+		public Assignment getMetaInfoAssignment_8() { return cMetaInfoAssignment_8; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_8_0() { return cMetaInfoTypeMetaInfoParserRuleCall_8_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
+		public Assignment getAttributesAssignment_9() { return cAttributesAssignment_9; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_9_0() { return cAttributesAttributeParserRuleCall_9_0; }
 		
 		//constructors+=Constructor*
-		public Assignment getConstructorsAssignment_9() { return cConstructorsAssignment_9; }
+		public Assignment getConstructorsAssignment_10() { return cConstructorsAssignment_10; }
 		
 		//Constructor
-		public RuleCall getConstructorsConstructorParserRuleCall_9_0() { return cConstructorsConstructorParserRuleCall_9_0; }
+		public RuleCall getConstructorsConstructorParserRuleCall_10_0() { return cConstructorsConstructorParserRuleCall_10_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_10() { return cMethodsAssignment_10; }
+		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_10_0() { return cMethodsMethodParserRuleCall_10_0; }
+		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 	}
 	public class EnumObjectElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EnumObject");
@@ -1290,22 +1581,24 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cBaseExternalTypeFQNParserRuleCall_3_1_0_1 = (RuleCall)cBaseExternalTypeCrossReference_3_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_4_0 = (RuleCall)cInvariantsAssignment_4.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cMetaInfoAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_6_0 = (RuleCall)cMetaInfoAssignment_6.eContents().get(0);
-		private final Assignment cAttributesAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cAttributesAttributeParserRuleCall_7_0 = (RuleCall)cAttributesAssignment_7.eContents().get(0);
-		private final Keyword cInstancesKeyword_8 = (Keyword)cGroup.eContents().get(8);
-		private final Keyword cLeftCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
-		private final Assignment cInstancesAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cInstancesEnumInstanceParserRuleCall_10_0 = (RuleCall)cInstancesAssignment_10.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cDataProtectionAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_5_0 = (RuleCall)cDataProtectionAssignment_5.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
+		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
+		private final Keyword cInstancesKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Keyword cLeftCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		private final Assignment cInstancesAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cInstancesEnumInstanceParserRuleCall_11_0 = (RuleCall)cInstancesAssignment_11.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Keyword cRightCurlyBracketKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		
 		///** A type with a limited set of named values. */
 		//EnumObject:
 		//    doc=DOC?
-		//    'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//    'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        'instances' '{' instances+=EnumInstance+ '}'
@@ -1313,7 +1606,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+		//'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    'instances' '{' instances+=EnumInstance+ '}'
@@ -1356,38 +1649,44 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_4_0() { return cInvariantsInvariantsParserRuleCall_4_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_5() { return cDataProtectionAssignment_5; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_5_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_5_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
+		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_6() { return cMetaInfoAssignment_6; }
+		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_6_0() { return cMetaInfoTypeMetaInfoParserRuleCall_6_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_7() { return cAttributesAssignment_7; }
+		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_7_0() { return cAttributesAttributeParserRuleCall_7_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
 		
 		//'instances'
-		public Keyword getInstancesKeyword_8() { return cInstancesKeyword_8; }
+		public Keyword getInstancesKeyword_9() { return cInstancesKeyword_9; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_9() { return cLeftCurlyBracketKeyword_9; }
+		public Keyword getLeftCurlyBracketKeyword_10() { return cLeftCurlyBracketKeyword_10; }
 		
 		//instances+=EnumInstance+
-		public Assignment getInstancesAssignment_10() { return cInstancesAssignment_10; }
+		public Assignment getInstancesAssignment_11() { return cInstancesAssignment_11; }
 		
 		//EnumInstance
-		public RuleCall getInstancesEnumInstanceParserRuleCall_10_0() { return cInstancesEnumInstanceParserRuleCall_10_0; }
-		
-		//'}'
-		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
+		public RuleCall getInstancesEnumInstanceParserRuleCall_11_0() { return cInstancesEnumInstanceParserRuleCall_11_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
 	}
 	public class EnumInstanceElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EnumInstance");
@@ -1585,25 +1884,27 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRootAggregateFQNParserRuleCall_4_1_0_1 = (RuleCall)cRootAggregateCrossReference_4_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_5 = (Assignment)cGroup.eContents().get(5);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_5_0 = (RuleCall)cInvariantsAssignment_5.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
-		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
-		private final Assignment cBusinessRulesAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_9_0 = (RuleCall)cBusinessRulesAssignment_9.eContents().get(0);
-		private final Assignment cConstructorsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cConstructorsConstructorParserRuleCall_10_0 = (RuleCall)cConstructorsAssignment_10.eContents().get(0);
-		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
-		private final Assignment cElementsAssignment_12 = (Assignment)cGroup.eContents().get(12);
-		private final RuleCall cElementsAbstractElementParserRuleCall_12_0 = (RuleCall)cElementsAssignment_12.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Assignment cDataProtectionAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_6_0 = (RuleCall)cDataProtectionAssignment_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cMetaInfoAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_8_0 = (RuleCall)cMetaInfoAssignment_8.eContents().get(0);
+		private final Assignment cAttributesAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cAttributesAttributeParserRuleCall_9_0 = (RuleCall)cAttributesAssignment_9.eContents().get(0);
+		private final Assignment cBusinessRulesAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_10_0 = (RuleCall)cBusinessRulesAssignment_10.eContents().get(0);
+		private final Assignment cConstructorsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cConstructorsConstructorParserRuleCall_11_0 = (RuleCall)cConstructorsAssignment_11.eContents().get(0);
+		private final Assignment cMethodsAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cMethodsMethodParserRuleCall_12_0 = (RuleCall)cMethodsAssignment_12.eContents().get(0);
+		private final Assignment cElementsAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cElementsAbstractElementParserRuleCall_13_0 = (RuleCall)cElementsAssignment_13.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
 		
 		///* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
 		//Entity:
 		//    doc=DOC?
-		//    'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? '{'
+		//    'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        businessRules+=BusinessRule*
@@ -1614,7 +1915,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? '{'
+		//'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    businessRules+=BusinessRule*
@@ -1675,47 +1976,53 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_5_0() { return cInvariantsInvariantsParserRuleCall_5_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_6() { return cDataProtectionAssignment_6; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_6_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_6_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
+		public Assignment getMetaInfoAssignment_8() { return cMetaInfoAssignment_8; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_8_0() { return cMetaInfoTypeMetaInfoParserRuleCall_8_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
+		public Assignment getAttributesAssignment_9() { return cAttributesAssignment_9; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_9_0() { return cAttributesAttributeParserRuleCall_9_0; }
 		
 		//businessRules+=BusinessRule*
-		public Assignment getBusinessRulesAssignment_9() { return cBusinessRulesAssignment_9; }
+		public Assignment getBusinessRulesAssignment_10() { return cBusinessRulesAssignment_10; }
 		
 		//BusinessRule
-		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_9_0() { return cBusinessRulesBusinessRuleParserRuleCall_9_0; }
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_10_0() { return cBusinessRulesBusinessRuleParserRuleCall_10_0; }
 		
 		//constructors+=Constructor*
-		public Assignment getConstructorsAssignment_10() { return cConstructorsAssignment_10; }
+		public Assignment getConstructorsAssignment_11() { return cConstructorsAssignment_11; }
 		
 		//Constructor
-		public RuleCall getConstructorsConstructorParserRuleCall_10_0() { return cConstructorsConstructorParserRuleCall_10_0; }
+		public RuleCall getConstructorsConstructorParserRuleCall_11_0() { return cConstructorsConstructorParserRuleCall_11_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
+		public Assignment getMethodsAssignment_12() { return cMethodsAssignment_12; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
+		public RuleCall getMethodsMethodParserRuleCall_12_0() { return cMethodsMethodParserRuleCall_12_0; }
 		
 		//elements+=AbstractElement*
-		public Assignment getElementsAssignment_12() { return cElementsAssignment_12; }
+		public Assignment getElementsAssignment_13() { return cElementsAssignment_13; }
 		
 		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_12_0() { return cElementsAbstractElementParserRuleCall_12_0; }
+		public RuleCall getElementsAbstractElementParserRuleCall_13_0() { return cElementsAbstractElementParserRuleCall_13_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
+		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
 	}
 	public class AggregateElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Aggregate");
@@ -1732,20 +2039,22 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cIdTypeAggregateIdFQNParserRuleCall_3_1_0_1 = (RuleCall)cIdTypeAggregateIdCrossReference_3_1_0.eContents().get(1);
 		private final Assignment cInvariantsAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_4_0 = (RuleCall)cInvariantsAssignment_4.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cMetaInfoAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_6_0 = (RuleCall)cMetaInfoAssignment_6.eContents().get(0);
-		private final Assignment cAttributesAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cAttributesAttributeParserRuleCall_7_0 = (RuleCall)cAttributesAssignment_7.eContents().get(0);
-		private final Assignment cBusinessRulesAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_8_0 = (RuleCall)cBusinessRulesAssignment_8.eContents().get(0);
-		private final Assignment cConstructorsAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cConstructorsConstructorParserRuleCall_9_0 = (RuleCall)cConstructorsAssignment_9.eContents().get(0);
-		private final Assignment cMethodsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cMethodsMethodParserRuleCall_10_0 = (RuleCall)cMethodsAssignment_10.eContents().get(0);
-		private final Assignment cElementsAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cElementsAbstractElementParserRuleCall_11_0 = (RuleCall)cElementsAssignment_11.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Assignment cDataProtectionAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_5_0 = (RuleCall)cDataProtectionAssignment_5.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
+		private final Assignment cAttributesAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cAttributesAttributeParserRuleCall_8_0 = (RuleCall)cAttributesAssignment_8.eContents().get(0);
+		private final Assignment cBusinessRulesAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_9_0 = (RuleCall)cBusinessRulesAssignment_9.eContents().get(0);
+		private final Assignment cConstructorsAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cConstructorsConstructorParserRuleCall_10_0 = (RuleCall)cConstructorsAssignment_10.eContents().get(0);
+		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
+		private final Assignment cElementsAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cElementsAbstractElementParserRuleCall_12_0 = (RuleCall)cElementsAssignment_12.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		
 		///**
 		// * A cluster of associated objects that are treated as a unit for the purpose of data changes.
@@ -1754,7 +2063,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		// */
 		//Aggregate:
 		//    doc=DOC?
-		//    'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? '{'
+		//    'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//        metaInfo=TypeMetaInfo
 		//        attributes+=Attribute*
 		//        businessRules+=BusinessRule*
@@ -1765,7 +2074,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? '{'
+		//'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		//    metaInfo=TypeMetaInfo
 		//    attributes+=Attribute*
 		//    businessRules+=BusinessRule*
@@ -1811,47 +2120,53 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_4_0() { return cInvariantsInvariantsParserRuleCall_4_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_5() { return cDataProtectionAssignment_5; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_5_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_5_0; }
+		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
+		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
 		
 		//metaInfo=TypeMetaInfo
-		public Assignment getMetaInfoAssignment_6() { return cMetaInfoAssignment_6; }
+		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
 		
 		//TypeMetaInfo
-		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_6_0() { return cMetaInfoTypeMetaInfoParserRuleCall_6_0; }
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_7() { return cAttributesAssignment_7; }
+		public Assignment getAttributesAssignment_8() { return cAttributesAssignment_8; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_7_0() { return cAttributesAttributeParserRuleCall_7_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_8_0() { return cAttributesAttributeParserRuleCall_8_0; }
 		
 		//businessRules+=BusinessRule*
-		public Assignment getBusinessRulesAssignment_8() { return cBusinessRulesAssignment_8; }
+		public Assignment getBusinessRulesAssignment_9() { return cBusinessRulesAssignment_9; }
 		
 		//BusinessRule
-		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_8_0() { return cBusinessRulesBusinessRuleParserRuleCall_8_0; }
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_9_0() { return cBusinessRulesBusinessRuleParserRuleCall_9_0; }
 		
 		//constructors+=Constructor*
-		public Assignment getConstructorsAssignment_9() { return cConstructorsAssignment_9; }
+		public Assignment getConstructorsAssignment_10() { return cConstructorsAssignment_10; }
 		
 		//Constructor
-		public RuleCall getConstructorsConstructorParserRuleCall_9_0() { return cConstructorsConstructorParserRuleCall_9_0; }
+		public RuleCall getConstructorsConstructorParserRuleCall_10_0() { return cConstructorsConstructorParserRuleCall_10_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_10() { return cMethodsAssignment_10; }
+		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_10_0() { return cMethodsMethodParserRuleCall_10_0; }
+		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
 		//elements+=AbstractElement*
-		public Assignment getElementsAssignment_11() { return cElementsAssignment_11; }
+		public Assignment getElementsAssignment_12() { return cElementsAssignment_12; }
 		
 		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_11_0() { return cElementsAbstractElementParserRuleCall_11_0; }
+		public RuleCall getElementsAbstractElementParserRuleCall_12_0() { return cElementsAbstractElementParserRuleCall_12_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
 	}
 	public class AbstractMethodElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AbstractMethod");
@@ -2423,19 +2738,21 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cNameIDTerminalRuleCall_4_0 = (RuleCall)cNameAssignment_4.eContents().get(0);
 		private final Assignment cInvariantsAssignment_5 = (Assignment)cGroup.eContents().get(5);
 		private final RuleCall cInvariantsInvariantsParserRuleCall_5_0 = (RuleCall)cInvariantsAssignment_5.eContents().get(0);
-		private final Assignment cOverriddenAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cOverriddenOverriddenTypeMetaInfoParserRuleCall_6_0 = (RuleCall)cOverriddenAssignment_6.eContents().get(0);
+		private final Assignment cDataProtectionAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDataProtectionDataProtectionInstanceParserRuleCall_6_0 = (RuleCall)cDataProtectionAssignment_6.eContents().get(0);
+		private final Assignment cOverriddenAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cOverriddenOverriddenTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cOverriddenAssignment_7.eContents().get(0);
 		
 		///** Property of an object. */
 		//Attribute:
 		//    doc=DOC?
 		//    (nullable='nullable')?
-		//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (overridden=OverriddenTypeMetaInfo)?;
+		//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
 		//(nullable='nullable')?
-		//type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (overridden=OverriddenTypeMetaInfo)?
+		//type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -2477,11 +2794,17 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Invariants
 		public RuleCall getInvariantsInvariantsParserRuleCall_5_0() { return cInvariantsInvariantsParserRuleCall_5_0; }
 		
+		//(dataProtection=DataProtectionInstance)?
+		public Assignment getDataProtectionAssignment_6() { return cDataProtectionAssignment_6; }
+		
+		//DataProtectionInstance
+		public RuleCall getDataProtectionDataProtectionInstanceParserRuleCall_6_0() { return cDataProtectionDataProtectionInstanceParserRuleCall_6_0; }
+		
 		//(overridden=OverriddenTypeMetaInfo)?
-		public Assignment getOverriddenAssignment_6() { return cOverriddenAssignment_6; }
+		public Assignment getOverriddenAssignment_7() { return cOverriddenAssignment_7; }
 		
 		//OverriddenTypeMetaInfo
-		public RuleCall getOverriddenOverriddenTypeMetaInfoParserRuleCall_6_0() { return cOverriddenOverriddenTypeMetaInfoParserRuleCall_6_0; }
+		public RuleCall getOverriddenOverriddenTypeMetaInfoParserRuleCall_7_0() { return cOverriddenOverriddenTypeMetaInfoParserRuleCall_7_0; }
 	}
 	public class ParameterElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Parameter");
@@ -3578,13 +3901,19 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cHoursHoursKeyword_3_0 = (Keyword)cHoursEnumLiteralDeclaration_3.eContents().get(0);
 		private final EnumLiteralDeclaration cDaysEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
 		private final Keyword cDaysDaysKeyword_4_0 = (Keyword)cDaysEnumLiteralDeclaration_4.eContents().get(0);
+		private final EnumLiteralDeclaration cWeeksEnumLiteralDeclaration_5 = (EnumLiteralDeclaration)cAlternatives.eContents().get(5);
+		private final Keyword cWeeksWeeksKeyword_5_0 = (Keyword)cWeeksEnumLiteralDeclaration_5.eContents().get(0);
+		private final EnumLiteralDeclaration cMonthsEnumLiteralDeclaration_6 = (EnumLiteralDeclaration)cAlternatives.eContents().get(6);
+		private final Keyword cMonthsMonthsKeyword_6_0 = (Keyword)cMonthsEnumLiteralDeclaration_6.eContents().get(0);
+		private final EnumLiteralDeclaration cYearsEnumLiteralDeclaration_7 = (EnumLiteralDeclaration)cAlternatives.eContents().get(7);
+		private final Keyword cYearsYearsKeyword_7_0 = (Keyword)cYearsEnumLiteralDeclaration_7.eContents().get(0);
 		
 		///** Standard way of expressing duration. */
 		//enum TimeUnit:
-		//    millis | seconds | minutes | hours | days;
+		//    millis | seconds | minutes | hours | days | weeks | months | years;
 		public EnumRule getRule() { return rule; }
 		
-		//millis | seconds | minutes | hours | days
+		//millis | seconds | minutes | hours | days | weeks | months | years
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//millis
@@ -3611,6 +3940,21 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		public EnumLiteralDeclaration getDaysEnumLiteralDeclaration_4() { return cDaysEnumLiteralDeclaration_4; }
 		
 		public Keyword getDaysDaysKeyword_4_0() { return cDaysDaysKeyword_4_0; }
+		
+		//weeks
+		public EnumLiteralDeclaration getWeeksEnumLiteralDeclaration_5() { return cWeeksEnumLiteralDeclaration_5; }
+		
+		public Keyword getWeeksWeeksKeyword_5_0() { return cWeeksWeeksKeyword_5_0; }
+		
+		//months
+		public EnumLiteralDeclaration getMonthsEnumLiteralDeclaration_6() { return cMonthsEnumLiteralDeclaration_6; }
+		
+		public Keyword getMonthsMonthsKeyword_6_0() { return cMonthsMonthsKeyword_6_0; }
+		
+		//years
+		public EnumLiteralDeclaration getYearsEnumLiteralDeclaration_7() { return cYearsEnumLiteralDeclaration_7; }
+		
+		public Keyword getYearsYearsKeyword_7_0() { return cYearsYearsKeyword_7_0; }
 	}
 	public class ConsistencyLevelElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ConsistencyLevel");
@@ -3750,6 +4094,300 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		public Keyword getWorkflowWorkflowKeyword_3_0() { return cWorkflowWorkflowKeyword_3_0; }
 	}
+	public class ProtectionLevelElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProtectionLevel");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cNoneEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cNoneNoneKeyword_0_0 = (Keyword)cNoneEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cPersonalEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cPersonalPersonalKeyword_1_0 = (Keyword)cPersonalEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cSensitiveEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cSensitiveSensitiveKeyword_2_0 = (Keyword)cSensitiveEnumLiteralDeclaration_2.eContents().get(0);
+		
+		///** Level of protection required for data. Also identifies whether the data is personal data. */
+		//enum ProtectionLevel:
+		//    /** No personal data - no special protection required. */
+		//    none |
+		//    /** Ordinary personal data (GDPR Art. 4(1)). */
+		//    personal |
+		//    /** Special category of personal data requiring higher protection (GDPR Art. 9). */
+		//    sensitive;
+		public EnumRule getRule() { return rule; }
+		
+		///** No personal data - no special protection required. */
+		//none |
+		///** Ordinary personal data (GDPR Art. 4(1)). */
+		//personal |
+		///** Special category of personal data requiring higher protection (GDPR Art. 9). */
+		//sensitive
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		///** No personal data - no special protection required. */
+		//none
+		public EnumLiteralDeclaration getNoneEnumLiteralDeclaration_0() { return cNoneEnumLiteralDeclaration_0; }
+		
+		public Keyword getNoneNoneKeyword_0_0() { return cNoneNoneKeyword_0_0; }
+		
+		///** Ordinary personal data (GDPR Art. 4(1)). */
+		//personal
+		public EnumLiteralDeclaration getPersonalEnumLiteralDeclaration_1() { return cPersonalEnumLiteralDeclaration_1; }
+		
+		public Keyword getPersonalPersonalKeyword_1_0() { return cPersonalPersonalKeyword_1_0; }
+		
+		///** Special category of personal data requiring higher protection (GDPR Art. 9). */
+		//sensitive
+		public EnumLiteralDeclaration getSensitiveEnumLiteralDeclaration_2() { return cSensitiveEnumLiteralDeclaration_2; }
+		
+		public Keyword getSensitiveSensitiveKeyword_2_0() { return cSensitiveSensitiveKeyword_2_0; }
+	}
+	public class LawfulBasisElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.LawfulBasis");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cConsentEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cConsentConsentKeyword_0_0 = (Keyword)cConsentEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cExplicit_consentEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cExplicit_consentExplicit_consentKeyword_1_0 = (Keyword)cExplicit_consentEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cContractEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cContractContractKeyword_2_0 = (Keyword)cContractEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cLegal_obligationEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cLegal_obligationLegal_obligationKeyword_3_0 = (Keyword)cLegal_obligationEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cVital_interestsEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
+		private final Keyword cVital_interestsVital_interestsKeyword_4_0 = (Keyword)cVital_interestsEnumLiteralDeclaration_4.eContents().get(0);
+		private final EnumLiteralDeclaration cPublic_taskEnumLiteralDeclaration_5 = (EnumLiteralDeclaration)cAlternatives.eContents().get(5);
+		private final Keyword cPublic_taskPublic_taskKeyword_5_0 = (Keyword)cPublic_taskEnumLiteralDeclaration_5.eContents().get(0);
+		private final EnumLiteralDeclaration cLegitimate_interestsEnumLiteralDeclaration_6 = (EnumLiteralDeclaration)cAlternatives.eContents().get(6);
+		private final Keyword cLegitimate_interestsLegitimate_interestsKeyword_6_0 = (Keyword)cLegitimate_interestsEnumLiteralDeclaration_6.eContents().get(0);
+		
+		///** Legal ground that makes the processing of personal data lawful (GDPR Art. 6 / Art. 9(2)). */
+		//enum LawfulBasis:
+		//    /** The data subject has given consent. */
+		//    consent |
+		//    /** The data subject has given explicit consent (required for special categories). */
+		//    explicit_consent |
+		//    /** Processing is necessary for the performance of a contract. */
+		//    contract |
+		//    /** Processing is necessary to comply with a legal obligation. */
+		//    legal_obligation |
+		//    /** Processing is necessary to protect vital interests of a natural person. */
+		//    vital_interests |
+		//    /** Processing is necessary for a task carried out in the public interest. */
+		//    public_task |
+		//    /** Processing is necessary for the purposes of legitimate interests. */
+		//    legitimate_interests;
+		public EnumRule getRule() { return rule; }
+		
+		///** The data subject has given consent. */
+		//consent |
+		///** The data subject has given explicit consent (required for special categories). */
+		//explicit_consent |
+		///** Processing is necessary for the performance of a contract. */
+		//contract |
+		///** Processing is necessary to comply with a legal obligation. */
+		//legal_obligation |
+		///** Processing is necessary to protect vital interests of a natural person. */
+		//vital_interests |
+		///** Processing is necessary for a task carried out in the public interest. */
+		//public_task |
+		///** Processing is necessary for the purposes of legitimate interests. */
+		//legitimate_interests
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		///** The data subject has given consent. */
+		//consent
+		public EnumLiteralDeclaration getConsentEnumLiteralDeclaration_0() { return cConsentEnumLiteralDeclaration_0; }
+		
+		public Keyword getConsentConsentKeyword_0_0() { return cConsentConsentKeyword_0_0; }
+		
+		///** The data subject has given explicit consent (required for special categories). */
+		//explicit_consent
+		public EnumLiteralDeclaration getExplicit_consentEnumLiteralDeclaration_1() { return cExplicit_consentEnumLiteralDeclaration_1; }
+		
+		public Keyword getExplicit_consentExplicit_consentKeyword_1_0() { return cExplicit_consentExplicit_consentKeyword_1_0; }
+		
+		///** Processing is necessary for the performance of a contract. */
+		//contract
+		public EnumLiteralDeclaration getContractEnumLiteralDeclaration_2() { return cContractEnumLiteralDeclaration_2; }
+		
+		public Keyword getContractContractKeyword_2_0() { return cContractContractKeyword_2_0; }
+		
+		///** Processing is necessary to comply with a legal obligation. */
+		//legal_obligation
+		public EnumLiteralDeclaration getLegal_obligationEnumLiteralDeclaration_3() { return cLegal_obligationEnumLiteralDeclaration_3; }
+		
+		public Keyword getLegal_obligationLegal_obligationKeyword_3_0() { return cLegal_obligationLegal_obligationKeyword_3_0; }
+		
+		///** Processing is necessary to protect vital interests of a natural person. */
+		//vital_interests
+		public EnumLiteralDeclaration getVital_interestsEnumLiteralDeclaration_4() { return cVital_interestsEnumLiteralDeclaration_4; }
+		
+		public Keyword getVital_interestsVital_interestsKeyword_4_0() { return cVital_interestsVital_interestsKeyword_4_0; }
+		
+		///** Processing is necessary for a task carried out in the public interest. */
+		//public_task
+		public EnumLiteralDeclaration getPublic_taskEnumLiteralDeclaration_5() { return cPublic_taskEnumLiteralDeclaration_5; }
+		
+		public Keyword getPublic_taskPublic_taskKeyword_5_0() { return cPublic_taskPublic_taskKeyword_5_0; }
+		
+		///** Processing is necessary for the purposes of legitimate interests. */
+		//legitimate_interests
+		public EnumLiteralDeclaration getLegitimate_interestsEnumLiteralDeclaration_6() { return cLegitimate_interestsEnumLiteralDeclaration_6; }
+		
+		public Keyword getLegitimate_interestsLegitimate_interestsKeyword_6_0() { return cLegitimate_interestsLegitimate_interestsKeyword_6_0; }
+	}
+	public class SpecialCategoryElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.SpecialCategory");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cHealthEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cHealthHealthKeyword_0_0 = (Keyword)cHealthEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cGeneticEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cGeneticGeneticKeyword_1_0 = (Keyword)cGeneticEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cBiometricEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cBiometricBiometricKeyword_2_0 = (Keyword)cBiometricEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cRacialEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cRacialRacialKeyword_3_0 = (Keyword)cRacialEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cPoliticalEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
+		private final Keyword cPoliticalPoliticalKeyword_4_0 = (Keyword)cPoliticalEnumLiteralDeclaration_4.eContents().get(0);
+		private final EnumLiteralDeclaration cReligiousEnumLiteralDeclaration_5 = (EnumLiteralDeclaration)cAlternatives.eContents().get(5);
+		private final Keyword cReligiousReligiousKeyword_5_0 = (Keyword)cReligiousEnumLiteralDeclaration_5.eContents().get(0);
+		private final EnumLiteralDeclaration cPhilosophicalEnumLiteralDeclaration_6 = (EnumLiteralDeclaration)cAlternatives.eContents().get(6);
+		private final Keyword cPhilosophicalPhilosophicalKeyword_6_0 = (Keyword)cPhilosophicalEnumLiteralDeclaration_6.eContents().get(0);
+		private final EnumLiteralDeclaration cTrade_unionEnumLiteralDeclaration_7 = (EnumLiteralDeclaration)cAlternatives.eContents().get(7);
+		private final Keyword cTrade_unionTrade_unionKeyword_7_0 = (Keyword)cTrade_unionEnumLiteralDeclaration_7.eContents().get(0);
+		private final EnumLiteralDeclaration cSex_lifeEnumLiteralDeclaration_8 = (EnumLiteralDeclaration)cAlternatives.eContents().get(8);
+		private final Keyword cSex_lifeSex_lifeKeyword_8_0 = (Keyword)cSex_lifeEnumLiteralDeclaration_8.eContents().get(0);
+		private final EnumLiteralDeclaration cSexual_orientationEnumLiteralDeclaration_9 = (EnumLiteralDeclaration)cAlternatives.eContents().get(9);
+		private final Keyword cSexual_orientationSexual_orientationKeyword_9_0 = (Keyword)cSexual_orientationEnumLiteralDeclaration_9.eContents().get(0);
+		
+		///** Special categories of personal data (GDPR Art. 9). */
+		//enum SpecialCategory:
+		//    health | genetic | biometric | racial | political | religious |
+		//    philosophical | trade_union | sex_life | sexual_orientation;
+		public EnumRule getRule() { return rule; }
+		
+		//health | genetic | biometric | racial | political | religious |
+		//philosophical | trade_union | sex_life | sexual_orientation
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//health
+		public EnumLiteralDeclaration getHealthEnumLiteralDeclaration_0() { return cHealthEnumLiteralDeclaration_0; }
+		
+		public Keyword getHealthHealthKeyword_0_0() { return cHealthHealthKeyword_0_0; }
+		
+		//genetic
+		public EnumLiteralDeclaration getGeneticEnumLiteralDeclaration_1() { return cGeneticEnumLiteralDeclaration_1; }
+		
+		public Keyword getGeneticGeneticKeyword_1_0() { return cGeneticGeneticKeyword_1_0; }
+		
+		//biometric
+		public EnumLiteralDeclaration getBiometricEnumLiteralDeclaration_2() { return cBiometricEnumLiteralDeclaration_2; }
+		
+		public Keyword getBiometricBiometricKeyword_2_0() { return cBiometricBiometricKeyword_2_0; }
+		
+		//racial
+		public EnumLiteralDeclaration getRacialEnumLiteralDeclaration_3() { return cRacialEnumLiteralDeclaration_3; }
+		
+		public Keyword getRacialRacialKeyword_3_0() { return cRacialRacialKeyword_3_0; }
+		
+		//political
+		public EnumLiteralDeclaration getPoliticalEnumLiteralDeclaration_4() { return cPoliticalEnumLiteralDeclaration_4; }
+		
+		public Keyword getPoliticalPoliticalKeyword_4_0() { return cPoliticalPoliticalKeyword_4_0; }
+		
+		//religious
+		public EnumLiteralDeclaration getReligiousEnumLiteralDeclaration_5() { return cReligiousEnumLiteralDeclaration_5; }
+		
+		public Keyword getReligiousReligiousKeyword_5_0() { return cReligiousReligiousKeyword_5_0; }
+		
+		//philosophical
+		public EnumLiteralDeclaration getPhilosophicalEnumLiteralDeclaration_6() { return cPhilosophicalEnumLiteralDeclaration_6; }
+		
+		public Keyword getPhilosophicalPhilosophicalKeyword_6_0() { return cPhilosophicalPhilosophicalKeyword_6_0; }
+		
+		//trade_union
+		public EnumLiteralDeclaration getTrade_unionEnumLiteralDeclaration_7() { return cTrade_unionEnumLiteralDeclaration_7; }
+		
+		public Keyword getTrade_unionTrade_unionKeyword_7_0() { return cTrade_unionTrade_unionKeyword_7_0; }
+		
+		//sex_life
+		public EnumLiteralDeclaration getSex_lifeEnumLiteralDeclaration_8() { return cSex_lifeEnumLiteralDeclaration_8; }
+		
+		public Keyword getSex_lifeSex_lifeKeyword_8_0() { return cSex_lifeSex_lifeKeyword_8_0; }
+		
+		//sexual_orientation
+		public EnumLiteralDeclaration getSexual_orientationEnumLiteralDeclaration_9() { return cSexual_orientationEnumLiteralDeclaration_9; }
+		
+		public Keyword getSexual_orientationSexual_orientationKeyword_9_0() { return cSexual_orientationSexual_orientationKeyword_9_0; }
+	}
+	public class ErasureStrategyElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ErasureStrategy");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cDeleteEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cDeleteDeleteKeyword_0_0 = (Keyword)cDeleteEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cAnonymizeEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cAnonymizeAnonymizeKeyword_1_0 = (Keyword)cAnonymizeEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cPseudonymizeEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cPseudonymizePseudonymizeKeyword_2_0 = (Keyword)cPseudonymizeEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cArchiveEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cArchiveArchiveKeyword_3_0 = (Keyword)cArchiveEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cReviewEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
+		private final Keyword cReviewReviewKeyword_4_0 = (Keyword)cReviewEnumLiteralDeclaration_4.eContents().get(0);
+		
+		///** Action taken when the retention period ends (relates to the right to erasure, GDPR Art. 17). */
+		//enum ErasureStrategy:
+		//    /** Data is physically deleted. */
+		//    delete |
+		//    /** Data is irreversibly anonymized (it is no longer personal data afterwards). */
+		//    anonymize |
+		//    /** Direct identifiers are replaced by pseudonyms. */
+		//    pseudonymize |
+		//    /** Data is moved to a separate long-term archive. */
+		//    archive |
+		//    /** A human decides whether the data may still be kept. */
+		//    review;
+		public EnumRule getRule() { return rule; }
+		
+		///** Data is physically deleted. */
+		//delete |
+		///** Data is irreversibly anonymized (it is no longer personal data afterwards). */
+		//anonymize |
+		///** Direct identifiers are replaced by pseudonyms. */
+		//pseudonymize |
+		///** Data is moved to a separate long-term archive. */
+		//archive |
+		///** A human decides whether the data may still be kept. */
+		//review
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		///** Data is physically deleted. */
+		//delete
+		public EnumLiteralDeclaration getDeleteEnumLiteralDeclaration_0() { return cDeleteEnumLiteralDeclaration_0; }
+		
+		public Keyword getDeleteDeleteKeyword_0_0() { return cDeleteDeleteKeyword_0_0; }
+		
+		///** Data is irreversibly anonymized (it is no longer personal data afterwards). */
+		//anonymize
+		public EnumLiteralDeclaration getAnonymizeEnumLiteralDeclaration_1() { return cAnonymizeEnumLiteralDeclaration_1; }
+		
+		public Keyword getAnonymizeAnonymizeKeyword_1_0() { return cAnonymizeAnonymizeKeyword_1_0; }
+		
+		///** Direct identifiers are replaced by pseudonyms. */
+		//pseudonymize
+		public EnumLiteralDeclaration getPseudonymizeEnumLiteralDeclaration_2() { return cPseudonymizeEnumLiteralDeclaration_2; }
+		
+		public Keyword getPseudonymizePseudonymizeKeyword_2_0() { return cPseudonymizePseudonymizeKeyword_2_0; }
+		
+		///** Data is moved to a separate long-term archive. */
+		//archive
+		public EnumLiteralDeclaration getArchiveEnumLiteralDeclaration_3() { return cArchiveEnumLiteralDeclaration_3; }
+		
+		public Keyword getArchiveArchiveKeyword_3_0() { return cArchiveArchiveKeyword_3_0; }
+		
+		///** A human decides whether the data may still be kept. */
+		//review
+		public EnumLiteralDeclaration getReviewEnumLiteralDeclaration_4() { return cReviewEnumLiteralDeclaration_4; }
+		
+		public Keyword getReviewReviewKeyword_4_0() { return cReviewReviewKeyword_4_0; }
+	}
 	
 	private final DomainModelElements pDomainModel;
 	private final ContextElements pContext;
@@ -3769,6 +4407,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final DurationElements pDuration;
 	private final WeakConsistencyElements pWeakConsistency;
 	private final ConsistencyElements pConsistency;
+	private final ProtectionLevelElements eProtectionLevel;
+	private final LawfulBasisElements eLawfulBasis;
+	private final SpecialCategoryElements eSpecialCategory;
+	private final ErasureStrategyElements eErasureStrategy;
+	private final DataProtectionElements pDataProtection;
+	private final DataProtectionInstanceElements pDataProtectionInstance;
 	private final ConstraintElements pConstraint;
 	private final BusinessRuleElements pBusinessRule;
 	private final AnnotationElements pAnnotation;
@@ -3843,6 +4487,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pDuration = new DurationElements();
 		this.pWeakConsistency = new WeakConsistencyElements();
 		this.pConsistency = new ConsistencyElements();
+		this.eProtectionLevel = new ProtectionLevelElements();
+		this.eLawfulBasis = new LawfulBasisElements();
+		this.eSpecialCategory = new SpecialCategoryElements();
+		this.eErasureStrategy = new ErasureStrategyElements();
+		this.pDataProtection = new DataProtectionElements();
+		this.pDataProtectionInstance = new DataProtectionInstanceElements();
 		this.pConstraint = new ConstraintElements();
 		this.pBusinessRule = new BusinessRuleElements();
 		this.pAnnotation = new AnnotationElements();
@@ -3969,7 +4619,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///** Common properties of domain model elements. */
 	//AbstractElement:
-	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View;
+	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
 	public AbstractElementElements getAbstractElementAccess() {
 		return pAbstractElement;
 	}
@@ -4047,7 +4697,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///** Standard way of expressing duration. */
 	//enum TimeUnit:
-	//    millis | seconds | minutes | hours | days;
+	//    millis | seconds | minutes | hours | days | weeks | months | years;
 	public TimeUnitElements getTimeUnitAccess() {
 		return eTimeUnit;
 	}
@@ -4143,6 +4793,114 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getConsistencyAccess().getRule();
 	}
 	
+	///** Level of protection required for data. Also identifies whether the data is personal data. */
+	//enum ProtectionLevel:
+	//    /** No personal data - no special protection required. */
+	//    none |
+	//    /** Ordinary personal data (GDPR Art. 4(1)). */
+	//    personal |
+	//    /** Special category of personal data requiring higher protection (GDPR Art. 9). */
+	//    sensitive;
+	public ProtectionLevelElements getProtectionLevelAccess() {
+		return eProtectionLevel;
+	}
+	
+	public EnumRule getProtectionLevelRule() {
+		return getProtectionLevelAccess().getRule();
+	}
+	
+	///** Legal ground that makes the processing of personal data lawful (GDPR Art. 6 / Art. 9(2)). */
+	//enum LawfulBasis:
+	//    /** The data subject has given consent. */
+	//    consent |
+	//    /** The data subject has given explicit consent (required for special categories). */
+	//    explicit_consent |
+	//    /** Processing is necessary for the performance of a contract. */
+	//    contract |
+	//    /** Processing is necessary to comply with a legal obligation. */
+	//    legal_obligation |
+	//    /** Processing is necessary to protect vital interests of a natural person. */
+	//    vital_interests |
+	//    /** Processing is necessary for a task carried out in the public interest. */
+	//    public_task |
+	//    /** Processing is necessary for the purposes of legitimate interests. */
+	//    legitimate_interests;
+	public LawfulBasisElements getLawfulBasisAccess() {
+		return eLawfulBasis;
+	}
+	
+	public EnumRule getLawfulBasisRule() {
+		return getLawfulBasisAccess().getRule();
+	}
+	
+	///** Special categories of personal data (GDPR Art. 9). */
+	//enum SpecialCategory:
+	//    health | genetic | biometric | racial | political | religious |
+	//    philosophical | trade_union | sex_life | sexual_orientation;
+	public SpecialCategoryElements getSpecialCategoryAccess() {
+		return eSpecialCategory;
+	}
+	
+	public EnumRule getSpecialCategoryRule() {
+		return getSpecialCategoryAccess().getRule();
+	}
+	
+	///** Action taken when the retention period ends (relates to the right to erasure, GDPR Art. 17). */
+	//enum ErasureStrategy:
+	//    /** Data is physically deleted. */
+	//    delete |
+	//    /** Data is irreversibly anonymized (it is no longer personal data afterwards). */
+	//    anonymize |
+	//    /** Direct identifiers are replaced by pseudonyms. */
+	//    pseudonymize |
+	//    /** Data is moved to a separate long-term archive. */
+	//    archive |
+	//    /** A human decides whether the data may still be kept. */
+	//    review;
+	public ErasureStrategyElements getErasureStrategyAccess() {
+		return eErasureStrategy;
+	}
+	
+	public EnumRule getErasureStrategyRule() {
+		return getErasureStrategyAccess().getRule();
+	}
+	
+	///**
+	// * A named, reusable data protection policy capturing the GDPR-relevant properties of a
+	// * category of (personal) data. It is declared once and applied to types or attributes
+	// * via 'protected-by'. The set of all policies forms a central register of processing
+	// * activities (GDPR Art. 30).
+	// */
+	//DataProtection:
+	//    doc=DOC?
+	//    'data-protection' name=ID '{'
+	//        levelDoc=DOC?
+	//        'protection' level=ProtectionLevel
+	//        (categoryDoc=DOC? 'category' categories+=SpecialCategory (',' categories+=SpecialCategory)*)?
+	//        (subjectDoc=DOC? 'subject' subject=STRING)?
+	//        (purposeDoc=DOC? 'purpose' purpose=STRING)?
+	//        (basisDoc=DOC? 'lawful-basis' lawfulBasis=LawfulBasis)?
+	//        (retentionDoc=DOC? 'retention' retention=Duration ('then' erasure=ErasureStrategy)?)?
+	//    '}';
+	public DataProtectionElements getDataProtectionAccess() {
+		return pDataProtection;
+	}
+	
+	public ParserRule getDataProtectionRule() {
+		return getDataProtectionAccess().getRule();
+	}
+	
+	///** Assigns a named data protection policy to a type or attribute. */
+	//DataProtectionInstance:
+	//    'protected-by' policy=[DataProtection|FQN];
+	public DataProtectionInstanceElements getDataProtectionInstanceAccess() {
+		return pDataProtectionInstance;
+	}
+	
+	public ParserRule getDataProtectionInstanceRule() {
+		return getDataProtectionInstanceAccess().getRule();
+	}
+	
 	///** Defines a condition that must be satisfied. */
 	//Constraint:
 	//    doc=DOC?
@@ -4205,7 +4963,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//ValueObject:
 	//    doc=DOC?
 	//    annotations+=AnnotationInstance*
-	//    'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	//    'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        constructors+=Constructor*
@@ -4222,7 +4980,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Uniquely identifies an entity. */
 	//EntityId:
 	//    doc=DOC?
-	//    'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	//    'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        constructors+=Constructor*
@@ -4239,7 +4997,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Uniquely identifies an aggregate. */
 	//AggregateId:
 	//    doc=DOC?
-	//    'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	//    'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        constructors+=Constructor*
@@ -4256,7 +5014,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** A type with a limited set of named values. */
 	//EnumObject:
 	//    doc=DOC?
-	//    'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? '{'
+	//    'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        'instances' '{' instances+=EnumInstance+ '}'
@@ -4300,7 +5058,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
 	//Entity:
 	//    doc=DOC?
-	//    'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? '{'
+	//    'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        businessRules+=BusinessRule*
@@ -4323,7 +5081,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	// */
 	//Aggregate:
 	//    doc=DOC?
-	//    'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? '{'
+	//    'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 	//        metaInfo=TypeMetaInfo
 	//        attributes+=Attribute*
 	//        businessRules+=BusinessRule*
@@ -4439,7 +5197,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//Attribute:
 	//    doc=DOC?
 	//    (nullable='nullable')?
-	//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (overridden=OverriddenTypeMetaInfo)?;
+	//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 	public AttributeElements getAttributeAccess() {
 		return pAttribute;
 	}

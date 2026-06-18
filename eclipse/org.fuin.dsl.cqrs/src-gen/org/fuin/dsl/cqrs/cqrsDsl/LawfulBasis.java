@@ -11,223 +11,201 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Time Unit</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Lawful Basis</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getTimeUnit()
+ * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getLawfulBasis()
  * @model
  * @generated
  */
-public enum TimeUnit implements Enumerator
+public enum LawfulBasis implements Enumerator
 {
   /**
-   * The '<em><b>Millis</b></em>' literal object.
+   * The '<em><b>Consent</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #MILLIS_VALUE
+   * @see #CONSENT_VALUE
    * @generated
    * @ordered
    */
-  MILLIS(0, "millis", "millis"),
+  CONSENT(0, "consent", "consent"),
 
   /**
-   * The '<em><b>Seconds</b></em>' literal object.
+   * The '<em><b>Explicit consent</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #SECONDS_VALUE
+   * @see #EXPLICIT_CONSENT_VALUE
    * @generated
    * @ordered
    */
-  SECONDS(1, "seconds", "seconds"),
+  EXPLICIT_CONSENT(1, "explicit_consent", "explicit_consent"),
 
   /**
-   * The '<em><b>Minutes</b></em>' literal object.
+   * The '<em><b>Contract</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #MINUTES_VALUE
+   * @see #CONTRACT_VALUE
    * @generated
    * @ordered
    */
-  MINUTES(2, "minutes", "minutes"),
+  CONTRACT(2, "contract", "contract"),
 
   /**
-   * The '<em><b>Hours</b></em>' literal object.
+   * The '<em><b>Legal obligation</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #HOURS_VALUE
+   * @see #LEGAL_OBLIGATION_VALUE
    * @generated
    * @ordered
    */
-  HOURS(3, "hours", "hours"),
+  LEGAL_OBLIGATION(3, "legal_obligation", "legal_obligation"),
 
   /**
-   * The '<em><b>Days</b></em>' literal object.
+   * The '<em><b>Vital interests</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #DAYS_VALUE
+   * @see #VITAL_INTERESTS_VALUE
    * @generated
    * @ordered
    */
-  DAYS(4, "days", "days"),
+  VITAL_INTERESTS(4, "vital_interests", "vital_interests"),
 
   /**
-   * The '<em><b>Weeks</b></em>' literal object.
+   * The '<em><b>Public task</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #WEEKS_VALUE
+   * @see #PUBLIC_TASK_VALUE
    * @generated
    * @ordered
    */
-  WEEKS(5, "weeks", "weeks"),
+  PUBLIC_TASK(5, "public_task", "public_task"),
 
   /**
-   * The '<em><b>Months</b></em>' literal object.
+   * The '<em><b>Legitimate interests</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #MONTHS_VALUE
+   * @see #LEGITIMATE_INTERESTS_VALUE
    * @generated
    * @ordered
    */
-  MONTHS(6, "months", "months"),
+  LEGITIMATE_INTERESTS(6, "legitimate_interests", "legitimate_interests");
 
   /**
-   * The '<em><b>Years</b></em>' literal object.
+   * The '<em><b>Consent</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #YEARS_VALUE
+   * @see #CONSENT
+   * @model name="consent"
    * @generated
    * @ordered
    */
-  YEARS(7, "years", "years");
+  public static final int CONSENT_VALUE = 0;
 
   /**
-   * The '<em><b>Millis</b></em>' literal value.
+   * The '<em><b>Explicit consent</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #MILLIS
-   * @model name="millis"
+   * @see #EXPLICIT_CONSENT
+   * @model name="explicit_consent"
    * @generated
    * @ordered
    */
-  public static final int MILLIS_VALUE = 0;
+  public static final int EXPLICIT_CONSENT_VALUE = 1;
 
   /**
-   * The '<em><b>Seconds</b></em>' literal value.
+   * The '<em><b>Contract</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #SECONDS
-   * @model name="seconds"
+   * @see #CONTRACT
+   * @model name="contract"
    * @generated
    * @ordered
    */
-  public static final int SECONDS_VALUE = 1;
+  public static final int CONTRACT_VALUE = 2;
 
   /**
-   * The '<em><b>Minutes</b></em>' literal value.
+   * The '<em><b>Legal obligation</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #MINUTES
-   * @model name="minutes"
+   * @see #LEGAL_OBLIGATION
+   * @model name="legal_obligation"
    * @generated
    * @ordered
    */
-  public static final int MINUTES_VALUE = 2;
+  public static final int LEGAL_OBLIGATION_VALUE = 3;
 
   /**
-   * The '<em><b>Hours</b></em>' literal value.
+   * The '<em><b>Vital interests</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #HOURS
-   * @model name="hours"
+   * @see #VITAL_INTERESTS
+   * @model name="vital_interests"
    * @generated
    * @ordered
    */
-  public static final int HOURS_VALUE = 3;
+  public static final int VITAL_INTERESTS_VALUE = 4;
 
   /**
-   * The '<em><b>Days</b></em>' literal value.
+   * The '<em><b>Public task</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #DAYS
-   * @model name="days"
+   * @see #PUBLIC_TASK
+   * @model name="public_task"
    * @generated
    * @ordered
    */
-  public static final int DAYS_VALUE = 4;
+  public static final int PUBLIC_TASK_VALUE = 5;
 
   /**
-   * The '<em><b>Weeks</b></em>' literal value.
+   * The '<em><b>Legitimate interests</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #WEEKS
-   * @model name="weeks"
+   * @see #LEGITIMATE_INTERESTS
+   * @model name="legitimate_interests"
    * @generated
    * @ordered
    */
-  public static final int WEEKS_VALUE = 5;
+  public static final int LEGITIMATE_INTERESTS_VALUE = 6;
 
   /**
-   * The '<em><b>Months</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #MONTHS
-   * @model name="months"
-   * @generated
-   * @ordered
-   */
-  public static final int MONTHS_VALUE = 6;
-
-  /**
-   * The '<em><b>Years</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #YEARS
-   * @model name="years"
-   * @generated
-   * @ordered
-   */
-  public static final int YEARS_VALUE = 7;
-
-  /**
-   * An array of all the '<em><b>Time Unit</b></em>' enumerators.
+   * An array of all the '<em><b>Lawful Basis</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private static final TimeUnit[] VALUES_ARRAY =
-    new TimeUnit[]
+  private static final LawfulBasis[] VALUES_ARRAY =
+    new LawfulBasis[]
     {
-      MILLIS,
-      SECONDS,
-      MINUTES,
-      HOURS,
-      DAYS,
-      WEEKS,
-      MONTHS,
-      YEARS,
+      CONSENT,
+      EXPLICIT_CONSENT,
+      CONTRACT,
+      LEGAL_OBLIGATION,
+      VITAL_INTERESTS,
+      PUBLIC_TASK,
+      LEGITIMATE_INTERESTS,
     };
 
   /**
-   * A public read-only list of all the '<em><b>Time Unit</b></em>' enumerators.
+   * A public read-only list of all the '<em><b>Lawful Basis</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static final List<TimeUnit> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+  public static final List<LawfulBasis> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
   /**
-   * Returns the '<em><b>Time Unit</b></em>' literal with the specified literal value.
+   * Returns the '<em><b>Lawful Basis</b></em>' literal with the specified literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param literal the literal.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static TimeUnit get(String literal)
+  public static LawfulBasis get(String literal)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      TimeUnit result = VALUES_ARRAY[i];
+      LawfulBasis result = VALUES_ARRAY[i];
       if (result.toString().equals(literal))
       {
         return result;
@@ -237,18 +215,18 @@ public enum TimeUnit implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Time Unit</b></em>' literal with the specified name.
+   * Returns the '<em><b>Lawful Basis</b></em>' literal with the specified name.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param name the name.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static TimeUnit getByName(String name)
+  public static LawfulBasis getByName(String name)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      TimeUnit result = VALUES_ARRAY[i];
+      LawfulBasis result = VALUES_ARRAY[i];
       if (result.getName().equals(name))
       {
         return result;
@@ -258,25 +236,24 @@ public enum TimeUnit implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Time Unit</b></em>' literal with the specified integer value.
+   * Returns the '<em><b>Lawful Basis</b></em>' literal with the specified integer value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the integer value.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static TimeUnit get(int value)
+  public static LawfulBasis get(int value)
   {
     switch (value)
     {
-      case MILLIS_VALUE: return MILLIS;
-      case SECONDS_VALUE: return SECONDS;
-      case MINUTES_VALUE: return MINUTES;
-      case HOURS_VALUE: return HOURS;
-      case DAYS_VALUE: return DAYS;
-      case WEEKS_VALUE: return WEEKS;
-      case MONTHS_VALUE: return MONTHS;
-      case YEARS_VALUE: return YEARS;
+      case CONSENT_VALUE: return CONSENT;
+      case EXPLICIT_CONSENT_VALUE: return EXPLICIT_CONSENT;
+      case CONTRACT_VALUE: return CONTRACT;
+      case LEGAL_OBLIGATION_VALUE: return LEGAL_OBLIGATION;
+      case VITAL_INTERESTS_VALUE: return VITAL_INTERESTS;
+      case PUBLIC_TASK_VALUE: return PUBLIC_TASK;
+      case LEGITIMATE_INTERESTS_VALUE: return LEGITIMATE_INTERESTS;
     }
     return null;
   }
@@ -308,7 +285,7 @@ public enum TimeUnit implements Enumerator
    * <!-- end-user-doc -->
    * @generated
    */
-  private TimeUnit(int value, String name, String literal)
+  private LawfulBasis(int value, String name, String literal)
   {
     this.value = value;
     this.name = name;
@@ -360,4 +337,4 @@ public enum TimeUnit implements Enumerator
     return literal;
   }
   
-} //TimeUnit
+} //LawfulBasis

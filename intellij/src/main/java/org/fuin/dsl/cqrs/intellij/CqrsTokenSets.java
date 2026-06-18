@@ -33,8 +33,21 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_PROJECTION, CqrsTypes.KW_VIEW, CqrsTypes.KW_CONSISTENCY, CqrsTypes.KW_ACCEPTABLE,
             CqrsTypes.KW_DETECTION, CqrsTypes.KW_RESOLUTION, CqrsTypes.KW_NULLABLE,
             CqrsTypes.KW_MILLIS, CqrsTypes.KW_SECONDS, CqrsTypes.KW_MINUTES, CqrsTypes.KW_HOURS,
-            CqrsTypes.KW_DAYS, CqrsTypes.KW_WEAK, CqrsTypes.KW_STRONG, CqrsTypes.KW_NEVER,
+            CqrsTypes.KW_DAYS, CqrsTypes.KW_WEEKS, CqrsTypes.KW_MONTHS, CqrsTypes.KW_YEARS,
+            CqrsTypes.KW_WEAK, CqrsTypes.KW_STRONG, CqrsTypes.KW_NEVER,
             CqrsTypes.KW_MANUALLY, CqrsTypes.KW_AUTOMATIC, CqrsTypes.KW_WORKFLOW,
+            CqrsTypes.KW_DATA_PROTECTION, CqrsTypes.KW_PROTECTED_BY, CqrsTypes.KW_PROTECTION,
+            CqrsTypes.KW_CATEGORY, CqrsTypes.KW_SUBJECT, CqrsTypes.KW_PURPOSE,
+            CqrsTypes.KW_LAWFUL_BASIS, CqrsTypes.KW_RETENTION, CqrsTypes.KW_THEN,
+            CqrsTypes.KW_NONE, CqrsTypes.KW_PERSONAL, CqrsTypes.KW_SENSITIVE,
+            CqrsTypes.KW_CONSENT, CqrsTypes.KW_EXPLICIT_CONSENT, CqrsTypes.KW_CONTRACT,
+            CqrsTypes.KW_LEGAL_OBLIGATION, CqrsTypes.KW_VITAL_INTERESTS, CqrsTypes.KW_PUBLIC_TASK,
+            CqrsTypes.KW_LEGITIMATE_INTERESTS,
+            CqrsTypes.KW_HEALTH, CqrsTypes.KW_GENETIC, CqrsTypes.KW_BIOMETRIC, CqrsTypes.KW_RACIAL,
+            CqrsTypes.KW_POLITICAL, CqrsTypes.KW_RELIGIOUS, CqrsTypes.KW_PHILOSOPHICAL,
+            CqrsTypes.KW_TRADE_UNION, CqrsTypes.KW_SEX_LIFE, CqrsTypes.KW_SEXUAL_ORIENTATION,
+            CqrsTypes.KW_DELETE, CqrsTypes.KW_ANONYMIZE, CqrsTypes.KW_PSEUDONYMIZE,
+            CqrsTypes.KW_ARCHIVE, CqrsTypes.KW_REVIEW,
             CqrsTypes.KW_TRUE, CqrsTypes.KW_FALSE, CqrsTypes.KW_NULL);
 
     public static final TokenSet BRACES = TokenSet.create(CqrsTypes.LBRACE, CqrsTypes.RBRACE);

@@ -27,6 +27,7 @@ comment explaining what it shows. They follow the grammar in
 | [18-command-and-handler](18-command-and-handler.cqrs) | `command` with `target` and `sla`, and a `command-handler` (`handles` / `uses`) |
 | [19-projection-and-view](19-projection-and-view.cqrs) | `projection` consuming events and a `view` using it |
 | [20-literals-and-comments](20-literals-and-comments.cqrs) | Comment styles (`//`, `/* */`, `/** */`) and literal values (string, number, boolean, `null`) |
+| [21-data-protection](21-data-protection.cqrs) | GDPR `data-protection` policies (`protection` level, `category`, `subject`, `purpose`, `lawful-basis`, `retention ... then ...`) applied via `protected-by` |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

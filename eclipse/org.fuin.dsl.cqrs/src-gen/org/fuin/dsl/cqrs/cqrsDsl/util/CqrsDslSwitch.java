@@ -30,6 +30,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -234,6 +236,21 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         Consistency consistency = (Consistency)theEObject;
         T result = caseConsistency(consistency);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.DATA_PROTECTION:
+      {
+        DataProtection dataProtection = (DataProtection)theEObject;
+        T result = caseDataProtection(dataProtection);
+        if (result == null) result = caseAbstractElement(dataProtection);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.DATA_PROTECTION_INSTANCE:
+      {
+        DataProtectionInstance dataProtectionInstance = (DataProtectionInstance)theEObject;
+        T result = caseDataProtectionInstance(dataProtectionInstance);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -770,6 +787,38 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseConsistency(Consistency object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Data Protection</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Data Protection</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDataProtection(DataProtection object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Data Protection Instance</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Data Protection Instance</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDataProtectionInstance(DataProtectionInstance object)
   {
     return null;
   }

@@ -35,12 +35,15 @@ import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
+import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
+import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
@@ -49,6 +52,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
@@ -58,8 +62,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
+import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TimeUnit;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
@@ -174,6 +180,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass consistencyEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dataProtectionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dataProtectionInstanceEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -470,6 +490,34 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   private EEnum inconsistencyResolutionEEnum = null;
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum protectionLevelEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum lawfulBasisEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum specialCategoryEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum erasureStrategyEEnum = null;
+
+  /**
    * Creates an instance of the model <b>Package</b>, registered with
    * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
    * package URI value.
@@ -724,7 +772,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getInternalType_MetaInfo()
+  public EReference getInternalType_DataProtection()
   {
     return (EReference)internalTypeEClass.getEStructuralFeatures().get(1);
   }
@@ -735,9 +783,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getInternalType_Attributes()
+  public EReference getInternalType_MetaInfo()
   {
     return (EReference)internalTypeEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getInternalType_Attributes()
+  {
+    return (EReference)internalTypeEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1035,6 +1094,182 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EReference getConsistency_WeakConsistency()
   {
     return (EReference)consistencyEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getDataProtection()
+  {
+    return dataProtectionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_LevelDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_Level()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_CategoryDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_Categories()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_SubjectDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_Subject()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_PurposeDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_Purpose()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_BasisDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_LawfulBasis()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_RetentionDoc()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getDataProtection_Retention()
+  {
+    return (EReference)dataProtectionEClass.getEStructuralFeatures().get(11);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDataProtection_Erasure()
+  {
+    return (EAttribute)dataProtectionEClass.getEStructuralFeatures().get(12);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getDataProtectionInstance()
+  {
+    return dataProtectionInstanceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getDataProtectionInstance_Policy()
+  {
+    return (EReference)dataProtectionInstanceEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1857,6 +2092,17 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EReference getAttribute_DataProtection()
+  {
+    return (EReference)attributeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getParameter()
   {
     return parameterEClass;
@@ -2352,6 +2598,50 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EEnum getProtectionLevel()
+  {
+    return protectionLevelEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EEnum getLawfulBasis()
+  {
+    return lawfulBasisEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EEnum getSpecialCategory()
+  {
+    return specialCategoryEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EEnum getErasureStrategy()
+  {
+    return erasureStrategyEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public CqrsDslFactory getCqrsDslFactory()
   {
     return (CqrsDslFactory)getEFactoryInstance();
@@ -2400,6 +2690,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     internalTypeEClass = createEClass(INTERNAL_TYPE);
     createEReference(internalTypeEClass, INTERNAL_TYPE__INVARIANTS);
+    createEReference(internalTypeEClass, INTERNAL_TYPE__DATA_PROTECTION);
     createEReference(internalTypeEClass, INTERNAL_TYPE__META_INFO);
     createEReference(internalTypeEClass, INTERNAL_TYPE__ATTRIBUTES);
 
@@ -2436,6 +2727,24 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEAttribute(consistencyEClass, CONSISTENCY__DOC);
     createEAttribute(consistencyEClass, CONSISTENCY__LEVEL);
     createEReference(consistencyEClass, CONSISTENCY__WEAK_CONSISTENCY);
+
+    dataProtectionEClass = createEClass(DATA_PROTECTION);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__LEVEL_DOC);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__LEVEL);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__CATEGORY_DOC);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__CATEGORIES);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__SUBJECT_DOC);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__SUBJECT);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__PURPOSE_DOC);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__PURPOSE);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__BASIS_DOC);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__LAWFUL_BASIS);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__RETENTION_DOC);
+    createEReference(dataProtectionEClass, DATA_PROTECTION__RETENTION);
+    createEAttribute(dataProtectionEClass, DATA_PROTECTION__ERASURE);
+
+    dataProtectionInstanceEClass = createEClass(DATA_PROTECTION_INSTANCE);
+    createEReference(dataProtectionInstanceEClass, DATA_PROTECTION_INSTANCE__POLICY);
 
     constraintEClass = createEClass(CONSTRAINT);
     createEReference(constraintEClass, CONSTRAINT__INPUT);
@@ -2530,6 +2839,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     attributeEClass = createEClass(ATTRIBUTE);
     createEReference(attributeEClass, ATTRIBUTE__INVARIANTS);
+    createEReference(attributeEClass, ATTRIBUTE__DATA_PROTECTION);
 
     parameterEClass = createEClass(PARAMETER);
     createEReference(parameterEClass, PARAMETER__PRECONDITIONS);
@@ -2595,6 +2905,10 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     consistencyLevelEEnum = createEEnum(CONSISTENCY_LEVEL);
     inconsistencyDetectionEEnum = createEEnum(INCONSISTENCY_DETECTION);
     inconsistencyResolutionEEnum = createEEnum(INCONSISTENCY_RESOLUTION);
+    protectionLevelEEnum = createEEnum(PROTECTION_LEVEL);
+    lawfulBasisEEnum = createEEnum(LAWFUL_BASIS);
+    specialCategoryEEnum = createEEnum(SPECIAL_CATEGORY);
+    erasureStrategyEEnum = createEEnum(ERASURE_STRATEGY);
   }
 
   /**
@@ -2632,6 +2946,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     abstractEntityIdEClass.getESuperTypes().add(this.getAbstractVO());
     abstractEntityEClass.getESuperTypes().add(this.getInternalType());
     externalTypeEClass.getESuperTypes().add(this.getType());
+    dataProtectionEClass.getESuperTypes().add(this.getAbstractElement());
     constraintEClass.getESuperTypes().add(this.getAbstractElement());
     annotationEClass.getESuperTypes().add(this.getAbstractElement());
     exceptionEClass.getESuperTypes().add(this.getAbstractElement());
@@ -2680,6 +2995,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(internalTypeEClass, InternalType.class, "InternalType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInternalType_Invariants(), this.getInvariants(), null, "invariants", null, 0, 1, InternalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInternalType_DataProtection(), this.getDataProtectionInstance(), null, "dataProtection", null, 0, 1, InternalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getInternalType_MetaInfo(), this.getTypeMetaInfo(), null, "metaInfo", null, 0, 1, InternalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getInternalType_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, InternalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2716,6 +3032,24 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEAttribute(getConsistency_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, Consistency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getConsistency_Level(), this.getConsistencyLevel(), "level", null, 0, 1, Consistency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getConsistency_WeakConsistency(), this.getWeakConsistency(), null, "weakConsistency", null, 0, 1, Consistency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(dataProtectionEClass, DataProtection.class, "DataProtection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDataProtection_LevelDoc(), ecorePackage.getEString(), "levelDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_Level(), this.getProtectionLevel(), "level", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_CategoryDoc(), ecorePackage.getEString(), "categoryDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_Categories(), this.getSpecialCategory(), "categories", null, 0, -1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_SubjectDoc(), ecorePackage.getEString(), "subjectDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_Subject(), ecorePackage.getEString(), "subject", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_PurposeDoc(), ecorePackage.getEString(), "purposeDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_Purpose(), ecorePackage.getEString(), "purpose", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_BasisDoc(), ecorePackage.getEString(), "basisDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_LawfulBasis(), this.getLawfulBasis(), "lawfulBasis", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_RetentionDoc(), ecorePackage.getEString(), "retentionDoc", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDataProtection_Retention(), this.getDuration(), null, "retention", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDataProtection_Erasure(), this.getErasureStrategy(), "erasure", null, 0, 1, DataProtection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(dataProtectionInstanceEClass, DataProtectionInstance.class, "DataProtectionInstance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getDataProtectionInstance_Policy(), this.getDataProtection(), null, "policy", null, 0, 1, DataProtectionInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(constraintEClass, Constraint.class, "Constraint", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getConstraint_Input(), this.getType(), null, "input", null, 0, -1, Constraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2810,6 +3144,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(attributeEClass, Attribute.class, "Attribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAttribute_Invariants(), this.getInvariants(), null, "invariants", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttribute_DataProtection(), this.getDataProtectionInstance(), null, "dataProtection", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getParameter_Preconditions(), this.getPreconditions(), null, "preconditions", null, 0, 1, Parameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2877,6 +3212,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     addEEnumLiteral(timeUnitEEnum, TimeUnit.MINUTES);
     addEEnumLiteral(timeUnitEEnum, TimeUnit.HOURS);
     addEEnumLiteral(timeUnitEEnum, TimeUnit.DAYS);
+    addEEnumLiteral(timeUnitEEnum, TimeUnit.WEEKS);
+    addEEnumLiteral(timeUnitEEnum, TimeUnit.MONTHS);
+    addEEnumLiteral(timeUnitEEnum, TimeUnit.YEARS);
 
     initEEnum(consistencyLevelEEnum, ConsistencyLevel.class, "ConsistencyLevel");
     addEEnumLiteral(consistencyLevelEEnum, ConsistencyLevel.WEAK);
@@ -2892,6 +3230,39 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     addEEnumLiteral(inconsistencyResolutionEEnum, InconsistencyResolution.MANUALLY);
     addEEnumLiteral(inconsistencyResolutionEEnum, InconsistencyResolution.AUTOMATIC);
     addEEnumLiteral(inconsistencyResolutionEEnum, InconsistencyResolution.WORKFLOW);
+
+    initEEnum(protectionLevelEEnum, ProtectionLevel.class, "ProtectionLevel");
+    addEEnumLiteral(protectionLevelEEnum, ProtectionLevel.NONE);
+    addEEnumLiteral(protectionLevelEEnum, ProtectionLevel.PERSONAL);
+    addEEnumLiteral(protectionLevelEEnum, ProtectionLevel.SENSITIVE);
+
+    initEEnum(lawfulBasisEEnum, LawfulBasis.class, "LawfulBasis");
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.CONSENT);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.EXPLICIT_CONSENT);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.CONTRACT);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.LEGAL_OBLIGATION);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.VITAL_INTERESTS);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.PUBLIC_TASK);
+    addEEnumLiteral(lawfulBasisEEnum, LawfulBasis.LEGITIMATE_INTERESTS);
+
+    initEEnum(specialCategoryEEnum, SpecialCategory.class, "SpecialCategory");
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.HEALTH);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.GENETIC);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.BIOMETRIC);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.RACIAL);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.POLITICAL);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.RELIGIOUS);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.PHILOSOPHICAL);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.TRADE_UNION);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.SEX_LIFE);
+    addEEnumLiteral(specialCategoryEEnum, SpecialCategory.SEXUAL_ORIENTATION);
+
+    initEEnum(erasureStrategyEEnum, ErasureStrategy.class, "ErasureStrategy");
+    addEEnumLiteral(erasureStrategyEEnum, ErasureStrategy.DELETE);
+    addEEnumLiteral(erasureStrategyEEnum, ErasureStrategy.ANONYMIZE);
+    addEEnumLiteral(erasureStrategyEEnum, ErasureStrategy.PSEUDONYMIZE);
+    addEEnumLiteral(erasureStrategyEEnum, ErasureStrategy.ARCHIVE);
+    addEEnumLiteral(erasureStrategyEEnum, ErasureStrategy.REVIEW);
 
     // Create resource
     createResource(eNS_URI);

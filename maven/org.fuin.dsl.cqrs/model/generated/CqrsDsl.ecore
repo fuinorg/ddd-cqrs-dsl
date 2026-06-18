@@ -28,6 +28,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="InternalType" eSuperTypes="#//Type">
     <eStructuralFeatures xsi:type="ecore:EReference" name="invariants" eType="#//Invariants"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataProtection" eType="#//DataProtectionInstance"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
@@ -61,6 +63,9 @@
     <eLiterals name="minutes" value="2" literal="minutes"/>
     <eLiterals name="hours" value="3" literal="hours"/>
     <eLiterals name="days" value="4" literal="days"/>
+    <eLiterals name="weeks" value="5" literal="weeks"/>
+    <eLiterals name="months" value="6" literal="months"/>
+    <eLiterals name="years" value="7" literal="years"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="ConsistencyLevel">
     <eLiterals name="weak" literal="weak"/>
@@ -95,6 +100,59 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" eType="#//ConsistencyLevel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="weakConsistency" eType="#//WeakConsistency"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ProtectionLevel">
+    <eLiterals name="none" literal="none"/>
+    <eLiterals name="personal" value="1" literal="personal"/>
+    <eLiterals name="sensitive" value="2" literal="sensitive"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LawfulBasis">
+    <eLiterals name="consent" literal="consent"/>
+    <eLiterals name="explicit_consent" value="1" literal="explicit_consent"/>
+    <eLiterals name="contract" value="2" literal="contract"/>
+    <eLiterals name="legal_obligation" value="3" literal="legal_obligation"/>
+    <eLiterals name="vital_interests" value="4" literal="vital_interests"/>
+    <eLiterals name="public_task" value="5" literal="public_task"/>
+    <eLiterals name="legitimate_interests" value="6" literal="legitimate_interests"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SpecialCategory">
+    <eLiterals name="health" literal="health"/>
+    <eLiterals name="genetic" value="1" literal="genetic"/>
+    <eLiterals name="biometric" value="2" literal="biometric"/>
+    <eLiterals name="racial" value="3" literal="racial"/>
+    <eLiterals name="political" value="4" literal="political"/>
+    <eLiterals name="religious" value="5" literal="religious"/>
+    <eLiterals name="philosophical" value="6" literal="philosophical"/>
+    <eLiterals name="trade_union" value="7" literal="trade_union"/>
+    <eLiterals name="sex_life" value="8" literal="sex_life"/>
+    <eLiterals name="sexual_orientation" value="9" literal="sexual_orientation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ErasureStrategy">
+    <eLiterals name="delete" literal="delete"/>
+    <eLiterals name="anonymize" value="1" literal="anonymize"/>
+    <eLiterals name="pseudonymize" value="2" literal="pseudonymize"/>
+    <eLiterals name="archive" value="3" literal="archive"/>
+    <eLiterals name="review" value="4" literal="review"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataProtection" eSuperTypes="#//AbstractElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" eType="#//ProtectionLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="categories" unique="false"
+        upperBound="-1" eType="#//SpecialCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subjectDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subject" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="purposeDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="purpose" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="basisDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lawfulBasis" eType="#//LawfulBasis"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="retentionDoc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="retention" eType="#//Duration"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="erasure" eType="#//ErasureStrategy"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataProtectionInstance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="policy" eType="#//DataProtection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Constraint" eSuperTypes="#//AbstractElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="input" unique="false" upperBound="-1"
@@ -209,6 +267,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="invariants" eType="#//Invariants"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataProtection" eType="#//DataProtectionInstance"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//Variable">

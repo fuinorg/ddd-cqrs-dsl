@@ -150,6 +150,24 @@ public interface CqrsDslFactory extends EFactory
   Consistency createConsistency();
 
   /**
+   * Returns a new object of class '<em>Data Protection</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Data Protection</em>'.
+   * @generated
+   */
+  DataProtection createDataProtection();
+
+  /**
+   * Returns a new object of class '<em>Data Protection Instance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Data Protection Instance</em>'.
+   * @generated
+   */
+  DataProtectionInstance createDataProtectionInstance();
+
+  /**
    * Returns a new object of class '<em>Constraint</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
