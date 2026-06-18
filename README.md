@@ -18,6 +18,11 @@ The components are:
 - [Templates](#ddd-templates-jar-file) - Xtend-based DDD/CQRS Java code generation templates for [SrcGen4J](https://github.com/fuinorg/srcgen4j).
 - [DSL Examples](dsl-examples) - Examples of the DDD/CQRS DSL you can open and edit after installing the above Eclipse or IntelliJ IDEA plugin.
 
+## Status
+This is currently heavily work in progress. So don't expect the DSL, the plugins or the code generation templates to stay stable in any way!
+
+<img src="doc/work-in-progress.svg" alt="Work in progress" width="500"/>
+
 ## Artifacts
 The plugins for IntelliJ IDEA and Eclipse provide several nice features:
 - Syntax highlighting
