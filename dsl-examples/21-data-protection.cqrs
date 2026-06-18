@@ -30,11 +30,33 @@ context healthcare {
 			// Why the data is processed (purpose limitation, Art. 5(1)(b)).
 			purpose "Customer relationship management and billing"
 
-			// Legal ground for processing (Art. 6).
+			// Legal ground that makes the processing lawful (Art. 6). At least
+			// one of these basises must apply, otherwise processing is illegal.
+			// Allowed values (with a typical example):
+			//   consent             - subject ticked "send me your newsletter"
+			//   explicit_consent    - subject signed a form to process health data
+			//   contract            - billing address needed to ship an order
+			//   legal_obligation    - invoices kept to satisfy tax law
+			//   vital_interests     - blood type used to treat an unconscious patient
+			//   public_task         - tax office processing a citizen's return
+			//   legitimate_interests- shop logging IPs to prevent fraud
+			// Here 'contract' applies: we need the contact data to fulfil the
+			// customer contract (manage the relationship and send invoices).
 			lawful-basis contract
 
-			// Storage limitation (Art. 5(1)(e)): kept 10 years, then anonymized
-			// (the 'then' part relates to the right to erasure, Art. 17).
+			// Storage limitation (Art. 5(1)(e)): the data is kept for the given
+			// duration. The optional 'then' part says what happens once that
+			// period ends (right to erasure, Art. 17). Allowed 'then' actions
+			// (with a typical example):
+			//   delete       - the customer row is physically removed
+			//   anonymize    - identifiers are irreversibly stripped, leaving
+			//                  only non-personal statistics (no longer personal data)
+			//   pseudonymize - the name is replaced by a token, but a separate
+			//                  key could still re-identify the subject
+			//   archive      - the record is moved to a cold long-term store
+			//   review       - a human decides whether it may still be kept
+			// Here: kept 10 years, then anonymized so aggregate reports survive
+			// without identifying the customer.
 			retention 10 years then anonymize
 		}
 
@@ -48,9 +70,15 @@ context healthcare {
 			subject "Patient"
 			purpose "Medical treatment and diagnosis"
 
-			// Special categories require explicit consent (Art. 9(2)(a)).
+			// Special categories (health, genetic, ...) may not rely on the
+			// ordinary 'contract' basis; they need a stronger ground. Here the
+			// patient explicitly agreed to the processing of their health data,
+			// e.g. by signing a treatment consent form (Art. 9(2)(a)).
 			lawful-basis explicit_consent
 
+			// Health records are kept 30 years (legal medical retention) and
+			// then physically deleted, since anonymized health data has no
+			// further use here.
 			retention 30 years then delete
 		}
 
