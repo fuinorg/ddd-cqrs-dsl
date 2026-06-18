@@ -15,7 +15,7 @@ context ctor {
 				// Parameters
 				String name
 				
-				nullable Integer quantity
+				optional Integer quantity
 
                 // Inline defined event(s) to be fired on success 
 				event ItemCreatedEvent {

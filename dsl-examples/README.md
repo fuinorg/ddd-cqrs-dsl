@@ -11,7 +11,7 @@ comment explaining what it shows. They follow the grammar in
 | [02-external-types](02-external-types.cqrs) | External `type`s: plain, `element`, and `generics <n>` |
 | [03-value-object](03-value-object.cqrs) | `value-object` — wrapping a `base` type vs. grouping attributes |
 | [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) and per-attribute overrides |
-| [05-attributes-and-generics](05-attributes-and-generics.cqrs) | Attributes: `nullable` and generic type arguments `<...>` |
+| [05-attributes-and-generics](05-attributes-and-generics.cqrs) | Attributes: `optional` and generic type arguments `<...>` |
 | [06-enum](06-enum.cqrs) | `enum` instances, instance parameters, `deprecated`, `base` |
 | [07-exception](07-exception.cqrs) | `exception` with `cid`, attributes and a `message` |
 | [08-constraint](08-constraint.cqrs) | `constraint` with `input` (incl. multiple via `|`), `exception` and parameters |

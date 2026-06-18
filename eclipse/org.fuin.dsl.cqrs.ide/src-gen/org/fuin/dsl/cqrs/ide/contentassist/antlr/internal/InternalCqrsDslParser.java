@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_HEX", "RULE_INT", "RULE_DECIMAL", "RULE_ID", "RULE_DOC", "RULE_STRING", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "'false'", "'true'", "'millis'", "'seconds'", "'minutes'", "'hours'", "'days'", "'weeks'", "'months'", "'years'", "'weak'", "'strong'", "'never'", "'manually'", "'automatic'", "'workflow'", "'none'", "'personal'", "'sensitive'", "'consent'", "'explicit_consent'", "'contract'", "'legal_obligation'", "'vital_interests'", "'public_task'", "'legitimate_interests'", "'health'", "'genetic'", "'biometric'", "'racial'", "'political'", "'religious'", "'philosophical'", "'trade_union'", "'sex_life'", "'sexual_orientation'", "'delete'", "'anonymize'", "'pseudonymize'", "'archive'", "'review'", "'context'", "'{'", "'}'", "'namespace'", "'import'", "'type'", "'generics'", "'acceptable'", "'detection'", "'resolution'", "'consistency'", "'data-protection'", "'protection'", "'category'", "','", "'subject'", "'purpose'", "'lawful-basis'", "'retention'", "'then'", "'protected-by'", "'constraint'", "'input'", "'|'", "'exception'", "'message'", "'business-rule'", "'annotation'", "'cid'", "'value-object'", "'base'", "'entity-id'", "'identifies'", "'aggregate-id'", "'enum'", "'instances'", "'('", "')'", "'event'", "'copies-attributes-of'", "'entity'", "'identifier'", "'root'", "'aggregate'", "'constructor'", "'fires'", "'returns'", "'method'", "'ref'", "'slabel'", "'label'", "'tooltip'", "'prompt'", "'examples'", "'<'", "'>'", "'invariants'", "'preconditions'", "'business-rules'", "'@'", "'service'", "'command'", "'target'", "'sla'", "'command-handler'", "'handles'", "'uses'", "'projection'", "'view'", "'.'", "'*'", "'element'", "'deprecated'", "'nullable'", "'null'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_HEX", "RULE_INT", "RULE_DECIMAL", "RULE_ID", "RULE_DOC", "RULE_STRING", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "'false'", "'true'", "'millis'", "'seconds'", "'minutes'", "'hours'", "'days'", "'weeks'", "'months'", "'years'", "'weak'", "'strong'", "'never'", "'manually'", "'automatic'", "'workflow'", "'none'", "'personal'", "'sensitive'", "'consent'", "'explicit_consent'", "'contract'", "'legal_obligation'", "'vital_interests'", "'public_task'", "'legitimate_interests'", "'health'", "'genetic'", "'biometric'", "'racial'", "'political'", "'religious'", "'philosophical'", "'trade_union'", "'sex_life'", "'sexual_orientation'", "'delete'", "'anonymize'", "'pseudonymize'", "'archive'", "'review'", "'context'", "'{'", "'}'", "'namespace'", "'import'", "'type'", "'generics'", "'acceptable'", "'detection'", "'resolution'", "'consistency'", "'data-protection'", "'protection'", "'category'", "','", "'subject'", "'purpose'", "'lawful-basis'", "'retention'", "'then'", "'protected-by'", "'constraint'", "'input'", "'|'", "'exception'", "'message'", "'business-rule'", "'annotation'", "'cid'", "'value-object'", "'base'", "'entity-id'", "'identifies'", "'aggregate-id'", "'enum'", "'instances'", "'('", "')'", "'event'", "'copies-attributes-of'", "'entity'", "'identifier'", "'root'", "'aggregate'", "'constructor'", "'fires'", "'returns'", "'method'", "'ref'", "'slabel'", "'label'", "'tooltip'", "'prompt'", "'examples'", "'<'", "'>'", "'invariants'", "'preconditions'", "'business-rules'", "'@'", "'service'", "'command'", "'target'", "'sla'", "'command-handler'", "'handles'", "'uses'", "'projection'", "'view'", "'.'", "'*'", "'element'", "'deprecated'", "'optional'", "'null'"
     };
     public static final int RULE_HEX=4;
     public static final int T__50=50;
@@ -33890,20 +33890,20 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Attribute__Group__1__Impl"
-    // InternalCqrsDsl.g:10445:1: rule__Attribute__Group__1__Impl : ( ( rule__Attribute__NullableAssignment_1 )? ) ;
+    // InternalCqrsDsl.g:10445:1: rule__Attribute__Group__1__Impl : ( ( rule__Attribute__OptionalAssignment_1 )? ) ;
     public final void rule__Attribute__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:10449:1: ( ( ( rule__Attribute__NullableAssignment_1 )? ) )
-            // InternalCqrsDsl.g:10450:1: ( ( rule__Attribute__NullableAssignment_1 )? )
+            // InternalCqrsDsl.g:10449:1: ( ( ( rule__Attribute__OptionalAssignment_1 )? ) )
+            // InternalCqrsDsl.g:10450:1: ( ( rule__Attribute__OptionalAssignment_1 )? )
             {
-            // InternalCqrsDsl.g:10450:1: ( ( rule__Attribute__NullableAssignment_1 )? )
-            // InternalCqrsDsl.g:10451:2: ( rule__Attribute__NullableAssignment_1 )?
+            // InternalCqrsDsl.g:10450:1: ( ( rule__Attribute__OptionalAssignment_1 )? )
+            // InternalCqrsDsl.g:10451:2: ( rule__Attribute__OptionalAssignment_1 )?
             {
-             before(grammarAccess.getAttributeAccess().getNullableAssignment_1()); 
-            // InternalCqrsDsl.g:10452:2: ( rule__Attribute__NullableAssignment_1 )?
+             before(grammarAccess.getAttributeAccess().getOptionalAssignment_1()); 
+            // InternalCqrsDsl.g:10452:2: ( rule__Attribute__OptionalAssignment_1 )?
             int alt146=2;
             int LA146_0 = input.LA(1);
 
@@ -33912,10 +33912,10 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
             }
             switch (alt146) {
                 case 1 :
-                    // InternalCqrsDsl.g:10452:3: rule__Attribute__NullableAssignment_1
+                    // InternalCqrsDsl.g:10452:3: rule__Attribute__OptionalAssignment_1
                     {
                     pushFollow(FOLLOW_2);
-                    rule__Attribute__NullableAssignment_1();
+                    rule__Attribute__OptionalAssignment_1();
 
                     state._fsp--;
 
@@ -33925,7 +33925,7 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-             after(grammarAccess.getAttributeAccess().getNullableAssignment_1()); 
+             after(grammarAccess.getAttributeAccess().getOptionalAssignment_1()); 
 
             }
 
@@ -34631,20 +34631,20 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Parameter__Group__1__Impl"
-    // InternalCqrsDsl.g:10661:1: rule__Parameter__Group__1__Impl : ( ( rule__Parameter__NullableAssignment_1 )? ) ;
+    // InternalCqrsDsl.g:10661:1: rule__Parameter__Group__1__Impl : ( ( rule__Parameter__OptionalAssignment_1 )? ) ;
     public final void rule__Parameter__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:10665:1: ( ( ( rule__Parameter__NullableAssignment_1 )? ) )
-            // InternalCqrsDsl.g:10666:1: ( ( rule__Parameter__NullableAssignment_1 )? )
+            // InternalCqrsDsl.g:10665:1: ( ( ( rule__Parameter__OptionalAssignment_1 )? ) )
+            // InternalCqrsDsl.g:10666:1: ( ( rule__Parameter__OptionalAssignment_1 )? )
             {
-            // InternalCqrsDsl.g:10666:1: ( ( rule__Parameter__NullableAssignment_1 )? )
-            // InternalCqrsDsl.g:10667:2: ( rule__Parameter__NullableAssignment_1 )?
+            // InternalCqrsDsl.g:10666:1: ( ( rule__Parameter__OptionalAssignment_1 )? )
+            // InternalCqrsDsl.g:10667:2: ( rule__Parameter__OptionalAssignment_1 )?
             {
-             before(grammarAccess.getParameterAccess().getNullableAssignment_1()); 
-            // InternalCqrsDsl.g:10668:2: ( rule__Parameter__NullableAssignment_1 )?
+             before(grammarAccess.getParameterAccess().getOptionalAssignment_1()); 
+            // InternalCqrsDsl.g:10668:2: ( rule__Parameter__OptionalAssignment_1 )?
             int alt152=2;
             int LA152_0 = input.LA(1);
 
@@ -34653,10 +34653,10 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
             }
             switch (alt152) {
                 case 1 :
-                    // InternalCqrsDsl.g:10668:3: rule__Parameter__NullableAssignment_1
+                    // InternalCqrsDsl.g:10668:3: rule__Parameter__OptionalAssignment_1
                     {
                     pushFollow(FOLLOW_2);
-                    rule__Parameter__NullableAssignment_1();
+                    rule__Parameter__OptionalAssignment_1();
 
                     state._fsp--;
 
@@ -34666,7 +34666,7 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-             after(grammarAccess.getParameterAccess().getNullableAssignment_1()); 
+             after(grammarAccess.getParameterAccess().getOptionalAssignment_1()); 
 
             }
 
@@ -51123,30 +51123,30 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__Attribute__DocAssignment_0"
 
 
-    // $ANTLR start "rule__Attribute__NullableAssignment_1"
-    // InternalCqrsDsl.g:16400:1: rule__Attribute__NullableAssignment_1 : ( ( 'nullable' ) ) ;
-    public final void rule__Attribute__NullableAssignment_1() throws RecognitionException {
+    // $ANTLR start "rule__Attribute__OptionalAssignment_1"
+    // InternalCqrsDsl.g:16400:1: rule__Attribute__OptionalAssignment_1 : ( ( 'optional' ) ) ;
+    public final void rule__Attribute__OptionalAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:16404:1: ( ( ( 'nullable' ) ) )
-            // InternalCqrsDsl.g:16405:2: ( ( 'nullable' ) )
+            // InternalCqrsDsl.g:16404:1: ( ( ( 'optional' ) ) )
+            // InternalCqrsDsl.g:16405:2: ( ( 'optional' ) )
             {
-            // InternalCqrsDsl.g:16405:2: ( ( 'nullable' ) )
-            // InternalCqrsDsl.g:16406:3: ( 'nullable' )
+            // InternalCqrsDsl.g:16405:2: ( ( 'optional' ) )
+            // InternalCqrsDsl.g:16406:3: ( 'optional' )
             {
-             before(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); 
-            // InternalCqrsDsl.g:16407:3: ( 'nullable' )
-            // InternalCqrsDsl.g:16408:4: 'nullable'
+             before(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); 
+            // InternalCqrsDsl.g:16407:3: ( 'optional' )
+            // InternalCqrsDsl.g:16408:4: 'optional'
             {
-             before(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); 
+             before(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); 
             match(input,127,FOLLOW_2); 
-             after(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); 
+             after(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); 
 
             }
 
-             after(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); 
+             after(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); 
 
             }
 
@@ -51165,7 +51165,7 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__Attribute__NullableAssignment_1"
+    // $ANTLR end "rule__Attribute__OptionalAssignment_1"
 
 
     // $ANTLR start "rule__Attribute__TypeAssignment_2"
@@ -51455,30 +51455,30 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__Parameter__DocAssignment_0"
 
 
-    // $ANTLR start "rule__Parameter__NullableAssignment_1"
-    // InternalCqrsDsl.g:16528:1: rule__Parameter__NullableAssignment_1 : ( ( 'nullable' ) ) ;
-    public final void rule__Parameter__NullableAssignment_1() throws RecognitionException {
+    // $ANTLR start "rule__Parameter__OptionalAssignment_1"
+    // InternalCqrsDsl.g:16528:1: rule__Parameter__OptionalAssignment_1 : ( ( 'optional' ) ) ;
+    public final void rule__Parameter__OptionalAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:16532:1: ( ( ( 'nullable' ) ) )
-            // InternalCqrsDsl.g:16533:2: ( ( 'nullable' ) )
+            // InternalCqrsDsl.g:16532:1: ( ( ( 'optional' ) ) )
+            // InternalCqrsDsl.g:16533:2: ( ( 'optional' ) )
             {
-            // InternalCqrsDsl.g:16533:2: ( ( 'nullable' ) )
-            // InternalCqrsDsl.g:16534:3: ( 'nullable' )
+            // InternalCqrsDsl.g:16533:2: ( ( 'optional' ) )
+            // InternalCqrsDsl.g:16534:3: ( 'optional' )
             {
-             before(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); 
-            // InternalCqrsDsl.g:16535:3: ( 'nullable' )
-            // InternalCqrsDsl.g:16536:4: 'nullable'
+             before(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); 
+            // InternalCqrsDsl.g:16535:3: ( 'optional' )
+            // InternalCqrsDsl.g:16536:4: 'optional'
             {
-             before(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); 
+             before(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); 
             match(input,127,FOLLOW_2); 
-             after(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); 
+             after(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); 
 
             }
 
-             after(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); 
+             after(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); 
 
             }
 
@@ -51497,7 +51497,7 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__Parameter__NullableAssignment_1"
+    // $ANTLR end "rule__Parameter__OptionalAssignment_1"
 
 
     // $ANTLR start "rule__Parameter__TypeAssignment_2"

@@ -106,7 +106,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "acceptable"              { return KW_ACCEPTABLE; }
   "detection"               { return KW_DETECTION; }
   "resolution"              { return KW_RESOLUTION; }
-  "nullable"                { return KW_NULLABLE; }
+  "optional"                { return KW_OPTIONAL; }
 
   // ---- Data protection keywords ----
   "protection"              { return KW_PROTECTION; }

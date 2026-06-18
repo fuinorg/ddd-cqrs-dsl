@@ -31,7 +31,7 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_BUSINESS_RULES, CqrsTypes.KW_SERVICE, CqrsTypes.KW_COMMAND, CqrsTypes.KW_TARGET,
             CqrsTypes.KW_SLA, CqrsTypes.KW_COMMAND_HANDLER, CqrsTypes.KW_HANDLES, CqrsTypes.KW_USES,
             CqrsTypes.KW_PROJECTION, CqrsTypes.KW_VIEW, CqrsTypes.KW_CONSISTENCY, CqrsTypes.KW_ACCEPTABLE,
-            CqrsTypes.KW_DETECTION, CqrsTypes.KW_RESOLUTION, CqrsTypes.KW_NULLABLE,
+            CqrsTypes.KW_DETECTION, CqrsTypes.KW_RESOLUTION, CqrsTypes.KW_OPTIONAL,
             CqrsTypes.KW_MILLIS, CqrsTypes.KW_SECONDS, CqrsTypes.KW_MINUTES, CqrsTypes.KW_HOURS,
             CqrsTypes.KW_DAYS, CqrsTypes.KW_WEEKS, CqrsTypes.KW_MONTHS, CqrsTypes.KW_YEARS,
             CqrsTypes.KW_WEAK, CqrsTypes.KW_STRONG, CqrsTypes.KW_NEVER,

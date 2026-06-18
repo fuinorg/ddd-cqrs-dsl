@@ -338,13 +338,13 @@ GenericArgs:
 /** Property of an object. */
 Attribute:
 	doc=DOC?
-	(nullable='nullable')?
+	(optional='optional')?
 	type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 
 /** Property/Argument of a method. */
 Parameter:
 	doc=DOC? 
-	(nullable='nullable')? 
+	(optional='optional')? 
 	type=[Type|FQN] generics=GenericArgs? name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? (overridden=OverriddenTypeMetaInfo)?;
 
 /** 

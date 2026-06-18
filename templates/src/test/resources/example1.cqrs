@@ -35,12 +35,12 @@ context x {
 			method doSomething business-rules AnyConstraint fires DidSomethingEvent, SomethingHappenedEvent {
 				
 				MyAggregateId id
-				nullable MyValueObject vo
+				optional MyValueObject vo
 				   
 				/** MyAggregate did something event. */   
 				event DidSomethingEvent {
 					MyAggregateId id
-					nullable MyValueObject vo
+					optional MyValueObject vo
 				}
 				
 			}
@@ -71,7 +71,7 @@ context x {
 				MyEntityId id
 				
 				/** Example value object. */
-				nullable MyValueObject vo
+				optional MyValueObject vo
 				   
 			}
 			

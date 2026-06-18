@@ -312,7 +312,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Constraint:
 	 *     (
 	 *         doc=DOC? 
-	 *         nullable='nullable'? 
+	 *         optional='optional'? 
 	 *         type=[Type|FQN] 
 	 *         generics=GenericArgs? 
 	 *         name=ID 
@@ -915,7 +915,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Constraint:
 	 *     (
 	 *         doc=DOC? 
-	 *         nullable='nullable'? 
+	 *         optional='optional'? 
 	 *         type=[Type|FQN] 
 	 *         generics=GenericArgs? 
 	 *         name=ID 

@@ -74,7 +74,7 @@ context healthcare {
 			// (EmailAddress is protected-by ContactData above).
 			EmailAddress email
 
-			nullable String diagnosis protected-by MedicalData
+			optional String diagnosis protected-by MedicalData
 
 			// Non-personal data simply has no policy.
 			LocalDate lastVisit

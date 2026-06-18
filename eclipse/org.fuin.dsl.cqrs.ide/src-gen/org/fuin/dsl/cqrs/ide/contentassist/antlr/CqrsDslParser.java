@@ -319,7 +319,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getGenericArgsAccess().getArgsAssignment_1(), "rule__GenericArgs__ArgsAssignment_1");
 			builder.put(grammarAccess.getGenericArgsAccess().getArgsAssignment_2_1(), "rule__GenericArgs__ArgsAssignment_2_1");
 			builder.put(grammarAccess.getAttributeAccess().getDocAssignment_0(), "rule__Attribute__DocAssignment_0");
-			builder.put(grammarAccess.getAttributeAccess().getNullableAssignment_1(), "rule__Attribute__NullableAssignment_1");
+			builder.put(grammarAccess.getAttributeAccess().getOptionalAssignment_1(), "rule__Attribute__OptionalAssignment_1");
 			builder.put(grammarAccess.getAttributeAccess().getTypeAssignment_2(), "rule__Attribute__TypeAssignment_2");
 			builder.put(grammarAccess.getAttributeAccess().getGenericsAssignment_3(), "rule__Attribute__GenericsAssignment_3");
 			builder.put(grammarAccess.getAttributeAccess().getNameAssignment_4(), "rule__Attribute__NameAssignment_4");
@@ -327,7 +327,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAttributeAccess().getDataProtectionAssignment_6(), "rule__Attribute__DataProtectionAssignment_6");
 			builder.put(grammarAccess.getAttributeAccess().getOverriddenAssignment_7(), "rule__Attribute__OverriddenAssignment_7");
 			builder.put(grammarAccess.getParameterAccess().getDocAssignment_0(), "rule__Parameter__DocAssignment_0");
-			builder.put(grammarAccess.getParameterAccess().getNullableAssignment_1(), "rule__Parameter__NullableAssignment_1");
+			builder.put(grammarAccess.getParameterAccess().getOptionalAssignment_1(), "rule__Parameter__OptionalAssignment_1");
 			builder.put(grammarAccess.getParameterAccess().getTypeAssignment_2(), "rule__Parameter__TypeAssignment_2");
 			builder.put(grammarAccess.getParameterAccess().getGenericsAssignment_3(), "rule__Parameter__GenericsAssignment_3");
 			builder.put(grammarAccess.getParameterAccess().getNameAssignment_4(), "rule__Parameter__NameAssignment_4");

@@ -71,7 +71,7 @@ class SrcVarsDeclTest {
                         value-object MyValueObject {
                             String a
                             Integer b
-                            nullable Boolean c
+                            optional Boolean c
                         }
                 
                     }

@@ -26,7 +26,7 @@ class CqrsAttributeExtensions {
 		var Attribute newAttr = CqrsDslFactory.eINSTANCE.createAttribute();
 		newAttr.name = name;
 		newAttr.doc = attr.doc;
-		newAttr.nullable = attr.nullable;
+		newAttr.optional = attr.optional;
 		newAttr.type = attr.type;
 		if (attr.generics !== null && attr.generics.args !== null) {
 			val generics = CqrsDslFactory.eINSTANCE.createGenericArgs
@@ -54,7 +54,7 @@ class CqrsAttributeExtensions {
 		param.preconditions = CqrsDslFactory.eINSTANCE.createPreconditions
 		param.preconditions.constraintInstances.addAll(attr.invariants.nullSafe)
 		param.doc = attr.doc
-		param.nullable = attr.nullable
+		param.optional = attr.optional
 		param.type = attr.type
 		if (attr.generics !== null && attr.generics.args !== null) {
 			val generics = CqrsDslFactory.eINSTANCE.createGenericArgs

@@ -131,9 +131,9 @@ class SrcParamDeclTest {
             
                     value-object MyValueObject {
                         String a invariants NoArgConstraint
-                        nullable String b invariants NoArgConstraint
+                        optional String b invariants NoArgConstraint
                         String c
-                        nullable String d                        
+                        optional String d                        
                     }
             
                 }

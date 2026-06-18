@@ -10448,9 +10448,9 @@ rule__Attribute__Group__1__Impl
 	}
 :
 (
-	{ before(grammarAccess.getAttributeAccess().getNullableAssignment_1()); }
-	(rule__Attribute__NullableAssignment_1)?
-	{ after(grammarAccess.getAttributeAccess().getNullableAssignment_1()); }
+	{ before(grammarAccess.getAttributeAccess().getOptionalAssignment_1()); }
+	(rule__Attribute__OptionalAssignment_1)?
+	{ after(grammarAccess.getAttributeAccess().getOptionalAssignment_1()); }
 )
 ;
 finally {
@@ -10664,9 +10664,9 @@ rule__Parameter__Group__1__Impl
 	}
 :
 (
-	{ before(grammarAccess.getParameterAccess().getNullableAssignment_1()); }
-	(rule__Parameter__NullableAssignment_1)?
-	{ after(grammarAccess.getParameterAccess().getNullableAssignment_1()); }
+	{ before(grammarAccess.getParameterAccess().getOptionalAssignment_1()); }
+	(rule__Parameter__OptionalAssignment_1)?
+	{ after(grammarAccess.getParameterAccess().getOptionalAssignment_1()); }
 )
 ;
 finally {
@@ -16397,19 +16397,19 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Attribute__NullableAssignment_1
+rule__Attribute__OptionalAssignment_1
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); }
+		{ before(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); }
 		(
-			{ before(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); }
-			'nullable'
-			{ after(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); }
+			{ before(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); }
+			'optional'
+			{ after(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); }
 		)
-		{ after(grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0()); }
+		{ after(grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0()); }
 	)
 ;
 finally {
@@ -16525,19 +16525,19 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Parameter__NullableAssignment_1
+rule__Parameter__OptionalAssignment_1
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); }
+		{ before(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); }
 		(
-			{ before(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); }
-			'nullable'
-			{ after(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); }
+			{ before(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); }
+			'optional'
+			{ after(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); }
 		)
-		{ after(grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0()); }
+		{ after(grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0()); }
 	)
 ;
 finally {

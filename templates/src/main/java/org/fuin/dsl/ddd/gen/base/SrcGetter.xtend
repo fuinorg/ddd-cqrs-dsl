@@ -22,7 +22,7 @@ class SrcGetter implements CodeSnippet {
         this.modifiers = modifiers
         this.variable = variable
         
-        if (variable.nullable !== null && !variable.isPrimitive(ctx)) {
+        if (variable.optional !== null && !variable.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(variable, ctx)
@@ -35,7 +35,7 @@ class SrcGetter implements CodeSnippet {
              *
              * @return Current value.
              */
-            «IF variable.nullable !== null && !variable.isPrimitive(ctx)»@Nullable«ENDIF»
+            «IF variable.optional !== null && !variable.isPrimitive(ctx)»@Nullable«ENDIF»
             «modifiers» «variable.type(ctx)» get«variable.name.toFirstUpper»() {
                 return «variable.name»;
             }

@@ -68,7 +68,7 @@
 'never'=25
 'none'=29
 'null'=128
-'nullable'=127
+'optional'=127
 'personal'=30
 'philosophical'=45
 'political'=43

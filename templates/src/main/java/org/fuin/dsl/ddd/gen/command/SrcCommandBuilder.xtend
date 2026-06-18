@@ -75,7 +75,7 @@ class SrcCommandBuilder implements CodeSnippet {
                 }
                 
             	«FOR variable : variables»
-            	«IF variable.nullable === null»ensureNotNull("«variable.name»", delegate.«variable.name»);«ENDIF»
+            	«IF variable.optional === null»ensureNotNull("«variable.name»", delegate.«variable.name»);«ENDIF»
             	«ENDFOR»
                 
                 final «command.name» result = delegate;

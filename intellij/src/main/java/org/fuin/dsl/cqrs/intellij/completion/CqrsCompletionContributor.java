@@ -126,7 +126,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         CqrsConstructorDef ctor = PsiTreeUtil.getParentOfType(position, CqrsConstructorDef.class);
         CqrsMethodDef method = PsiTreeUtil.getParentOfType(position, CqrsMethodDef.class);
         if (ctor != null || method != null) {
-            keywords.add("nullable");
+            keywords.add("optional");
             keywords.add("event");
             if (method != null) {
                 keywords.add("returns");
@@ -137,7 +137,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         if (PsiTreeUtil.getParentOfType(position, CqrsAggregateDef.class) != null
                 || PsiTreeUtil.getParentOfType(position, CqrsEntityDef.class) != null) {
             keywords.addAll(META_KEYWORDS);
-            keywords.add("nullable");
+            keywords.add("optional");
             keywords.add("protected-by");
             keywords.add("business-rule");
             keywords.add("constructor");
@@ -157,7 +157,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             keywords.add("import");
             keywords.addAll(ELEMENT_KEYWORDS);
             keywords.addAll(META_KEYWORDS);
-            keywords.add("nullable");
+            keywords.add("optional");
             keywords.add("protected-by");
             keywords.add("base");
             keywords.add("message");

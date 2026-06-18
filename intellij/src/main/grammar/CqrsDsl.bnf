@@ -68,7 +68,7 @@
     KW_ACCEPTABLE='acceptable'
     KW_DETECTION='detection'
     KW_RESOLUTION='resolution'
-    KW_NULLABLE='nullable'
+    KW_OPTIONAL='optional'
 
     // Data protection keywords
     KW_DATA_PROTECTION='data-protection'
@@ -339,13 +339,13 @@ method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (K
 
 return_type ::= KW_RETURNS type_ref { pin=1 }
 
-attribute ::= KW_NULLABLE? type_ref generic_args? ID invariants? data_protection_instance? overridden_meta? {
+attribute ::= KW_OPTIONAL? type_ref generic_args? ID invariants? data_protection_instance? overridden_meta? {
   pin=4
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-parameter ::= KW_NULLABLE? type_ref generic_args? ID preconditions? business_rules? overridden_meta? {
+parameter ::= KW_OPTIONAL? type_ref generic_args? ID preconditions? business_rules? overridden_meta? {
   pin=4
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

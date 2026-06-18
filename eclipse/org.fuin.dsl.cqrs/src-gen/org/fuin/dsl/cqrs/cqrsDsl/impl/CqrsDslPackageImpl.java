@@ -1993,7 +1993,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EAttribute getVariable_Nullable()
+  public EAttribute getVariable_Optional()
   {
     return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
   }
@@ -2828,7 +2828,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     variableEClass = createEClass(VARIABLE);
     createEAttribute(variableEClass, VARIABLE__DOC);
-    createEAttribute(variableEClass, VARIABLE__NULLABLE);
+    createEAttribute(variableEClass, VARIABLE__OPTIONAL);
     createEReference(variableEClass, VARIABLE__TYPE);
     createEReference(variableEClass, VARIABLE__GENERICS);
     createEAttribute(variableEClass, VARIABLE__NAME);
@@ -3133,7 +3133,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(variableEClass, Variable.class, "Variable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVariable_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVariable_Nullable(), ecorePackage.getEString(), "nullable", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVariable_Optional(), ecorePackage.getEString(), "optional", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVariable_Type(), this.getType(), null, "type", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVariable_Generics(), this.getGenericArgs(), null, "generics", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVariable_Name(), ecorePackage.getEString(), "name", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

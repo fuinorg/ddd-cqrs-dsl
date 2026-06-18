@@ -31,7 +31,7 @@ class SrcVarDecl implements CodeSnippet {
         this.options = options
         this.variable = variable
 
-        if (variable.nullable !== null && !variable.isPrimitive(ctx)) {
+        if (variable.optional !== null && !variable.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(variable, ctx)
@@ -52,7 +52,7 @@ class SrcVarDecl implements CodeSnippet {
             «FOR cc : variable.constraints SEPARATOR ' '»
                 «new SrcValidationAnnotation(ctx, cc)»
             «ENDFOR»
-            «IF variable.nullable !== null && !variable.isPrimitive(ctx)»
+            «IF variable.optional !== null && !variable.isPrimitive(ctx)»
                 @Nullable
             «ENDIF»
         '''

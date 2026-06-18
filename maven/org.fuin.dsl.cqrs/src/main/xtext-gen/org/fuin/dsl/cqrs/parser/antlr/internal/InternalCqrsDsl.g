@@ -4352,15 +4352,15 @@ ruleAttribute returns [EObject current=null]
 		)?
 		(
 			(
-				lv_nullable_1_0='nullable'
+				lv_optional_1_0='optional'
 				{
-					newLeafNode(lv_nullable_1_0, grammarAccess.getAttributeAccess().getNullableNullableKeyword_1_0());
+					newLeafNode(lv_optional_1_0, grammarAccess.getAttributeAccess().getOptionalOptionalKeyword_1_0());
 				}
 				{
 					if ($current==null) {
 						$current = createModelElement(grammarAccess.getAttributeRule());
 					}
-					setWithLastConsumed($current, "nullable", lv_nullable_1_0, "nullable");
+					setWithLastConsumed($current, "optional", lv_optional_1_0, "optional");
 				}
 			)
 		)?
@@ -4513,15 +4513,15 @@ ruleParameter returns [EObject current=null]
 		)?
 		(
 			(
-				lv_nullable_1_0='nullable'
+				lv_optional_1_0='optional'
 				{
-					newLeafNode(lv_nullable_1_0, grammarAccess.getParameterAccess().getNullableNullableKeyword_1_0());
+					newLeafNode(lv_optional_1_0, grammarAccess.getParameterAccess().getOptionalOptionalKeyword_1_0());
 				}
 				{
 					if ($current==null) {
 						$current = createModelElement(grammarAccess.getParameterRule());
 					}
-					setWithLastConsumed($current, "nullable", lv_nullable_1_0, "nullable");
+					setWithLastConsumed($current, "optional", lv_optional_1_0, "optional");
 				}
 			)
 		)?

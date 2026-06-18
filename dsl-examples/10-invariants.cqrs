@@ -20,8 +20,8 @@ context inv {
 
 		// Type-level invariant
 		value-object Name invariants OneOrTheOtherIsSet {
-			nullable String a
-			nullable String b
+			optional String a
+			optional String b
 		}
 
 		value-object Name {

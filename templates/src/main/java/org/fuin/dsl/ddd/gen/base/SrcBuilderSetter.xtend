@@ -19,7 +19,7 @@ class SrcBuilderSetter implements CodeSnippet {
     new(CodeSnippetContext ctx, GenerateOptions options, Variable variable) {
         this.ctx = ctx
         this.variable = variable
-        if (variable.nullable === null) {
+        if (variable.optional === null) {
             ctx.requiresImport("org.fuin.objects4j.common.Contract")
         } else if (!variable.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
@@ -35,8 +35,8 @@ class SrcBuilderSetter implements CodeSnippet {
          * @param «variable.name» Value to set.
          * @return This builder.
          */
-        public Builder «variable.name.toFirstLower»(«IF variable.nullable !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
-            «IF variable.nullable === null»
+        public Builder «variable.name.toFirstLower»(«IF variable.optional !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
+            «IF variable.optional === null»
                 Contract.requireArgNotNull("«variable.name»", «variable.name»);
             «ENDIF»
             delegate.«variable.name» = «variable.name»;

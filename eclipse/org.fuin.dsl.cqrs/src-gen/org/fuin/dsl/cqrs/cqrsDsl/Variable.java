@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getDoc <em>Doc</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getOptional <em>Optional</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getType <em>Type</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getGenerics <em>Generics</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getName <em>Name</em>}</li>
@@ -51,26 +51,26 @@ public interface Variable extends EObject
   void setDoc(String value);
 
   /**
-   * Returns the value of the '<em><b>Nullable</b></em>' attribute.
+   * Returns the value of the '<em><b>Optional</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Nullable</em>' attribute.
-   * @see #setNullable(String)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getVariable_Nullable()
+   * @return the value of the '<em>Optional</em>' attribute.
+   * @see #setOptional(String)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getVariable_Optional()
    * @model
    * @generated
    */
-  String getNullable();
+  String getOptional();
 
   /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getNullable <em>Nullable</em>}' attribute.
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getOptional <em>Optional</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Nullable</em>' attribute.
-   * @see #getNullable()
+   * @param value the new value of the '<em>Optional</em>' attribute.
+   * @see #getOptional()
    * @generated
    */
-  void setNullable(String value);
+  void setOptional(String value);
 
   /**
    * Returns the value of the '<em><b>Type</b></em>' reference.

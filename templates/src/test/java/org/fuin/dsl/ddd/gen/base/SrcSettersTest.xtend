@@ -81,7 +81,7 @@ class SrcSettersTest {
                             String name
                             
                             /** Language the name is in. */
-                            nullable Locale locale
+                            optional Locale locale
                             
                         }
                         

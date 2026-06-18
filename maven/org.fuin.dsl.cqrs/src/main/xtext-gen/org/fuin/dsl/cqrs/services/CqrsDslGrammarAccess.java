@@ -2727,8 +2727,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
-		private final Assignment cNullableAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final Keyword cNullableNullableKeyword_1_0 = (Keyword)cNullableAssignment_1.eContents().get(0);
+		private final Assignment cOptionalAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final Keyword cOptionalOptionalKeyword_1_0 = (Keyword)cOptionalAssignment_1.eContents().get(0);
 		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final CrossReference cTypeTypeCrossReference_2_0 = (CrossReference)cTypeAssignment_2.eContents().get(0);
 		private final RuleCall cTypeTypeFQNParserRuleCall_2_0_1 = (RuleCall)cTypeTypeCrossReference_2_0.eContents().get(1);
@@ -2746,12 +2746,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		///** Property of an object. */
 		//Attribute:
 		//    doc=DOC?
-		//    (nullable='nullable')?
+		//    (optional='optional')?
 		//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//(nullable='nullable')?
+		//(optional='optional')?
 		//type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?
 		public Group getGroup() { return cGroup; }
 		
@@ -2761,11 +2761,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//DOC
 		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
 		
-		//(nullable='nullable')?
-		public Assignment getNullableAssignment_1() { return cNullableAssignment_1; }
+		//(optional='optional')?
+		public Assignment getOptionalAssignment_1() { return cOptionalAssignment_1; }
 		
-		//'nullable'
-		public Keyword getNullableNullableKeyword_1_0() { return cNullableNullableKeyword_1_0; }
+		//'optional'
+		public Keyword getOptionalOptionalKeyword_1_0() { return cOptionalOptionalKeyword_1_0; }
 		
 		//type=[Type|FQN]
 		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
@@ -2811,8 +2811,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
-		private final Assignment cNullableAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final Keyword cNullableNullableKeyword_1_0 = (Keyword)cNullableAssignment_1.eContents().get(0);
+		private final Assignment cOptionalAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final Keyword cOptionalOptionalKeyword_1_0 = (Keyword)cOptionalAssignment_1.eContents().get(0);
 		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final CrossReference cTypeTypeCrossReference_2_0 = (CrossReference)cTypeAssignment_2.eContents().get(0);
 		private final RuleCall cTypeTypeFQNParserRuleCall_2_0_1 = (RuleCall)cTypeTypeCrossReference_2_0.eContents().get(1);
@@ -2830,12 +2830,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		///** Property/Argument of a method. */
 		//Parameter:
 		//    doc=DOC?
-		//    (nullable='nullable')?
+		//    (optional='optional')?
 		//    type=[Type|FQN] generics=GenericArgs? name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? (overridden=OverriddenTypeMetaInfo)?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//(nullable='nullable')?
+		//(optional='optional')?
 		//type=[Type|FQN] generics=GenericArgs? name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? (overridden=OverriddenTypeMetaInfo)?
 		public Group getGroup() { return cGroup; }
 		
@@ -2845,11 +2845,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//DOC
 		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
 		
-		//(nullable='nullable')?
-		public Assignment getNullableAssignment_1() { return cNullableAssignment_1; }
+		//(optional='optional')?
+		public Assignment getOptionalAssignment_1() { return cOptionalAssignment_1; }
 		
-		//'nullable'
-		public Keyword getNullableNullableKeyword_1_0() { return cNullableNullableKeyword_1_0; }
+		//'optional'
+		public Keyword getOptionalOptionalKeyword_1_0() { return cOptionalOptionalKeyword_1_0; }
 		
 		//type=[Type|FQN]
 		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
@@ -5196,7 +5196,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Property of an object. */
 	//Attribute:
 	//    doc=DOC?
-	//    (nullable='nullable')?
+	//    (optional='optional')?
 	//    type=[Type|FQN] generics=GenericArgs? name=ID (invariants=Invariants)? (dataProtection=DataProtectionInstance)? (overridden=OverriddenTypeMetaInfo)?;
 	public AttributeElements getAttributeAccess() {
 		return pAttribute;
@@ -5209,7 +5209,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Property/Argument of a method. */
 	//Parameter:
 	//    doc=DOC?
-	//    (nullable='nullable')?
+	//    (optional='optional')?
 	//    type=[Type|FQN] generics=GenericArgs? name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? (overridden=OverriddenTypeMetaInfo)?;
 	public ParameterElements getParameterAccess() {
 		return pParameter;

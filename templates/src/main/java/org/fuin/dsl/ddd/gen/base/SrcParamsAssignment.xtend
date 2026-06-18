@@ -29,7 +29,7 @@ class SrcParamsAssignment implements CodeSnippet {
 
     private def static boolean atLeastOneVarIsNotNullable(List<Parameter> vars) {
         for (v : vars) {
-            if (v.nullable === null) {
+            if (v.optional === null) {
                 return true
             }
         }
@@ -42,7 +42,7 @@ class SrcParamsAssignment implements CodeSnippet {
         }
         '''    
             «FOR v : vars»    
-                «IF v.nullable === null»
+                «IF v.optional === null»
                     Contract.requireArgNotNull("«v.name»", «v.name»);
                 «ENDIF»
             «ENDFOR»

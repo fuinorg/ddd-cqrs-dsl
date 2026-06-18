@@ -25,7 +25,7 @@ public class CqrsAttributeExtensions {
     Attribute newAttr = CqrsDslFactory.eINSTANCE.createAttribute();
     newAttr.setName(name);
     newAttr.setDoc(attr.getDoc());
-    newAttr.setNullable(attr.getNullable());
+    newAttr.setOptional(attr.getOptional());
     newAttr.setType(attr.getType());
     if (((attr.getGenerics() != null) && (attr.getGenerics().getArgs() != null))) {
       final GenericArgs generics = CqrsDslFactory.eINSTANCE.createGenericArgs();
@@ -53,7 +53,7 @@ public class CqrsAttributeExtensions {
     param.setPreconditions(CqrsDslFactory.eINSTANCE.createPreconditions());
     param.getPreconditions().getConstraintInstances().addAll(CqrsInvariantsExtensions.nullSafe(attr.getInvariants()));
     param.setDoc(attr.getDoc());
-    param.setNullable(attr.getNullable());
+    param.setOptional(attr.getOptional());
     param.setType(attr.getType());
     if (((attr.getGenerics() != null) && (attr.getGenerics().getArgs() != null))) {
       final GenericArgs generics = CqrsDslFactory.eINSTANCE.createGenericArgs();

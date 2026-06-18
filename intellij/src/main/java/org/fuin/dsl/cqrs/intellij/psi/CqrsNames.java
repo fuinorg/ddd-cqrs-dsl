@@ -24,7 +24,7 @@ public final class CqrsNames {
             "deprecated", "event", "entity", "identifier", "root", "aggregate", "constructor",
             "fires", "returns", "method", "ref", "slabel", "label", "tooltip", "prompt", "examples",
             "invariants", "preconditions", "service", "command", "target", "sla", "handles", "uses",
-            "projection", "view", "consistency", "acceptable", "detection", "resolution", "nullable",
+            "projection", "view", "consistency", "acceptable", "detection", "resolution", "optional",
             "millis", "seconds", "minutes", "hours", "days", "weak", "strong", "never", "manually",
             "automatic", "workflow", "true", "false", "null");
 

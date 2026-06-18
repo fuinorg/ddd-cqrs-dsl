@@ -177,7 +177,7 @@ private String str3;
                         value-object MyValueObject {
                             String str invariants AnyConstraint
                             String str2
-                            nullable String str3
+                            optional String str3
                             String abcDefGhi
                         }
                 

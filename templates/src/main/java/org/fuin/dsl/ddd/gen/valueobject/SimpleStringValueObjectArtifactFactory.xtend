@@ -58,7 +58,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
         ctx.requiresImport("jakarta.validation.Payload")
-        if (vo.attributes.iterator.next.nullable !== null || options.jaxb || options.jsonb || options.jpa) {
+        if (vo.attributes.iterator.next.optional !== null || options.jaxb || options.jsonb || options.jpa) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         ctx.requiresImport("java.io.Serial");
@@ -103,7 +103,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
             
                 private static final int MAX_LENGTH = 100;
             
-                «IF vo.attributes.iterator.next.nullable !== null»
+                «IF vo.attributes.iterator.next.optional !== null»
                 @Nullable
                 «ENDIF»
                 @«className»Str

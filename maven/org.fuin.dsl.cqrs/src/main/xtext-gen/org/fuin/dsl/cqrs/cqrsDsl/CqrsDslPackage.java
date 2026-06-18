@@ -2514,13 +2514,13 @@ public interface CqrsDslPackage extends EPackage
   int VARIABLE__DOC = 0;
 
   /**
-   * The feature id for the '<em><b>Nullable</b></em>' attribute.
+   * The feature id for the '<em><b>Optional</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VARIABLE__NULLABLE = 1;
+  int VARIABLE__OPTIONAL = 1;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' reference.
@@ -2615,13 +2615,13 @@ public interface CqrsDslPackage extends EPackage
   int ATTRIBUTE__DOC = VARIABLE__DOC;
 
   /**
-   * The feature id for the '<em><b>Nullable</b></em>' attribute.
+   * The feature id for the '<em><b>Optional</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE__NULLABLE = VARIABLE__NULLABLE;
+  int ATTRIBUTE__OPTIONAL = VARIABLE__OPTIONAL;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' reference.
@@ -2706,13 +2706,13 @@ public interface CqrsDslPackage extends EPackage
   int PARAMETER__DOC = VARIABLE__DOC;
 
   /**
-   * The feature id for the '<em><b>Nullable</b></em>' attribute.
+   * The feature id for the '<em><b>Optional</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PARAMETER__NULLABLE = VARIABLE__NULLABLE;
+  int PARAMETER__OPTIONAL = VARIABLE__OPTIONAL;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' reference.
@@ -4871,15 +4871,15 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getVariable_Doc();
 
   /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getNullable <em>Nullable</em>}'.
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getOptional <em>Optional</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Nullable</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Variable#getNullable()
+   * @return the meta object for the attribute '<em>Optional</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Variable#getOptional()
    * @see #getVariable()
    * @generated
    */
-  EAttribute getVariable_Nullable();
+  EAttribute getVariable_Optional();
 
   /**
    * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Variable#getType <em>Type</em>}'.
@@ -6607,12 +6607,12 @@ public interface CqrsDslPackage extends EPackage
     EAttribute VARIABLE__DOC = eINSTANCE.getVariable_Doc();
 
     /**
-     * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Optional</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute VARIABLE__NULLABLE = eINSTANCE.getVariable_Nullable();
+    EAttribute VARIABLE__OPTIONAL = eINSTANCE.getVariable_Optional();
 
     /**
      * The meta object literal for the '<em><b>Type</b></em>' reference feature.

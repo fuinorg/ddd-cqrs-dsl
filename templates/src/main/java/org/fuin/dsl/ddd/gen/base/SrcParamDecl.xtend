@@ -25,7 +25,7 @@ class SrcParamDecl implements CodeSnippet {
     new(CodeSnippetContext ctx, GenerateOptions options, Parameter parameter) {
         this.ctx = ctx
         this.parameter = parameter
-        if (parameter.nullable !== null && !parameter.isPrimitive(ctx)) {
+        if (parameter.optional !== null && !parameter.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
         }
         addRequiredReferences(parameter, ctx)
@@ -33,9 +33,9 @@ class SrcParamDecl implements CodeSnippet {
 
     override toString() {
         if (parameter.preconditions !== null && parameter.preconditions.constraintInstances.nullSafe.size > 0) {
-            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, cc)»«ENDFOR» «IF parameter.nullable !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
+            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, cc)»«ENDFOR» «IF parameter.optional !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         } else {
-            '''«IF parameter.nullable !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
+            '''«IF parameter.optional !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         }
     }
 

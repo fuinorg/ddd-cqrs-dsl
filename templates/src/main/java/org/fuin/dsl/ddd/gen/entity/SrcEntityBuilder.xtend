@@ -38,7 +38,7 @@ class SrcEntityBuilder implements CodeSnippet {
         ctx.requiresReference(entity.rootNullsafe.uniqueName)
         ctx.requiresReference(entity.rootNullsafe.idTypeNullsafe.uniqueName)
         for (attribute : entity.attributes) {
-            if (attribute.nullable === null) {
+            if (attribute.optional === null) {
                 ctx.requiresImport("org.fuin.objects4j.common.Contract")
             } else if (!attribute.isPrimitive(ctx)) {
                 ctx.requiresImport("org.jspecify.annotations.Nullable")
@@ -72,8 +72,8 @@ class SrcEntityBuilder implements CodeSnippet {
              * @param «variable.name» Value to set.
              * @return This builder.
              */
-            public Builder «variable.name.toFirstLower»(«IF variable.nullable !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
-                «IF variable.nullable === null»
+            public Builder «variable.name.toFirstLower»(«IF variable.optional !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.type(ctx)» «variable.name») {
+                «IF variable.optional === null»
                 Contract.requireArgNotNull("«variable.name»", «variable.name»);
                 «ENDIF»
                 this.«variable.name» = «variable.name»;
@@ -90,7 +90,7 @@ class SrcEntityBuilder implements CodeSnippet {
             public «entity.name» build()«new SrcThrowsExceptions(ctx, exceptions)» {
                 ensureBuildableAbstractEntity();
                 «FOR variable : variables»
-                «IF variable.nullable === null»ensureNotNull("«variable.name»", «variable.name»);«ENDIF»
+                «IF variable.optional === null»ensureNotNull("«variable.name»", «variable.name»);«ENDIF»
                 «ENDFOR»
 
                 final «entity.name» result = new «entity.name»(getRootAggregate(), getEntityId()«FOR param : ctorParams», «param.name»«ENDFOR»);

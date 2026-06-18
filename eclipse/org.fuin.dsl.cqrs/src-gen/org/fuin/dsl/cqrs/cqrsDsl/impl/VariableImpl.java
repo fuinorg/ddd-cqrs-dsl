@@ -27,7 +27,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Variable;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getDoc <em>Doc</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getOptional <em>Optional</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getGenerics <em>Generics</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.VariableImpl#getName <em>Name</em>}</li>
@@ -59,24 +59,24 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
   protected String doc = DOC_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getNullable() <em>Nullable</em>}' attribute.
+   * The default value of the '{@link #getOptional() <em>Optional</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getNullable()
+   * @see #getOptional()
    * @generated
    * @ordered
    */
-  protected static final String NULLABLE_EDEFAULT = null;
+  protected static final String OPTIONAL_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getNullable() <em>Nullable</em>}' attribute.
+   * The cached value of the '{@link #getOptional() <em>Optional</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getNullable()
+   * @see #getOptional()
    * @generated
    * @ordered
    */
-  protected String nullable = NULLABLE_EDEFAULT;
+  protected String optional = OPTIONAL_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' reference.
@@ -180,9 +180,9 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
    * @generated
    */
   @Override
-  public String getNullable()
+  public String getOptional()
   {
-    return nullable;
+    return optional;
   }
 
   /**
@@ -191,12 +191,12 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
    * @generated
    */
   @Override
-  public void setNullable(String newNullable)
+  public void setOptional(String newOptional)
   {
-    String oldNullable = nullable;
-    nullable = newNullable;
+    String oldOptional = optional;
+    optional = newOptional;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VARIABLE__NULLABLE, oldNullable, nullable));
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VARIABLE__OPTIONAL, oldOptional, optional));
   }
 
   /**
@@ -399,8 +399,8 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
     {
       case CqrsDslPackage.VARIABLE__DOC:
         return getDoc();
-      case CqrsDslPackage.VARIABLE__NULLABLE:
-        return getNullable();
+      case CqrsDslPackage.VARIABLE__OPTIONAL:
+        return getOptional();
       case CqrsDslPackage.VARIABLE__TYPE:
         if (resolve) return getType();
         return basicGetType();
@@ -427,8 +427,8 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
       case CqrsDslPackage.VARIABLE__DOC:
         setDoc((String)newValue);
         return;
-      case CqrsDslPackage.VARIABLE__NULLABLE:
-        setNullable((String)newValue);
+      case CqrsDslPackage.VARIABLE__OPTIONAL:
+        setOptional((String)newValue);
         return;
       case CqrsDslPackage.VARIABLE__TYPE:
         setType((Type)newValue);
@@ -459,8 +459,8 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
       case CqrsDslPackage.VARIABLE__DOC:
         setDoc(DOC_EDEFAULT);
         return;
-      case CqrsDslPackage.VARIABLE__NULLABLE:
-        setNullable(NULLABLE_EDEFAULT);
+      case CqrsDslPackage.VARIABLE__OPTIONAL:
+        setOptional(OPTIONAL_EDEFAULT);
         return;
       case CqrsDslPackage.VARIABLE__TYPE:
         setType((Type)null);
@@ -490,8 +490,8 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
     {
       case CqrsDslPackage.VARIABLE__DOC:
         return DOC_EDEFAULT == null ? doc != null : !DOC_EDEFAULT.equals(doc);
-      case CqrsDslPackage.VARIABLE__NULLABLE:
-        return NULLABLE_EDEFAULT == null ? nullable != null : !NULLABLE_EDEFAULT.equals(nullable);
+      case CqrsDslPackage.VARIABLE__OPTIONAL:
+        return OPTIONAL_EDEFAULT == null ? optional != null : !OPTIONAL_EDEFAULT.equals(optional);
       case CqrsDslPackage.VARIABLE__TYPE:
         return type != null;
       case CqrsDslPackage.VARIABLE__GENERICS:
@@ -517,8 +517,8 @@ public class VariableImpl extends MinimalEObjectImpl.Container implements Variab
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (doc: ");
     result.append(doc);
-    result.append(", nullable: ");
-    result.append(nullable);
+    result.append(", optional: ");
+    result.append(optional);
     result.append(", name: ");
     result.append(name);
     result.append(')');
