@@ -8,6 +8,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.fuin.dsl.cqrs.intellij.CqrsIcons;
@@ -18,6 +19,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsDataProtectionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEnumObject;
@@ -27,6 +29,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +53,24 @@ public final class CqrsCompletionContributor extends CompletionContributor {
 
     private static final List<String> META_KEYWORDS = List.of(
             "slabel", "label", "tooltip", "prompt", "examples");
+
+    // ---- data-protection block: clause keywords and their enum values --------------------
+    private static final List<String> DP_CLAUSE_KEYWORDS = List.of(
+            "protection", "category", "subject", "purpose", "lawful-basis", "retention");
+    private static final List<String> PROTECTION_LEVELS = List.of("none", "personal", "sensitive");
+    private static final List<String> LAWFUL_BASES = List.of(
+            "consent", "explicit_consent", "contract", "legal_obligation",
+            "vital_interests", "public_task", "legitimate_interests");
+    private static final List<String> SPECIAL_CATEGORIES = List.of(
+            "health", "genetic", "biometric", "racial", "political", "religious",
+            "philosophical", "trade_union", "sex_life", "sexual_orientation");
+    private static final List<String> ERASURE_STRATEGIES = List.of(
+            "delete", "anonymize", "pseudonymize", "archive", "review");
+    private static final List<String> TIME_UNITS = List.of(
+            "millis", "seconds", "minutes", "hours", "days", "weeks", "months", "years");
+    private static final Set<IElementType> TIME_UNIT_TOKENS = Set.of(
+            CqrsTypes.KW_MILLIS, CqrsTypes.KW_SECONDS, CqrsTypes.KW_MINUTES, CqrsTypes.KW_HOURS,
+            CqrsTypes.KW_DAYS, CqrsTypes.KW_WEEKS, CqrsTypes.KW_MONTHS, CqrsTypes.KW_YEARS);
 
     public CqrsCompletionContributor() {
         extend(CompletionType.BASIC,
@@ -123,6 +144,13 @@ public final class CqrsCompletionContributor extends CompletionContributor {
     private static Set<String> keywordsFor(PsiElement position) {
         Set<String> keywords = new LinkedHashSet<>();
 
+        // A 'data-protection { ... }' block is nested inside a namespace (or an entity/aggregate),
+        // so it must be checked first; inside it we offer the clause keywords and, right after a
+        // clause keyword, its enum values.
+        if (enclosingDataProtection(position) != null) {
+            return dataProtectionKeywords(position);
+        }
+
         CqrsConstructorDef ctor = PsiTreeUtil.getParentOfType(position, CqrsConstructorDef.class);
         CqrsMethodDef method = PsiTreeUtil.getParentOfType(position, CqrsMethodDef.class);
         if (ctor != null || method != null) {
@@ -169,6 +197,57 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         // top level
         keywords.add("context");
         keywords.add("namespace");
+        return keywords;
+    }
+
+    /**
+     * The {@code data-protection} block surrounding the caret, or {@code null}. While the block is
+     * being edited the value after a clause keyword is often a parse error, so the caret token can
+     * land just outside the pinned {@code data_protection_def} node; we then retry from the previous
+     * visible leaf (part of the well-formed prefix). A previous leaf of {@code &#125;} means the
+     * block is already closed and the caret is back at the enclosing level, so it is excluded.
+     */
+    private static CqrsDataProtectionDef enclosingDataProtection(PsiElement position) {
+        CqrsDataProtectionDef dp = PsiTreeUtil.getParentOfType(position, CqrsDataProtectionDef.class);
+        if (dp != null) {
+            return dp;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsDataProtectionDef.class);
+    }
+
+    /**
+     * Completion inside a {@code data-protection { ... }} block. The token immediately before the
+     * caret decides what to offer: the value set of the clause just named (e.g. after
+     * {@code protection} → the protection levels), or otherwise the clause keywords themselves.
+     */
+    private static Set<String> dataProtectionKeywords(PsiElement position) {
+        Set<String> keywords = new LinkedHashSet<>();
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        IElementType type = prev == null ? null : prev.getNode().getElementType();
+
+        if (type == CqrsTypes.KW_DATA_PROTECTION) {
+            return keywords; // user is still typing the policy name
+        }
+        if (type == CqrsTypes.KW_PROTECTION) {
+            keywords.addAll(PROTECTION_LEVELS);
+        } else if (type == CqrsTypes.KW_LAWFUL_BASIS) {
+            keywords.addAll(LAWFUL_BASES);
+        } else if (type == CqrsTypes.KW_CATEGORY || type == CqrsTypes.COMMA) {
+            keywords.addAll(SPECIAL_CATEGORIES);
+        } else if (type == CqrsTypes.KW_THEN) {
+            keywords.addAll(ERASURE_STRATEGIES);
+        } else if (type == CqrsTypes.NUMBER) {
+            keywords.addAll(TIME_UNITS); // 'retention <number> <unit>'
+        } else if (TIME_UNIT_TOKENS.contains(type)) {
+            keywords.add("then"); // optional erasure clause after the retention duration
+            keywords.addAll(DP_CLAUSE_KEYWORDS);
+        } else {
+            keywords.addAll(DP_CLAUSE_KEYWORDS);
+        }
         return keywords;
     }
 }

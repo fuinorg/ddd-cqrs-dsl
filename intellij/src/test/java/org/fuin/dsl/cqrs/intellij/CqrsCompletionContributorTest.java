@@ -86,4 +86,82 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
         assertTrue("expected the declared type 'String' among completions, but got: " + lookups,
                 lookups.contains("String"));
     }
+
+    // ---- data-protection block value completion -----------------------------------------
+
+    public void testProtectionOffersProtectionLevels() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    data-protection P {
+                      protection <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("expected protection levels, got: " + lookups,
+                lookups.containsAll(List.of("none", "personal", "sensitive")));
+    }
+
+    public void testLawfulBasisOffersBases() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    data-protection P {
+                      protection personal
+                      lawful-basis <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("expected lawful bases, got: " + lookups,
+                lookups.containsAll(List.of("contract", "explicit_consent", "legitimate_interests")));
+    }
+
+    public void testRetentionNumberOffersTimeUnits() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    data-protection P {
+                      protection personal
+                      retention 10 <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("expected time units, got: " + lookups,
+                lookups.containsAll(List.of("days", "months", "years")));
+    }
+
+    public void testThenOffersErasureStrategies() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    data-protection P {
+                      protection personal
+                      retention 10 years then <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("expected erasure strategies, got: " + lookups,
+                lookups.containsAll(List.of("delete", "anonymize", "pseudonymize")));
+    }
+
+    public void testDataProtectionClauseStartOffersClauseKeywords() {
+        List<String> lookups = lookups("""
+                context c {
+                  namespace n {
+                    data-protection P {
+                      protection personal
+                      <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("expected clause keywords, got: " + lookups,
+                lookups.containsAll(List.of("category", "subject", "purpose", "lawful-basis", "retention")));
+        assertFalse("must not offer namespace element keywords inside the block: " + lookups,
+                lookups.contains("value-object"));
+    }
 }

@@ -117,6 +117,17 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.4.1</b> &ndash; Code completion inside a <code>data-protection</code> block now offers
+        the clause values: protection levels after <code>protection</code>, the lawful bases after
+        <code>lawful-basis</code>, special categories after <code>category</code>, time units after a
+        <code>retention</code> amount and erasure strategies after <code>then</code>. Parser error
+        recovery for partially typed clauses was improved as well.</li>
+    <li><b>1.4.0</b> &ndash; Added a data-protection (GDPR) concept: reusable
+        <code>data-protection</code> policies (protection level, special category, data subject,
+        purpose, lawful basis and a retention period with an erasure strategy) applied to types and
+        attributes via <code>protected-by</code>. The attribute/parameter keyword
+        <code>nullable</code> was renamed to <code>optional</code>, and the time units
+        <code>weeks</code>, <code>months</code> and <code>years</code> were added.</li>
     <li><b>1.3.0</b> &ndash; A keyword can now be used as an identifier by prefixing it with a caret
         (e.g. <code>^event</code>). The caret marks the following word as a plain identifier and is
         not part of the name.</li>

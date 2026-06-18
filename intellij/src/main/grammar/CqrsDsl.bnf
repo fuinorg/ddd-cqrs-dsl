@@ -383,24 +383,29 @@ inconsistency_detection ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC
 
 inconsistency_resolution ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC | KW_WORKFLOW
 
-duration ::= NUMBER time_unit
+duration ::= NUMBER time_unit { pin=1 }
 
 // =========================================================================
 // Data protection
 // =========================================================================
 
 data_protection_def ::= KW_DATA_PROTECTION ID LBRACE
-    KW_PROTECTION protection_level
-    (KW_CATEGORY special_category (COMMA special_category)*)?
-    (KW_SUBJECT STRING)?
-    (KW_PURPOSE STRING)?
-    (KW_LAWFUL_BASIS lawful_basis)?
-    (KW_RETENTION duration (KW_THEN erasure_strategy)?)?
+    dp_protection dp_category? dp_subject? dp_purpose? dp_lawful_basis? dp_retention?
     RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
+
+// Each clause is pinned on its keyword so the keyword stays consumed even while the value is still
+// being typed - this keeps the caret inside the data_protection_def node for code completion.
+dp_protection   ::= KW_PROTECTION protection_level { pin=1 }
+dp_category     ::= KW_CATEGORY special_category (COMMA special_category)* { pin=1 }
+dp_subject      ::= KW_SUBJECT STRING { pin=1 }
+dp_purpose      ::= KW_PURPOSE STRING { pin=1 }
+dp_lawful_basis ::= KW_LAWFUL_BASIS lawful_basis { pin=1 }
+dp_retention    ::= KW_RETENTION duration dp_erasure? { pin=1 }
+dp_erasure      ::= KW_THEN erasure_strategy { pin=1 }
 
 // Applies a named data protection policy to a type or attribute.
 data_protection_instance ::= KW_PROTECTED_BY type_ref { pin=1 }
