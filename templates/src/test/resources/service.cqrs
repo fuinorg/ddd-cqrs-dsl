@@ -9,7 +9,7 @@ project p {
 
 		namespace services {
 
-			import p.x.types.*
+			import x.types.*
 
 			/** The constraint was violated. */
 			exception AnyConstraintViolatedException {

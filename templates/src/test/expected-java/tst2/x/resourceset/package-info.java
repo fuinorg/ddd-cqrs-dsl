@@ -16,6 +16,6 @@
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
 @NullMarked
-package p.shared.domain.x.resourceset;
+package p.x.resourceset;
 
 import org.jspecify.annotations.NullMarked;

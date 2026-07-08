@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.ev;
+package p.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
 import java.io.Serial;
@@ -26,7 +26,6 @@ import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.ui.Examples;
-import p.x.ev.CustomerId;
 
 /**
  * Aggregate event C.

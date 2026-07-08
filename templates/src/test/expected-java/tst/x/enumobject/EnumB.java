@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.enumobject;
+package p.x.enumobject;
 
 import java.util.List;
 import org.jspecify.annotations.Nullable;
-import p.x.enumobject.AbstractEnumB;
 
 /** Enumeration type B - With variables. */
 public final class EnumB extends AbstractEnumB {

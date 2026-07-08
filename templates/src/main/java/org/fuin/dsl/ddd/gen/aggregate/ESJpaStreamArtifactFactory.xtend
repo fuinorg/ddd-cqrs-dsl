@@ -46,7 +46,7 @@ class ESJpaStreamArtifactFactory extends AbstractSource<Aggregate> implements Ar
         ctx.addReferences(aggregate)
 
         return List.of(newArtifact(filename,
-            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8")));
+            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx) {

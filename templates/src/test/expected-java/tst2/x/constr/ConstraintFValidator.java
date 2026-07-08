@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.constr;
+package p.x.constr;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import p.x.constr.ConstraintF;
 
 /** Constraint F - External type target - No exception - With variables */
 // CHECKSTYLE:OFF:LineLength

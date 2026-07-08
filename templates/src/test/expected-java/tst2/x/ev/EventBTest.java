@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.ev;
+package p.x.ev;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -26,9 +26,6 @@ import org.fuin.ddd4j.core.EntityIdPath;
 import org.fuin.ddd4j.jaxb.EntityIdPathXmlAdapter;
 import org.fuin.ddd4j.jsonb.EventIdJsonbAdapter;
 import org.junit.jupiter.api.Test;
-import p.x.ev.CustomerId;
-import p.x.ev.EventB;
-import p.x.ev.XEntityIdFactory;
 import static org.assertj.core.api.Assertions.*;
 import static org.fuin.utils4j.Utils4J.deserialize;
 import static org.fuin.utils4j.Utils4J.serialize;

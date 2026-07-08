@@ -9,7 +9,7 @@ project p {
 
 		namespace aggregates {
 
-			import p.x.types.*
+			import x.types.*
 
 			/** The constraint was violated. */
 			exception AnyConstraintViolatedException {

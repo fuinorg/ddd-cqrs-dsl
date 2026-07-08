@@ -11,7 +11,7 @@ project p {
 
 		namespace aggregateid {
 
-			import p.x.types.*
+			import x.types.*
 
 			aggregate MyAggregate identifier MyAggregateId {}
 

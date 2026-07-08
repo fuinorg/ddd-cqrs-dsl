@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.valueobject;
+package p.x.valueobject;
 
 import java.io.Serial;
 import org.jspecify.annotations.Nullable;
-import p.x.valueobject.AbstractMyValueObject;
 
 /**
  * Value object single attribute and base.

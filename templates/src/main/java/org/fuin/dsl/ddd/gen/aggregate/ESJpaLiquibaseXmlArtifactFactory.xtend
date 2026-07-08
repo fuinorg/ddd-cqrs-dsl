@@ -20,7 +20,7 @@ class ESJpaLiquibaseXmlArtifactFactory extends AbstractSource<Aggregate> impleme
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
         val Namespace ns = aggregate.eContainer() as Namespace;
         val filename = "changelog-xxxxx-" + aggregate.getName().toSqlLower + "_events.xml"
-        return List.of(newArtifact(filename, create(aggregate, ns).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename, create(aggregate, ns).toString().getBytes("UTF-8"), ns));
     }
     
     def create(Aggregate aggregate, Namespace ns) {

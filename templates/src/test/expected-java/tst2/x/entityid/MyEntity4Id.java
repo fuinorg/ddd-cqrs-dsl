@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.entityid;
+package p.x.entityid;
 
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;

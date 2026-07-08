@@ -10,7 +10,7 @@ project p {
 
 		namespace ev {
 
-			import p.x.types.*
+			import x.types.*
 
 			aggregate-id CustomerId identifies Customer base UUID {
 				examples "42705de0-91a1-11e4-b4a9-0800200c9a6"

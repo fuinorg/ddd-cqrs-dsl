@@ -10,7 +10,7 @@ project p {
 
 		namespace resourceset {
 
-			import p.x.types.*
+			import x.types.*
 
 			aggregate AggregateA identifier AggregateAId {}
 			aggregate-id AggregateAId identifies AggregateA base String {

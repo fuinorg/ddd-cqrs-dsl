@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.entityid;
+package p.x.entityid;
 
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
-import p.x.entityid.AbstractMyEntityId;
-import p.x.entityid.MyEntityIdConverter;
 
 /**
  * Entity ID single attribute and base.

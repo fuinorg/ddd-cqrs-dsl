@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.aggregateid;
+package p.x.aggregateid;
 
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serial;
@@ -27,7 +27,6 @@ import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
 import org.jspecify.annotations.Nullable;
-import p.x.aggregateid.MyAggregate3IdConverter;
 
 /**
  * Aggregate ID multiple attributes and base.

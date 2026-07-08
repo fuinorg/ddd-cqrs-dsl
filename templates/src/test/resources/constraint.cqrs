@@ -10,7 +10,7 @@ project p {
 
 		namespace constr {
 
-			import p.x.types.*
+			import x.types.*
 
 			value-object ValueObjectA {
 				String a

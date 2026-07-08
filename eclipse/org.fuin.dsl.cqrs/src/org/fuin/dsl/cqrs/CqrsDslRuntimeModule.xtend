@@ -5,8 +5,10 @@ package org.fuin.dsl.cqrs
 
 
 import org.eclipse.xtext.conversion.IValueConverterService
+import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.fuin.dsl.cqrs.conversion.CqrsDslValueConverterService
+import org.fuin.dsl.cqrs.naming.CqrsDslQualifiedNameProvider
 import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider
 
 /**
@@ -27,5 +29,10 @@ class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
 	/** Adds caret ('^') escaping so keywords can be used as identifiers (e.g. '^event'). */
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
 		CqrsDslValueConverterService
+	}
+
+	/** Excludes the enclosing project from qualified names (keeps context.namespace.element). */
+	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
+		CqrsDslQualifiedNameProvider
 	}
 }

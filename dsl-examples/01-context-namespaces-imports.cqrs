@@ -11,13 +11,12 @@ project p_01_context_namespaces_imports {
 		}
 
 	    // A namespace holds imports and elements.
-	    // Names from another namespace are pulled in with an import,
-	    // either a ".*" wildcard or a specific namespace path. The path is the
-	    // full project.context.namespace of the target namespace.
+	    // Names from another namespace are pulled in with an import, 
+	    // either a ".*" wildcard or a specific namespace path.
 		namespace catalog {
 
-			import p_01_context_namespaces_imports.shop.types.*   // Wildcard: make everything in shop.types visible
-			import p_01_context_namespaces_imports.shop.types     // A specific namespace by its fully qualified name
+			import shop.types.*   // Wildcard: make everything in shop.types visible
+			import shop.types     // A specific namespace by its fully qualified name
 
 			value-object ProductName base String {
 				String value

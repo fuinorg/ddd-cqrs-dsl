@@ -63,3 +63,32 @@ to the factory's source file.
 - Source of truth is the `.xtend` files; the generated Java copies under `xtend-gen/`
   and `generated-sources/xtend/` are partly stale/inconsistent.
 
+
+## Thinking
+
+project => org.fuin.examples.cqrskeycloak 
+context => household
+namespace => person
+
+package => org.fuin.examples.cqrskeycloak.shared.domain.household.person
+
+/** A hint for the SrcGen4J code generation. */
+hint SrcGen4J {
+  "package": "${project}.${module}.${group}.${context}.${namespace}",
+  "types": [
+    { 
+      "type": "ValueObject",
+      "module": "shared",
+      "group": "domain",
+      "artifacts": [
+        { "AbstractValueObject": "genJava" },
+        { "CombinedAbstractValueObject": "genJava" },
+        { "CombinedValueObject": "genJava" },
+        { "FinalValueObject": "mainJava" },
+        { "SimpleStringValueObject": "genJava" },
+        { "SimpleStringValueObjectTest": "testJava" },
+        { "ValueObject": "genJava" }
+      ]
+    }
+  ]
+}
