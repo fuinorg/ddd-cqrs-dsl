@@ -50,7 +50,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
         ctx.addReferences(service)
 
         return List.of(newArtifact(filename,
-            create(ctx, service, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, service, pkg, className).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx, Service service) {

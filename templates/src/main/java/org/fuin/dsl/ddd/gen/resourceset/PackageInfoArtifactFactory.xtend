@@ -42,7 +42,7 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
             if (ns.generatesCode) {
                 val String pkg = asPackage(ns)
                 val String filename = pkg.replace('.', '/') + "/package-info.java"
-                artifacts.add(newArtifact(filename, create(pkg).getBytes("UTF-8"), ns))
+                artifacts.add(newArtifact(filename, create(pkg).getBytes("UTF-8")))
             }
         }
 

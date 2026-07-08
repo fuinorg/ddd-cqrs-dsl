@@ -50,7 +50,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         ctx.addReferences(aggregateId)
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, aggregateId, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, aggregateId, pkg, className).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx, AggregateId aggregateId) {

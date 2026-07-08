@@ -54,7 +54,7 @@ class ValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.addImports(valueObject)
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx, ValueObject vo) {

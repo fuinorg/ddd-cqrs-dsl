@@ -45,7 +45,7 @@ class ESJpaEventIdArtifactFactory extends AbstractSource<Aggregate> implements A
         ctx.addReferences(aggregate)
 
         return List.of(newArtifact(filename,
-            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx) {

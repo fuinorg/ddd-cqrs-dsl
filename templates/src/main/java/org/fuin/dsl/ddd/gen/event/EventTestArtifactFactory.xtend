@@ -67,7 +67,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
             src = createDomainEventTest(ctx, event, pkg, className).toString();
         }
 
-        return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity) {

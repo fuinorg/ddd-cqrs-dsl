@@ -21,7 +21,7 @@ class AggregateDocArtifactFactory extends AbstractSource<Aggregate> {
         val Namespace ns = aggregate.namespace;
         val String pkg = ns.asPackage
         val filename = (pkg + "." + aggregate.getName()).replace('.', '/') + ".html"
-        return List.of(newArtifact(filename, create(aggregate, pkg).toString().getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, create(aggregate, pkg).toString().getBytes("UTF-8")));
     }
     
     def create(Aggregate aggregate, String pkg) {

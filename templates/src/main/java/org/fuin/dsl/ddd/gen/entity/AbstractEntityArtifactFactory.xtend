@@ -66,7 +66,7 @@ abstract class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
         val idVar = eINSTANCE.createAttribute(null, entity.idTypeNullsafe, "id", false)
 
         return List.of(newArtifact(filename,
-            create(ctx, entity, pkg, className, idVar).toString().getBytes("UTF-8"), ns));
+            create(ctx, entity, pkg, className, idVar).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx) {

@@ -1,14 +1,14 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.ArrayList
+import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
-import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.dsl.cqrs.cqrsDsl.Hint
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GeneratedArtifact
+import org.fuin.srcgen4j.commons.Replacer
 import org.fuin.srcgen4j.core.emf.PrimaryResources
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -18,8 +18,6 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String artifactName;
 
-    String factoryClassName;
-
     String project;
 
     String folder;
@@ -28,13 +26,20 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     GenerateOptions options;
 
+    List<Replacer> importReplacers;
+
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
-        factoryClassName = config.getFactoryClassName()
         project = config.getProject()
         folder = config.getFolder()
         varMap = config.varMap
         options = new GenerateOptions(varMap)
+        val configReplacers = config.replacers
+        if (configReplacers === null) {
+            importReplacers = newArrayList
+        } else {
+            importReplacers = configReplacers.filter[extension == "import"].toList
+        }
     }
 
     /**
@@ -49,35 +54,6 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data) {
         return new GeneratedArtifact(artifactName, filename, data, project, folder)
-    }
-
-    /**
-     * Creates a generated artifact, taking the target project and folder from the project's "SrcGen4J"
-     * generator hint when a matching type entry exists: the hint type's "module" becomes the target
-     * project and the matching artifact's "folder" becomes the target folder. When there is no matching
-     * hint, the project and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
-     *
-     * @param filename Relative path and filename to write the source code to.
-     * @param data Generated data.
-     * @param ns Namespace the generated element belongs to (drives the hint lookup).
-     *
-     * @return New generated artifact.
-     */
-    protected def GeneratedArtifact newArtifact(String filename, byte[] data, Namespace ns) {
-        var String proj = project
-        var String fold = folder
-        val type = matchingType(srcGen4JHint(ns))
-        if (type !== null) {
-            if (type.module !== null) {
-                proj = type.module
-            }
-            val factoryName = factoryClassName
-            val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
-            if (artifact !== null && artifact.folder !== null) {
-                fold = artifact.folder
-            }
-        }
-        return new GeneratedArtifact(artifactName, filename, data, proj, fold)
     }
 
     override isIncremental() {
@@ -117,125 +93,19 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     def String asPackage(Namespace ns) {
-        // Primary path: derive the package from the "SrcGen4J" generator hint of the project the
-        // namespace belongs to (this handles remote and local elements the same way).
-        var String pkg = hintPackage(ns)
-        if (pkg === null) {
-            // Fallback (no matching SrcGen4J hint for this factory/type): the same for primary and
-            // remotely resolved elements - project.context.namespace.
-            pkg = joinPackage(ns.project.name, ns.context.name, ns.name)
+        var String pkg
+        if (!isPrimary(ns)) {
+            // External (remotely resolved) element: import it from its own context.namespace, without
+            // the local model's base package or pkg.
+            pkg = joinPackage(ns.context.name, ns.name)
+        } else {
+            pkg = joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
+        }
+        // Configured replacers with extension "import" may remap the resulting package.
+        for (replacer : importReplacers) {
+            pkg = replacer.replace(pkg)
         }
         return pkg
-    }
-
-    /**
-     * Builds the package from the "SrcGen4J" generator hint of the project the given namespace belongs
-     * to. The type entry whose name matches this factory's model type ({@link #getModelType}) and whose
-     * artifacts contain this factory's class supplies the "module" and "group"; the hint's "package"
-     * pattern is then expanded by replacing the variables with the current project/context/namespace
-     * names and that type's module/group.
-     *
-     * @param ns Namespace to build the package for.
-     *
-     * @return Package name, or <code>null</code> if there is no project, no "SrcGen4J" hint, or no type
-     *         entry matching both this factory's model type and its class (caller falls back).
-     */
-    protected def String hintPackage(Namespace ns) {
-        val hint = srcGen4JHint(ns)
-        val type = matchingType(hint)
-        if (type === null) {
-            return null
-        }
-        return hint.packagePattern
-            .replace("${project}", (ns.project.name ?: ""))
-            .replace("${module}", (type.module ?: ""))
-            .replace("${group}", (type.group ?: ""))
-            .replace("${context}", (ns.context.name ?: ""))
-            .replace("${namespace}", (ns.name ?: ""))
-    }
-
-    /** Lazily loaded "srcgen4j-default.json" preset, shared by all factory instances. */
-    static SrcGen4JHint defaultHint
-
-    /**
-     * Returns the "srcgen4j-default.json" preset, loading it from the classpath on first use.
-     *
-     * @return Default preset (never <code>null</code>; an empty hint if the resource is missing).
-     */
-    private def static synchronized SrcGen4JHint defaultHint() {
-        if (defaultHint === null) {
-            defaultHint = SrcGen4JHint.loadDefault()
-        }
-        return defaultHint
-    }
-
-    /**
-     * Resolves the effective "SrcGen4J" hint for the project the given namespace belongs to. The
-     * "srcgen4j-default.json" preset is always used as the base; when the project defines its own
-     * "SrcGen4J" hint, that hint is merged on top so its values overwrite the preset's (see
-     * {@link SrcGen4JHint#merge}).
-     *
-     * @param ns Namespace (may be <code>null</code>).
-     *
-     * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
-     *         preset with the model hint merged on top.
-     */
-    private def SrcGen4JHint srcGen4JHint(Namespace ns) {
-        val preset = defaultHint()
-        val hint = modelHint(ns)
-        if (hint === null) {
-            return preset
-        }
-        return SrcGen4JHint.merge(preset, SrcGen4JHint.parse(hint))
-    }
-
-    /**
-     * Finds the "SrcGen4J" hint that applies to the given namespace. A project - like a context or a
-     * namespace - may be split across several ".cqrs" files; all blocks with the same name denote the
-     * same logical project, so the hint may be declared in any of them. The lookup therefore searches
-     * every same-named project in the resource set, not only the project block the namespace is
-     * physically nested in.
-     *
-     * @param ns Namespace (may be <code>null</code>).
-     *
-     * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
-     */
-    private def Hint modelHint(Namespace ns) {
-        val project = ns?.project
-        if (project === null) {
-            return null
-        }
-        val rs = ns.eResource?.resourceSet
-        if (rs === null) {
-            return project.hints.findFirst[name == "SrcGen4J"]
-        }
-        val projectName = project.name
-        return rs.resources
-            .map[contents].flatten
-            .filter(DomainModel)
-            .map[projects].flatten
-            .filter[name == projectName]
-            .map[hints].flatten
-            .findFirst[name == "SrcGen4J"]
-    }
-
-    /**
-     * Finds the hint type entry whose name matches this factory's model type ({@link #getModelType})
-     * and whose artifacts contain this factory's class.
-     *
-     * @param hint Parsed "SrcGen4J" hint (may be <code>null</code>).
-     *
-     * @return Matching type entry, or <code>null</code> if the hint is null or nothing matches.
-     */
-    private def SrcGen4JType matchingType(SrcGen4JHint hint) {
-        if (hint === null) {
-            return null
-        }
-        val modelTypeName = getModelType.name
-        val factoryName = factoryClassName
-        return hint.types.findFirst [ t |
-            t.name == modelTypeName && t.artifacts.exists[artifactFactory == factoryName]
-        ]
     }
 
     /**

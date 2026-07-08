@@ -57,7 +57,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
         ctx.addReferences(entity)
 
         return List.of(newArtifact(filename,
-            create(ctx, entity, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, entity, pkg, className).toString().getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx) {
