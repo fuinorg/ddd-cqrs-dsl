@@ -27,18 +27,20 @@ class CqrsDslParsingTest {
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			context foo {
-				namespace bar {
-					
-					type String
-					
-					annotation Foo {
-						String x
+			project p {
+				context foo {
+					namespace bar {
+
+						type String
+
+						annotation Foo {
+							String x
+						}
+
+						@Foo("x")
+						value-object Bar {}
+
 					}
-					
-					@Foo("x")
-					value-object Bar {}
-					
 				}
 			}
 		''')
