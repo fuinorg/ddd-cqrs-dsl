@@ -1,4 +1,4 @@
-package tst2.x.constr;
+package p.x.constr;
 
 public class ValueObjectC {
 

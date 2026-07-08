@@ -1,24 +1,28 @@
-context readmodel {
-	
-	namespace m {
-	
-		type String
+project p_19_projection_and_view {
 
-		aggregate-id UserId identifies User {}
-	
-		aggregate User identifier UserId {
-			constructor create fires UserCreatedEvent {
-				String name
-				event UserCreatedEvent { message "created" }
+	context readmodel {
+
+		namespace m {
+
+			type String
+
+			aggregate-id UserId identifies User {}
+
+			aggregate User identifier UserId {
+				constructor create fires UserCreatedEvent {
+					String name
+					event UserCreatedEvent { message "created" }
+				}
 			}
+
+			// A projection consumes one or more events to build a read model.
+			projection UserList input User.create.UserCreatedEvent
+
+			// A view is the result produced by a projection.
+			view UserListView uses UserList
+
 		}
 
-		// A projection consumes one or more events to build a read model.
-		projection UserList input User.create.UserCreatedEvent
-
-		// A view is the result produced by a projection.
-		view UserListView uses UserList
-
 	}
-	
+
 }

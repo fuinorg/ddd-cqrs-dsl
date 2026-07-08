@@ -14,6 +14,7 @@ public final class CqrsBraceMatcher implements PairedBraceMatcher {
             new BracePair(CqrsTypes.LBRACE, CqrsTypes.RBRACE, true),
             new BracePair(CqrsTypes.LPAREN, CqrsTypes.RPAREN, false),
             new BracePair(CqrsTypes.LT, CqrsTypes.GT, false),
+            new BracePair(CqrsTypes.LBRACKET, CqrsTypes.RBRACKET, false),
     };
 
     @Override

@@ -22,6 +22,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testValueObjectAttributeStartOffersTypes() {
         assertContainsType(lookups("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -30,11 +31,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """));
     }
 
     public void testConstraintAttributeStartOffersTypes() {
         assertContainsType(lookups("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -43,11 +46,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """));
     }
 
     public void testAggregateAttributeStartOffersTypes() {
         assertContainsType(lookups("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -57,16 +62,19 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """));
     }
 
     public void testNamespaceLevelDoesNotOfferTypesButOffersElementKeywords() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     type String
                     <caret>
                   }
+                }
                 }
                 """);
         assertFalse("namespace level must not offer types: " + lookups, lookups.contains("String"));
@@ -75,8 +83,10 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testTopLevelDoesNotOfferTypes() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   <caret>
+                }
                 }
                 """);
         assertFalse("top level must not offer types: " + lookups, lookups.contains("String"));
@@ -91,12 +101,14 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testProtectionOffersProtectionLevels() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     data-protection P {
                       protection <caret>
                     }
                   }
+                }
                 }
                 """);
         assertTrue("expected protection levels, got: " + lookups,
@@ -105,6 +117,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testLawfulBasisOffersBases() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     data-protection P {
@@ -113,6 +126,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
         assertTrue("expected lawful bases, got: " + lookups,
                 lookups.containsAll(List.of("contract", "explicit_consent", "legitimate_interests")));
@@ -120,6 +134,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testRetentionNumberOffersTimeUnits() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     data-protection P {
@@ -128,6 +143,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
         assertTrue("expected time units, got: " + lookups,
                 lookups.containsAll(List.of("days", "months", "years")));
@@ -135,6 +151,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testThenOffersErasureStrategies() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     data-protection P {
@@ -143,6 +160,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
         assertTrue("expected erasure strategies, got: " + lookups,
                 lookups.containsAll(List.of("delete", "anonymize", "pseudonymize")));
@@ -150,6 +168,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testDataProtectionClauseStartOffersClauseKeywords() {
         List<String> lookups = lookups("""
+                project p {
                 context c {
                   namespace n {
                     data-protection P {
@@ -157,6 +176,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                       <caret>
                     }
                   }
+                }
                 }
                 """);
         assertTrue("expected clause keywords, got: " + lookups,

@@ -33,7 +33,7 @@ class SrcSetterTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("ctx.types.String", "java.lang.String")
+        refReg.putReference("p.ctx.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val SrcSetter testee = createTesteeNoMultiplicity(ctx)
 
@@ -63,8 +63,8 @@ class SrcSetterTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("ctx.types.String", "java.lang.String")
-        refReg.putReference("ctx.types.List", "java.util.List")
+        refReg.putReference("p.ctx.types.String", "java.lang.String")
+        refReg.putReference("p.ctx.types.List", "java.util.List")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val SrcSetter testee = createTesteeWithMultiplicity(ctx)
 
@@ -92,6 +92,7 @@ class SrcSetterTest {
     private def SrcSetter createTesteeNoMultiplicity(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
+				project p {
                 context ctx {
                 
                     namespace a.b {
@@ -112,15 +113,17 @@ class SrcSetterTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
-        val ValueObject valueObject = model.contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
         return new SrcSetter(codeSnippetContext, GenerateOptions.empty(), "public", valueObject.attributes.first)
     }
 
     private def SrcSetter createTesteeWithMultiplicity(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
+				project p {
                 context ctx {
                 
                     namespace a.b {
@@ -142,10 +145,11 @@ class SrcSetterTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
-        val ValueObject valueObject = model.contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
         return new SrcSetter(codeSnippetContext, GenerateOptions.empty(), "public", valueObject.attributes.first)
     }
 

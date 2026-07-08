@@ -1,24 +1,28 @@
-context x {
-	namespace types {
-		type String
-		type Integer
-	}
+project p_service {
 
-	namespace services {
-		import x.types.*
-
-		exception AnyConstraintViolatedException {
-			message "Any constraint violated"
+	context x {
+		namespace types {
+			type String
+			type Integer
 		}
 
-		service ServiceA {
-		}
+		namespace services {
+			import x.types.*
 
-		service ServiceB {
-			method find {
-				Integer a
-				returns String
+			exception AnyConstraintViolatedException {
+				message "Any constraint violated"
+			}
+
+			service ServiceA {
+			}
+
+			service ServiceB {
+				method find {
+					Integer a
+					returns String
+				}
 			}
 		}
 	}
+
 }

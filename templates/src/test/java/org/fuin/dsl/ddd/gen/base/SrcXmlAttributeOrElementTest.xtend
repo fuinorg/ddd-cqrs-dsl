@@ -32,7 +32,7 @@ class SrcXmlAttributeOrElementTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val Aggregate aggregate = createModel().find(Aggregate, "MyAggregate")
@@ -54,7 +54,7 @@ class SrcXmlAttributeOrElementTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val Aggregate aggregate = createModel().find(Aggregate, "MyAggregate")
@@ -76,7 +76,7 @@ class SrcXmlAttributeOrElementTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val Aggregate aggregate = createModel().find(Aggregate, "MyAggregate")
@@ -95,6 +95,7 @@ class SrcXmlAttributeOrElementTest {
     def DomainModel createModel() {
         val DomainModel model =parser.parse(
             '''
+				project p {
                 context x {
                     
                     namespace a {
@@ -117,7 +118,8 @@ class SrcXmlAttributeOrElementTest {
                     }
                         
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

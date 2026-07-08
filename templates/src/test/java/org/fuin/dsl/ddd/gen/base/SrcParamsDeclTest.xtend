@@ -33,8 +33,8 @@ class SrcParamsDeclTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("y.types.String", "java.lang.String")
-        refReg.putReference("y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        refReg.putReference("p.y.types.String", "java.lang.String")
+        refReg.putReference("p.y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -53,6 +53,7 @@ class SrcParamsDeclTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context y {
                     
                     namespace a {
@@ -77,7 +78,8 @@ class SrcParamsDeclTest {
                     }
                         
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

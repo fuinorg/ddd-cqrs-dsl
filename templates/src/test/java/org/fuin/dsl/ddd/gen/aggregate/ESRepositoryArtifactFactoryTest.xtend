@@ -42,9 +42,9 @@ class ESRepositoryArtifactFactoryTest {
         val className = aggregateName + "Repository"
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.aggregates." + aggregateName, EXAMPLES_ABSTRACT + ".x.aggregates." + aggregateName)
-        refReg.putReference("x.aggregates." + aggregateName + "Id", EXAMPLES_ABSTRACT + ".x.aggregates." + aggregateName + "Id")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.aggregates." + aggregateName, "p.x.aggregates." + aggregateName)
+        refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
 
         val ESRepositoryArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)

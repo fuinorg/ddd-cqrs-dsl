@@ -28,14 +28,16 @@ class CqrsDslKeywordEscapeTest {
 
 		// 'context', 'type' and 'event' are all keywords - here used as names via the '^' escape.
 		val model = parseHelper.parse('''
-			context ^context {
-				namespace ^type {
-					type String
-					value-object ^event {
-						String value
-					}
-					value-object Foo {
-						^event data
+			project p {
+				context ^context {
+					namespace ^type {
+						type String
+						value-object ^event {
+							String value
+						}
+						value-object Foo {
+							^event data
+						}
 					}
 				}
 			}
@@ -48,7 +50,7 @@ class CqrsDslKeywordEscapeTest {
 		assertTrue(errors.empty, '''Unexpected errors: «errors.join(", ")»''')
 
 		// The caret is stripped from the stored names.
-		val ctx = model.contexts.get(0)
+		val ctx = model.projects.get(0).contexts.get(0)
 		assertEquals("context", ctx.name)
 		val ns = ctx.namespaces.get(0)
 		assertEquals("type", ns.name)
@@ -66,11 +68,13 @@ class CqrsDslKeywordEscapeTest {
 	def void plainKeywordsStillParseAsKeywords() {
 		// Without the escape the words remain keywords, so this ordinary model parses cleanly.
 		val model = parseHelper.parse('''
-			context plain {
-				namespace m {
-					type String
-					value-object Money {
-						String amount
+			project p {
+				context plain {
+					namespace m {
+						type String
+						value-object Money {
+							String amount
+						}
 					}
 				}
 			}

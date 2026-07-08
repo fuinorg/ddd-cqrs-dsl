@@ -32,9 +32,9 @@ class SrcConstructorWithParamsAssignmentTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.a.MyEntityId", "a.b.c.MyEntityId")
-        refReg.putReference("x.a.MyValueObject", "a.b.c.MyValueObject")
-        refReg.putReference("x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
+        refReg.putReference("p.x.a.MyEntityId", "a.b.c.MyEntityId")
+        refReg.putReference("p.x.a.MyValueObject", "a.b.c.MyValueObject")
+        refReg.putReference("p.x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Entity entity = model().find(Entity, "MyEntity")
         val constructor = entity.constructors.get(0)

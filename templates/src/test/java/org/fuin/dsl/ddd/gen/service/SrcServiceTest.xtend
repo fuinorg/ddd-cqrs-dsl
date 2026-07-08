@@ -59,8 +59,8 @@ class SrcServiceTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.String", "java.lang.String")
         
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceB")

@@ -58,7 +58,7 @@ class AbstractValueObjectArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractValueObjectArtifactFactory testee = createTestee()
         val ValueObject vo = model.find(typeof(ValueObject), name)

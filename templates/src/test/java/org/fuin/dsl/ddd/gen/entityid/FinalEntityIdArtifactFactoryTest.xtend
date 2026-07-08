@@ -39,9 +39,9 @@ class FinalEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.MyEntityIdConverter", EXAMPLES_CONCRETE + ".x.entityid.MyEntityIdConverter")
-        refReg.putReference("x.entityid.AbstractMyEntityId", EXAMPLES_ABSTRACT + ".x.entityid.AbstractMyEntityId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.MyEntityIdConverter", "p.x.entityid.MyEntityIdConverter")
+        refReg.putReference("p.x.entityid.AbstractMyEntityId", "p.x.entityid.AbstractMyEntityId")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntityId")
@@ -59,8 +59,8 @@ class FinalEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.AbstractMyEntity2Id", EXAMPLES_ABSTRACT + ".x.entityid.AbstractMy2EntityId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.AbstractMyEntity2Id", "p.x.entityid.AbstractMy2EntityId")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity2Id")
@@ -79,9 +79,9 @@ class FinalEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.MyEntity3IdConverter", EXAMPLES_CONCRETE + ".x.entityid.MyEntity3IdConverter")
-        refReg.putReference("x.entityid.AbstractMyEntity3Id", EXAMPLES_ABSTRACT + ".x.entityid.AbstractMyEntity3Id")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.MyEntity3IdConverter", "p.x.entityid.MyEntity3IdConverter")
+        refReg.putReference("p.x.entityid.AbstractMyEntity3Id", "p.x.entityid.AbstractMyEntity3Id")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity3Id")
@@ -99,8 +99,8 @@ class FinalEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.AbstractMyEntity4Id", EXAMPLES_ABSTRACT + ".x.entityid.AbstractMy4EntityId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.AbstractMyEntity4Id", "p.x.entityid.AbstractMy4EntityId")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity4Id")

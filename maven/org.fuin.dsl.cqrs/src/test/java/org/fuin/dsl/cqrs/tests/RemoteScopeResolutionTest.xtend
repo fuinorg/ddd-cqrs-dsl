@@ -31,27 +31,33 @@ import org.junit.jupiter.api.^extension.ExtendWith
 class RemoteScopeResolutionTest {
 
 	static val REMOTE_BILLING = '''
-		context com.acme {
-			namespace billing {
-				type Money
+		project remote {
+			context com.acme {
+				namespace billing {
+					type Money
+				}
 			}
 		}
 	'''
 
 	static val REMOTE_CATALOG = '''
-		context com.acme {
-			namespace catalog {
-				type Sku
+		project remote {
+			context com.acme {
+				namespace catalog {
+					type Sku
+				}
 			}
 		}
 	'''
 
 	static val LOCAL_SALES = '''
-		context com.acme.sales {
-			namespace sales {
-				import com.acme.billing.*
-				value-object Price {
-					Money amount
+		project local {
+			context com.acme.sales {
+				namespace sales {
+					import com.acme.billing.*
+					value-object Price {
+						Money amount
+					}
 				}
 			}
 		}
@@ -59,13 +65,15 @@ class RemoteScopeResolutionTest {
 
 	/** Imports two namespaces that a single catalog entry provides from one source. */
 	static val LOCAL_SALES_BOTH = '''
-		context com.acme.sales {
-			namespace sales {
-				import com.acme.billing.*
-				import com.acme.catalog.*
-				value-object Price {
-					Money amount
-					Sku item
+		project local {
+			context com.acme.sales {
+				namespace sales {
+					import com.acme.billing.*
+					import com.acme.catalog.*
+					value-object Price {
+						Money amount
+						Sku item
+					}
 				}
 			}
 		}
@@ -105,7 +113,7 @@ class RemoteScopeResolutionTest {
 			EcoreUtil.resolveAll(model.eResource)
 			Assertions.assertTrue(model.eResource.errors.empty,
 				'''Unexpected errors: «model.eResource.errors.join(", ")»''')
-			val attributeTypes = model.contexts.head.namespaces.head.elements.filter(ValueObject).head.attributes.map[type]
+			val attributeTypes = model.projects.head.contexts.head.namespaces.head.elements.filter(ValueObject).head.attributes.map[type]
 			Assertions.assertTrue(attributeTypes.forall[it instanceof ExternalType && !eIsProxy],
 				"both remote types must be resolved")
 			Assertions.assertEquals(#["Money", "Sku"], attributeTypes.map[name].sort)
@@ -234,7 +242,7 @@ class RemoteScopeResolutionTest {
 		EcoreUtil.resolveAll(model.eResource)
 		Assertions.assertTrue(model.eResource.errors.empty,
 			'''Unexpected errors: «model.eResource.errors.join(", ")»''')
-		val valueObject = model.contexts.head.namespaces.head.elements.filter(ValueObject).head
+		val valueObject = model.projects.head.contexts.head.namespaces.head.elements.filter(ValueObject).head
 		val type = valueObject.attributes.head.type
 		Assertions.assertFalse(type.eIsProxy, "remote type reference must be resolved")
 		Assertions.assertTrue(type instanceof ExternalType)

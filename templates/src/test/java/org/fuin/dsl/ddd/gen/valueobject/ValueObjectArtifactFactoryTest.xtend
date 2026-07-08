@@ -58,8 +58,8 @@ class ValueObjectArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.valueobject." + name + "Converter", EXAMPLES_CONCRETE + ".x.valueobject." + name + "Converter")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.valueobject." + name + "Converter", "p.x.valueobject." + name + "Converter")
 
         val ValueObjectArtifactFactory testee = createTestee(true, false, true)
         val ValueObject vo = model.find(typeof(ValueObject), name)

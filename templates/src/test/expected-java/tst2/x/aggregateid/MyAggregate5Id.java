@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package tst2.x.aggregateid;
+package p.x.aggregateid;
 
 import jakarta.annotation.Generated;
 import jakarta.json.bind.adapter.JsonbAdapter;
@@ -137,7 +137,7 @@ public final class MyAggregate5Id extends AggregateRootUuid {
 
         String message()
 
-        default "{tst2.x.aggregateid.MyAggregate5Id.message}";
+        default "{p.x.aggregateid.MyAggregate5Id.message}";
 
         Class<?>[] groups() default {};
 

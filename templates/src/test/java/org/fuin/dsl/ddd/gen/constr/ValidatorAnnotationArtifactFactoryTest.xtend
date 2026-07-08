@@ -77,9 +77,9 @@ class ValidatorAnnotationArtifactFactoryTest {
 
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.constr." + constrName + "Validator",
-            EXAMPLES_CONCRETE + ".x.constr." + constrName + "Validator")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.constr." + constrName + "Validator",
+            "p.x.constr." + constrName + "Validator")
 
         val ValidatorAnnotationArtifactFactory testee = createTestee()
         val Constraint constraint = model.find(typeof(Constraint), constrName)

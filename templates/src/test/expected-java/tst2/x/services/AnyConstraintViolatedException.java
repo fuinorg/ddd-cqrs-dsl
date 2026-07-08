@@ -1,4 +1,4 @@
-package tst2.x.services;
+package p.x.services;
 
 public class AnyConstraintViolatedException extends Exception {
 

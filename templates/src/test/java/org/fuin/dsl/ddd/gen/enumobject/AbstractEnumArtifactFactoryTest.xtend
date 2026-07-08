@@ -47,8 +47,8 @@ class AbstractEnumArtifactFactoryTest {
 
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
 
         val AbstractEnumArtifactFactory testee = createTestee()
         val EnumObject enu = model.find(typeof(EnumObject), enumName)

@@ -48,10 +48,10 @@ class ServiceArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.services.AnyConstraintViolatedException",
-            EXAMPLES_CONCRETE + ".x.services.AnyConstraintViolatedException")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.services.AnyConstraintViolatedException",
+            "p.x.services.AnyConstraintViolatedException")
 
         val ServiceArtifactFactory testee = createTestee()
         val Service service = model.find(typeof(Service), name)

@@ -1,35 +1,39 @@
-context literals {
+project p_20_literals_and_comments {
 
-	namespace m {
+	context literals {
 
-		type String
-		type Integer
+		namespace m {
 
-		// Comment styles and literal values.
-		//   // line comment
-		//   /* block comment */
-		//   /** documentation comment -- attaches to the element that follows */
-		
-		// Literals are strings, numbers, booleans (true/false) and null.
-		// They appear in 'examples' and as constraint/business-rule parameters.
+			type String
+			type Integer
 
-		/** A documentation comment, shown by the editor for this constraint. */
-		constraint Length input String {
-			Integer min
-			Integer max
-			message "Bad length"
-		}
+			// Comment styles and literal values.
+			//   // line comment
+			//   /* block comment */
+			//   /** documentation comment -- attaches to the element that follows */
 
-		/* a block comment */
-		value-object Sample base String {
-			
-			// number literals as parameters; mixed literals as examples
-			String value invariants Length(1, 50) {
-				examples "abc" 123 true null
+			// Literals are strings, numbers, booleans (true/false) and null.
+			// They appear in 'examples' and as constraint/business-rule parameters.
+
+			/** A documentation comment, shown by the editor for this constraint. */
+			constraint Length input String {
+				Integer min
+				Integer max
+				message "Bad length"
 			}
-			
+
+			/* a block comment */
+			value-object Sample base String {
+
+				// number literals as parameters; mixed literals as examples
+				String value invariants Length(1, 50) {
+					examples "abc" 123 true null
+				}
+
+			}
+
 		}
-	
+
 	}
-	
+
 }

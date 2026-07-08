@@ -32,7 +32,7 @@ class SrcHandleEventMethodTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.a.DidSomethingEvent", "a.b.c.DidSomethingEvent")
+        refReg.putReference("p.x.a.DidSomethingEvent", "a.b.c.DidSomethingEvent")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val event = model().find(Event, "DidSomethingEvent")
         val SrcHandleEventMethod testee = new SrcHandleEventMethod(ctx, event)

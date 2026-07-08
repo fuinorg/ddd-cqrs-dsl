@@ -1,20 +1,24 @@
-context inventory {
+project p_12_entity {
 
-	namespace m {
+	context inventory {
 
-		type String
+		namespace m {
 
-		aggregate-id BasketId identifies Basket {}
+			type String
 
-		aggregate Basket identifier BasketId {}
+			aggregate-id BasketId identifies Basket {}
 
-        // entity-id works like aggregate-id.
-		entity-id LineItemId identifies LineItem {}
+			aggregate Basket identifier BasketId {}
 
-        // An entity has identity but lives inside an aggregate.
-        // The 'root' points to the owning aggregate.
-		entity LineItem identifier LineItemId root Basket {
-			String product
+	        // entity-id works like aggregate-id.
+			entity-id LineItemId identifies LineItem {}
+
+	        // An entity has identity but lives inside an aggregate.
+	        // The 'root' points to the owning aggregate.
+			entity LineItem identifier LineItemId root Basket {
+				String product
+			}
+
 		}
 
 	}

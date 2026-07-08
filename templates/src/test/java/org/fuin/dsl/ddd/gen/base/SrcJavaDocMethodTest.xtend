@@ -58,6 +58,7 @@ class SrcJavaDocMethodTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context a {
                     
                     namespace b {
@@ -87,7 +88,8 @@ class SrcJavaDocMethodTest {
                     }
                 
                 }
-            ''')
+            }
+			''')
             validationTester.assertNoIssues(model)
             return model        
     }

@@ -1,21 +1,16 @@
 package org.fuin.dsl.cqrs.tests;
 
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -26,17 +21,8 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
-import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
-import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
-import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
-import org.fuin.dsl.cqrs.cqrsDsl.Type;
-import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -174,79 +160,23 @@ public class RemoteScopeResolutionTest {
    */
   @Test
   public void resolvesMavenArtifactOverHttpAndCaches() {
-    try {
-      final Path root = Files.createTempDirectory("remote-scope-maven");
-      String _string = RemoteScopeResolutionTest.REMOTE_BILLING.toString();
-      Pair<String, String> _mappedTo = Pair.<String, String>of("money.cqrs", _string);
-      String _string_1 = RemoteScopeResolutionTest.REMOTE_CATALOG.toString();
-      Pair<String, String> _mappedTo_1 = Pair.<String, String>of("sku.cqrs", _string_1);
-      final byte[] tarGz = TarGzTestSupport.tarGz(
-        Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo, _mappedTo_1)));
-      final String dir = "/org/fuin/test/cqrs-model/0.1.0-SNAPSHOT/";
-      byte[] _bytes = RemoteScopeResolutionTest.mavenMetadata().getBytes(StandardCharsets.UTF_8);
-      Pair<String, byte[]> _mappedTo_2 = Pair.<String, byte[]>of((dir + "maven-metadata.xml"), _bytes);
-      Pair<String, byte[]> _mappedTo_3 = Pair.<String, byte[]>of((dir + "cqrs-model-0.1.0-20240101.000000-1-cqrs.tar.gz"), tarGz);
-      final HttpServer server = RemoteScopeResolutionTest.serve(
-        Collections.<String, byte[]>unmodifiableMap(CollectionLiterals.<String, byte[]>newHashMap(_mappedTo_2, _mappedTo_3)));
-      server.start();
-      final Path emptyLocalRepo = Files.createTempDirectory("m2-empty");
-      int _port = server.getAddress().getPort();
-      String _plus = ("http://127.0.0.1:" + Integer.valueOf(_port));
-      String _plus_1 = (_plus + "/");
-      System.setProperty("cqrs.maven.repo.snapshots", _plus_1);
-      System.setProperty("maven.repo.local", emptyLocalRepo.toString());
-      try {
-        Path _resolve = root.resolve("dependencies.json");
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\", \"com.acme.catalog\"], \"data\": {");
-        _builder.newLine();
-        _builder.append("\t");
-        _builder.append("\"groupId\": \"org.fuin.test\", \"artifactId\": \"cqrs-model\", \"version\": \"0.1.0-SNAPSHOT\" } } ]");
-        _builder.newLine();
-        Files.writeString(_resolve, _builder);
-        final DomainModel model = this.parse(root, RemoteScopeResolutionTest.LOCAL_SALES_BOTH);
-        EcoreUtil.resolveAll(model.eResource());
-        boolean _isEmpty = model.eResource().getErrors().isEmpty();
-        StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("Unexpected errors: ");
-        String _join = IterableExtensions.join(model.eResource().getErrors(), ", ");
-        _builder_1.append(_join);
-        Assertions.assertTrue(_isEmpty, _builder_1.toString());
-        final Function1<Attribute, Type> _function = (Attribute it) -> {
-          return it.getType();
-        };
-        final List<Type> attributeTypes = ListExtensions.<Attribute, Type>map(IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(model.getContexts()).getNamespaces()).getElements(), ValueObject.class)).getAttributes(), _function);
-        final Function1<Type, Boolean> _function_1 = (Type it) -> {
-          return Boolean.valueOf(((it instanceof ExternalType) && (!it.eIsProxy())));
-        };
-        Assertions.assertTrue(IterableExtensions.<Type>forall(attributeTypes, _function_1), 
-          "both remote types must be resolved");
-        final Function1<Type, String> _function_2 = (Type it) -> {
-          return it.getName();
-        };
-        Assertions.assertEquals(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("Money", "Sku")), IterableExtensions.<String>sort(ListExtensions.<Type, String>map(attributeTypes, _function_2)));
-        final Predicate<Path> _function_3 = (Path it) -> {
-          return Files.isDirectory(it);
-        };
-        final List<Path> cacheDirs = Files.list(root.resolve(".dependencies-cache")).filter(_function_3).collect(
-          Collectors.<Path>toList());
-        Assertions.assertEquals(1, cacheDirs.size(), 
-          "the artifact must be cached once per GAV, shared by both namespaces (no duplication)");
-        Assertions.assertTrue(IterableExtensions.<Path>head(cacheDirs).getFileName().toString().startsWith("cqrs-model-0.1.0-SNAPSHOT-"), 
-          "cache dir name must be <artifactId>-<version>-<sha1>");
-        final Predicate<Path> _function_4 = (Path it) -> {
-          return it.toString().endsWith(".cqrs");
-        };
-        Assertions.assertEquals(2, Files.list(IterableExtensions.<Path>head(cacheDirs)).filter(_function_4).count(), 
-          "both .cqrs files from the tar.gz must be unpacked once");
-      } finally {
-        System.clearProperty("cqrs.maven.repo.snapshots");
-        System.clearProperty("maven.repo.local");
-        server.stop(0);
-      }
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method or field contexts is undefined for the type DomainModel"
+      + "\nThe method or field type is undefined"
+      + "\nThe method or field eIsProxy is undefined"
+      + "\nThe method or field name is undefined"
+      + "\nhead cannot be resolved"
+      + "\nnamespaces cannot be resolved"
+      + "\nhead cannot be resolved"
+      + "\nelements cannot be resolved"
+      + "\nfilter cannot be resolved"
+      + "\nhead cannot be resolved"
+      + "\nattributes cannot be resolved"
+      + "\nmap cannot be resolved"
+      + "\nforall cannot be resolved"
+      + "\n! cannot be resolved"
+      + "\nmap cannot be resolved"
+      + "\nsort cannot be resolved");
   }
 
   /**
@@ -437,17 +367,18 @@ public class RemoteScopeResolutionTest {
   }
 
   private void assertResolvesToMoney(final DomainModel model) {
-    EcoreUtil.resolveAll(model.eResource());
-    boolean _isEmpty = model.eResource().getErrors().isEmpty();
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("Unexpected errors: ");
-    String _join = IterableExtensions.join(model.eResource().getErrors(), ", ");
-    _builder.append(_join);
-    Assertions.assertTrue(_isEmpty, _builder.toString());
-    final ValueObject valueObject = IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(model.getContexts()).getNamespaces()).getElements(), ValueObject.class));
-    final Type type = IterableExtensions.<Attribute>head(valueObject.getAttributes()).getType();
-    Assertions.assertFalse(type.eIsProxy(), "remote type reference must be resolved");
-    Assertions.assertTrue((type instanceof ExternalType));
-    Assertions.assertEquals("Money", type.getName());
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method or field contexts is undefined for the type DomainModel"
+      + "\nhead cannot be resolved"
+      + "\nnamespaces cannot be resolved"
+      + "\nhead cannot be resolved"
+      + "\nelements cannot be resolved"
+      + "\nfilter cannot be resolved"
+      + "\nhead cannot be resolved"
+      + "\nattributes cannot be resolved"
+      + "\nhead cannot be resolved"
+      + "\ntype cannot be resolved"
+      + "\neIsProxy cannot be resolved"
+      + "\nname cannot be resolved");
   }
 }

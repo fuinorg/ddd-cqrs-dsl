@@ -35,6 +35,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.junit.jupiter.api.Assertions;
@@ -54,13 +55,19 @@ public class RemoteScopeResolutionTest {
     @Override
     public String apply() {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("context com.acme {");
+      _builder.append("project remote {");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("namespace billing {");
+      _builder.append("context com.acme {");
       _builder.newLine();
       _builder.append("\t\t");
+      _builder.append("namespace billing {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
       _builder.append("type Money");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("}");
@@ -75,13 +82,19 @@ public class RemoteScopeResolutionTest {
     @Override
     public String apply() {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("context com.acme {");
+      _builder.append("project remote {");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("namespace catalog {");
+      _builder.append("context com.acme {");
       _builder.newLine();
       _builder.append("\t\t");
+      _builder.append("namespace catalog {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
       _builder.append("type Sku");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("}");
@@ -96,19 +109,25 @@ public class RemoteScopeResolutionTest {
     @Override
     public String apply() {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("context com.acme.sales {");
+      _builder.append("project local {");
       _builder.newLine();
       _builder.append("\t");
+      _builder.append("context com.acme.sales {");
+      _builder.newLine();
+      _builder.append("\t\t");
       _builder.append("namespace sales {");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("import com.acme.billing.*");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("value-object Price {");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t\t\t");
       _builder.append("Money amount");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("}");
       _builder.newLine();
       _builder.append("\t\t");
       _builder.append("}");
@@ -129,25 +148,31 @@ public class RemoteScopeResolutionTest {
     @Override
     public String apply() {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("context com.acme.sales {");
+      _builder.append("project local {");
       _builder.newLine();
       _builder.append("\t");
+      _builder.append("context com.acme.sales {");
+      _builder.newLine();
+      _builder.append("\t\t");
       _builder.append("namespace sales {");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("import com.acme.billing.*");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("import com.acme.catalog.*");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("value-object Price {");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t\t\t");
       _builder.append("Money amount");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t\t\t");
       _builder.append("Sku item");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("}");
       _builder.newLine();
       _builder.append("\t\t");
       _builder.append("}");
@@ -215,7 +240,7 @@ public class RemoteScopeResolutionTest {
         final Function1<Attribute, Type> _function = (Attribute it) -> {
           return it.getType();
         };
-        final List<Type> attributeTypes = ListExtensions.<Attribute, Type>map(IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(model.getContexts()).getNamespaces()).getElements(), ValueObject.class)).getAttributes(), _function);
+        final List<Type> attributeTypes = ListExtensions.<Attribute, Type>map(IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(IterableExtensions.<Project>head(model.getProjects()).getContexts()).getNamespaces()).getElements(), ValueObject.class)).getAttributes(), _function);
         final Function1<Type, Boolean> _function_1 = (Type it) -> {
           return Boolean.valueOf(((it instanceof ExternalType) && (!it.eIsProxy())));
         };
@@ -444,7 +469,7 @@ public class RemoteScopeResolutionTest {
     String _join = IterableExtensions.join(model.eResource().getErrors(), ", ");
     _builder.append(_join);
     Assertions.assertTrue(_isEmpty, _builder.toString());
-    final ValueObject valueObject = IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(model.getContexts()).getNamespaces()).getElements(), ValueObject.class));
+    final ValueObject valueObject = IterableExtensions.<ValueObject>head(Iterables.<ValueObject>filter(IterableExtensions.<Namespace>head(IterableExtensions.<Context>head(IterableExtensions.<Project>head(model.getProjects()).getContexts()).getNamespaces()).getElements(), ValueObject.class));
     final Type type = IterableExtensions.<Attribute>head(valueObject.getAttributes()).getType();
     Assertions.assertFalse(type.eIsProxy(), "remote type reference must be resolved");
     Assertions.assertTrue((type instanceof ExternalType));

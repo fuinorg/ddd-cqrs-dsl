@@ -65,7 +65,12 @@
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/review"/>
     </genEnums>
     <genClasses ecoreClass="CqrsDsl.ecore#//DomainModel">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DomainModel/contexts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DomainModel/projects"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//Project">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Project/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Project/hints"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Project/contexts"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Context">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Context/name"/>
@@ -78,6 +83,11 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Import/importedNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//Hint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Hint/doc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Hint/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Hint/json"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//AbstractElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//AbstractElement/doc"/>
@@ -286,6 +296,27 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//Literal">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Literal/value"/>
     </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JSON"/>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonObject">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//JsonObject/members"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonMember">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//JsonMember/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//JsonMember/value"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonArray">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//JsonArray/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonString">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//JsonString/value"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonNumber">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//JsonNumber/value"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonBoolean">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//JsonBoolean/value"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//JsonNull"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//BooleanLiteral"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//NullLiteral"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//NumberLiteral"/>

@@ -11,6 +11,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 
 /**
  * Creates source code for a validation annotation.
@@ -26,7 +27,7 @@ class SrcValidationAnnotation implements CodeSnippet {
         vars = constraint.attributes;
         params = ci.params;
 
-        if (constraint.uniqueName.startsWith("org.fuin.constr")) {
+        if ((constraint.context.name + "." + constraint.namespace.name).startsWith("org.fuin.constr")) {
             for (String pkg : constraint.pkg) {
                 ctx.requiresReference(pkg)
             }
@@ -41,7 +42,7 @@ class SrcValidationAnnotation implements CodeSnippet {
     }
 
     override toString() {
-        if (constraint.uniqueName.startsWith("org.fuin.constr")) {
+        if ((constraint.context.name + "." + constraint.namespace.name).startsWith("org.fuin.constr")) {
             return constraint.annotation
         } else {
             if (vars.size !== params.size) {

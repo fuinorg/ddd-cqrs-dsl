@@ -39,7 +39,7 @@ class SimpleEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val SimpleEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity5Id")

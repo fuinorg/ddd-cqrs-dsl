@@ -28,7 +28,9 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsContextDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProjectDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
@@ -194,9 +196,21 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
+        // inside a context (but not a namespace)
+        if (PsiTreeUtil.getParentOfType(position, CqrsContextDef.class) != null) {
+            keywords.add("namespace");
+            return keywords;
+        }
+
+        // inside a project (but not a context)
+        if (PsiTreeUtil.getParentOfType(position, CqrsProjectDef.class) != null) {
+            keywords.add("hint");
+            keywords.add("context");
+            return keywords;
+        }
+
         // top level
-        keywords.add("context");
-        keywords.add("namespace");
+        keywords.add("project");
         return keywords;
     }
 

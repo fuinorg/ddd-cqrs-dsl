@@ -20,6 +20,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testValueObjectBaseSingleMatchingAttributeIsValid() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -28,11 +29,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
     public void testValueObjectBaseWithTwoAttributesIsFlagged() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -42,11 +45,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
     public void testValueObjectBaseWithMismatchingAttributeTypeIsFlagged() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -56,11 +61,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
     public void testValueObjectWithoutBaseAllowsSeveralAttributes() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -71,6 +78,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
@@ -78,6 +86,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testValueObjectBaseWithConstructorIsFlagged() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -88,11 +97,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
     public void testValueObjectBaseWithMethodIsFlagged() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -104,6 +115,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
+                }
                 """);
     }
 
@@ -111,6 +123,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testVariableNameStartingUpperCaseIsWarned() {
         check("""
+                project p {
                 context c {
                   namespace n {
                     type String
@@ -118,6 +131,7 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                       String <warning>Value</warning>
                     }
                   }
+                }
                 }
                 """);
     }

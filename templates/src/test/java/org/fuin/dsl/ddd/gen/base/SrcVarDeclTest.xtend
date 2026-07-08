@@ -32,8 +32,8 @@ class SrcVarDeclTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.types.String", "java.lang.String")
-        refReg.putReference("a.b.AnyConstraint", "x.y.z.AnyConstraint")
+        refReg.putReference("p.a.types.String", "java.lang.String")
+        refReg.putReference("p.a.b.AnyConstraint", "x.y.z.AnyConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -59,8 +59,8 @@ class SrcVarDeclTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.types.String", "java.lang.String")
-        refReg.putReference("a.b.AnyConstraint", "x.y.z.AnyConstraint")
+        refReg.putReference("p.a.types.String", "java.lang.String")
+        refReg.putReference("p.a.b.AnyConstraint", "x.y.z.AnyConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -84,7 +84,7 @@ class SrcVarDeclTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.types.String", "java.lang.String")
+        refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -108,7 +108,7 @@ private String str3;
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.types.String", "java.lang.String")
+        refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -137,7 +137,7 @@ private String str3;
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.types.String", "java.lang.String")
+        refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -164,6 +164,7 @@ private String str3;
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context a {
                     
                     namespace b {
@@ -188,7 +189,8 @@ private String str3;
                     }
                         
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

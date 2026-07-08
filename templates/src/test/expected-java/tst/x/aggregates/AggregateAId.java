@@ -1,4 +1,4 @@
-package tst.x.aggregates;
+package p.x.aggregates;
 
 
 import java.io.Serial;

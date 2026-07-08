@@ -1,14 +1,12 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.ArrayList
-import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GeneratedArtifact
-import org.fuin.srcgen4j.commons.Replacer
 import org.fuin.srcgen4j.core.emf.PrimaryResources
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -26,20 +24,12 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     GenerateOptions options;
 
-    List<Replacer> importReplacers;
-
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
         project = config.getProject()
         folder = config.getFolder()
         varMap = config.varMap
         options = new GenerateOptions(varMap)
-        val configReplacers = config.replacers
-        if (configReplacers === null) {
-            importReplacers = newArrayList
-        } else {
-            importReplacers = configReplacers.filter[extension == "import"].toList
-        }
     }
 
     /**
@@ -54,6 +44,35 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data) {
         return new GeneratedArtifact(artifactName, filename, data, project, folder)
+    }
+
+    /**
+     * Creates a generated artifact, taking the target project and folder from the project's "SrcGen4J"
+     * generator hint when a matching type entry exists: the hint type's "module" becomes the target
+     * project and the matching artifact's "folder" becomes the target folder. When there is no matching
+     * hint, the project and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
+     *
+     * @param filename Relative path and filename to write the source code to.
+     * @param data Generated data.
+     * @param ns Namespace the generated element belongs to (drives the hint lookup).
+     *
+     * @return New generated artifact.
+     */
+    protected def GeneratedArtifact newArtifact(String filename, byte[] data, Namespace ns) {
+        var String proj = project
+        var String fold = folder
+        val type = matchingType(srcGen4JHint(ns))
+        if (type !== null) {
+            if (type.module !== null) {
+                proj = type.module
+            }
+            val factoryName = this.class.name
+            val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
+            if (artifact !== null && artifact.folder !== null) {
+                fold = artifact.folder
+            }
+        }
+        return new GeneratedArtifact(artifactName, filename, data, proj, fold)
     }
 
     override isIncremental() {
@@ -93,19 +112,79 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     def String asPackage(Namespace ns) {
-        var String pkg
-        if (!isPrimary(ns)) {
-            // External (remotely resolved) element: import it from its own context.namespace, without
-            // the local model's base package or pkg.
-            pkg = joinPackage(ns.context.name, ns.name)
-        } else {
-            pkg = joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
-        }
-        // Configured replacers with extension "import" may remap the resulting package.
-        for (replacer : importReplacers) {
-            pkg = replacer.replace(pkg)
+        // Primary path: derive the package from the "SrcGen4J" generator hint of the project the
+        // namespace belongs to (this handles remote and local elements the same way).
+        var String pkg = hintPackage(ns)
+        if (pkg === null) {
+            // Fallback (no matching SrcGen4J hint for this factory/type): the same for primary and
+            // remotely resolved elements - project.context.namespace.
+            pkg = joinPackage(ns.project.name, ns.context.name, ns.name)
         }
         return pkg
+    }
+
+    /**
+     * Builds the package from the "SrcGen4J" generator hint of the project the given namespace belongs
+     * to. The type entry whose name matches this factory's model type ({@link #getModelType}) and whose
+     * artifacts contain this factory's class supplies the "module" and "group"; the hint's "package"
+     * pattern is then expanded by replacing the variables with the current project/context/namespace
+     * names and that type's module/group.
+     *
+     * @param ns Namespace to build the package for.
+     *
+     * @return Package name, or <code>null</code> if there is no project, no "SrcGen4J" hint, or no type
+     *         entry matching both this factory's model type and its class (caller falls back).
+     */
+    protected def String hintPackage(Namespace ns) {
+        val hint = srcGen4JHint(ns)
+        val type = matchingType(hint)
+        if (type === null) {
+            return null
+        }
+        return hint.packagePattern
+            .replace("${project}", (ns.project.name ?: ""))
+            .replace("${module}", (type.module ?: ""))
+            .replace("${group}", (type.group ?: ""))
+            .replace("${context}", (ns.context.name ?: ""))
+            .replace("${namespace}", (ns.name ?: ""))
+    }
+
+    /**
+     * Parses the "SrcGen4J" generator hint of the project the given namespace belongs to.
+     *
+     * @param ns Namespace (may be <code>null</code>).
+     *
+     * @return Parsed hint, or <code>null</code> if there is no project or no such hint.
+     */
+    private def SrcGen4JHint srcGen4JHint(Namespace ns) {
+        val project = ns?.project
+        if (project === null) {
+            return null
+        }
+        val hint = project.hints.findFirst[name == "SrcGen4J"]
+        if (hint === null) {
+            return null
+        }
+        return SrcGen4JHint.parse(hint)
+    }
+
+    /**
+     * Finds the hint type entry whose name matches this factory's model type ({@link #getModelType})
+     * and whose artifacts contain this factory's class.
+     *
+     * @param hint Parsed "SrcGen4J" hint (may be <code>null</code>).
+     *
+     * @return Matching type entry, or <code>null</code> if the hint is null or nothing matches.
+     */
+    private def SrcGen4JType matchingType(SrcGen4JHint hint) {
+        if (hint === null) {
+            return null
+        }
+        val modelTypeName = getModelType.name
+        val factoryName = this.class.name
+        return hint.types.findFirst [ t |
+            t.name == modelTypeName && t.artifacts.exists[artifactFactory == factoryName]
+        ]
     }
 
     /**

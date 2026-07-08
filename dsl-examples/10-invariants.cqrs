@@ -1,34 +1,38 @@
-context inv {
-	
-	namespace m {
-	
-		type String
-		type Integer
+project p_10_invariants {
 
-		constraint OneOrTheOtherIsSet input Name {
-			message "Either one or the other attribute must be non-null"
+	context inv {
+
+		namespace m {
+
+			type String
+			type Integer
+
+			constraint OneOrTheOtherIsSet input Name {
+				message "Either one or the other attribute must be non-null"
+			}
+
+			constraint Length input String {
+				Integer min
+				Integer max
+				message "Bad length"
+			}
+
+	        // Invariants attach constraint instances (with optional parameters) to a type
+	        // or to an individual attribute. An invariant is a rule that must always hold.
+
+			// Type-level invariant
+			value-object Name invariants OneOrTheOtherIsSet {
+				optional String a
+				optional String b
+			}
+
+			value-object Name {
+	            // Attribute-level invariant (with parameters)
+				String value invariants Length(1, 100)
+			}
+
 		}
 
-		constraint Length input String {
-			Integer min
-			Integer max
-			message "Bad length"
-		}
-
-        // Invariants attach constraint instances (with optional parameters) to a type
-        // or to an individual attribute. An invariant is a rule that must always hold.
-
-		// Type-level invariant
-		value-object Name invariants OneOrTheOtherIsSet {
-			optional String a
-			optional String b
-		}
-
-		value-object Name {
-            // Attribute-level invariant (with parameters)
-			String value invariants Length(1, 100)
-		}
-		
 	}
-	
+
 }

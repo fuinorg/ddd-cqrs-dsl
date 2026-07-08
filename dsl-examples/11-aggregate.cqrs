@@ -1,35 +1,39 @@
-context orders {
-	
-	namespace m {
-	
-		type String
-		type UUID
+project p_11_aggregate {
 
-        // Uniquely identifies an aggregate.
-        // May have a base type - UUID is recommended
-		aggregate-id OrderId identifies Order base UUID {
-			examples "6bc75dd5-be5b-4c57-977e-8ee404b21c74"
-		}
+	context orders {
 
-        // An aggregate is a consistency boundary identified by an aggregate-id.
-		aggregate Order identifier OrderId {
+		namespace m {
 
-			String customer
+			type String
+			type UUID
 
-            // A constructor can 'fire' domain events (declared inline here).
-			constructor create fires OrderCreatedEvent {
-				
-				String customer
-				
-				event OrderCreatedEvent {
-					String customer
-					message "Order created for ${customer}"
-				}
-				
+	        // Uniquely identifies an aggregate.
+	        // May have a base type - UUID is recommended
+			aggregate-id OrderId identifies Order base UUID {
+				examples "6bc75dd5-be5b-4c57-977e-8ee404b21c74"
 			}
-			
+
+	        // An aggregate is a consistency boundary identified by an aggregate-id.
+			aggregate Order identifier OrderId {
+
+				String customer
+
+	            // A constructor can 'fire' domain events (declared inline here).
+				constructor create fires OrderCreatedEvent {
+
+					String customer
+
+					event OrderCreatedEvent {
+						String customer
+						message "Order created for ${customer}"
+					}
+
+				}
+
+			}
+
 		}
-		
+
 	}
-	
+
 }

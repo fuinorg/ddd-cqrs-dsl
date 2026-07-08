@@ -33,8 +33,8 @@ class SrcVoBaseMethodsStringTest {
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
-        refReg.putReference("y.types.String", "java.lang.String")
-        refReg.putReference("y.a.MyAggregateId", "a.b.c.MyAggregateId")
+        refReg.putReference("p.y.types.String", "java.lang.String")
+        refReg.putReference("p.y.a.MyAggregateId", "a.b.c.MyAggregateId")
         val AggregateId aggregateId = createModel().find(AggregateId, "MyAggregateId")
 
         val testee = new SrcVoBaseMethodsString(ctx, aggregateId)
@@ -90,6 +90,7 @@ class SrcVoBaseMethodsStringTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context y {
                 
                     namespace types {
@@ -107,7 +108,8 @@ class SrcVoBaseMethodsStringTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

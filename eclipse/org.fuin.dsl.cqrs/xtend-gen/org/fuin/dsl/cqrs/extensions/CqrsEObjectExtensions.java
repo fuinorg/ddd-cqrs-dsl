@@ -9,6 +9,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 
 /**
  * Provides extension methods for EObject.
@@ -47,6 +48,23 @@ public class CqrsEObjectExtensions {
       return ((Context)obj);
     }
     return CqrsEObjectExtensions.getContext(obj.eContainer());
+  }
+
+  /**
+   * Returns the project an object belongs to.
+   * 
+   * @param obj Object to return the project for.
+   * 
+   * @return Project or null if the object is not inside one.
+   */
+  public static Project getProject(final EObject obj) {
+    if ((obj == null)) {
+      return null;
+    }
+    if ((obj instanceof Project)) {
+      return ((Project)obj);
+    }
+    return CqrsEObjectExtensions.getProject(obj.eContainer());
   }
 
   /**

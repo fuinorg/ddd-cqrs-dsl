@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package tst2.x.valueobject;
+package p.x.valueobject;
 
 import jakarta.annotation.Generated;
 import jakarta.json.bind.adapter.JsonbAdapter;
@@ -177,7 +177,7 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
 
         String message()
 
-        default "{tst2.x.valueobject.MySimpleStringValueObject.message}";
+        default "{p.x.valueobject.MySimpleStringValueObject.message}";
 
         Class<?>[] groups() default {};
 

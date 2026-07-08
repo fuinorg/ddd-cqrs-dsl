@@ -47,11 +47,19 @@ import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonMember;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
@@ -61,6 +69,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
@@ -95,6 +104,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass projectEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass contextEClass = null;
 
   /**
@@ -110,6 +126,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass importEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass hintEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -438,6 +461,62 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass jsonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonObjectEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonMemberEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonArrayEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonStringEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonNumberEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonBooleanEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass jsonNullEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass booleanLiteralEClass = null;
 
   /**
@@ -596,9 +675,53 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getDomainModel_Contexts()
+  public EReference getDomainModel_Projects()
   {
     return (EReference)domainModelEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getProject()
+  {
+    return projectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getProject_Name()
+  {
+    return (EAttribute)projectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getProject_Hints()
+  {
+    return (EReference)projectEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getProject_Contexts()
+  {
+    return (EReference)projectEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -698,6 +821,50 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EAttribute getImport_ImportedNamespace()
   {
     return (EAttribute)importEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getHint()
+  {
+    return hintEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getHint_Doc()
+  {
+    return (EAttribute)hintEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getHint_Name()
+  {
+    return (EAttribute)hintEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getHint_Json()
+  {
+    return (EReference)hintEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2510,6 +2677,171 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EClass getJSON()
+  {
+    return jsonEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonObject()
+  {
+    return jsonObjectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getJsonObject_Members()
+  {
+    return (EReference)jsonObjectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonMember()
+  {
+    return jsonMemberEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getJsonMember_Key()
+  {
+    return (EAttribute)jsonMemberEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getJsonMember_Value()
+  {
+    return (EReference)jsonMemberEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonArray()
+  {
+    return jsonArrayEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getJsonArray_Elements()
+  {
+    return (EReference)jsonArrayEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonString()
+  {
+    return jsonStringEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getJsonString_Value()
+  {
+    return (EAttribute)jsonStringEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonNumber()
+  {
+    return jsonNumberEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getJsonNumber_Value()
+  {
+    return (EAttribute)jsonNumberEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonBoolean()
+  {
+    return jsonBooleanEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getJsonBoolean_Value()
+  {
+    return (EAttribute)jsonBooleanEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getJsonNull()
+  {
+    return jsonNullEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getBooleanLiteral()
   {
     return booleanLiteralEClass;
@@ -2668,7 +3000,12 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     // Create classes and their features
     domainModelEClass = createEClass(DOMAIN_MODEL);
-    createEReference(domainModelEClass, DOMAIN_MODEL__CONTEXTS);
+    createEReference(domainModelEClass, DOMAIN_MODEL__PROJECTS);
+
+    projectEClass = createEClass(PROJECT);
+    createEAttribute(projectEClass, PROJECT__NAME);
+    createEReference(projectEClass, PROJECT__HINTS);
+    createEReference(projectEClass, PROJECT__CONTEXTS);
 
     contextEClass = createEClass(CONTEXT);
     createEAttribute(contextEClass, CONTEXT__NAME);
@@ -2681,6 +3018,11 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     importEClass = createEClass(IMPORT);
     createEAttribute(importEClass, IMPORT__IMPORTED_NAMESPACE);
+
+    hintEClass = createEClass(HINT);
+    createEAttribute(hintEClass, HINT__DOC);
+    createEAttribute(hintEClass, HINT__NAME);
+    createEReference(hintEClass, HINT__JSON);
 
     abstractElementEClass = createEClass(ABSTRACT_ELEMENT);
     createEAttribute(abstractElementEClass, ABSTRACT_ELEMENT__DOC);
@@ -2892,6 +3234,29 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     literalEClass = createEClass(LITERAL);
     createEAttribute(literalEClass, LITERAL__VALUE);
 
+    jsonEClass = createEClass(JSON);
+
+    jsonObjectEClass = createEClass(JSON_OBJECT);
+    createEReference(jsonObjectEClass, JSON_OBJECT__MEMBERS);
+
+    jsonMemberEClass = createEClass(JSON_MEMBER);
+    createEAttribute(jsonMemberEClass, JSON_MEMBER__KEY);
+    createEReference(jsonMemberEClass, JSON_MEMBER__VALUE);
+
+    jsonArrayEClass = createEClass(JSON_ARRAY);
+    createEReference(jsonArrayEClass, JSON_ARRAY__ELEMENTS);
+
+    jsonStringEClass = createEClass(JSON_STRING);
+    createEAttribute(jsonStringEClass, JSON_STRING__VALUE);
+
+    jsonNumberEClass = createEClass(JSON_NUMBER);
+    createEAttribute(jsonNumberEClass, JSON_NUMBER__VALUE);
+
+    jsonBooleanEClass = createEClass(JSON_BOOLEAN);
+    createEAttribute(jsonBooleanEClass, JSON_BOOLEAN__VALUE);
+
+    jsonNullEClass = createEClass(JSON_NULL);
+
     booleanLiteralEClass = createEClass(BOOLEAN_LITERAL);
 
     nullLiteralEClass = createEClass(NULL_LITERAL);
@@ -2966,6 +3331,12 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     commandHandlerEClass.getESuperTypes().add(this.getAbstractElement());
     projectionEClass.getESuperTypes().add(this.getAbstractElement());
     viewEClass.getESuperTypes().add(this.getAbstractElement());
+    jsonObjectEClass.getESuperTypes().add(this.getJSON());
+    jsonArrayEClass.getESuperTypes().add(this.getJSON());
+    jsonStringEClass.getESuperTypes().add(this.getJSON());
+    jsonNumberEClass.getESuperTypes().add(this.getJSON());
+    jsonBooleanEClass.getESuperTypes().add(this.getJSON());
+    jsonNullEClass.getESuperTypes().add(this.getJSON());
     booleanLiteralEClass.getESuperTypes().add(this.getLiteral());
     nullLiteralEClass.getESuperTypes().add(this.getLiteral());
     numberLiteralEClass.getESuperTypes().add(this.getLiteral());
@@ -2973,7 +3344,12 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     // Initialize classes and features; add operations and parameters
     initEClass(domainModelEClass, DomainModel.class, "DomainModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getDomainModel_Contexts(), this.getContext(), null, "contexts", null, 0, -1, DomainModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDomainModel_Projects(), this.getProject(), null, "projects", null, 0, -1, DomainModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(projectEClass, Project.class, "Project", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProject_Name(), ecorePackage.getEString(), "name", null, 0, 1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getProject_Hints(), this.getHint(), null, "hints", null, 0, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getProject_Contexts(), this.getContext(), null, "contexts", null, 0, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(contextEClass, Context.class, "Context", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getContext_Name(), ecorePackage.getEString(), "name", null, 0, 1, Context.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2986,6 +3362,11 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImport_ImportedNamespace(), ecorePackage.getEString(), "importedNamespace", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(hintEClass, Hint.class, "Hint", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getHint_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, Hint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getHint_Name(), ecorePackage.getEString(), "name", null, 0, 1, Hint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getHint_Json(), this.getJSON(), null, "json", null, 0, 1, Hint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(abstractElementEClass, AbstractElement.class, "AbstractElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAbstractElement_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, AbstractElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3196,6 +3577,29 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(literalEClass, Literal.class, "Literal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLiteral_Value(), ecorePackage.getEString(), "value", null, 0, 1, Literal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonEClass, org.fuin.dsl.cqrs.cqrsDsl.JSON.class, "JSON", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(jsonObjectEClass, JsonObject.class, "JsonObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getJsonObject_Members(), this.getJsonMember(), null, "members", null, 0, -1, JsonObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonMemberEClass, JsonMember.class, "JsonMember", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getJsonMember_Key(), ecorePackage.getEString(), "key", null, 0, 1, JsonMember.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getJsonMember_Value(), this.getJSON(), null, "value", null, 0, 1, JsonMember.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonArrayEClass, JsonArray.class, "JsonArray", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getJsonArray_Elements(), this.getJSON(), null, "elements", null, 0, -1, JsonArray.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonStringEClass, JsonString.class, "JsonString", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getJsonString_Value(), ecorePackage.getEString(), "value", null, 0, 1, JsonString.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonNumberEClass, JsonNumber.class, "JsonNumber", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getJsonNumber_Value(), ecorePackage.getEString(), "value", null, 0, 1, JsonNumber.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonBooleanEClass, JsonBoolean.class, "JsonBoolean", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getJsonBoolean_Value(), ecorePackage.getEString(), "value", null, 0, 1, JsonBoolean.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(jsonNullEClass, JsonNull.class, "JsonNull", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(booleanLiteralEClass, BooleanLiteral.class, "BooleanLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

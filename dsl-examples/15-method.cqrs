@@ -1,42 +1,46 @@
-context behavior {
+project p_15_method {
 
-	namespace m {
+	context behavior {
 
-		type String
-		type Boolean
+		namespace m {
 
-		constraint NotBlank input String { message "Blank" }
+			type String
+			type Boolean
 
-		aggregate-id DocId identifies Doc {}
+			constraint NotBlank input String { message "Blank" }
 
-		aggregate Doc identifier DocId {
+			aggregate-id DocId identifies Doc {}
 
-            /**
-             * Renames the document.
-             */
-			method rename fires RenamedEvent {
-				
-				// Parameters with (optional) preconditions
-				String newName preconditions NotBlank
-				
-                // Inline defined event(s) to be fired on success 
-				event RenamedEvent {
-					String newName
-					message "Renamed to ${newName}"
+			aggregate Doc identifier DocId {
+
+	            /**
+	             * Renames the document.
+	             */
+				method rename fires RenamedEvent {
+
+					// Parameters with (optional) preconditions
+					String newName preconditions NotBlank
+
+	                // Inline defined event(s) to be fired on success 
+					event RenamedEvent {
+						String newName
+						message "Renamed to ${newName}"
+					}
+
+					// Does not return anything
+
 				}
-				
-				// Does not return anything
-				
-			}
 
-			// It's a function as it 'returns' a type
-			method isEmpty {
-				returns Boolean
-			}
+				// It's a function as it 'returns' a type
+				method isEmpty {
+					returns Boolean
+				}
 
-			// A 'ref' link to another method means it has exactly the same arguments
-			method forceRename ref rename {
-				// Does not return anything
+				// A 'ref' link to another method means it has exactly the same arguments
+				method forceRename ref rename {
+					// Does not return anything
+				}
+
 			}
 
 		}

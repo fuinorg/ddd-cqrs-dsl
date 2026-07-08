@@ -39,7 +39,7 @@ class AbstractAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregateId")
@@ -58,7 +58,7 @@ class AbstractAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate2Id")
@@ -77,7 +77,7 @@ class AbstractAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate3Id")
@@ -96,7 +96,7 @@ class AbstractAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate4Id")
@@ -115,7 +115,7 @@ class AbstractAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.UUID", "java.util.UUID")
+        refReg.putReference("p.x.types.UUID", "java.util.UUID")
 
         val AbstractAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate6Id")

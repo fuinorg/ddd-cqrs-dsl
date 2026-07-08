@@ -1,4 +1,4 @@
-package tst.x.entities;
+package p.x.entities;
 
 
 import java.io.Serial;

@@ -42,11 +42,13 @@ class CqrsDslGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		try {
 			val remoteUris = <URI>newLinkedHashSet
 			for (model : resource.contents.filter(DomainModel)) {
-				for (context : model.contexts) {
-					for (namespace : context.namespaces) {
-						for (^import : namespace.imports) {
-							remoteUris.addAll(cache.getCachedModelUris(rs, resource.URI,
-								^import.importedNamespace, catalog))
+				for (project : model.projects) {
+					for (context : project.contexts) {
+						for (namespace : context.namespaces) {
+							for (^import : namespace.imports) {
+								remoteUris.addAll(cache.getCachedModelUris(rs, resource.URI,
+									^import.importedNamespace, catalog))
+							}
 						}
 					}
 				}
