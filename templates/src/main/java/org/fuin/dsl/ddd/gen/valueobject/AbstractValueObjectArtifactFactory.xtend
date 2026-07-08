@@ -50,7 +50,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.addImports
         ctx.addReferences(valueObject)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, valueObject, pkg, className).toString().getBytes("UTF-8")));
     }
 

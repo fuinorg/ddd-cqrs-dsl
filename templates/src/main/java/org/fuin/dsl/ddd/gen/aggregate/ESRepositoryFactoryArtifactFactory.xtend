@@ -44,7 +44,7 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
         ctx.addImports
         ctx.addReferences(aggregate)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, aggregate, pkg, className, repositoryName).toString().getBytes("UTF-8")));
     }
 

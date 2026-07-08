@@ -1,11 +1,14 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.ArrayList
+import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
+import org.fuin.srcgen4j.commons.GeneratedArtifact
+import org.fuin.srcgen4j.commons.Replacer
 import org.fuin.srcgen4j.core.emf.PrimaryResources
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -15,14 +18,42 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String artifactName;
 
+    String project;
+
+    String folder;
+
     Map<String, String> varMap;
-    
+
     GenerateOptions options;
+
+    List<Replacer> importReplacers;
 
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
+        project = config.getProject()
+        folder = config.getFolder()
         varMap = config.varMap
         options = new GenerateOptions(varMap)
+        val configReplacers = config.replacers
+        if (configReplacers === null) {
+            importReplacers = newArrayList
+        } else {
+            importReplacers = configReplacers.filter[extension == "import"].toList
+        }
+    }
+
+    /**
+     * Creates a generated artifact for the current factory. The unique artifact name, the target
+     * project and the target folder are taken from the {@link ArtifactFactoryConfig} captured in
+     * {@link #init(ArtifactFactoryConfig)}.
+     *
+     * @param filename Relative path and filename to write the source code to.
+     * @param data Generated data.
+     *
+     * @return New generated artifact.
+     */
+    protected def GeneratedArtifact newArtifact(String filename, byte[] data) {
+        return new GeneratedArtifact(artifactName, filename, data, project, folder)
     }
 
     override isIncremental() {
@@ -61,17 +92,20 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         return str
     }
 
-    def String contextPkg(String ctxName) {
-        return joinPackage(getOptions().getBasePkg(), ctxName, getOptions().getPkg())
-    }
-
     def String asPackage(Namespace ns) {
+        var String pkg
         if (!isPrimary(ns)) {
-            // External (remotely resolved) element: import it from its own context.namespace,
-            // without the local model's base package or pkg.
-            return joinPackage(ns.context.name, ns.name)
+            // External (remotely resolved) element: import it from its own context.namespace, without
+            // the local model's base package or pkg.
+            pkg = joinPackage(ns.context.name, ns.name)
+        } else {
+            pkg = joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
         }
-        return joinPackage(getOptions().getBasePkg(), ns.context.name, getOptions().getPkg(), ns.name)
+        // Configured replacers with extension "import" may remap the resulting package.
+        for (replacer : importReplacers) {
+            pkg = replacer.replace(pkg)
+        }
+        return pkg
     }
 
     /**

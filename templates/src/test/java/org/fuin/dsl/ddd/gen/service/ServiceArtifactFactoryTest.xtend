@@ -66,7 +66,7 @@ class ServiceArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ServiceArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("service", ServiceArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("service", ServiceArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

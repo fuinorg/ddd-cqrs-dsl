@@ -52,7 +52,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
         ctx.addImports(ex)
         ctx.addReferences(ex)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, ex, pkg, className).toString().getBytes("UTF-8")));
     }
 

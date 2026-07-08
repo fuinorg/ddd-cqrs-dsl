@@ -75,7 +75,7 @@ class FinalEntityArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new FinalEntityArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entity", FinalEntityArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entity", FinalEntityArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

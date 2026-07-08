@@ -115,7 +115,7 @@ class FinalAggregateIdArtifactFactoryTest {
         
     private def createTestee() {
         val factory = new FinalAggregateIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

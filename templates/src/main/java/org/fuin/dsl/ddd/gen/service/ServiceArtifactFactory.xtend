@@ -49,7 +49,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
         ctx.addImports(service)
         ctx.addReferences(service)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, service, pkg, className).toString().getBytes("UTF-8")));
     }
 

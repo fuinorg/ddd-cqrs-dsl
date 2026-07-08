@@ -54,7 +54,7 @@ class SimpleAggregateIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new SimpleAggregateIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", SimpleAggregateIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", SimpleAggregateIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JPA, "true"))

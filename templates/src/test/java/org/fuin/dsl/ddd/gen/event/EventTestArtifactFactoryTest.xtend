@@ -82,7 +82,7 @@ class EventTestArtifactFactoryTest {
 
     private def createTestee(boolean jaxb, boolean jaxbElements, boolean jsonb) {
         val factory = new EventTestArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("eventTest", EventTestArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("eventTest", EventTestArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JAXB, jaxb.toString));

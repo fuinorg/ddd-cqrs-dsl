@@ -116,7 +116,7 @@ class EventArtifactFactoryTest {
 
     private def createTestee(GenerateOptions options) {
         val factory = new EventArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("event", EventArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("event", EventArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JSONB, options.jsonb.toString));

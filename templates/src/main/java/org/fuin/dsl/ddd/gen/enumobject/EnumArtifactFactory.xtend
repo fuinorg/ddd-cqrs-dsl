@@ -52,7 +52,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
         ctx.addImports
         ctx.addReferences(enu)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, enu, pkg, className).toString().getBytes("UTF-8")));
     }
 

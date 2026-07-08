@@ -51,7 +51,7 @@ class AbstractEntityIdArtifactFactory extends AbstractSource<EntityId> {
         ctx.addImports
         ctx.addReferences(entityId)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, entityId, pkg, className).toString().getBytes("UTF-8")));
     }
 

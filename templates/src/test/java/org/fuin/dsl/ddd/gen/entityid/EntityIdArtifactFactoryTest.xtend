@@ -113,7 +113,7 @@ class EntityIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new EntityIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", EntityIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", EntityIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

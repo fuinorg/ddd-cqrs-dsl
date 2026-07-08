@@ -72,7 +72,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             src = createDomainCommand(ctx, command, pkg, className).toString();
         }
 
-        return List.of(new GeneratedArtifact(artifactName, filename, src.getBytes("UTF-8")));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8")));
     }
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Command command) {

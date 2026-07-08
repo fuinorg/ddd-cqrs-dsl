@@ -49,7 +49,7 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         ctx.addImports(aggregateId)
         ctx.addReferences(aggregateId)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
+        return List.of(newArtifact(filename,
             create(ctx, aggregateId, pkg, className, abstractClassName).toString().getBytes("UTF-8")));
     }
 
