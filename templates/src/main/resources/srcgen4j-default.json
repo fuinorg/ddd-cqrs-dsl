@@ -1,0 +1,110 @@
+{
+	"package": "${project}.${module}.${group}.${context}.${namespace}",
+	"types": [
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedAbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedValueObjectArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObjectArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectTestArtifactFactory", "folder": "testJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.AggregateId", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AbstractAggregateIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdStreamFactoryArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.FinalAggregateIdArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.SimpleAggregateIdArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.EntityId", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.AbstractEntityIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.EntityIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.FinalEntityIdArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.SimpleEntityIdArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Constraint", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.constr.ValidatorAnnotationArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.constr.ValidatorArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.EnumObject", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.enumobject.AbstractEnumArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.enumobject.EnumArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.enumobject.FinalEnumArtifactFactory", "folder": "mainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Exception", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.except.ExceptionArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Event", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.event.EventArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.event.EventTestArtifactFactory", "folder": "testJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Command", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.command.CommandArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.eclipse.emf.ecore.resource.ResourceSet", "module": "shared", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.resourceset.PackageInfoArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.resourceset.CtxExternalTypes", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "core", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.AbstractAggregateArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.AggregateDocArtifactFactory", "folder": "genMainRes" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESJpaEventArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESJpaEventIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESJpaLiquibaseXmlArtifactFactory", "folder": "genMainRes" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESJpaStreamArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESRepositoryArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.ESRepositoryFactoryArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.FinalAggregateArtifactFactory", "folder": "mainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Entity", "module": "core", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entity.AbstractEntityArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entity.FinalEntityArtifactFactory", "folder": "mainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Service", "module": "core", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.service.ServiceArtifactFactory", "folder": "genMainJava" }
+			]
+		},
+		{
+			"name": "org.eclipse.emf.ecore.resource.ResourceSet", "module": "core", "group": "domain",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.resourceset.PackageInfoArtifactFactory", "folder": "genMainJava" }
+			]
+		}
+	]
+}

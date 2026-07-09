@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.x.aggregates;
+package p.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.ApplyEvent;
+import p.x.aggregates.AbstractAggregateC;
+import p.x.aggregates.AggregateCCreatedEvent;
+import p.x.aggregates.AnyConstraintViolatedException;
 
 /**
  * Aggregate C - With constructor, constraint and event.

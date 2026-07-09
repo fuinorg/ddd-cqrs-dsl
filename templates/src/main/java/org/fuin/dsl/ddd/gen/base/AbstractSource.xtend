@@ -16,6 +16,8 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String artifactName;
 
+    String factoryClassName;
+
     String project;
 
     String folder;
@@ -26,6 +28,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
+        factoryClassName = config.getFactoryClassName()
         project = config.getProject()
         folder = config.getFolder()
         varMap = config.varMap
@@ -66,7 +69,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
             if (type.module !== null) {
                 proj = type.module
             }
-            val factoryName = this.class.name
+            val factoryName = factoryClassName
             val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
             if (artifact !== null && artifact.folder !== null) {
                 fold = artifact.folder
@@ -149,23 +152,43 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
             .replace("${namespace}", (ns.name ?: ""))
     }
 
+    /** Lazily loaded "srcgen4j-default.json" preset, shared by all factory instances. */
+    static SrcGen4JHint defaultHint
+
     /**
-     * Parses the "SrcGen4J" generator hint of the project the given namespace belongs to.
+     * Returns the "srcgen4j-default.json" preset, loading it from the classpath on first use.
+     *
+     * @return Default preset (never <code>null</code>; an empty hint if the resource is missing).
+     */
+    private def static synchronized SrcGen4JHint defaultHint() {
+        if (defaultHint === null) {
+            defaultHint = SrcGen4JHint.loadDefault()
+        }
+        return defaultHint
+    }
+
+    /**
+     * Resolves the effective "SrcGen4J" hint for the project the given namespace belongs to. The
+     * "srcgen4j-default.json" preset is always used as the base; when the project defines its own
+     * "SrcGen4J" hint, that hint is merged on top so its values overwrite the preset's (see
+     * {@link SrcGen4JHint#merge}).
      *
      * @param ns Namespace (may be <code>null</code>).
      *
-     * @return Parsed hint, or <code>null</code> if there is no project or no such hint.
+     * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
+     *         preset with the model hint merged on top.
      */
     private def SrcGen4JHint srcGen4JHint(Namespace ns) {
+        val preset = defaultHint()
         val project = ns?.project
         if (project === null) {
-            return null
+            return preset
         }
         val hint = project.hints.findFirst[name == "SrcGen4J"]
         if (hint === null) {
-            return null
+            return preset
         }
-        return SrcGen4JHint.parse(hint)
+        return SrcGen4JHint.merge(preset, SrcGen4JHint.parse(hint))
     }
 
     /**
@@ -181,7 +204,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
             return null
         }
         val modelTypeName = getModelType.name
-        val factoryName = this.class.name
+        val factoryName = factoryClassName
         return hint.types.findFirst [ t |
             t.name == modelTypeName && t.artifacts.exists[artifactFactory == factoryName]
         ]
