@@ -10,14 +10,14 @@
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObjectArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectTestArtifactFactory", "folder": "testJava" },
-				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "mainJava" }
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genMainJava" }
 			]
 		},
 		{
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.AggregateId", "module": "shared", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AbstractAggregateIdArtifactFactory", "folder": "genMainJava" },
-				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdStreamFactoryArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.FinalAggregateIdArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.SimpleAggregateIdArtifactFactory", "folder": "genMainJava" }
@@ -27,7 +27,7 @@
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.EntityId", "module": "shared", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.AbstractEntityIdArtifactFactory", "folder": "genMainJava" },
-				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.EntityIdArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.EntityIdArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.FinalEntityIdArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.SimpleEntityIdArtifactFactory", "folder": "genMainJava" }
 			]
@@ -36,7 +36,7 @@
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.Constraint", "module": "shared", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.constr.ValidatorAnnotationArtifactFactory", "folder": "genMainJava" },
-				{ "artifactFactory": "org.fuin.dsl.ddd.gen.constr.ValidatorArtifactFactory", "folder": "mainJava" }
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.constr.ValidatorArtifactFactory", "folder": "genMainJava" }
 			]
 		},
 		{

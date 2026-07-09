@@ -107,6 +107,97 @@ class SrcGen4JHint {
         )
     }
 
+    /** Classpath location of the default preset used when a model has no "SrcGen4J" hint. */
+    public static val String DEFAULT_RESOURCE = "/srcgen4j-default.json"
+
+    /**
+     * Loads the "srcgen4j-default.json" preset from the classpath. This is the base configuration used
+     * when a model has no "SrcGen4J" hint and the values a model's hint is merged on top of.
+     *
+     * @return Parsed preset, or an empty hint if the resource is not on the classpath.
+     */
+    def static SrcGen4JHint loadDefault() {
+        val stream = typeof(SrcGen4JHint).getResourceAsStream(DEFAULT_RESOURCE)
+        if (stream === null) {
+            return new SrcGen4JHint(null, newArrayList)
+        }
+        try {
+            val reader = jakarta.json.Json.createReader(stream)
+            try {
+                return parseJson(reader.readObject)
+            } finally {
+                reader.close
+            }
+        } finally {
+            stream.close
+        }
+    }
+
+    /**
+     * Merges a model's "SrcGen4J" hint onto the default preset: the model's "package" wins when set and
+     * its type entries take precedence (they are matched before the preset's), while entries only present
+     * in the preset still apply. This lets a model overwrite individual values from
+     * "srcgen4j-default.json" without repeating the whole configuration.
+     *
+     * @param preset Base configuration (may be <code>null</code>).
+     * @param overrides Model hint whose values win (may be <code>null</code>).
+     *
+     * @return Merged hint (may be <code>null</code> if both arguments are <code>null</code>).
+     */
+    def static SrcGen4JHint merge(SrcGen4JHint preset, SrcGen4JHint overrides) {
+        if (overrides === null) {
+            return preset
+        }
+        if (preset === null) {
+            return overrides
+        }
+        val types = <SrcGen4JType>newArrayList
+        types.addAll(overrides.types)
+        types.addAll(preset.types)
+        return new SrcGen4JHint(overrides.packagePattern ?: preset.packagePattern, types)
+    }
+
+    // ---- Raw JSON (JSON-P) parsing of the default preset resource ----
+
+    def private static SrcGen4JHint parseJson(jakarta.json.JsonObject root) {
+        new SrcGen4JHint(
+            root.jsonString("package"),
+            root.jsonArray("types").map[asJsonObject.parseJsonType]
+        )
+    }
+
+    def private static SrcGen4JType parseJsonType(jakarta.json.JsonObject obj) {
+        new SrcGen4JType(
+            obj.jsonString("name"),
+            obj.jsonString("module"),
+            obj.jsonString("group"),
+            obj.jsonArray("artifacts").map[asJsonObject.parseJsonArtifact]
+        )
+    }
+
+    def private static SrcGen4JArtifact parseJsonArtifact(jakarta.json.JsonObject obj) {
+        new SrcGen4JArtifact(
+            obj.jsonString("artifactFactory"),
+            obj.jsonString("folder")
+        )
+    }
+
+    def private static String jsonString(jakarta.json.JsonObject obj, String key) {
+        if (obj.containsKey(key) && obj.get(key).valueType === jakarta.json.JsonValue.ValueType.STRING) {
+            obj.getString(key)
+        } else {
+            null
+        }
+    }
+
+    def private static List<jakarta.json.JsonValue> jsonArray(jakarta.json.JsonObject obj, String key) {
+        if (obj.containsKey(key) && obj.get(key).valueType === jakarta.json.JsonValue.ValueType.ARRAY) {
+            obj.getJsonArray(key)
+        } else {
+            <jakarta.json.JsonValue>newArrayList
+        }
+    }
+
     // ---- JSON navigation helpers (used as extension methods) ----
 
     def private static JsonObject asObject(JSON json) {

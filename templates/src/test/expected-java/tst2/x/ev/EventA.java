@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.x.ev;
+package p.shared.domain.x.ev;
 
 import java.io.Serial;
 import java.time.ZonedDateTime;
@@ -23,6 +23,7 @@ import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.objects4j.core.KeyValue;
+import p.x.ev.CustomerId;
 
 /**
  * Aggregate event A.

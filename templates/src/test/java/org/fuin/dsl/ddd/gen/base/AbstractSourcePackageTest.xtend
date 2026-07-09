@@ -19,8 +19,9 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.assertj.core.api.Assertions.*
 
 /**
- * Tests the package name construction in {@link AbstractSource}: the fallback uses
- * project.context.namespace, the same for primary (local) and remotely resolved elements.
+ * Tests the package name construction in {@link AbstractSource}: it is derived from the
+ * "srcgen4j-default.json" preset (project.module.group.context.namespace), the same for primary
+ * (local) and remotely resolved elements.
  */
 @InjectWith(typeof(CqrsDslInjectorProvider))
 @ExtendWith(InjectionExtension)
@@ -41,10 +42,10 @@ class AbstractSourcePackageTest {
         val localNs = localModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "valueobject"]
         val remoteNs = remoteModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "enumobject"]
 
-        // Both local and remote elements use project.context.namespace (no base package, no
-        // primary/remote distinction).
-        assertThat(testee.asPackage(localNs)).isEqualTo("p.x.valueobject")
-        assertThat(testee.asPackage(remoteNs)).isEqualTo("p.x.enumobject")
+        // Both local and remote elements use the preset package (PackageInfoArtifactFactory targets
+        // the ResourceSet type: module "shared", group "domain"), with no primary/remote distinction.
+        assertThat(testee.asPackage(localNs)).isEqualTo("p.shared.domain.x.valueobject")
+        assertThat(testee.asPackage(remoteNs)).isEqualTo("p.shared.domain.x.enumobject")
     }
 
     private def createTestee() {

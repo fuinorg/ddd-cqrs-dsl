@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.x.ev;
+package p.shared.domain.x.ev;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -24,6 +24,7 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.eclipse.yasson.FieldAccessStrategy;
 import org.fuin.ddd4j.jsonb.EventIdJsonbAdapter;
 import org.junit.jupiter.api.Test;
+import p.x.ev.EventD;
 import static org.assertj.core.api.Assertions.*;
 import static org.fuin.utils4j.Utils4J.deserialize;
 import static org.fuin.utils4j.Utils4J.serialize;
