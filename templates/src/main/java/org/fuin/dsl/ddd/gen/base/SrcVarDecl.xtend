@@ -20,7 +20,7 @@ class SrcVarDecl implements CodeSnippet {
 
     /**
      * Constructor with all mandatory data.
-     *
+     * 
      * @param ctx Context.
      * @param modifiers Modifiers for the attribute.
      * @param options Options to use.
@@ -31,13 +31,13 @@ class SrcVarDecl implements CodeSnippet {
     }
 
     /**
-     * Constructor that allows marking the attribute as populated by a builder.
-     *
+     * Constructor that allows marking the attribute as assigned by a builder.
+     * 
      * @param ctx Context.
      * @param modifiers Modifiers for the attribute.
      * @param options Options to use.
      * @param variable Attribute or Parameter.
-     * @param builderPopulated TRUE if the attribute is assigned by a builder instead of a constructor.
+     * @param builderPopulated TRUE if a builder assigns the attribute after construction.
      */
     new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, Variable variable, boolean builderPopulated) {
         this.ctx = ctx
@@ -64,14 +64,14 @@ class SrcVarDecl implements CodeSnippet {
     }
 
     /**
-     * A builder assigns the attribute after construction, so no constructor can definitely assign it. Only a non-optional,
-     * non-primitive attribute is affected: an optional one is already annotated with {@code @Nullable} and a primitive one can
-     * never be null.
+     * A builder assigns the attribute after construction, so no constructor initializes it. Only a non-optional, non-primitive
+     * attribute needs the suppression: an optional one is already annotated with {@code @Nullable} and a primitive can never be
+     * null.
      */
     private def nullnessSuppression() {
         '''
             «IF builderPopulated && variable.optional === null && !variable.isPrimitive(ctx)»
-                @SuppressWarnings("NullableProblems")
+                @SuppressWarnings("NullAway.Init")
             «ENDIF»
         '''
     }

@@ -41,7 +41,7 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
     
     @JsonbProperty("a")
     @Examples(value = { "Abc" })
-    @SuppressWarnings("NullableProblems")
+    @SuppressWarnings("NullAway.Init")
     private String a;
     
 

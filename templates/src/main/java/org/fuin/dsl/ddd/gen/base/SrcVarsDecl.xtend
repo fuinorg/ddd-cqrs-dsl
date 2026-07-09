@@ -35,13 +35,13 @@ class SrcVarsDecl implements CodeSnippet {
     }
 
     /**
-     * Constructor that allows marking the attributes as populated by a builder.
-     *
+     * Constructor that allows marking the attributes as assigned by a builder.
+     * 
      * @param ctx Context.
      * @param modifiers Modifiers for the attribute.
      * @param options Options to use.
      * @param attributes List.
-     * @param builderPopulated TRUE if the attributes are assigned by a builder instead of a constructor.
+     * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, List<? extends Variable> attributes,
         boolean builderPopulated) {
@@ -76,13 +76,13 @@ class SrcVarsDecl implements CodeSnippet {
     }
 
     /**
-     * Constructor with event that allows marking the attributes as populated by a builder.
-     *
+     * Constructor with event that allows marking the attributes as assigned by a builder.
+     * 
      * @param ctx Context.
      * @param visibility Visibility for the attribute.
      * @param options Options to use.
      * @param event Event that has a list of attributes.
-     * @param builderPopulated TRUE if the attributes are assigned by a builder instead of a constructor.
+     * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Event event, boolean builderPopulated) {
         this(ctx, visibility, options, event.origin === null ? event.attributes : event.origin.parameters, builderPopulated);
@@ -101,13 +101,13 @@ class SrcVarsDecl implements CodeSnippet {
     }
 
     /**
-     * Constructor with command that allows marking the attributes as populated by a builder.
-     *
+     * Constructor with command that allows marking the attributes as assigned by a builder.
+     * 
      * @param ctx Context.
      * @param visibility Visibility for the attribute.
      * @param options Options to use.
      * @param command Command that has a list of attributes.
-     * @param builderPopulated TRUE if the attributes are assigned by a builder instead of a constructor.
+     * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Command command, boolean builderPopulated) {
         this(ctx, visibility, options, command.target === null ? command.attributes : command.target.parameters, builderPopulated);
