@@ -152,7 +152,17 @@ class SrcGen4JHint {
             return overrides
         }
         val types = <SrcGen4JType>newArrayList
-        types.addAll(overrides.types)
+        for (type : overrides.types) {
+            if (type.artifacts.nullOrEmpty) {
+                // A model type that overrides only "module" / "group" (no "artifacts") still applies to
+                // the preset's artifacts for that type: inherit them so the override's module/group win
+                // while the artifacts and their target folders keep coming from the preset.
+                val inherited = preset.types.filter[name == type.name].map[artifacts].flatten.toList
+                types.add(new SrcGen4JType(type.name, type.module, type.group, inherited))
+            } else {
+                types.add(type)
+            }
+        }
         types.addAll(preset.types)
         return new SrcGen4JHint(overrides.packagePattern ?: preset.packagePattern, types)
     }
