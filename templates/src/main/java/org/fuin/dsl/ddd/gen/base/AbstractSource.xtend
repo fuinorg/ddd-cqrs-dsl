@@ -3,6 +3,8 @@ package org.fuin.dsl.ddd.gen.base
 import java.util.ArrayList
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
+import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
+import org.fuin.dsl.cqrs.cqrsDsl.Hint
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
@@ -180,15 +182,41 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      */
     private def SrcGen4JHint srcGen4JHint(Namespace ns) {
         val preset = defaultHint()
-        val project = ns?.project
-        if (project === null) {
-            return preset
-        }
-        val hint = project.hints.findFirst[name == "SrcGen4J"]
+        val hint = modelHint(ns)
         if (hint === null) {
             return preset
         }
         return SrcGen4JHint.merge(preset, SrcGen4JHint.parse(hint))
+    }
+
+    /**
+     * Finds the "SrcGen4J" hint that applies to the given namespace. A project - like a context or a
+     * namespace - may be split across several ".cqrs" files; all blocks with the same name denote the
+     * same logical project, so the hint may be declared in any of them. The lookup therefore searches
+     * every same-named project in the resource set, not only the project block the namespace is
+     * physically nested in.
+     *
+     * @param ns Namespace (may be <code>null</code>).
+     *
+     * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
+     */
+    private def Hint modelHint(Namespace ns) {
+        val project = ns?.project
+        if (project === null) {
+            return null
+        }
+        val rs = ns.eResource?.resourceSet
+        if (rs === null) {
+            return project.hints.findFirst[name == "SrcGen4J"]
+        }
+        val projectName = project.name
+        return rs.resources
+            .map[contents].flatten
+            .filter(DomainModel)
+            .map[projects].flatten
+            .filter[name == projectName]
+            .map[hints].flatten
+            .findFirst[name == "SrcGen4J"]
     }
 
     /**
