@@ -9,13 +9,13 @@ project shop {
 				"module": "shared",
 				"group": "domain",
 				"artifacts": [
-					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genJava" },
-					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedAbstractValueObjectArtifactFactory", "folder": "genJava" },
-					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedValueObjectArtifactFactory", "folder": "genJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedAbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedValueObjectArtifactFactory", "folder": "genMainJava" },
 					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObjectArtifactFactory", "folder": "mainJava" },
-					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genMainJava" },
 					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectTestArtifactFactory", "folder": "testJava" },
-					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genJava" }
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genMainJava" }
 				]
 			}
 		]

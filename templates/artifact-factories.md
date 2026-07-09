@@ -81,13 +81,13 @@ hint SrcGen4J {
       "module": "shared",
       "group": "domain",
       "artifacts": [
-        { "AbstractValueObject": "genJava" },
-        { "CombinedAbstractValueObject": "genJava" },
-        { "CombinedValueObject": "genJava" },
-        { "FinalValueObject": "mainJava" },
-        { "SimpleStringValueObject": "genJava" },
-        { "SimpleStringValueObjectTest": "testJava" },
-        { "ValueObject": "genJava" }
+        { "AbstractValueObject": "genMainJava" },
+        { "CombinedAbstractValueObject": "genMainJava" },
+        { "CombinedValueObject": "genMainJava" },
+        { "FinalValueObject": "genMainJava" },
+        { "SimpleStringValueObject": "genMainJava" },
+        { "SimpleStringValueObjectTest": "genMainJava" },
+        { "ValueObject": "genMainJava" }
       ]
     }
   ]
