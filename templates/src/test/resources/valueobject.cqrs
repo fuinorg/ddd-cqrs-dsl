@@ -9,7 +9,7 @@ project p {
 
 		namespace valueobject {
 
-			import x.types.*
+			import p.x.types.*
 
 			/** Value object single attribute and base. */
 			value-object MyValueObject base String {

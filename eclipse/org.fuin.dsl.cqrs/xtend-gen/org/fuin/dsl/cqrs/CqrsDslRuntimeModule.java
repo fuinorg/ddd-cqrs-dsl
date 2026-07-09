@@ -4,10 +4,8 @@
 package org.fuin.dsl.cqrs;
 
 import org.eclipse.xtext.conversion.IValueConverterService;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.fuin.dsl.cqrs.conversion.CqrsDslValueConverterService;
-import org.fuin.dsl.cqrs.naming.CqrsDslQualifiedNameProvider;
 import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider;
 
 /**
@@ -34,13 +32,5 @@ public class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
   @Override
   public Class<? extends IValueConverterService> bindIValueConverterService() {
     return CqrsDslValueConverterService.class;
-  }
-
-  /**
-   * Excludes the enclosing project from qualified names (keeps context.namespace.element).
-   */
-  @Override
-  public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
-    return CqrsDslQualifiedNameProvider.class;
   }
 }

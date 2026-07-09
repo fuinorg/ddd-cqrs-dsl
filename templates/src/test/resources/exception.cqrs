@@ -9,7 +9,7 @@ project p {
 
 		namespace except {
 
-			import x.types.*
+			import p.x.types.*
 
 			/** Exception A - No CID - No variables */
 			exception ExceptionA {

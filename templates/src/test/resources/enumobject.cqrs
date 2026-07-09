@@ -10,7 +10,7 @@ project p {
 
 		namespace enumobject {
 
-			import x.types.*
+			import p.x.types.*
 
 			/** Enumeration type A - No variables. */
 			enum EnumA {

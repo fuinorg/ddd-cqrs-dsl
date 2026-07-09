@@ -118,7 +118,7 @@ public class RemoteScopeResolutionTest {
       _builder.append("namespace sales {");
       _builder.newLine();
       _builder.append("\t\t\t");
-      _builder.append("import com.acme.billing.*");
+      _builder.append("import remote.com.acme.billing.*");
       _builder.newLine();
       _builder.append("\t\t\t");
       _builder.append("value-object Price {");
@@ -157,10 +157,10 @@ public class RemoteScopeResolutionTest {
       _builder.append("namespace sales {");
       _builder.newLine();
       _builder.append("\t\t\t");
-      _builder.append("import com.acme.billing.*");
+      _builder.append("import remote.com.acme.billing.*");
       _builder.newLine();
       _builder.append("\t\t\t");
-      _builder.append("import com.acme.catalog.*");
+      _builder.append("import remote.com.acme.catalog.*");
       _builder.newLine();
       _builder.append("\t\t\t");
       _builder.append("value-object Price {");
@@ -223,7 +223,7 @@ public class RemoteScopeResolutionTest {
       try {
         Path _resolve = root.resolve("dependencies.json");
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\", \"com.acme.catalog\"], \"data\": {");
+        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"remote.com.acme.billing\", \"remote.com.acme.catalog\"], \"data\": {");
         _builder.newLine();
         _builder.append("\t");
         _builder.append("\"groupId\": \"org.fuin.test\", \"artifactId\": \"cqrs-model\", \"version\": \"0.1.0-SNAPSHOT\" } } ]");
@@ -293,7 +293,7 @@ public class RemoteScopeResolutionTest {
       try {
         Path _resolve = root.resolve("dependencies.json");
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\"], \"data\": {");
+        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"remote.com.acme.billing\"], \"data\": {");
         _builder.newLine();
         _builder.append("\t");
         _builder.append("\"groupId\": \"org.fuin.test\", \"artifactId\": \"cqrs-model\", \"version\": \"0.1.0-SNAPSHOT\" } } ]");
@@ -322,7 +322,7 @@ public class RemoteScopeResolutionTest {
       try {
         Path _resolve = root.resolve("dependencies.json");
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"com.acme.billing\"], \"data\": {");
+        _builder.append("[ { \"type\": \"maven\", \"namespaces\": [\"remote.com.acme.billing\"], \"data\": {");
         _builder.newLine();
         _builder.append("\t");
         _builder.append("\"groupId\": \"org.fuin.test\", \"artifactId\": \"cqrs-model\", \"version\": \"0.1.0-SNAPSHOT\",");

@@ -9,7 +9,7 @@ project p {
 
 		namespace a {
 
-			import x.types.*
+			import p.x.types.*
 
 			/** Example value object. */
 			value-object MyValueObject {}
