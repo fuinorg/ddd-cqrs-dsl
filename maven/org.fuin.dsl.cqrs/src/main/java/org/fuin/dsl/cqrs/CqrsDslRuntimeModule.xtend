@@ -5,14 +5,17 @@ package org.fuin.dsl.cqrs
 
 
 import org.eclipse.xtext.conversion.IValueConverterService
-import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.fuin.dsl.cqrs.conversion.CqrsDslValueConverterService
-import org.fuin.dsl.cqrs.naming.CqrsDslQualifiedNameProvider
 import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
+ *
+ * <p>Qualified names use the default provider, so they include the whole containment chain
+ * <code>project.context.namespace.element</code>. The enclosing {@link org.fuin.dsl.cqrs.cqrsDsl.Project}
+ * is part of the reference namespace: imports and cross references address a type by its full
+ * <code>project.context.namespace</code> path.</p>
  */
 class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
 
@@ -24,10 +27,5 @@ class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
 	/** Adds caret ('^') escaping so keywords can be used as identifiers (e.g. '^event'). */
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
 		CqrsDslValueConverterService
-	}
-
-	/** Excludes the enclosing project from qualified names (keeps context.namespace.element). */
-	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
-		CqrsDslQualifiedNameProvider
 	}
 }

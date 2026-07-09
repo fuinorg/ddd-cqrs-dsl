@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet
  * resource's URI. Its name defaults to <code>dependencies.json</code> and can be overridden with
  * the system property <code>cqrs.dependencies.file</code>. The JSON structure is an array of typed
  * objects, each declaring the fully qualified namespaces it <strong>provides</strong> (the
- * <code>context.namespace</code> values, not the importer) as a <code>namespaces</code> array, a
+ * <code>project.context.namespace</code> values, not the importer) as a <code>namespaces</code> array, a
  * <code>type</code> discriminator (always <code>maven</code>) and a <code>data</code> block with the
  * artifact's <code>groupId</code>/<code>artifactId</code>/<code>version</code>. Listing several
  * namespaces in one entry is handy because a single Maven artifact often holds more than one context
@@ -31,16 +31,16 @@ import org.eclipse.emf.ecore.resource.ResourceSet
  *
  * <pre>
  * [
- *   { "type": "maven", "namespaces": ["common.types", "common.refs"],
+ *   { "type": "maven", "namespaces": ["common.core.types", "common.core.refs"],
  *     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
  *               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } },
- *   { "type": "maven", "namespaces": ["dev.workinprogress"],
+ *   { "type": "maven", "namespaces": ["wip.dev.workinprogress"],
  *     "data": { "groupId": "org.acme", "artifactId": "wip-model", "version": "0.0.1-SNAPSHOT",
  *               "local": "../wip-model/src/main/cqrs" } }
  * ]
  * </pre>
  *
- * <p>So <em>any</em> model that contains <code>import common.types.*</code> resolves to that source,
+ * <p>So <em>any</em> model that contains <code>import common.core.types.*</code> resolves to that source,
  * regardless of the importing context. A namespace that is not present in the catalog yields
  * <code>null</code>, which lets the caller fall back to the standard file-based scoping mechanism.</p>
  */
@@ -162,7 +162,7 @@ class RemoteScopeCatalog {
 	}
 
 	/**
-	 * Parses the catalog into a map of fully qualified namespace (<code>context.namespace</code>) to
+	 * Parses the catalog into a map of fully qualified namespace (<code>project.context.namespace</code>) to
 	 * its typed {@link RemoteScopeEntry}. Entries with an unknown <code>type</code> are logged and
 	 * skipped; a structurally invalid entry aborts the whole parse.
 	 */

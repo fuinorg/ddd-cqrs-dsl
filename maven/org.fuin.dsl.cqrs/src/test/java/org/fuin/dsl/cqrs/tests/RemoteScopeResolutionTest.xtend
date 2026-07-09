@@ -54,7 +54,7 @@ class RemoteScopeResolutionTest {
 		project local {
 			context com.acme.sales {
 				namespace sales {
-					import com.acme.billing.*
+					import remote.com.acme.billing.*
 					value-object Price {
 						Money amount
 					}
@@ -68,8 +68,8 @@ class RemoteScopeResolutionTest {
 		project local {
 			context com.acme.sales {
 				namespace sales {
-					import com.acme.billing.*
-					import com.acme.catalog.*
+					import remote.com.acme.billing.*
+					import remote.com.acme.catalog.*
 					value-object Price {
 						Money amount
 						Sku item
@@ -105,7 +105,7 @@ class RemoteScopeResolutionTest {
 		System.setProperty("maven.repo.local", emptyLocalRepo.toString)
 		try {
 			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["com.acme.billing", "com.acme.catalog"], "data": {
+				[ { "type": "maven", "namespaces": ["remote.com.acme.billing", "remote.com.acme.catalog"], "data": {
 					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT" } } ]
 			''')
 
@@ -147,7 +147,7 @@ class RemoteScopeResolutionTest {
 		System.setProperty("maven.repo.local", localRepo.toString)
 		try {
 			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["com.acme.billing"], "data": {
+				[ { "type": "maven", "namespaces": ["remote.com.acme.billing"], "data": {
 					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT" } } ]
 			''')
 
@@ -168,7 +168,7 @@ class RemoteScopeResolutionTest {
 		System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/")
 		try {
 			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["com.acme.billing"], "data": {
+				[ { "type": "maven", "namespaces": ["remote.com.acme.billing"], "data": {
 					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT",
 					"local": "«localDir.toString»" } } ]
 			''')

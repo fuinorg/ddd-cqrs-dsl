@@ -97,7 +97,7 @@ provides, a `type` discriminator (always `maven`) and a `data` block:
 ```json
 [
   { "type": "maven", 
-    "namespaces": ["com.acme.billing", "com.acme.catalog"],
+    "namespaces": ["billing.com.acme.billing", "billing.com.acme.catalog"],
     "data": { 
       "groupId": "org.fuin.dsl.cqrs.contexts",
       "artifactId": "cqrs-billing-model", 
@@ -105,7 +105,7 @@ provides, a `type` discriminator (always `maven`) and a `data` block:
     }
   },
   { "type": "maven", 
-    "namespaces": ["dev.workinprogress"],
+    "namespaces": ["wip.dev.workinprogress"],
     "data": { 
       "groupId": "org.acme", 
       "artifactId": "wip-model", 
@@ -116,11 +116,11 @@ provides, a `type` discriminator (always `maven`) and a `data` block:
 ]
 ```
 
-- `namespaces` lists the provided namespaces — the fully qualified `context.namespace` values exactly
-  as they are written in an `import`. They say *where those namespaces live*, independent of who imports
-  them, so one entry serves every importing model. Listing several namespaces in one entry is handy
-  because a single Maven artifact often holds more than one context and namespace. A trailing `.*` is
-  ignored, so `import a.b` and `import a.b.*` match the entry that lists `a.b`.
+- `namespaces` lists the provided namespaces — the fully qualified `project.context.namespace` values
+  exactly as they are written in an `import`. They say *where those namespaces live*, independent of who
+  imports them, so one entry serves every importing model. Listing several namespaces in one entry is
+  handy because a single Maven artifact often holds more than one context and namespace. A trailing `.*`
+  is ignored, so `import a.b.c` and `import a.b.c.*` match the entry that lists `a.b.c`.
 - `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
   `cqrs` and type `tar.gz`. The artifact is resolved from the local repository (`~/.m2/repository`)
   first, otherwise downloaded from Maven Central (releases) or Sonatype Snapshots (`-SNAPSHOT`
@@ -169,9 +169,11 @@ Remote model published as the Maven artifact
 bundling a `billing.cqrs`:
 
 ```
-context com.acme {
-    namespace billing {
-        type Money
+project common {
+    context com.acme {
+        namespace billing {
+            type Money
+        }
     }
 }
 ```
@@ -179,7 +181,7 @@ context com.acme {
 `dependencies.json` in the local project root:
 
 ```json
-[ { "type": "maven", "namespaces": ["com.acme.billing"],
+[ { "type": "maven", "namespaces": ["common.com.acme.billing"],
     "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
               "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } } ]
 ```
@@ -188,7 +190,7 @@ context com.acme {
 read directly, no build or publish needed:)
 
 ```json
-[ { "type": "maven", "namespaces": ["com.acme.billing"],
+[ { "type": "maven", "namespaces": ["common.com.acme.billing"],
     "data": { "groupId": "org.fuin.dsl.cqrs.contexts", "artifactId": "cqrs-common-model",
               "version": "0.1.0-SNAPSHOT", "local": "../cqrs-common-model/src/main/cqrs" } } ]
 ```
@@ -196,31 +198,24 @@ read directly, no build or publish needed:)
 Local model that references the remote `Money` type:
 
 ```
-context com.acme.sales {
-    namespace sales {
-        import com.acme.billing.*
-        value-object Price {
-            Money amount
+project sales {
+    context com.acme.sales {
+        namespace sales {
+            import common.com.acme.billing.*
+            value-object Price {
+                Money amount
+            }
         }
     }
 }
 ```
 
-`Money`'s fully qualified name is `com.acme.billing.Money` (context `com.acme` + namespace `billing` +
-`Money`). The `import com.acme.billing.*` therefore makes it visible as the simple name `Money`, and
-the catalog entry for the namespace `com.acme.billing` tells the provider where to download the model
-defining it. The cross-reference resolves exactly as if `Money` were a local type — `F3` navigates into
-the cached copy, and content assist proposes it.
+`Money`'s fully qualified name is `common.com.acme.billing.Money` (project `common` + context `com.acme`
++ namespace `billing` + `Money`). The `import common.com.acme.billing.*` therefore makes it visible as
+the simple name `Money`, and the catalog entry for the namespace `common.com.acme.billing` tells the
+provider where to download the model defining it. The cross-reference resolves exactly as if `Money`
+were a local type — `F3` navigates into the cached copy, and content assist proposes it.
 
 > The import path must match the remote type's FQN prefix, just as it would for a local model. The
 > provider only handles *loading*; name resolution stays standard Xtext.
 
-## Version history
-
-- **1.3.0** — A keyword can now be used as an identifier by prefixing it with a caret (e.g.
-  `^event`). The caret marks the following word as a plain identifier and is not part of the name.
-- **1.2.0** — The dependency catalog is now Maven-only (the `simple` URL source type was removed).
-  Artifacts are cached once per Maven coordinate (GAV) instead of per namespace, so an artifact that
-  provides several namespaces is downloaded and unpacked only once. A new `local` directory field
-  reads `.cqrs` models straight from a folder without downloading.
-- **1.1.0** — Remote scope catalog with typed entries (`simple` URL and `maven` `tar.gz` sources).
