@@ -91,6 +91,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 	        }
             if (command.attributes.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+                ctx.requiresImport("java.util.Objects")
             }
         } else {
 	        if (options.jsonb) {
@@ -103,6 +104,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 	            ctx.requiresImport("org.fuin.cqrs4j.jackson.AbstractAggregateCommand")        
 	        }
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+            ctx.requiresImport("java.util.Objects")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)
         }
@@ -164,12 +166,12 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             
                 @Override
                 public String toString() {
-                    return KeyValue.replace("«command.message»",
+                    return Objects.requireNonNull(KeyValue.replace("«command.message»",
                         new KeyValue("#entityIdPath", getEntityIdPath())
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                    );
+                    ));
                 }
                 
                 /**
@@ -240,11 +242,11 @@ class CommandArtifactFactory extends AbstractSource<Command> {
                     «IF variables.nullSafe.size == 0»
                         return "«command.message»";
                     «ELSE»
-                        return KeyValue.replace("«command.message»"
+                        return Objects.requireNonNull(KeyValue.replace("«command.message»"
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                        );
+                        ));
                     «ENDIF»
                 }
                 

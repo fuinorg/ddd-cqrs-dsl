@@ -19,6 +19,7 @@ package p.shared.domain.x.ev;
 
 import java.io.Serial;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
@@ -45,9 +46,9 @@ public final class EventA extends AbstractDomainEvent<CustomerId> {
 
     @Override
     public String toString() {
-        return KeyValue.replace("Event A [${#entityIdPath}]",
+        return Objects.requireNonNull(KeyValue.replace("Event A [${#entityIdPath}]",
             new KeyValue("#entityIdPath", getEntityIdPath())
-        );
+        ));
     }
     
     /**

@@ -19,6 +19,7 @@ package p.shared.domain.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
 import java.io.Serial;
+import java.util.Objects;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
 import org.fuin.objects4j.common.Contract;
@@ -94,10 +95,10 @@ public final class EventE extends AbstractEvent {
 
     @Override
     public String toString() {
-        return KeyValue.replace("Something interesting happened!"
+        return Objects.requireNonNull(KeyValue.replace("Something interesting happened!"
         , new KeyValue("a", a)
         , new KeyValue("b", b)
-        );
+        ));
     }
     
 }

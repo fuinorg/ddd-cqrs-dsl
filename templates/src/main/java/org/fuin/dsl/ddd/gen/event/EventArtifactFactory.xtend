@@ -90,6 +90,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	        }
             if (event.attributes.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+                ctx.requiresImport("java.util.Objects")
             }
         } else {
 	        if (options.jsonb) {
@@ -102,6 +103,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	            ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractDomainEvent")        
 	        }
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+            ctx.requiresImport("java.util.Objects")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)
         }
@@ -156,12 +158,12 @@ class EventArtifactFactory extends AbstractSource<Event> {
             
                 @Override
                 public String toString() {
-                    return KeyValue.replace("«event.message»",
+                    return Objects.requireNonNull(KeyValue.replace("«event.message»",
                         new KeyValue("#entityIdPath", getEntityIdPath())
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                    );
+                    ));
                 }
                 
                 /**
@@ -233,11 +235,11 @@ class EventArtifactFactory extends AbstractSource<Event> {
                     «IF variables.nullSafe.size == 0»
                         return "«event.message»";
                     «ELSE»
-                        return KeyValue.replace("«event.message»"
+                        return Objects.requireNonNull(KeyValue.replace("«event.message»"
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                        );
+                        ));
                     «ENDIF»
                 }
                 

@@ -286,12 +286,14 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                     // JAXB XML Adapter
 
                     @Override
-                    public «className» unmarshal(final Integer value) throws Exception {
+                    @Nullable
+                    public «className» unmarshal(@Nullable final Integer value) throws Exception {
                         return toVO(value);
                     }
 
                     @Override
-                    public Integer marshal(final «className» obj) throws Exception {
+                    @Nullable
+                    public Integer marshal(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
@@ -300,12 +302,14 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                     // JPA Attribute Converter
 
                     @Override
-                    public Integer convertToDatabaseColumn(final «className» obj) {
+                    @Nullable
+                    public Integer convertToDatabaseColumn(@Nullable final «className» obj) {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» convertToEntityAttribute(final Integer value) {
+                    @Nullable
+                    public «className» convertToEntityAttribute(@Nullable final Integer value) {
                         return toVO(value);
                     }
 
@@ -314,12 +318,14 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                     // JSONB Adapter
 
                     @Override
-                    public Integer adaptToJson(final «className» obj) throws Exception {
+                    @Nullable
+                    public Integer adaptToJson(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» adaptFromJson(final Integer value) throws Exception {
+                    @Nullable
+                    public «className» adaptFromJson(@Nullable final Integer value) throws Exception {
                         return toVO(value);
                     }
 

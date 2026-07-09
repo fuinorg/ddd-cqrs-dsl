@@ -256,12 +256,14 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                     // JAXB XML Adapter
 
                     @Override
-                    public «className» unmarshal(final UUID value) throws Exception {
+                    @Nullable
+                    public «className» unmarshal(@Nullable final UUID value) throws Exception {
                         return toVO(value);
                     }
 
                     @Override
-                    public UUID marshal(final «className» obj) throws Exception {
+                    @Nullable
+                    public UUID marshal(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
@@ -270,12 +272,14 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                     // JPA Attribute Converter
 
                     @Override
-                    public UUID convertToDatabaseColumn(final «className» obj) {
+                    @Nullable
+                    public UUID convertToDatabaseColumn(@Nullable final «className» obj) {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» convertToEntityAttribute(final UUID value) {
+                    @Nullable
+                    public «className» convertToEntityAttribute(@Nullable final UUID value) {
                         return toVO(value);
                     }
 
@@ -284,12 +288,14 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                     // JSONB Adapter
 
                     @Override
-                    public UUID adaptToJson(final «className» obj) throws Exception {
+                    @Nullable
+                    public UUID adaptToJson(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» adaptFromJson(final UUID value) throws Exception {
+                    @Nullable
+                    public «className» adaptFromJson(@Nullable final UUID value) throws Exception {
                         return toVO(value);
                     }
 

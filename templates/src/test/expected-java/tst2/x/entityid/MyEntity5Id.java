@@ -235,36 +235,42 @@ public final class MyEntity5Id extends IntegerEntityId {
         // JAXB XML Adapter
 
         @Override
-        public MyEntity5Id unmarshal(final Integer value) throws Exception {
+        @Nullable
+        public MyEntity5Id unmarshal(@Nullable final Integer value) throws Exception {
             return toVO(value);
         }
 
         @Override
-        public Integer marshal(final MyEntity5Id obj) throws Exception {
+        @Nullable
+        public Integer marshal(@Nullable final MyEntity5Id obj) throws Exception {
             return fromVO(obj);
         }
 
         // JPA Attribute Converter
 
         @Override
-        public Integer convertToDatabaseColumn(final MyEntity5Id obj) {
+        @Nullable
+        public Integer convertToDatabaseColumn(@Nullable final MyEntity5Id obj) {
             return fromVO(obj);
         }
 
         @Override
-        public MyEntity5Id convertToEntityAttribute(final Integer value) {
+        @Nullable
+        public MyEntity5Id convertToEntityAttribute(@Nullable final Integer value) {
             return toVO(value);
         }
 
         // JSONB Adapter
 
         @Override
-        public Integer adaptToJson(final MyEntity5Id obj) throws Exception {
+        @Nullable
+        public Integer adaptToJson(@Nullable final MyEntity5Id obj) throws Exception {
             return fromVO(obj);
         }
 
         @Override
-        public MyEntity5Id adaptFromJson(final Integer value) throws Exception {
+        @Nullable
+        public MyEntity5Id adaptFromJson(@Nullable final Integer value) throws Exception {
             return toVO(value);
         }
 

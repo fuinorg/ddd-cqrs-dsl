@@ -298,12 +298,14 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                     // JAXB XML Adapter
 
                     @Override
-                    public «className» unmarshal(final String value) throws Exception {
+                    @Nullable
+                    public «className» unmarshal(@Nullable final String value) throws Exception {
                         return toVO(value);
                     }
 
                     @Override
-                    public String marshal(final «className» obj) throws Exception {
+                    @Nullable
+                    public String marshal(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
@@ -312,12 +314,14 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                     // JPA Attribute Converter
 
                     @Override
-                    public String convertToDatabaseColumn(final «className» obj) {
+                    @Nullable
+                    public String convertToDatabaseColumn(@Nullable final «className» obj) {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» convertToEntityAttribute(final String value) {
+                    @Nullable
+                    public «className» convertToEntityAttribute(@Nullable final String value) {
                         return toVO(value);
                     }
 
@@ -326,12 +330,14 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                     // JSONB Adapter
 
                     @Override
-                    public String adaptToJson(final «className» obj) throws Exception {
+                    @Nullable
+                    public String adaptToJson(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
                     @Override
-                    public «className» adaptFromJson(final String value) throws Exception {
+                    @Nullable
+                    public «className» adaptFromJson(@Nullable final String value) throws Exception {
                         return toVO(value);
                     }
 

@@ -20,6 +20,7 @@ package p.shared.domain.x.ev;
 import jakarta.json.bind.annotation.JsonbProperty;
 import java.io.Serial;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
@@ -70,10 +71,10 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
 
     @Override
     public String toString() {
-        return KeyValue.replace("Event B: ${a} [${#entityIdPath}]",
+        return Objects.requireNonNull(KeyValue.replace("Event B: ${a} [${#entityIdPath}]",
             new KeyValue("#entityIdPath", getEntityIdPath())
             , new KeyValue("a", a)
-        );
+        ));
     }
     
     /**

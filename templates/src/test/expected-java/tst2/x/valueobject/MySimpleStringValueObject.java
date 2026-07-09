@@ -247,36 +247,42 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
         // JAXB XML Adapter
 
         @Override
-        public MySimpleStringValueObject unmarshal(final String value) throws Exception {
+        @Nullable
+        public MySimpleStringValueObject unmarshal(@Nullable final String value) throws Exception {
             return toVO(value);
         }
 
         @Override
-        public String marshal(final MySimpleStringValueObject obj) throws Exception {
+        @Nullable
+        public String marshal(@Nullable final MySimpleStringValueObject obj) throws Exception {
             return fromVO(obj);
         }
 
         // JPA Attribute Converter
 
         @Override
-        public String convertToDatabaseColumn(final MySimpleStringValueObject obj) {
+        @Nullable
+        public String convertToDatabaseColumn(@Nullable final MySimpleStringValueObject obj) {
             return fromVO(obj);
         }
 
         @Override
-        public MySimpleStringValueObject convertToEntityAttribute(final String value) {
+        @Nullable
+        public MySimpleStringValueObject convertToEntityAttribute(@Nullable final String value) {
             return toVO(value);
         }
 
         // JSONB Adapter
 
         @Override
-        public String adaptToJson(final MySimpleStringValueObject obj) throws Exception {
+        @Nullable
+        public String adaptToJson(@Nullable final MySimpleStringValueObject obj) throws Exception {
             return fromVO(obj);
         }
 
         @Override
-        public MySimpleStringValueObject adaptFromJson(final String value) throws Exception {
+        @Nullable
+        public MySimpleStringValueObject adaptFromJson(@Nullable final String value) throws Exception {
             return toVO(value);
         }
 
