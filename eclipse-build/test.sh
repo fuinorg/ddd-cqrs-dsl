@@ -3,7 +3,7 @@
 # Run the plugins' JUnit 5 tests during the headless build -- WITHOUT Maven/Tycho and
 # without the heavyweight Eclipse Test Framework.
 #
-#   ./eclipse-build/test.sh [version]
+#   ./eclipse-build/test.sh
 #
 # The DSL's tests (org.fuin.dsl.cqrs.tests) are standalone Xtext tests (@InjectWith +
 # Guice + ParseHelper); they do not need a running Eclipse/OSGi workbench. So we:
@@ -17,7 +17,6 @@
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
-VERSION="${1:-$(cat "$VERSION_FILE" 2>/dev/null || echo 1.0.0.qualifier)}"
 PLUGINS="$ECLIPSE_HOME/plugins"
 TEST_CLASSES="$WORK_DIR/test-classes"
 LAUNCHER_CLASSES="$WORK_DIR/launcher-classes"

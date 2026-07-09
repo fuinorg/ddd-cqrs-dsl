@@ -19,8 +19,14 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 "$EB_DIR/provision.sh"
 
 # --- 2. Determine the version --------------------------------------------------------
+# The feature's version is the single source of truth; deriving it here keeps the
+# published path from drifting away from the bundle versions PDE stamps into the jars.
+FEATURE_XML="$REPO_ROOT/eclipse/org.fuin.dsl.cqrs.feature/feature.xml"
+BASE_VERSION="$(sed -n 's/.*version="\([0-9.]*\)\.qualifier".*/\1/p' "$FEATURE_XML" | head -1)"
+[ -n "$BASE_VERSION" ] || die "Cannot determine version from $FEATURE_XML"
+
 QUALIFIER="${BUILD_QUALIFIER:-$(date -u +%Y%m%d%H%M)}"
-VERSION="1.2.0.${QUALIFIER}"
+VERSION="${BASE_VERSION}.${QUALIFIER}"
 log "Building version ${VERSION}"
 
 # --- 3. Assemble the PDE build workspace ---------------------------------------------
@@ -81,7 +87,7 @@ log "Update site ready: $REPO_OUT (version $VERSION)"
 if [ "${SKIP_TESTS:-0}" = "1" ]; then
   log "SKIP_TESTS=1 -> skipping headless tests"
 else
-  "$EB_DIR/test.sh" "$VERSION"
+  "$EB_DIR/test.sh"
 fi
 
 log "Build complete."

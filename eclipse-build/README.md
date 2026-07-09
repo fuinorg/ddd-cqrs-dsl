@@ -9,7 +9,8 @@ the [`eclipse.yml`](../.github/workflows/eclipse.yml) GitHub Action.
 ## What it produces
 
 A categorized p2 update site containing the `org.fuin.dsl.cqrs.feature` and its three runtime
-plugins, versioned `1.0.0.<UTC-timestamp>`, uploaded to:
+plugins, versioned `<feature-version>.<UTC-timestamp>` (e.g. `1.5.0.202606071200`, where the base
+version is read from [`feature.xml`](../eclipse/org.fuin.dsl.cqrs.feature/feature.xml)), uploaded to:
 
 ```
 https://fuinorg.jfrog.io/artifactory/ddd-cqrs-dsl/cqrs-dsl/<version>/   # immutable, per build

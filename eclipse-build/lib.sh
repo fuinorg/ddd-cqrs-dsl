@@ -26,7 +26,7 @@ WORK_DIR="$EB_DIR/work"
 REPO_OUT="$EB_DIR/repository"
 TEST_RESULTS="$EB_DIR/test-results"
 
-# Marker file written by build.sh with the full version (e.g. 1.0.0.202606071200).
+# Marker file written by build.sh with the full version (e.g. 1.5.0.202606071200).
 VERSION_FILE="$EB_DIR/.build-version"
 
 # --- Versions (overridable via environment) --------------------------------------------
