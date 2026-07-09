@@ -77,9 +77,9 @@ class ValidatorAnnotationArtifactFactoryTest {
 
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.constr." + constrName + "Validator",
-            EXAMPLES_CONCRETE + ".x.constr." + constrName + "Validator")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.constr." + constrName + "Validator",
+            "p.x.constr." + constrName + "Validator")
 
         val ValidatorAnnotationArtifactFactory testee = createTestee()
         val Constraint constraint = model.find(typeof(Constraint), constrName)
@@ -94,8 +94,7 @@ class ValidatorAnnotationArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ValidatorAnnotationArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validatorAnnotation",
-            ValidatorAnnotationArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validatorAnnotation", ValidatorAnnotationArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

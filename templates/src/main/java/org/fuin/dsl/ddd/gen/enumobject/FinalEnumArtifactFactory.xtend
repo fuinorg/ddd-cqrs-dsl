@@ -52,8 +52,8 @@ class FinalEnumArtifactFactory extends AbstractSource<EnumObject> {
         ctx.addImports
         ctx.addReferences(enu)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
-            create(ctx, enu, pkg, className, abstractClassName).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename,
+            create(ctx, enu, pkg, className, abstractClassName).toString().getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx) {

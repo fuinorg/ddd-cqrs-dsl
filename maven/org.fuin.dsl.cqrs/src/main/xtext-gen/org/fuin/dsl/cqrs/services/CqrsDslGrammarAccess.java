@@ -27,19 +27,73 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public class DomainModelElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.DomainModel");
-		private final Assignment cContextsAssignment = (Assignment)rule.eContents().get(1);
-		private final RuleCall cContextsContextParserRuleCall_0 = (RuleCall)cContextsAssignment.eContents().get(0);
+		private final Assignment cProjectsAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cProjectsProjectParserRuleCall_0 = (RuleCall)cProjectsAssignment.eContents().get(0);
 		
 		///** A system of abstractions that describes the selected aspects of the domain. */
 		//DomainModel:
-		//    contexts+=Context*;
+		//    projects+=Project*;
 		@Override public ParserRule getRule() { return rule; }
 		
+		//projects+=Project*
+		public Assignment getProjectsAssignment() { return cProjectsAssignment; }
+		
+		//Project
+		public RuleCall getProjectsProjectParserRuleCall_0() { return cProjectsProjectParserRuleCall_0; }
+	}
+	public class ProjectElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Project");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cProjectKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cHintsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cHintsHintParserRuleCall_3_0 = (RuleCall)cHintsAssignment_3.eContents().get(0);
+		private final Assignment cContextsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cContextsContextParserRuleCall_4_0 = (RuleCall)cContextsAssignment_4.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		
+		///** A deployable unit that groups a number of contexts and carries generator hints. */
+		//Project:
+		//    'project' name=FQN '{'
+		//        hints+=Hint*
+		//        contexts+=Context*
+		//    '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'project' name=FQN '{'
+		//    hints+=Hint*
+		//    contexts+=Context*
+		//'}'
+		public Group getGroup() { return cGroup; }
+		
+		//'project'
+		public Keyword getProjectKeyword_0() { return cProjectKeyword_0; }
+		
+		//name=FQN
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//FQN
+		public RuleCall getNameFQNParserRuleCall_1_0() { return cNameFQNParserRuleCall_1_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
+		
+		//hints+=Hint*
+		public Assignment getHintsAssignment_3() { return cHintsAssignment_3; }
+		
+		//Hint
+		public RuleCall getHintsHintParserRuleCall_3_0() { return cHintsHintParserRuleCall_3_0; }
+		
 		//contexts+=Context*
-		public Assignment getContextsAssignment() { return cContextsAssignment; }
+		public Assignment getContextsAssignment_4() { return cContextsAssignment_4; }
 		
 		//Context
-		public RuleCall getContextsContextParserRuleCall_0() { return cContextsContextParserRuleCall_0; }
+		public RuleCall getContextsContextParserRuleCall_4_0() { return cContextsContextParserRuleCall_4_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
 	}
 	public class ContextElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Context");
@@ -170,6 +224,48 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//FQNWithWildcard
 		public RuleCall getImportedNamespaceFQNWithWildcardParserRuleCall_1_0_1() { return cImportedNamespaceFQNWithWildcardParserRuleCall_1_0_1; }
+	}
+	public class HintElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Hint");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Keyword cHintKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameFQNParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Assignment cJsonAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cJsonJSONParserRuleCall_3_0 = (RuleCall)cJsonAssignment_3.eContents().get(0);
+		
+		///** A named, JSON-structured generator hint. */
+		//Hint:
+		//    doc=DOC?
+		//    'hint' name=FQN json=JSON;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//'hint' name=FQN json=JSON
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//'hint'
+		public Keyword getHintKeyword_1() { return cHintKeyword_1; }
+		
+		//name=FQN
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//FQN
+		public RuleCall getNameFQNParserRuleCall_2_0() { return cNameFQNParserRuleCall_2_0; }
+		
+		//json=JSON
+		public Assignment getJsonAssignment_3() { return cJsonAssignment_3; }
+		
+		//JSON
+		public RuleCall getJsonJSONParserRuleCall_3_0() { return cJsonJSONParserRuleCall_3_0; }
 	}
 	public class AbstractElementElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AbstractElement");
@@ -3425,12 +3521,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cHandlesKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Assignment cCommandsAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final CrossReference cCommandsCommandCrossReference_4_0 = (CrossReference)cCommandsAssignment_4.eContents().get(0);
-		private final RuleCall cCommandsCommandIDTerminalRuleCall_4_0_1 = (RuleCall)cCommandsCommandCrossReference_4_0.eContents().get(1);
+		private final RuleCall cCommandsCommandFQNParserRuleCall_4_0_1 = (RuleCall)cCommandsCommandCrossReference_4_0.eContents().get(1);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
 		private final Keyword cCommaKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
 		private final Assignment cCommandsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
 		private final CrossReference cCommandsCommandCrossReference_5_1_0 = (CrossReference)cCommandsAssignment_5_1.eContents().get(0);
-		private final RuleCall cCommandsCommandIDTerminalRuleCall_5_1_0_1 = (RuleCall)cCommandsCommandCrossReference_5_1_0.eContents().get(1);
+		private final RuleCall cCommandsCommandFQNParserRuleCall_5_1_0_1 = (RuleCall)cCommandsCommandCrossReference_5_1_0.eContents().get(1);
 		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
 		private final Keyword cUsesKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
 		private final Assignment cAggregatesAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
@@ -3446,13 +3542,13 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//CommandHandler:
 		//    doc=DOC?
 		//    'command-handler' name=ID
-		//        'handles' commands+=[Command] (',' commands+=[Command])*
+		//        'handles' commands+=[Command|FQN] (',' commands+=[Command|FQN])*
 		//       ('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
 		//'command-handler' name=ID
-		//    'handles' commands+=[Command] (',' commands+=[Command])*
+		//    'handles' commands+=[Command|FQN] (',' commands+=[Command|FQN])*
 		//   ('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?
 		public Group getGroup() { return cGroup; }
 		
@@ -3474,29 +3570,29 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'handles'
 		public Keyword getHandlesKeyword_3() { return cHandlesKeyword_3; }
 		
-		//commands+=[Command]
+		//commands+=[Command|FQN]
 		public Assignment getCommandsAssignment_4() { return cCommandsAssignment_4; }
 		
-		//[Command]
+		//[Command|FQN]
 		public CrossReference getCommandsCommandCrossReference_4_0() { return cCommandsCommandCrossReference_4_0; }
 		
-		//ID
-		public RuleCall getCommandsCommandIDTerminalRuleCall_4_0_1() { return cCommandsCommandIDTerminalRuleCall_4_0_1; }
+		//FQN
+		public RuleCall getCommandsCommandFQNParserRuleCall_4_0_1() { return cCommandsCommandFQNParserRuleCall_4_0_1; }
 		
-		//(',' commands+=[Command])*
+		//(',' commands+=[Command|FQN])*
 		public Group getGroup_5() { return cGroup_5; }
 		
 		//','
 		public Keyword getCommaKeyword_5_0() { return cCommaKeyword_5_0; }
 		
-		//commands+=[Command]
+		//commands+=[Command|FQN]
 		public Assignment getCommandsAssignment_5_1() { return cCommandsAssignment_5_1; }
 		
-		//[Command]
+		//[Command|FQN]
 		public CrossReference getCommandsCommandCrossReference_5_1_0() { return cCommandsCommandCrossReference_5_1_0; }
 		
-		//ID
-		public RuleCall getCommandsCommandIDTerminalRuleCall_5_1_0_1() { return cCommandsCommandIDTerminalRuleCall_5_1_0_1; }
+		//FQN
+		public RuleCall getCommandsCommandFQNParserRuleCall_5_1_0_1() { return cCommandsCommandFQNParserRuleCall_5_1_0_1; }
 		
 		//('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?
 		public Group getGroup_6() { return cGroup_6; }
@@ -3613,16 +3709,16 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cUsesKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Assignment cProjectionAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final CrossReference cProjectionProjectionCrossReference_4_0 = (CrossReference)cProjectionAssignment_4.eContents().get(0);
-		private final RuleCall cProjectionProjectionIDTerminalRuleCall_4_0_1 = (RuleCall)cProjectionProjectionCrossReference_4_0.eContents().get(1);
+		private final RuleCall cProjectionProjectionFQNParserRuleCall_4_0_1 = (RuleCall)cProjectionProjectionCrossReference_4_0.eContents().get(1);
 		
 		///** Result of a projection. */
 		//View:
 		//    doc=DOC?
-		//    'view' name=ID 'uses' projection=[Projection];
+		//    'view' name=ID 'uses' projection=[Projection|FQN];
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'view' name=ID 'uses' projection=[Projection]
+		//'view' name=ID 'uses' projection=[Projection|FQN]
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -3643,14 +3739,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'uses'
 		public Keyword getUsesKeyword_3() { return cUsesKeyword_3; }
 		
-		//projection=[Projection]
+		//projection=[Projection|FQN]
 		public Assignment getProjectionAssignment_4() { return cProjectionAssignment_4; }
 		
-		//[Projection]
+		//[Projection|FQN]
 		public CrossReference getProjectionProjectionCrossReference_4_0() { return cProjectionProjectionCrossReference_4_0; }
 		
-		//ID
-		public RuleCall getProjectionProjectionIDTerminalRuleCall_4_0_1() { return cProjectionProjectionIDTerminalRuleCall_4_0_1; }
+		//FQN
+		public RuleCall getProjectionProjectionFQNParserRuleCall_4_0_1() { return cProjectionProjectionFQNParserRuleCall_4_0_1; }
 	}
 	public class LiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Literal");
@@ -3679,6 +3775,254 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//StringLiteral
 		public RuleCall getStringLiteralParserRuleCall_3() { return cStringLiteralParserRuleCall_3; }
+	}
+	public class JSONElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JSON");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cJsonObjectParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cJsonArrayParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cJsonStringParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final RuleCall cJsonNumberParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
+		private final RuleCall cJsonBooleanParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
+		private final RuleCall cJsonNullParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
+		
+		///** A simplified JSON value. */
+		//JSON:
+		//    JsonObject | JsonArray | JsonString | JsonNumber | JsonBoolean | JsonNull;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//JsonObject | JsonArray | JsonString | JsonNumber | JsonBoolean | JsonNull
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//JsonObject
+		public RuleCall getJsonObjectParserRuleCall_0() { return cJsonObjectParserRuleCall_0; }
+		
+		//JsonArray
+		public RuleCall getJsonArrayParserRuleCall_1() { return cJsonArrayParserRuleCall_1; }
+		
+		//JsonString
+		public RuleCall getJsonStringParserRuleCall_2() { return cJsonStringParserRuleCall_2; }
+		
+		//JsonNumber
+		public RuleCall getJsonNumberParserRuleCall_3() { return cJsonNumberParserRuleCall_3; }
+		
+		//JsonBoolean
+		public RuleCall getJsonBooleanParserRuleCall_4() { return cJsonBooleanParserRuleCall_4; }
+		
+		//JsonNull
+		public RuleCall getJsonNullParserRuleCall_5() { return cJsonNullParserRuleCall_5; }
+	}
+	public class JsonObjectElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonObject");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cJsonObjectAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Assignment cMembersAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
+		private final RuleCall cMembersJsonMemberParserRuleCall_2_0_0 = (RuleCall)cMembersAssignment_2_0.eContents().get(0);
+		private final Group cGroup_2_1 = (Group)cGroup_2.eContents().get(1);
+		private final Keyword cCommaKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
+		private final Assignment cMembersAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
+		private final RuleCall cMembersJsonMemberParserRuleCall_2_1_1_0 = (RuleCall)cMembersAssignment_2_1_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		///** JSON object with double-quoted string keys. */
+		//JsonObject:
+		//    {JsonObject} '{' (members+=JsonMember (',' members+=JsonMember)*)? '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{JsonObject} '{' (members+=JsonMember (',' members+=JsonMember)*)? '}'
+		public Group getGroup() { return cGroup; }
+		
+		//{JsonObject}
+		public Action getJsonObjectAction_0() { return cJsonObjectAction_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
+		
+		//(members+=JsonMember (',' members+=JsonMember)*)?
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//members+=JsonMember
+		public Assignment getMembersAssignment_2_0() { return cMembersAssignment_2_0; }
+		
+		//JsonMember
+		public RuleCall getMembersJsonMemberParserRuleCall_2_0_0() { return cMembersJsonMemberParserRuleCall_2_0_0; }
+		
+		//(',' members+=JsonMember)*
+		public Group getGroup_2_1() { return cGroup_2_1; }
+		
+		//','
+		public Keyword getCommaKeyword_2_1_0() { return cCommaKeyword_2_1_0; }
+		
+		//members+=JsonMember
+		public Assignment getMembersAssignment_2_1_1() { return cMembersAssignment_2_1_1; }
+		
+		//JsonMember
+		public RuleCall getMembersJsonMemberParserRuleCall_2_1_1_0() { return cMembersJsonMemberParserRuleCall_2_1_1_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_3() { return cRightCurlyBracketKeyword_3; }
+	}
+	public class JsonMemberElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonMember");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cKeyAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cKeySTRINGTerminalRuleCall_0_0 = (RuleCall)cKeyAssignment_0.eContents().get(0);
+		private final Keyword cColonKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cValueAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cValueJSONParserRuleCall_2_0 = (RuleCall)cValueAssignment_2.eContents().get(0);
+		
+		///** A single "key": value member of a JSON object. */
+		//JsonMember:
+		//    key=STRING ':' value=JSON;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//key=STRING ':' value=JSON
+		public Group getGroup() { return cGroup; }
+		
+		//key=STRING
+		public Assignment getKeyAssignment_0() { return cKeyAssignment_0; }
+		
+		//STRING
+		public RuleCall getKeySTRINGTerminalRuleCall_0_0() { return cKeySTRINGTerminalRuleCall_0_0; }
+		
+		//':'
+		public Keyword getColonKeyword_1() { return cColonKeyword_1; }
+		
+		//value=JSON
+		public Assignment getValueAssignment_2() { return cValueAssignment_2; }
+		
+		//JSON
+		public RuleCall getValueJSONParserRuleCall_2_0() { return cValueJSONParserRuleCall_2_0; }
+	}
+	public class JsonArrayElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonArray");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cJsonArrayAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Assignment cElementsAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
+		private final RuleCall cElementsJSONParserRuleCall_2_0_0 = (RuleCall)cElementsAssignment_2_0.eContents().get(0);
+		private final Group cGroup_2_1 = (Group)cGroup_2.eContents().get(1);
+		private final Keyword cCommaKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
+		private final Assignment cElementsAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
+		private final RuleCall cElementsJSONParserRuleCall_2_1_1_0 = (RuleCall)cElementsAssignment_2_1_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		///** JSON array of values. */
+		//JsonArray:
+		//    {JsonArray} '[' (elements+=JSON (',' elements+=JSON)*)? ']';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{JsonArray} '[' (elements+=JSON (',' elements+=JSON)*)? ']'
+		public Group getGroup() { return cGroup; }
+		
+		//{JsonArray}
+		public Action getJsonArrayAction_0() { return cJsonArrayAction_0; }
+		
+		//'['
+		public Keyword getLeftSquareBracketKeyword_1() { return cLeftSquareBracketKeyword_1; }
+		
+		//(elements+=JSON (',' elements+=JSON)*)?
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//elements+=JSON
+		public Assignment getElementsAssignment_2_0() { return cElementsAssignment_2_0; }
+		
+		//JSON
+		public RuleCall getElementsJSONParserRuleCall_2_0_0() { return cElementsJSONParserRuleCall_2_0_0; }
+		
+		//(',' elements+=JSON)*
+		public Group getGroup_2_1() { return cGroup_2_1; }
+		
+		//','
+		public Keyword getCommaKeyword_2_1_0() { return cCommaKeyword_2_1_0; }
+		
+		//elements+=JSON
+		public Assignment getElementsAssignment_2_1_1() { return cElementsAssignment_2_1_1; }
+		
+		//JSON
+		public RuleCall getElementsJSONParserRuleCall_2_1_1_0() { return cElementsJSONParserRuleCall_2_1_1_0; }
+		
+		//']'
+		public Keyword getRightSquareBracketKeyword_3() { return cRightSquareBracketKeyword_3; }
+	}
+	public class JsonStringElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonString");
+		private final Assignment cValueAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cValueSTRINGTerminalRuleCall_0 = (RuleCall)cValueAssignment.eContents().get(0);
+		
+		///** JSON string value. */
+		//JsonString:
+		//    value=STRING;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//value=STRING
+		public Assignment getValueAssignment() { return cValueAssignment; }
+		
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_0() { return cValueSTRINGTerminalRuleCall_0; }
+	}
+	public class JsonNumberElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonNumber");
+		private final Assignment cValueAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cValueNumberParserRuleCall_0 = (RuleCall)cValueAssignment.eContents().get(0);
+		
+		///** JSON number value. */
+		//JsonNumber:
+		//    value=Number;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//value=Number
+		public Assignment getValueAssignment() { return cValueAssignment; }
+		
+		//Number
+		public RuleCall getValueNumberParserRuleCall_0() { return cValueNumberParserRuleCall_0; }
+	}
+	public class JsonBooleanElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonBoolean");
+		private final Assignment cValueAssignment = (Assignment)rule.eContents().get(1);
+		private final Alternatives cValueAlternatives_0 = (Alternatives)cValueAssignment.eContents().get(0);
+		private final Keyword cValueTrueKeyword_0_0 = (Keyword)cValueAlternatives_0.eContents().get(0);
+		private final Keyword cValueFalseKeyword_0_1 = (Keyword)cValueAlternatives_0.eContents().get(1);
+		
+		///** JSON boolean value. */
+		//JsonBoolean:
+		//    value=('true' | 'false');
+		@Override public ParserRule getRule() { return rule; }
+		
+		//value=('true' | 'false')
+		public Assignment getValueAssignment() { return cValueAssignment; }
+		
+		//('true' | 'false')
+		public Alternatives getValueAlternatives_0() { return cValueAlternatives_0; }
+		
+		//'true'
+		public Keyword getValueTrueKeyword_0_0() { return cValueTrueKeyword_0_0; }
+		
+		//'false'
+		public Keyword getValueFalseKeyword_0_1() { return cValueFalseKeyword_0_1; }
+	}
+	public class JsonNullElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.JsonNull");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cJsonNullAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cNullKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		
+		///** JSON null value. */
+		//JsonNull:
+		//    {JsonNull} 'null';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{JsonNull} 'null'
+		public Group getGroup() { return cGroup; }
+		
+		//{JsonNull}
+		public Action getJsonNullAction_0() { return cJsonNullAction_0; }
+		
+		//'null'
+		public Keyword getNullKeyword_1() { return cNullKeyword_1; }
 	}
 	public class FQNElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.FQN");
@@ -4390,9 +4734,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	private final DomainModelElements pDomainModel;
+	private final ProjectElements pProject;
 	private final ContextElements pContext;
 	private final NamespaceElements pNamespace;
 	private final ImportElements pImport;
+	private final HintElements pHint;
 	private final AbstractElementElements pAbstractElement;
 	private final TypeElements pType;
 	private final InternalTypeElements pInternalType;
@@ -4447,6 +4793,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final ProjectionElements pProjection;
 	private final ViewElements pView;
 	private final LiteralElements pLiteral;
+	private final JSONElements pJSON;
+	private final JsonObjectElements pJsonObject;
+	private final JsonMemberElements pJsonMember;
+	private final JsonArrayElements pJsonArray;
+	private final JsonStringElements pJsonString;
+	private final JsonNumberElements pJsonNumber;
+	private final JsonBooleanElements pJsonBoolean;
+	private final JsonNullElements pJsonNull;
 	private final FQNElements pFQN;
 	private final FQNWithWildcardElements pFQNWithWildcard;
 	private final BooleanLiteralElements pBooleanLiteral;
@@ -4470,9 +4824,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	public CqrsDslGrammarAccess(GrammarProvider grammarProvider) {
 		this.grammar = internalFindGrammar(grammarProvider);
 		this.pDomainModel = new DomainModelElements();
+		this.pProject = new ProjectElements();
 		this.pContext = new ContextElements();
 		this.pNamespace = new NamespaceElements();
 		this.pImport = new ImportElements();
+		this.pHint = new HintElements();
 		this.pAbstractElement = new AbstractElementElements();
 		this.pType = new TypeElements();
 		this.pInternalType = new InternalTypeElements();
@@ -4527,6 +4883,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pProjection = new ProjectionElements();
 		this.pView = new ViewElements();
 		this.pLiteral = new LiteralElements();
+		this.pJSON = new JSONElements();
+		this.pJsonObject = new JsonObjectElements();
+		this.pJsonMember = new JsonMemberElements();
+		this.pJsonArray = new JsonArrayElements();
+		this.pJsonString = new JsonStringElements();
+		this.pJsonNumber = new JsonNumberElements();
+		this.pJsonBoolean = new JsonBooleanElements();
+		this.pJsonNull = new JsonNullElements();
 		this.pFQN = new FQNElements();
 		this.pFQNWithWildcard = new FQNWithWildcardElements();
 		this.pBooleanLiteral = new BooleanLiteralElements();
@@ -4570,13 +4934,27 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///** A system of abstractions that describes the selected aspects of the domain. */
 	//DomainModel:
-	//    contexts+=Context*;
+	//    projects+=Project*;
 	public DomainModelElements getDomainModelAccess() {
 		return pDomainModel;
 	}
 	
 	public ParserRule getDomainModelRule() {
 		return getDomainModelAccess().getRule();
+	}
+	
+	///** A deployable unit that groups a number of contexts and carries generator hints. */
+	//Project:
+	//    'project' name=FQN '{'
+	//        hints+=Hint*
+	//        contexts+=Context*
+	//    '}';
+	public ProjectElements getProjectAccess() {
+		return pProject;
+	}
+	
+	public ParserRule getProjectRule() {
+		return getProjectAccess().getRule();
 	}
 	
 	///** The setting in which a word or statement appears that determines its meaning. */
@@ -4615,6 +4993,18 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getImportRule() {
 		return getImportAccess().getRule();
+	}
+	
+	///** A named, JSON-structured generator hint. */
+	//Hint:
+	//    doc=DOC?
+	//    'hint' name=FQN json=JSON;
+	public HintElements getHintAccess() {
+		return pHint;
+	}
+	
+	public ParserRule getHintRule() {
+		return getHintAccess().getRule();
 	}
 	
 	///** Common properties of domain model elements. */
@@ -5350,7 +5740,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//CommandHandler:
 	//    doc=DOC?
 	//    'command-handler' name=ID
-	//        'handles' commands+=[Command] (',' commands+=[Command])*
+	//        'handles' commands+=[Command|FQN] (',' commands+=[Command|FQN])*
 	//       ('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?;
 	public CommandHandlerElements getCommandHandlerAccess() {
 		return pCommandHandler;
@@ -5375,7 +5765,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Result of a projection. */
 	//View:
 	//    doc=DOC?
-	//    'view' name=ID 'uses' projection=[Projection];
+	//    'view' name=ID 'uses' projection=[Projection|FQN];
 	public ViewElements getViewAccess() {
 		return pView;
 	}
@@ -5393,6 +5783,94 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getLiteralRule() {
 		return getLiteralAccess().getRule();
+	}
+	
+	///** A simplified JSON value. */
+	//JSON:
+	//    JsonObject | JsonArray | JsonString | JsonNumber | JsonBoolean | JsonNull;
+	public JSONElements getJSONAccess() {
+		return pJSON;
+	}
+	
+	public ParserRule getJSONRule() {
+		return getJSONAccess().getRule();
+	}
+	
+	///** JSON object with double-quoted string keys. */
+	//JsonObject:
+	//    {JsonObject} '{' (members+=JsonMember (',' members+=JsonMember)*)? '}';
+	public JsonObjectElements getJsonObjectAccess() {
+		return pJsonObject;
+	}
+	
+	public ParserRule getJsonObjectRule() {
+		return getJsonObjectAccess().getRule();
+	}
+	
+	///** A single "key": value member of a JSON object. */
+	//JsonMember:
+	//    key=STRING ':' value=JSON;
+	public JsonMemberElements getJsonMemberAccess() {
+		return pJsonMember;
+	}
+	
+	public ParserRule getJsonMemberRule() {
+		return getJsonMemberAccess().getRule();
+	}
+	
+	///** JSON array of values. */
+	//JsonArray:
+	//    {JsonArray} '[' (elements+=JSON (',' elements+=JSON)*)? ']';
+	public JsonArrayElements getJsonArrayAccess() {
+		return pJsonArray;
+	}
+	
+	public ParserRule getJsonArrayRule() {
+		return getJsonArrayAccess().getRule();
+	}
+	
+	///** JSON string value. */
+	//JsonString:
+	//    value=STRING;
+	public JsonStringElements getJsonStringAccess() {
+		return pJsonString;
+	}
+	
+	public ParserRule getJsonStringRule() {
+		return getJsonStringAccess().getRule();
+	}
+	
+	///** JSON number value. */
+	//JsonNumber:
+	//    value=Number;
+	public JsonNumberElements getJsonNumberAccess() {
+		return pJsonNumber;
+	}
+	
+	public ParserRule getJsonNumberRule() {
+		return getJsonNumberAccess().getRule();
+	}
+	
+	///** JSON boolean value. */
+	//JsonBoolean:
+	//    value=('true' | 'false');
+	public JsonBooleanElements getJsonBooleanAccess() {
+		return pJsonBoolean;
+	}
+	
+	public ParserRule getJsonBooleanRule() {
+		return getJsonBooleanAccess().getRule();
+	}
+	
+	///** JSON null value. */
+	//JsonNull:
+	//    {JsonNull} 'null';
+	public JsonNullElements getJsonNullAccess() {
+		return pJsonNull;
+	}
+	
+	public ParserRule getJsonNullRule() {
+		return getJsonNullAccess().getRule();
 	}
 	
 	///** Unambiguous name that specifies an object. */

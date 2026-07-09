@@ -26,6 +26,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 
 /**
  * Global scope provider that makes elements of remote (HTTP-only) <code>.cqrs</code> models
@@ -63,14 +64,17 @@ public class CqrsDslGlobalScopeProvider extends DefaultGlobalScopeProvider {
       final LinkedHashSet<URI> remoteUris = CollectionLiterals.<URI>newLinkedHashSet();
       Iterable<DomainModel> _filter = Iterables.<DomainModel>filter(resource.getContents(), DomainModel.class);
       for (final DomainModel model : _filter) {
-        EList<Context> _contexts = model.getContexts();
-        for (final Context context : _contexts) {
-          EList<Namespace> _namespaces = context.getNamespaces();
-          for (final Namespace namespace : _namespaces) {
-            EList<Import> _imports = namespace.getImports();
-            for (final Import import_ : _imports) {
-              remoteUris.addAll(this.cache.getCachedModelUris(rs, resource.getURI(), 
-                import_.getImportedNamespace(), this.catalog));
+        EList<Project> _projects = model.getProjects();
+        for (final Project project : _projects) {
+          EList<Context> _contexts = project.getContexts();
+          for (final Context context : _contexts) {
+            EList<Namespace> _namespaces = context.getNamespaces();
+            for (final Namespace namespace : _namespaces) {
+              EList<Import> _imports = namespace.getImports();
+              for (final Import import_ : _imports) {
+                remoteUris.addAll(this.cache.getCachedModelUris(rs, resource.getURI(), 
+                  import_.getImportedNamespace(), this.catalog));
+              }
             }
           }
         }

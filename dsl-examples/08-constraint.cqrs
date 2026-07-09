@@ -1,44 +1,48 @@
-context constraints {
+project p_08_constraint {
 
-	namespace m {
+	context constraints {
 
-		type String
-		type Integer
+		namespace m {
 
-		exception ConstraintViolationException {
-			message "Invalid value"
+			type String
+			type Integer
+
+			exception ConstraintViolationException {
+				message "Invalid value"
+			}
+
+	        // A constraint is a condition that mandates that an input comply with a specific pattern.
+
+			// Validates a String, parameterized by a min/max length.
+			// Throws a defined exception in case the condition is violated.
+			constraint Length input String exception ConstraintViolationException {
+
+				Integer min
+
+				Integer max
+
+	           // Attributes can be referenced in the message with ${NAME}.
+				message "Length must be between ${min} and ${max}"
+
+			}
+
+			// Accepts more than one input type
+			constraint NotEmpty input String | Integer {
+
+				// Message is mandatory
+				message "Must not be empty"
+
+			}
+
+			// Defines a type-level constraint
+			constraint NameTypeCheck input Name {
+				message "Rule for 'Name' instances"
+			}
+
+	        value-object Name invariants NameTypeCheck {
+		    }
+
 		}
-
-        // A constraint is a condition that mandates that an input comply with a specific pattern.
-
-		// Validates a String, parameterized by a min/max length.
-		// Throws a defined exception in case the condition is violated.
-		constraint Length input String exception ConstraintViolationException {
-
-			Integer min
-			
-			Integer max
-
-           // Attributes can be referenced in the message with ${NAME}.
-			message "Length must be between ${min} and ${max}"
-			
-		}
-
-		// Accepts more than one input type
-		constraint NotEmpty input String | Integer {
-			
-			// Message is mandatory
-			message "Must not be empty"
-			
-		}
-		
-		// Defines a type-level constraint
-		constraint NameTypeCheck input Name {
-			message "Rule for 'Name' instances"
-		}
-
-        value-object Name invariants NameTypeCheck {
-	    }
-	
 	}
+
 }

@@ -1,44 +1,48 @@
-context x {
-	namespace types {
-		type String
-		type Integer
-		type Boolean
+project p_constraint {
+
+	context x {
+		namespace types {
+			type String
+			type Integer
+			type Boolean
+		}
+
+		namespace constr {
+			import x.types.*
+
+			value-object ValueObjectA {
+				String a
+			}
+
+			value-object ValueObjectB {
+				String a
+				Integer b
+			}
+
+			exception CException {
+				String a
+				Integer b
+				String c
+				message "C failed"
+			}
+
+			constraint ConstraintA input ValueObjectA {
+				message "A is not allowed: ${input.a}"
+			}
+
+			constraint ConstraintB input ValueObjectB {
+				Integer a
+				message "B is not allowed: ${a}: ${input.a} - ${input.b}"
+			}
+
+			constraint ConstraintC input ValueObjectC exception CException {
+				message "C is not allowed: ${input.a} - ${input.b} - ${input.c}"
+			}
+
+			constraint ConstraintE input String {
+				message "E is not allowed"
+			}
+		}
 	}
 
-	namespace constr {
-		import x.types.*
-
-		value-object ValueObjectA {
-			String a
-		}
-
-		value-object ValueObjectB {
-			String a
-			Integer b
-		}
-
-		exception CException {
-			String a
-			Integer b
-			String c
-			message "C failed"
-		}
-
-		constraint ConstraintA input ValueObjectA {
-			message "A is not allowed: ${input.a}"
-		}
-
-		constraint ConstraintB input ValueObjectB {
-			Integer a
-			message "B is not allowed: ${a}: ${input.a} - ${input.b}"
-		}
-
-		constraint ConstraintC input ValueObjectC exception CException {
-			message "C is not allowed: ${input.a} - ${input.b} - ${input.c}"
-		}
-
-		constraint ConstraintE input String {
-			message "E is not allowed"
-		}
-	}
 }

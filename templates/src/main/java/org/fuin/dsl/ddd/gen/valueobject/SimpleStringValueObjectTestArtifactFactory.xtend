@@ -52,7 +52,7 @@ class SimpleStringValueObjectTestArtifactFactory extends AbstractSource<ValueObj
 
         var String src = createStandardEventTest(ctx, valueObject, pkg, className).toString();
 
-        return List.of(new GeneratedArtifact(artifactName, filename, src.getBytes("UTF-8")));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx) {

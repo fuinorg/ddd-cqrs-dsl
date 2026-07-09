@@ -28,7 +28,7 @@ class CqrsAbstractElementExtensions {
 		if (el.namespace === null) {
 			throw new IllegalArgumentException("argument 'el.namespace' cannot be null: " + el.path)
 		}
-		return separated(".", el.context.name, el.namespace.name, el.name)
+		return separated(".", el.project.name, el.context.name, el.namespace.name, el.name)
 	}
 
 	/**
@@ -48,7 +48,7 @@ class CqrsAbstractElementExtensions {
 		if (el.namespace === null) {
 			throw new IllegalArgumentException("argument 'el.namespace' cannot be null")
 		}
-		return separated(".", el.context.name, el.namespace.name, el.abstractName)		
+		return separated(".", el.project.name, el.context.name, el.namespace.name, el.abstractName)		
 	}
 
 

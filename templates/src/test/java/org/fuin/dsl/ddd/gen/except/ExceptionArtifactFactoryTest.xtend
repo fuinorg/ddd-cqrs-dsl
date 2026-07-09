@@ -68,8 +68,8 @@ class ExceptionArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
 
         val ExceptionArtifactFactory testee = createTestee()
         val Exception ex = model.find(typeof(Exception), name)
@@ -84,7 +84,7 @@ class ExceptionArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ExceptionArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("exception", ExceptionArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("exception", ExceptionArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

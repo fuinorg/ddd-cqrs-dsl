@@ -28,7 +28,9 @@ class CqrsStringExtensions {
 			sb.append(line);
 			sb.append(" ");
 		}
-		var String result = sb.toString().replace("  ", " ").trim();
+		// Collapse every run of whitespace (line joins plus the source's continuation-line indentation)
+		// into a single space, so a multi-line doc becomes one evenly spaced sentence.
+		var String result = sb.toString().replaceAll("\\s+", " ").trim();
 		return result;
 	}
 

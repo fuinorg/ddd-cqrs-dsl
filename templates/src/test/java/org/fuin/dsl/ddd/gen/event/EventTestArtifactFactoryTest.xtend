@@ -63,12 +63,12 @@ class EventTestArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.ev.CustomerId", EXAMPLES_CONCRETE + ".x.ev.CustomerId")
-        refReg.putReference("x.ev." + eventName, EXAMPLES_CONCRETE + ".x.ev." + eventName)
-        refReg.putReference("XEntityIdFactory", EXAMPLES_CONCRETE + ".x.ev.XEntityIdFactory")
-        refReg.putReference("x.ev.MyString", EXAMPLES_CONCRETE + ".x.ev.MyString")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
+        refReg.putReference("p.x.ev." + eventName, "p.x.ev." + eventName)
+        refReg.putReference("XEntityIdFactory", "p.x.ev.XEntityIdFactory")
+        refReg.putReference("p.x.ev.MyString", "p.x.ev.MyString")
         val EventTestArtifactFactory testee = createTestee(true, true, true)
         val Event event = model.find(typeof(Event), eventName)
 
@@ -82,7 +82,7 @@ class EventTestArtifactFactoryTest {
 
     private def createTestee(boolean jaxb, boolean jaxbElements, boolean jsonb) {
         val factory = new EventTestArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("eventTest", EventTestArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("eventTest", EventTestArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JAXB, jaxb.toString));

@@ -1,42 +1,46 @@
-context x {
-	namespace types {
-		type String
-		type Integer
-	}
+project p_aggregate {
 
-	namespace aggregates {
-		import x.types.*
-
-		exception AnyConstraintViolatedException {
-			message "Any constraint violated"
+	context x {
+		namespace types {
+			type String
+			type Integer
 		}
 
-		aggregate-id AggregateAId identifies AggregateA {}
-		aggregate AggregateA identifier AggregateAId {}
+		namespace aggregates {
+			import x.types.*
 
-		aggregate-id AggregateBId identifies AggregateB {}
-		aggregate AggregateB identifier AggregateBId {
-			String a
-			Integer b
-		}
-
-		aggregate-id AggregateCId identifies AggregateC {}
-		aggregate AggregateC identifier AggregateCId {
-			String a
-			Integer b
-			business-rule AnyConstraint exception AnyConstraintViolatedException {
-				consistency strong
+			exception AnyConstraintViolatedException {
+				message "Any constraint violated"
 			}
 
-			constructor create business-rules AnyConstraint fires AggregateCCreatedEvent {
+			aggregate-id AggregateAId identifies AggregateA {}
+			aggregate AggregateA identifier AggregateAId {}
+
+			aggregate-id AggregateBId identifies AggregateB {}
+			aggregate AggregateB identifier AggregateBId {
 				String a
 				Integer b
-				event AggregateCCreatedEvent {
+			}
+
+			aggregate-id AggregateCId identifies AggregateC {}
+			aggregate AggregateC identifier AggregateCId {
+				String a
+				Integer b
+				business-rule AnyConstraint exception AnyConstraintViolatedException {
+					consistency strong
+				}
+
+				constructor create business-rules AnyConstraint fires AggregateCCreatedEvent {
 					String a
 					Integer b
-					message "Aggregate C was created: ${a} / ${b} [${#entityIdPath}]"
+					event AggregateCCreatedEvent {
+						String a
+						Integer b
+						message "Aggregate C was created: ${a} / ${b} [${#entityIdPath}]"
+					}
 				}
 			}
 		}
 	}
+
 }

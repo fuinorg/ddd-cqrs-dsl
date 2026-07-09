@@ -6,7 +6,14 @@ generate cqrsDsl "http://www.fuin.org/dsl/cqrs/CqrsDsl"
 
 /** A system of abstractions that describes the selected aspects of the domain. */
 DomainModel:
-	contexts+=Context*;
+	projects+=Project*;
+
+/** A deployable unit that groups a number of contexts and carries generator hints. */
+Project:
+	'project' name=FQN '{'
+		hints+=Hint*
+		contexts+=Context*
+	'}';
 
 /** The setting in which a word or statement appears that determines its meaning. */
 Context:
@@ -24,6 +31,11 @@ Namespace:
 /** Allows using objects from other namespaces. */
 Import:
 	'import' importedNamespace=(FQN | FQNWithWildcard);
+
+/** A named, JSON-structured generator hint. */
+Hint:
+	doc=DOC?
+	'hint' name=FQN json=JSON;
 
 /** Common properties of domain model elements. */
 AbstractElement:
@@ -415,7 +427,7 @@ Command:
 CommandHandler:
 	doc=DOC?
 	'command-handler' name=ID
-	    'handles' commands+=[Command] (',' commands+=[Command])*
+	    'handles' commands+=[Command|FQN] (',' commands+=[Command|FQN])*
 	   ('uses' aggregates+=[Aggregate|FQN] (',' aggregates+=[Aggregate|FQN])*)?;
 
 /** Uses a number of input events to create some output with it. */
@@ -426,11 +438,43 @@ Projection:
 /** Result of a projection. */
 View:
 	doc=DOC?
-	'view' name=ID 'uses' projection=[Projection];
+	'view' name=ID 'uses' projection=[Projection|FQN];
 
 /** A notation for representing a fixed value in source code. */
 Literal:
 	NullLiteral | BooleanLiteral | NumberLiteral | StringLiteral;
+
+/** A simplified JSON value. */
+JSON:
+	JsonObject | JsonArray | JsonString | JsonNumber | JsonBoolean | JsonNull;
+
+/** JSON object with double-quoted string keys. */
+JsonObject:
+	{JsonObject} '{' (members+=JsonMember (',' members+=JsonMember)*)? '}';
+
+/** A single "key": value member of a JSON object. */
+JsonMember:
+	key=STRING ':' value=JSON;
+
+/** JSON array of values. */
+JsonArray:
+	{JsonArray} '[' (elements+=JSON (',' elements+=JSON)*)? ']';
+
+/** JSON string value. */
+JsonString:
+	value=STRING;
+
+/** JSON number value. */
+JsonNumber:
+	value=Number;
+
+/** JSON boolean value. */
+JsonBoolean:
+	value=('true' | 'false');
+
+/** JSON null value. */
+JsonNull:
+	{JsonNull} 'null';
 
 /** Unambiguous name that specifies an object. */
 FQN:

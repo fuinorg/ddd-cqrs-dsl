@@ -32,9 +32,9 @@ class SrcMethodTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.a.MyAggregateId", "a.b.c.MyAggregateId")
-        refReg.putReference("x.a.MyValueObject", "a.b.c.MyValueObject")
-        refReg.putReference("x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
+        refReg.putReference("p.x.a.MyAggregateId", "a.b.c.MyAggregateId")
+        refReg.putReference("p.x.a.MyValueObject", "a.b.c.MyValueObject")
+        refReg.putReference("p.x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Aggregate aggregate = model().find(Aggregate, "MyAggregate")
         val method = aggregate.methods.get(0)
@@ -71,9 +71,9 @@ class SrcMethodTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("x.a.MyAggregateId", "a.b.c.MyAggregateId")
-        refReg.putReference("x.a.MyValueObject", "a.b.c.MyValueObject")
-        refReg.putReference("x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
+        refReg.putReference("p.x.a.MyAggregateId", "a.b.c.MyAggregateId")
+        refReg.putReference("p.x.a.MyValueObject", "a.b.c.MyValueObject")
+        refReg.putReference("p.x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Aggregate aggregate = model().find(Aggregate, "MyAggregate")
         val method = aggregate.methods.get(0)

@@ -1,4 +1,4 @@
-package tst.x.aggregates;
+package p.x.aggregates;
 
 public class AnyConstraintViolatedException extends Exception {
 

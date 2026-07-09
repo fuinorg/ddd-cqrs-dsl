@@ -41,9 +41,18 @@ import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.JSON;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonMember;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
@@ -52,6 +61,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -133,6 +143,13 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CqrsDslPackage.PROJECT:
+      {
+        Project project = (Project)theEObject;
+        T result = caseProject(project);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CqrsDslPackage.CONTEXT:
       {
         Context context = (Context)theEObject;
@@ -151,6 +168,13 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         Import import_ = (Import)theEObject;
         T result = caseImport(import_);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.HINT:
+      {
+        Hint hint = (Hint)theEObject;
+        T result = caseHint(hint);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -531,6 +555,68 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CqrsDslPackage.JSON:
+      {
+        JSON json = (JSON)theEObject;
+        T result = caseJSON(json);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_OBJECT:
+      {
+        JsonObject jsonObject = (JsonObject)theEObject;
+        T result = caseJsonObject(jsonObject);
+        if (result == null) result = caseJSON(jsonObject);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_MEMBER:
+      {
+        JsonMember jsonMember = (JsonMember)theEObject;
+        T result = caseJsonMember(jsonMember);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_ARRAY:
+      {
+        JsonArray jsonArray = (JsonArray)theEObject;
+        T result = caseJsonArray(jsonArray);
+        if (result == null) result = caseJSON(jsonArray);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_STRING:
+      {
+        JsonString jsonString = (JsonString)theEObject;
+        T result = caseJsonString(jsonString);
+        if (result == null) result = caseJSON(jsonString);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_NUMBER:
+      {
+        JsonNumber jsonNumber = (JsonNumber)theEObject;
+        T result = caseJsonNumber(jsonNumber);
+        if (result == null) result = caseJSON(jsonNumber);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_BOOLEAN:
+      {
+        JsonBoolean jsonBoolean = (JsonBoolean)theEObject;
+        T result = caseJsonBoolean(jsonBoolean);
+        if (result == null) result = caseJSON(jsonBoolean);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.JSON_NULL:
+      {
+        JsonNull jsonNull = (JsonNull)theEObject;
+        T result = caseJsonNull(jsonNull);
+        if (result == null) result = caseJSON(jsonNull);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CqrsDslPackage.BOOLEAN_LITERAL:
       {
         BooleanLiteral booleanLiteral = (BooleanLiteral)theEObject;
@@ -584,6 +670,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Project</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Project</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProject(Project object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Context</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -627,6 +729,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseImport(Import object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Hint</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Hint</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseHint(Hint object)
   {
     return null;
   }
@@ -1363,6 +1481,134 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseLiteral(Literal object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>JSON</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>JSON</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJSON(JSON object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Object</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Object</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonObject(JsonObject object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Member</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Member</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonMember(JsonMember object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Array</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Array</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonArray(JsonArray object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json String</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json String</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonString(JsonString object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Number</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Number</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonNumber(JsonNumber object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Boolean</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Boolean</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonBoolean(JsonBoolean object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Json Null</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Json Null</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJsonNull(JsonNull object)
   {
     return null;
   }

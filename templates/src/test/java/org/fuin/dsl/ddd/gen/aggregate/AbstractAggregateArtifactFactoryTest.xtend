@@ -54,10 +54,10 @@ class AbstractAggregateArtifactFactoryTest {
         val abstractName = "Abstract" + aggregateName
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.aggregates." + aggregateName + "Id", "tst.x.aggregates." + aggregateName + "Id")
-        refReg.putReference("x.aggregates." + aggregateName + "CreatedEvent", "tst.x.aggregates." + aggregateName + "CreatedEvent")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
+        refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
 
         val AbstractAggregateArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)
@@ -72,8 +72,7 @@ class AbstractAggregateArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AbstractAggregateArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractAggregate",
-            AbstractAggregateArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractAggregate", AbstractAggregateArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

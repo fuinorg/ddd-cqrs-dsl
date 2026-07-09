@@ -39,7 +39,7 @@ class AbstractEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntityId")
@@ -58,7 +58,7 @@ class AbstractEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity2Id")
@@ -77,7 +77,7 @@ class AbstractEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity3Id")
@@ -96,7 +96,7 @@ class AbstractEntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity4Id")
@@ -111,8 +111,7 @@ class AbstractEntityIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AbstractEntityIdArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntityId",
-            AbstractEntityIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntityId", AbstractEntityIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

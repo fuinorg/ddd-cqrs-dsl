@@ -80,7 +80,7 @@ class CtxExternalTypes extends AbstractSource<ResourceSet> {
         val Iterator<Context> iter = resourceSet.getAllContents().filter(typeof(Context))
         while (iter.hasNext) {
             val Context ctx = iter.next
-            val name = ctx.name
+            val name = org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.getProject(ctx).name + "." + ctx.name
             val CodeReferenceRegistry refReg = context.codeReferenceRegistry
             refReg.putReference(name + "." + pkg + ".Byte", Byte.name)
             refReg.putReference(name + "." + pkg + ".Short", Short.name)

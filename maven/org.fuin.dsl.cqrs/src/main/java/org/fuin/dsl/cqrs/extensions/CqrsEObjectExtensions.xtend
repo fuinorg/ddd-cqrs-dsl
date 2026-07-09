@@ -5,6 +5,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Project
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
 import java.lang.reflect.Method
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
@@ -46,6 +47,23 @@ class CqrsEObjectExtensions {
 			return obj
 		}
 		return getContext(obj.eContainer)
+	}
+
+	/**
+	 * Returns the project an object belongs to.
+	 *
+	 * @param obj Object to return the project for.
+	 *
+	 * @return Project or null if the object is not inside one.
+	 */
+	def static Project getProject(EObject obj) {
+		if (obj === null) {
+			return null
+		}
+		if (obj instanceof Project) {
+			return obj
+		}
+		return getProject(obj.eContainer)
 	}
 
 

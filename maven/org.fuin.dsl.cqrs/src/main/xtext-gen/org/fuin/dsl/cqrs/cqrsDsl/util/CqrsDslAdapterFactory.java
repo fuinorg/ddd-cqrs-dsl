@@ -43,9 +43,18 @@ import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.JSON;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonMember;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
@@ -54,6 +63,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -134,6 +144,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createDomainModelAdapter();
       }
       @Override
+      public Adapter caseProject(Project object)
+      {
+        return createProjectAdapter();
+      }
+      @Override
       public Adapter caseContext(Context object)
       {
         return createContextAdapter();
@@ -147,6 +162,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseImport(Import object)
       {
         return createImportAdapter();
+      }
+      @Override
+      public Adapter caseHint(Hint object)
+      {
+        return createHintAdapter();
       }
       @Override
       public Adapter caseAbstractElement(AbstractElement object)
@@ -379,6 +399,46 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createLiteralAdapter();
       }
       @Override
+      public Adapter caseJSON(JSON object)
+      {
+        return createJSONAdapter();
+      }
+      @Override
+      public Adapter caseJsonObject(JsonObject object)
+      {
+        return createJsonObjectAdapter();
+      }
+      @Override
+      public Adapter caseJsonMember(JsonMember object)
+      {
+        return createJsonMemberAdapter();
+      }
+      @Override
+      public Adapter caseJsonArray(JsonArray object)
+      {
+        return createJsonArrayAdapter();
+      }
+      @Override
+      public Adapter caseJsonString(JsonString object)
+      {
+        return createJsonStringAdapter();
+      }
+      @Override
+      public Adapter caseJsonNumber(JsonNumber object)
+      {
+        return createJsonNumberAdapter();
+      }
+      @Override
+      public Adapter caseJsonBoolean(JsonBoolean object)
+      {
+        return createJsonBooleanAdapter();
+      }
+      @Override
+      public Adapter caseJsonNull(JsonNull object)
+      {
+        return createJsonNullAdapter();
+      }
+      @Override
       public Adapter caseBooleanLiteral(BooleanLiteral object)
       {
         return createBooleanLiteralAdapter();
@@ -436,6 +496,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Project <em>Project</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Project
+   * @generated
+   */
+  public Adapter createProjectAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Context <em>Context</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -476,6 +551,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createImportAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Hint <em>Hint</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Hint
+   * @generated
+   */
+  public Adapter createHintAdapter()
   {
     return null;
   }
@@ -1166,6 +1256,126 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createLiteralAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JSON <em>JSON</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JSON
+   * @generated
+   */
+  public Adapter createJSONAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonObject <em>Json Object</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonObject
+   * @generated
+   */
+  public Adapter createJsonObjectAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonMember <em>Json Member</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonMember
+   * @generated
+   */
+  public Adapter createJsonMemberAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonArray <em>Json Array</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonArray
+   * @generated
+   */
+  public Adapter createJsonArrayAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonString <em>Json String</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonString
+   * @generated
+   */
+  public Adapter createJsonStringAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonNumber <em>Json Number</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonNumber
+   * @generated
+   */
+  public Adapter createJsonNumberAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean <em>Json Boolean</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean
+   * @generated
+   */
+  public Adapter createJsonBooleanAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JsonNull <em>Json Null</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.JsonNull
+   * @generated
+   */
+  public Adapter createJsonNullAdapter()
   {
     return null;
   }

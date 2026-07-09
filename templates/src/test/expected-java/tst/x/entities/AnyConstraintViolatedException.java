@@ -1,4 +1,4 @@
-package tst.x.entities;
+package p.x.entities;
 
 public class AnyConstraintViolatedException extends Exception {
 

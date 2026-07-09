@@ -58,7 +58,7 @@ class AbstractValueObjectArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val AbstractValueObjectArtifactFactory testee = createTestee()
         val ValueObject vo = model.find(typeof(ValueObject), name)
@@ -73,8 +73,7 @@ class AbstractValueObjectArtifactFactoryTest {
         
     private def createTestee() {
         val factory = new AbstractValueObjectArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractValueObject",
-            AbstractValueObjectArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractValueObject", AbstractValueObjectArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

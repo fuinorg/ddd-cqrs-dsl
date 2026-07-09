@@ -117,6 +117,7 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.5.0</b> &ndash; Added project structure above context.</li>
     <li><b>1.4.1</b> &ndash; Code completion inside a <code>data-protection</code> block now offers
         the clause values: protection levels after <code>protection</code>, the lawful bases after
         <code>lawful-basis</code>, special categories after <code>category</code>, time units after a

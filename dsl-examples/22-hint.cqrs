@@ -1,0 +1,24 @@
+project shop {
+
+	/** A hint for the SrcGen4J code generation. */
+	hint SrcGen4J {
+		"package": "${project}.${module}.${group}.${context}.${namespace}",
+		"types": [
+			{
+				"name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
+				"module": "shared",
+				"group": "domain",
+				"artifacts": [
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedAbstractValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObjectArtifactFactory", "folder": "mainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genMainJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectTestArtifactFactory", "folder": "testJava" },
+					{ "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genMainJava" }
+				]
+			}
+		]
+	}
+
+}

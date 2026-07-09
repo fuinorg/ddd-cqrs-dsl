@@ -1,111 +1,115 @@
-context healthcare {
+project p_21_data_protection {
 
-	namespace m {
+	context healthcare {
 
-		type String
-		type UUID
-		type LocalDate
+		namespace m {
 
-		// ------------------------------------------------------------------
-		// Centralized, reusable data protection policies.
-		// The set of all 'data-protection' declarations forms a central
-		// register of processing activities (GDPR Art. 30).
-		// A policy is declared once and applied to types/attributes via
-		// 'protected-by'.
-		// ------------------------------------------------------------------
+			type String
+			type UUID
+			type LocalDate
 
-		/** Ordinary contact data of a customer. */
-		data-protection ContactData {
+			// ------------------------------------------------------------------
+			// Centralized, reusable data protection policies.
+			// The set of all 'data-protection' declarations forms a central
+			// register of processing activities (GDPR Art. 30).
+			// A policy is declared once and applied to types/attributes via
+			// 'protected-by'.
+			// ------------------------------------------------------------------
 
-			// 'protection' is the level of protection and, at the same time, the
-			// personal-data identification:
-			//   none      = not personal data
-			//   personal  = ordinary personal data (GDPR Art. 4(1))
-			//   sensitive = special category (GDPR Art. 9)
-			protection personal
+			/** Ordinary contact data of a customer. */
+			data-protection ContactData {
 
-			// Who the data is about (data subject).
-			subject "Customer"
+				// 'protection' is the level of protection and, at the same time, the
+				// personal-data identification:
+				//   none      = not personal data
+				//   personal  = ordinary personal data (GDPR Art. 4(1))
+				//   sensitive = special category (GDPR Art. 9)
+				protection personal
 
-			// Why the data is processed (purpose limitation, Art. 5(1)(b)).
-			purpose "Customer relationship management and billing"
+				// Who the data is about (data subject).
+				subject "Customer"
 
-			// Legal ground that makes the processing lawful (Art. 6). At least
-			// one of these basises must apply, otherwise processing is illegal.
-			// Allowed values (with a typical example):
-			//   consent             - subject ticked "send me your newsletter"
-			//   explicit_consent    - subject signed a form to process health data
-			//   contract            - billing address needed to ship an order
-			//   legal_obligation    - invoices kept to satisfy tax law
-			//   vital_interests     - blood type used to treat an unconscious patient
-			//   public_task         - tax office processing a citizen's return
-			//   legitimate_interests- shop logging IPs to prevent fraud
-			// Here 'contract' applies: we need the contact data to fulfil the
-			// customer contract (manage the relationship and send invoices).
-			lawful-basis contract
+				// Why the data is processed (purpose limitation, Art. 5(1)(b)).
+				purpose "Customer relationship management and billing"
 
-			// Storage limitation (Art. 5(1)(e)): the data is kept for the given
-			// duration. The optional 'then' part says what happens once that
-			// period ends (right to erasure, Art. 17). Allowed 'then' actions
-			// (with a typical example):
-			//   delete       - the customer row is physically removed
-			//   anonymize    - identifiers are irreversibly stripped, leaving
-			//                  only non-personal statistics (no longer personal data)
-			//   pseudonymize - the name is replaced by a token, but a separate
-			//                  key could still re-identify the subject
-			//   archive      - the record is moved to a cold long-term store
-			//   review       - a human decides whether it may still be kept
-			// Here: kept 10 years, then anonymized so aggregate reports survive
-			// without identifying the customer.
-			retention 10 years then anonymize
-		}
+				// Legal ground that makes the processing lawful (Art. 6). At least
+				// one of these basises must apply, otherwise processing is illegal.
+				// Allowed values (with a typical example):
+				//   consent             - subject ticked "send me your newsletter"
+				//   explicit_consent    - subject signed a form to process health data
+				//   contract            - billing address needed to ship an order
+				//   legal_obligation    - invoices kept to satisfy tax law
+				//   vital_interests     - blood type used to treat an unconscious patient
+				//   public_task         - tax office processing a citizen's return
+				//   legitimate_interests- shop logging IPs to prevent fraud
+				// Here 'contract' applies: we need the contact data to fulfil the
+				// customer contract (manage the relationship and send invoices).
+				lawful-basis contract
 
-		/** Medical information - a special category under GDPR Art. 9. */
-		data-protection MedicalData {
-			protection sensitive
+				// Storage limitation (Art. 5(1)(e)): the data is kept for the given
+				// duration. The optional 'then' part says what happens once that
+				// period ends (right to erasure, Art. 17). Allowed 'then' actions
+				// (with a typical example):
+				//   delete       - the customer row is physically removed
+				//   anonymize    - identifiers are irreversibly stripped, leaving
+				//                  only non-personal statistics (no longer personal data)
+				//   pseudonymize - the name is replaced by a token, but a separate
+				//                  key could still re-identify the subject
+				//   archive      - the record is moved to a cold long-term store
+				//   review       - a human decides whether it may still be kept
+				// Here: kept 10 years, then anonymized so aggregate reports survive
+				// without identifying the customer.
+				retention 10 years then anonymize
+			}
 
-			// Special categories that apply (only meaningful for 'sensitive').
-			category health, genetic
+			/** Medical information - a special category under GDPR Art. 9. */
+			data-protection MedicalData {
+				protection sensitive
 
-			subject "Patient"
-			purpose "Medical treatment and diagnosis"
+				// Special categories that apply (only meaningful for 'sensitive').
+				category health, genetic
 
-			// Special categories (health, genetic, ...) may not rely on the
-			// ordinary 'contract' basis; they need a stronger ground. Here the
-			// patient explicitly agreed to the processing of their health data,
-			// e.g. by signing a treatment consent form (Art. 9(2)(a)).
-			lawful-basis explicit_consent
+				subject "Patient"
+				purpose "Medical treatment and diagnosis"
 
-			// Health records are kept 30 years (legal medical retention) and
-			// then physically deleted, since anonymized health data has no
-			// further use here.
-			retention 30 years then delete
-		}
+				// Special categories (health, genetic, ...) may not rely on the
+				// ordinary 'contract' basis; they need a stronger ground. Here the
+				// patient explicitly agreed to the processing of their health data,
+				// e.g. by signing a treatment consent form (Art. 9(2)(a)).
+				lawful-basis explicit_consent
 
-		// ------------------------------------------------------------------
-		// Applying policies by reference.
-		// ------------------------------------------------------------------
+				// Health records are kept 30 years (legal medical retention) and
+				// then physically deleted, since anonymized health data has no
+				// further use here.
+				retention 30 years then delete
+			}
 
-		// A whole value-object can be classified.
-		value-object EmailAddress base String protected-by ContactData {
-			String value
-		}
+			// ------------------------------------------------------------------
+			// Applying policies by reference.
+			// ------------------------------------------------------------------
 
-		aggregate-id PatientId identifies Patient base UUID {}
+			// A whole value-object can be classified.
+			value-object EmailAddress base String protected-by ContactData {
+				String value
+			}
 
-		aggregate Patient identifier PatientId {
+			aggregate-id PatientId identifies Patient base UUID {}
 
-			// Individual attributes carry their own classification.
-			String name protected-by ContactData
+			aggregate Patient identifier PatientId {
 
-			// The classification can also come from the attribute's type
-			// (EmailAddress is protected-by ContactData above).
-			EmailAddress email
+				// Individual attributes carry their own classification.
+				String name protected-by ContactData
 
-			optional String diagnosis protected-by MedicalData
+				// The classification can also come from the attribute's type
+				// (EmailAddress is protected-by ContactData above).
+				EmailAddress email
 
-			// Non-personal data simply has no policy.
-			LocalDate lastVisit
+				optional String diagnosis protected-by MedicalData
+
+				// Non-personal data simply has no policy.
+				LocalDate lastVisit
+			}
+
 		}
 
 	}

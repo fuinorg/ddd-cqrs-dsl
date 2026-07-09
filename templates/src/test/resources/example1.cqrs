@@ -1,83 +1,87 @@
-context x {
+project p {
 
-	namespace types {
-		type String
-		type Integer
-	}
-	
-	namespace a {
-		
-		import x.types.*
+	context x {
 
-		/** Example value object. */
-		value-object MyValueObject {}
-		
-		/** The constraint was violated. */
-		exception ConstraintViolatedException {
-			message "Constraint violated"
+		namespace types {
+			type String
+			type Integer
 		}
 
-		/** Unique aggregate identifier. */
-		aggregate-id MyAggregateId identifies MyAggregate base String {}
+		namespace a {
 
-		/** Example aggregate. */
-		aggregate MyAggregate identifier MyAggregateId {
-			
-			/** Checks something. */
-			business-rule AnyConstraint exception ConstraintViolatedException {
-	
-				/** Explain why it's strict. */
-				consistency strong
-	
+			import p.x.types.*
+
+			/** Example value object. */
+			value-object MyValueObject {}
+
+			/** The constraint was violated. */
+			exception ConstraintViolatedException {
+				message "Constraint violated"
 			}
 
-			/** Does some cool things. */
-			method doSomething business-rules AnyConstraint fires DidSomethingEvent, SomethingHappenedEvent {
-				
-				MyAggregateId id
-				optional MyValueObject vo
-				   
-				/** MyAggregate did something event. */   
-				event DidSomethingEvent {
+			/** Unique aggregate identifier. */
+			aggregate-id MyAggregateId identifies MyAggregate base String {}
+
+			/** Example aggregate. */
+			aggregate MyAggregate identifier MyAggregateId {
+
+				/** Checks something. */
+				business-rule AnyConstraint exception ConstraintViolatedException {
+
+					/** Explain why it's strict. */
+					consistency strong
+
+				}
+
+				/** Does some cool things. */
+				method doSomething business-rules AnyConstraint fires DidSomethingEvent, SomethingHappenedEvent {
+
 					MyAggregateId id
 					optional MyValueObject vo
+
+					/** MyAggregate did something event. */   
+					event DidSomethingEvent {
+						MyAggregateId id
+						optional MyValueObject vo
+					}
+
 				}
-				
+
+				/** Something happened in MyAggregate. */
+				event SomethingHappenedEvent {
+				}
+
 			}
 
-			/** Something happened in MyAggregate. */
-			event SomethingHappenedEvent {
-			}
-			
-		}
+			/** Unique entity identifier. */
+			entity-id MyEntityId identifies MyEntity base String {}
 
-		/** Unique entity identifier. */
-		entity-id MyEntityId identifies MyEntity base String {}
+			/** Example entity. */
+			entity MyEntity identifier MyEntityId root MyAggregate {
 
-		/** Example entity. */
-		entity MyEntity identifier MyEntityId root MyAggregate {
-			
-			/** Checks something. */
-			business-rule AnyConstraint exception ConstraintViolatedException {
-	
-				/** Explain why it's strict. */
-				consistency strong
-	
+				/** Checks something. */
+				business-rule AnyConstraint exception ConstraintViolatedException {
+
+					/** Explain why it's strict. */
+					consistency strong
+
+				}
+
+				/** Creates the entity. */
+				constructor create business-rules AnyConstraint {
+
+					MyEntityId id
+
+					/** Example value object. */
+					optional MyValueObject vo
+
+				}
+
 			}
-			
-			/** Creates the entity. */
-			constructor create business-rules AnyConstraint {
-				
-				MyEntityId id
-				
-				/** Example value object. */
-				optional MyValueObject vo
-				   
-			}
-			
+
 		}
 
 	}
 
-}
 
+}

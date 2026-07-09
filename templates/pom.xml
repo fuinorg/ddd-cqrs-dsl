@@ -253,7 +253,7 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>jakarta.json</artifactId>
-			<scope>test</scope>
+			<!-- Compile scope: SrcGen4JHint reads the "srcgen4j-default.json" preset with JSON-P. -->
 		</dependency>
 
 		<dependency>

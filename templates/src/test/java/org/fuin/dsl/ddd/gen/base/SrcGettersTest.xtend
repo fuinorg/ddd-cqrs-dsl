@@ -33,8 +33,8 @@ class SrcGettersTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("ctx.types.String", "java.lang.String")
-        refReg.putReference("ctx.types.Locale", "java.util.Locale")
+        refReg.putReference("p.ctx.types.String", "java.lang.String")
+        refReg.putReference("p.ctx.types.Locale", "java.util.Locale")
         val ctx = new SimpleCodeSnippetContext(refReg);
         val SrcGetters testee = createTestee(ctx)
 
@@ -71,6 +71,7 @@ class SrcGettersTest {
     private def SrcGetters createTestee(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
+				project p {
                 context ctx {
                 
                     namespace a.b {
@@ -95,10 +96,11 @@ class SrcGettersTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
-        val ValueObject valueObject = model.contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
         val List<Attribute> attributes = valueObject.attributes
         return new SrcGetters(codeSnippetContext, GenerateOptions.empty(), "public", attributes)
     }

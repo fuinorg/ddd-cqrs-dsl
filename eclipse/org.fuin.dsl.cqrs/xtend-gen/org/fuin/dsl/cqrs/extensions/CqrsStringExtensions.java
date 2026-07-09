@@ -31,7 +31,7 @@ public class CqrsStringExtensions {
         sb.append(" ");
       }
     }
-    String result = sb.toString().replace("  ", " ").trim();
+    String result = sb.toString().replaceAll("\\s+", " ").trim();
     return result;
   }
 

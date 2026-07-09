@@ -33,8 +33,8 @@ class SrcVoBaseMethodsUUIDTest {
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
-        refReg.putReference("y.types.UUID", "java.util.UUID")
-        refReg.putReference("y.a.MyAggregateId", "a.b.c.MyAggregateId")
+        refReg.putReference("p.y.types.UUID", "java.util.UUID")
+        refReg.putReference("p.y.a.MyAggregateId", "a.b.c.MyAggregateId")
         val AggregateId aggregateId = createModel().find(AggregateId, "MyAggregateId")
 
         val testee = new SrcVoBaseMethodsUUID(ctx, aggregateId)
@@ -84,6 +84,7 @@ class SrcVoBaseMethodsUUIDTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context y {
                 
                     namespace types {
@@ -101,7 +102,8 @@ class SrcVoBaseMethodsUUIDTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

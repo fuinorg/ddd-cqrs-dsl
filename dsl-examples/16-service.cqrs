@@ -1,26 +1,30 @@
-context services {
+project p_16_service {
 
-	namespace m {
+	context services {
 
-		type String
-		type Boolean
+		namespace m {
 
-		exception DeniedException { message "Access denied" }
+			type String
+			type Boolean
 
-         // A service groups related methods that are not tied to a single aggregate.
-		service AuthService {
+			exception DeniedException { message "Access denied" }
 
-            // It may also declare business rules.
-            
-			/** Credentials must be valid. */
-			business-rule CredentialsValid exception DeniedException {
-				consistency strong
-			}
+	         // A service groups related methods that are not tied to a single aggregate.
+			service AuthService {
 
-			method login business-rules CredentialsValid {
-				String user
-				String password
-				returns Boolean
+	            // It may also declare business rules.
+
+				/** Credentials must be valid. */
+				business-rule CredentialsValid exception DeniedException {
+					consistency strong
+				}
+
+				method login business-rules CredentialsValid {
+					String user
+					String password
+					returns Boolean
+				}
+
 			}
 
 		}

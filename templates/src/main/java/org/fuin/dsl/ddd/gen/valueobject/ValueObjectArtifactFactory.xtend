@@ -53,8 +53,8 @@ class ValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         val SimpleCodeSnippetContext ctx = new SimpleCodeSnippetContext(refReg)
         ctx.addImports(valueObject)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
-            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename,
+            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx, ValueObject vo) {

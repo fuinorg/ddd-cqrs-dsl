@@ -32,7 +32,7 @@ public class CqrsEventExtensions {
     if (_tripleEquals_1) {
       throw new IllegalArgumentException("argument \'event.namespace\' cannot be null");
     }
-    return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getContext(event).getName(), CqrsEObjectExtensions.getNamespace(event).getName(), event.getName());
+    return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(event).getName(), CqrsEObjectExtensions.getContext(event).getName(), CqrsEObjectExtensions.getNamespace(event).getName(), event.getName());
   }
 
   /**

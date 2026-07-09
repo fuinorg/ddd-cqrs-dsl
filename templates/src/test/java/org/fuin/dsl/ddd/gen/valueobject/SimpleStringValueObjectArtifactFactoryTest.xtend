@@ -40,9 +40,9 @@ class SimpleStringValueObjectArtifactFactoryTest {
         val name = "MySimpleStringValueObject"
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.valueobject." + name + "Converter",
-            EXAMPLES_CONCRETE + ".x.valueobject." + name + "Converter")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.valueobject." + name + "Converter",
+            "p.x.valueobject." + name + "Converter")
 
         val SimpleStringValueObjectArtifactFactory testee = createTestee()
         val ValueObject vo = model.find(typeof(ValueObject), name)
@@ -57,7 +57,7 @@ class SimpleStringValueObjectArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new SimpleStringValueObjectArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("vo", SimpleStringValueObjectArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("vo", SimpleStringValueObjectArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JPA, "true"))

@@ -10,6 +10,11 @@ import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
+ * 
+ * <p>Qualified names use the default provider, so they include the whole containment chain
+ * <code>project.context.namespace.element</code>. The enclosing {@link org.fuin.dsl.cqrs.cqrsDsl.Project}
+ * is part of the reference namespace: imports and cross references address a type by its full
+ * <code>project.context.namespace</code> path.</p>
  */
 @SuppressWarnings("all")
 public class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {

@@ -1,4 +1,4 @@
-package tst.x.entities;
+package p.x.entities;
 
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;

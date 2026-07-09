@@ -17,6 +17,7 @@ import java.util.Collection;
 public class CqrsKeywordEscapeTest extends BasePlatformTestCase {
 
     private static final String MODEL = """
+                project p {
             context c {
               namespace n {
                 type String
@@ -28,7 +29,8 @@ public class CqrsKeywordEscapeTest extends BasePlatformTestCase {
                 }
               }
             }
-            """;
+            }
+                """;
 
     public void testDeclarationNameHasCaretStripped() {
         myFixture.configureByText("test.cqrs", MODEL.replace("<caret>", ""));

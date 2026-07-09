@@ -42,14 +42,23 @@ import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonMember;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -158,11 +167,35 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.GENERIC_ARGS:
 				sequence_GenericArgs(context, (GenericArgs) semanticObject); 
 				return; 
+			case CqrsDslPackage.HINT:
+				sequence_Hint(context, (Hint) semanticObject); 
+				return; 
 			case CqrsDslPackage.IMPORT:
 				sequence_Import(context, (Import) semanticObject); 
 				return; 
 			case CqrsDslPackage.INVARIANTS:
 				sequence_Invariants(context, (Invariants) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_ARRAY:
+				sequence_JsonArray(context, (JsonArray) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_BOOLEAN:
+				sequence_JsonBoolean(context, (JsonBoolean) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_MEMBER:
+				sequence_JsonMember(context, (JsonMember) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_NULL:
+				sequence_JsonNull(context, (JsonNull) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_NUMBER:
+				sequence_JsonNumber(context, (JsonNumber) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_OBJECT:
+				sequence_JsonObject(context, (JsonObject) semanticObject); 
+				return; 
+			case CqrsDslPackage.JSON_STRING:
+				sequence_JsonString(context, (JsonString) semanticObject); 
 				return; 
 			case CqrsDslPackage.METHOD:
 				sequence_Method(context, (Method) semanticObject); 
@@ -184,6 +217,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.PRECONDITIONS:
 				sequence_Preconditions(context, (Preconditions) semanticObject); 
+				return; 
+			case CqrsDslPackage.PROJECT:
+				sequence_Project(context, (Project) semanticObject); 
 				return; 
 			case CqrsDslPackage.PROJECTION:
 				sequence_Projection(context, (Projection) semanticObject); 
@@ -406,7 +442,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     CommandHandler returns CommandHandler
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID commands+=[Command|ID] commands+=[Command|ID]* (aggregates+=[Aggregate|FQN] aggregates+=[Aggregate|FQN]*)?)
+	 *     (doc=DOC? name=ID commands+=[Command|FQN] commands+=[Command|FQN]* (aggregates+=[Aggregate|FQN] aggregates+=[Aggregate|FQN]*)?)
 	 * </pre>
 	 */
 	protected void sequence_CommandHandler(ISerializationContext context, CommandHandler semanticObject) {
@@ -576,7 +612,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     DomainModel returns DomainModel
 	 *
 	 * Constraint:
-	 *     contexts+=Context+
+	 *     projects+=Project+
 	 * </pre>
 	 */
 	protected void sequence_DomainModel(ISerializationContext context, DomainModel semanticObject) {
@@ -778,6 +814,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     Hint returns Hint
+	 *
+	 * Constraint:
+	 *     (doc=DOC? name=FQN json=JSON)
+	 * </pre>
+	 */
+	protected void sequence_Hint(ISerializationContext context, Hint semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     Import returns Import
 	 *
 	 * Constraint:
@@ -800,6 +850,131 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 */
 	protected void sequence_Invariants(ISerializationContext context, Invariants semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonArray
+	 *     JsonArray returns JsonArray
+	 *
+	 * Constraint:
+	 *     (elements+=JSON elements+=JSON*)?
+	 * </pre>
+	 */
+	protected void sequence_JsonArray(ISerializationContext context, JsonArray semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonBoolean
+	 *     JsonBoolean returns JsonBoolean
+	 *
+	 * Constraint:
+	 *     (value='true' | value='false')
+	 * </pre>
+	 */
+	protected void sequence_JsonBoolean(ISerializationContext context, JsonBoolean semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JsonMember returns JsonMember
+	 *
+	 * Constraint:
+	 *     (key=STRING value=JSON)
+	 * </pre>
+	 */
+	protected void sequence_JsonMember(ISerializationContext context, JsonMember semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.JSON_MEMBER__KEY) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.JSON_MEMBER__KEY));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.JSON_MEMBER__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.JSON_MEMBER__VALUE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getJsonMemberAccess().getKeySTRINGTerminalRuleCall_0_0(), semanticObject.getKey());
+		feeder.accept(grammarAccess.getJsonMemberAccess().getValueJSONParserRuleCall_2_0(), semanticObject.getValue());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonNull
+	 *     JsonNull returns JsonNull
+	 *
+	 * Constraint:
+	 *     {JsonNull}
+	 * </pre>
+	 */
+	protected void sequence_JsonNull(ISerializationContext context, JsonNull semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonNumber
+	 *     JsonNumber returns JsonNumber
+	 *
+	 * Constraint:
+	 *     value=Number
+	 * </pre>
+	 */
+	protected void sequence_JsonNumber(ISerializationContext context, JsonNumber semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.JSON_NUMBER__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.JSON_NUMBER__VALUE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getJsonNumberAccess().getValueNumberParserRuleCall_0(), semanticObject.getValue());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonObject
+	 *     JsonObject returns JsonObject
+	 *
+	 * Constraint:
+	 *     (members+=JsonMember members+=JsonMember*)?
+	 * </pre>
+	 */
+	protected void sequence_JsonObject(ISerializationContext context, JsonObject semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     JSON returns JsonString
+	 *     JsonString returns JsonString
+	 *
+	 * Constraint:
+	 *     value=STRING
+	 * </pre>
+	 */
+	protected void sequence_JsonString(ISerializationContext context, JsonString semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.JSON_STRING__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.JSON_STRING__VALUE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getJsonStringAccess().getValueSTRINGTerminalRuleCall_0(), semanticObject.getValue());
+		feeder.finish();
 	}
 	
 	
@@ -947,6 +1122,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     Project returns Project
+	 *
+	 * Constraint:
+	 *     (name=FQN hints+=Hint* contexts+=Context*)
+	 * </pre>
+	 */
+	protected void sequence_Project(ISerializationContext context, Project semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     AbstractElement returns Projection
 	 *     Projection returns Projection
 	 *
@@ -1060,7 +1249,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     View returns View
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID projection=[Projection|ID])
+	 *     (doc=DOC? name=ID projection=[Projection|FQN])
 	 * </pre>
 	 */
 	protected void sequence_View(ISerializationContext context, View semanticObject) {

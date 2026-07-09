@@ -47,8 +47,8 @@ class AbstractEnumArtifactFactoryTest {
 
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
 
         val AbstractEnumArtifactFactory testee = createTestee()
         val EnumObject enu = model.find(typeof(EnumObject), enumName)
@@ -63,7 +63,7 @@ class AbstractEnumArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AbstractEnumArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEnumObject", AbstractEnumArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEnumObject", AbstractEnumArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

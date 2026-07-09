@@ -32,9 +32,9 @@ class SrcVarsDeclTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("a.b.String", "java.lang.String")
-        refReg.putReference("a.b.Integer", "java.lang.Integer")
-        refReg.putReference("a.b.Boolean", "java.lang.Boolean")
+        refReg.putReference("p.a.b.String", "java.lang.String")
+        refReg.putReference("p.a.b.Integer", "java.lang.Integer")
+        refReg.putReference("p.a.b.Boolean", "java.lang.Boolean")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -60,6 +60,7 @@ class SrcVarsDeclTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context a {
                     
                     namespace b {
@@ -77,7 +78,8 @@ class SrcVarsDeclTest {
                     }
                 
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

@@ -16,6 +16,6 @@
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
 @NullMarked
-package tst2.x.resourceset;
+package p.shared.domain.x.resourceset;
 
 import org.jspecify.annotations.NullMarked;

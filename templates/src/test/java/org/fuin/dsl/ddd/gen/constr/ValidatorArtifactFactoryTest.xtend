@@ -80,15 +80,15 @@ class ValidatorArtifactFactoryTest {
         val voName = "ValueObject" + constrChar
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.constr." + constrName, EXAMPLES_CONCRETE + ".x.constr." + constrName)
-        refReg.putReference("x.constr." + voName, EXAMPLES_CONCRETE + ".x.constr." + voName)
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.constr." + constrName, "p.x.constr." + constrName)
+        refReg.putReference("p.x.constr." + voName, "p.x.constr." + voName)
 
         val ValidatorArtifactFactory testee = createTestee()
         val Constraint constraint = model.find(typeof(Constraint), constrName)
         if (constraint.exception !== null) {
             val constrException = constrChar + "Exception"
-            refReg.putReference("x.constr." + constrException, EXAMPLES_CONCRETE + ".x.constr." + constrException)
+            refReg.putReference("p.x.constr." + constrException, "p.x.constr." + constrException)
         }
 
         // TEST
@@ -101,7 +101,7 @@ class ValidatorArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ValidatorArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validator", ValidatorArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validator", ValidatorArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

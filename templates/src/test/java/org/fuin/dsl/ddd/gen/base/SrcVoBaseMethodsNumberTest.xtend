@@ -33,8 +33,8 @@ class SrcVoBaseMethodsNumberTest {
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
-        refReg.putReference("y.types.Long", "java.lang.Long")
-        refReg.putReference("y.a.MyEntityId", "a.b.c.MyEntityId")
+        refReg.putReference("p.y.types.Long", "java.lang.Long")
+        refReg.putReference("p.y.a.MyEntityId", "a.b.c.MyEntityId")
         val EntityId entityId = createModel().find(EntityId, "MyEntityId")
 
         val testee = new SrcVoBaseMethodsNumber(ctx, entityId)
@@ -109,6 +109,7 @@ class SrcVoBaseMethodsNumberTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
+				project p {
                 context y {
                 
                     namespace types {
@@ -131,7 +132,8 @@ class SrcVoBaseMethodsNumberTest {
                     }
                     
                 }
-            '''
+            }
+			'''
         )
         validationTester.assertNoIssues(model)
         return model

@@ -54,13 +54,13 @@ class AbstractEntityArtifactFactoryTest {
         val abstractName = "Abstract" + entityName
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.entities.AggregateX", "tst.x.entities.AggregateX")
-        refReg.putReference("x.entities.AggregateXId", "tst.x.entities.AggregateXId")
-        refReg.putReference("x.entities." + entityName + "Id", "tst.x.entities." + entityName + "Id")
-        refReg.putReference("x.entities.AnyConstraintViolatedException", "tst.x.entities.AnyConstraintViolatedException")
-        refReg.putReference("x.entities." + entityName + "CreatedEvent", "tst.x.entities." + entityName + "Id")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.entities.AggregateX", "p.x.entities.AggregateX")
+        refReg.putReference("p.x.entities.AggregateXId", "p.x.entities.AggregateXId")
+        refReg.putReference("p.x.entities." + entityName + "Id", "p.x.entities." + entityName + "Id")
+        refReg.putReference("p.x.entities.AnyConstraintViolatedException", "p.x.entities.AnyConstraintViolatedException")
+        refReg.putReference("p.x.entities." + entityName + "CreatedEvent", "p.x.entities." + entityName + "Id")
 
         val AbstractEntityArtifactFactory testee = createTestee()
         val Entity entity = model.find(typeof(Entity), entityName)
@@ -75,7 +75,7 @@ class AbstractEntityArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AbstractEntityArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntity", AbstractEntityArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntity", AbstractEntityArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

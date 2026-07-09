@@ -42,8 +42,8 @@ class ESRepositoryFactoryArtifactFactoryTest {
         val className = repoClassName + "Factory"
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.aggregates." + repoClassName, EXAMPLES_CONCRETE + ".x.aggregates." + repoClassName)
-        refReg.putReference("XEventRegistry", EXAMPLES_CONCRETE + ".x.resourceset.XEventRegistry")
+        refReg.putReference("p.x.aggregates." + repoClassName, "p.x.aggregates." + repoClassName)
+        refReg.putReference("p.XEventRegistry", "p.x.resourceset.XEventRegistry")
 
         val ESRepositoryFactoryArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)
@@ -58,8 +58,7 @@ class ESRepositoryFactoryArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ESRepositoryFactoryArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("esRepositoryFactory",
-            ESRepositoryFactoryArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("esRepositoryFactory", ESRepositoryFactoryArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

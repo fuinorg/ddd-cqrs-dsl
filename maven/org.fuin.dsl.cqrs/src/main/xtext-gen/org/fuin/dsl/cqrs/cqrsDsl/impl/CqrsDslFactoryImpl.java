@@ -48,11 +48,20 @@ import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
+import org.fuin.dsl.cqrs.cqrsDsl.JSON;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonBoolean;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonMember;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
+import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
@@ -62,6 +71,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
@@ -129,9 +139,11 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
     switch (eClass.getClassifierID())
     {
       case CqrsDslPackage.DOMAIN_MODEL: return createDomainModel();
+      case CqrsDslPackage.PROJECT: return createProject();
       case CqrsDslPackage.CONTEXT: return createContext();
       case CqrsDslPackage.NAMESPACE: return createNamespace();
       case CqrsDslPackage.IMPORT: return createImport();
+      case CqrsDslPackage.HINT: return createHint();
       case CqrsDslPackage.ABSTRACT_ELEMENT: return createAbstractElement();
       case CqrsDslPackage.TYPE: return createType();
       case CqrsDslPackage.INTERNAL_TYPE: return createInternalType();
@@ -178,6 +190,14 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.PROJECTION: return createProjection();
       case CqrsDslPackage.VIEW: return createView();
       case CqrsDslPackage.LITERAL: return createLiteral();
+      case CqrsDslPackage.JSON: return createJSON();
+      case CqrsDslPackage.JSON_OBJECT: return createJsonObject();
+      case CqrsDslPackage.JSON_MEMBER: return createJsonMember();
+      case CqrsDslPackage.JSON_ARRAY: return createJsonArray();
+      case CqrsDslPackage.JSON_STRING: return createJsonString();
+      case CqrsDslPackage.JSON_NUMBER: return createJsonNumber();
+      case CqrsDslPackage.JSON_BOOLEAN: return createJsonBoolean();
+      case CqrsDslPackage.JSON_NULL: return createJsonNull();
       case CqrsDslPackage.BOOLEAN_LITERAL: return createBooleanLiteral();
       case CqrsDslPackage.NULL_LITERAL: return createNullLiteral();
       case CqrsDslPackage.NUMBER_LITERAL: return createNumberLiteral();
@@ -267,6 +287,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
+  public Project createProject()
+  {
+    ProjectImpl project = new ProjectImpl();
+    return project;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Context createContext()
   {
     ContextImpl context = new ContextImpl();
@@ -295,6 +327,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     ImportImpl import_ = new ImportImpl();
     return import_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Hint createHint()
+  {
+    HintImpl hint = new HintImpl();
+    return hint;
   }
 
   /**
@@ -847,6 +891,102 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     LiteralImpl literal = new LiteralImpl();
     return literal;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JSON createJSON()
+  {
+    JSONImpl json = new JSONImpl();
+    return json;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonObject createJsonObject()
+  {
+    JsonObjectImpl jsonObject = new JsonObjectImpl();
+    return jsonObject;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonMember createJsonMember()
+  {
+    JsonMemberImpl jsonMember = new JsonMemberImpl();
+    return jsonMember;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonArray createJsonArray()
+  {
+    JsonArrayImpl jsonArray = new JsonArrayImpl();
+    return jsonArray;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonString createJsonString()
+  {
+    JsonStringImpl jsonString = new JsonStringImpl();
+    return jsonString;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonNumber createJsonNumber()
+  {
+    JsonNumberImpl jsonNumber = new JsonNumberImpl();
+    return jsonNumber;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonBoolean createJsonBoolean()
+  {
+    JsonBooleanImpl jsonBoolean = new JsonBooleanImpl();
+    return jsonBoolean;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public JsonNull createJsonNull()
+  {
+    JsonNullImpl jsonNull = new JsonNullImpl();
+    return jsonNull;
   }
 
   /**

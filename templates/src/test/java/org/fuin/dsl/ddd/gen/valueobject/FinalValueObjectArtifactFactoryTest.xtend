@@ -58,9 +58,9 @@ class FinalValueObjectArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.valueobject." + name + "Converter", EXAMPLES_CONCRETE + ".x.valueobject." + name + "Converter")
-        refReg.putReference("x.valueobject.Abstract" + name, EXAMPLES_ABSTRACT + ".x.valueobject.Abstract" + name)
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.valueobject." + name + "Converter", "p.x.valueobject." + name + "Converter")
+        refReg.putReference("p.x.valueobject.Abstract" + name, "p.x.valueobject.Abstract" + name)
 
         val FinalValueObjectArtifactFactory testee = createTestee()
         val ValueObject vo = model.find(typeof(ValueObject), name)
@@ -75,7 +75,7 @@ class FinalValueObjectArtifactFactoryTest {
         
     private def createTestee() {
         val factory = new FinalValueObjectArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("vo", FinalValueObjectArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("vo", FinalValueObjectArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

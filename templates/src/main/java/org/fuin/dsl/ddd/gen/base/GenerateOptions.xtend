@@ -81,24 +81,6 @@ class GenerateOptions {
     }
 
     /**
-     * Returns the name of the base package to prepend right before the context from the DSL.
-     * 
-     * @return Base package name.
-     */
-    def String getBasePkg() {
-        return basePkg
-    }
-
-    /**
-     * Returns the name of a package to insert right after the context from the DSL.
-     * 
-     * @return Package name.
-     */
-    def String getPkg() {
-        return pkg
-    }
-
-    /**
      * Determines if JPA annotations should be generated.
      * 
      * @return {@code true} if JPA annotations should be generated.

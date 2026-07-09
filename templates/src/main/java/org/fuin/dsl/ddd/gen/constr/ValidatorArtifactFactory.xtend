@@ -50,8 +50,8 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
         ctx.addImports(constraint)
         ctx.addReferences(constraint)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
-            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename,
+            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx, Constraint constraint) {

@@ -1,32 +1,36 @@
-context ctor {
-	
-	namespace m {
-	
-		type String
-		type Integer
+project p_14_constructor {
 
-		aggregate-id ItemId identifies Item {}
-		
-		aggregate Item identifier ItemId {
+	context ctor {
 
-			// A constructor creates an aggregate/entity.
-			constructor create fires ItemCreatedEvent {
-				
-				// Parameters
-				String name
-				
-				optional Integer quantity
+		namespace m {
 
-                // Inline defined event(s) to be fired on success 
-				event ItemCreatedEvent {
+			type String
+			type Integer
+
+			aggregate-id ItemId identifies Item {}
+
+			aggregate Item identifier ItemId {
+
+				// A constructor creates an aggregate/entity.
+				constructor create fires ItemCreatedEvent {
+
+					// Parameters
 					String name
-					message "Item ${name} created"
+
+					optional Integer quantity
+
+	                // Inline defined event(s) to be fired on success 
+					event ItemCreatedEvent {
+						String name
+						message "Item ${name} created"
+					}
+
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

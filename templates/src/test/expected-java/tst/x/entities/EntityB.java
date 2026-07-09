@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package tst.x.entities;
+package p.core.domain.x.entities;
 
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.objects4j.common.Contract;
+import p.x.entities.AbstractEntityB;
+import p.x.entities.AggregateX;
+import p.x.entities.AggregateXId;
+import p.x.entities.EntityBId;
 
 /**
  * Entity B - With variables.

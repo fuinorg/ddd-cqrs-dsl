@@ -59,8 +59,8 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.addReferences(vo)
         ctx.requiresImport("java.io.Serial")
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
-            create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename,
+            create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8"), ns));
     }
 
     def addReferences(CodeSnippetContext ctx, ValueObject vo) {

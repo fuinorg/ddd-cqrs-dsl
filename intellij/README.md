@@ -91,7 +91,7 @@ fully qualified `namespaces` it provides, a `type` discriminator (always `maven`
 ```json
 [
   { "type": "maven",
-    "namespaces": ["com.acme.billing", "com.acme.catalog"],
+    "namespaces": ["billing.com.acme.billing", "billing.com.acme.catalog"],
     "data": {
       "groupId": "org.fuin.dsl.cqrs.contexts",
       "artifactId": "cqrs-billing-model",
@@ -99,7 +99,7 @@ fully qualified `namespaces` it provides, a `type` discriminator (always `maven`
     }
   },
   { "type": "maven",
-    "namespaces": ["dev.workinprogress"],
+    "namespaces": ["wip.dev.workinprogress"],
     "data": {
       "groupId": "org.acme",
       "artifactId": "wip-model",
@@ -110,10 +110,10 @@ fully qualified `namespaces` it provides, a `type` discriminator (always `maven`
 ]
 ```
 
-- `namespaces` lists the provided namespaces exactly as written in an `import` (a trailing `.*` is
-  ignored, so `import a.b` and `import a.b.*` both match the entry that lists `a.b`). One entry can
-  list several namespaces, which is handy because a single Maven artifact often holds more than one
-  context and namespace.
+- `namespaces` lists the provided namespaces — the fully qualified `project.context.namespace` values
+  exactly as written in an `import` (a trailing `.*` is ignored, so `import a.b.c` and `import a.b.c.*`
+  both match the entry that lists `a.b.c`). One entry can list several namespaces, which is handy
+  because a single Maven artifact often holds more than one context and namespace.
 - `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
   `cqrs` and type `tar.gz` — resolved from the local `~/.m2/repository` first, otherwise Maven
   Central (releases) or Sonatype Snapshots (`-SNAPSHOT`) — whose every `.cqrs` is unpacked.

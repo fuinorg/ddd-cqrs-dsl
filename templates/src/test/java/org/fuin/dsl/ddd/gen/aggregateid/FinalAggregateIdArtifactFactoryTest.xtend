@@ -39,9 +39,9 @@ class FinalAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.aggregateid.MyAggregateIdConverter", EXAMPLES_CONCRETE + ".x.aggregateid.MyAggregateIdConverter")
-        refReg.putReference("x.aggregateid.AbstractMyAggregateId", EXAMPLES_ABSTRACT + ".x.aggregateid.AbstractMyAggregateId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.aggregateid.MyAggregateIdConverter", "p.x.aggregateid.MyAggregateIdConverter")
+        refReg.putReference("p.x.aggregateid.AbstractMyAggregateId", "p.x.aggregateid.AbstractMyAggregateId")
 
         val FinalAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregateId")
@@ -59,8 +59,8 @@ class FinalAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.aggregateid.AbstractMyAggregate2Id", EXAMPLES_ABSTRACT + ".x.aggregateid.AbstractMy2AggregateId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.aggregateid.AbstractMyAggregate2Id", "p.x.aggregateid.AbstractMy2AggregateId")
 
         val FinalAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate2Id")
@@ -79,9 +79,9 @@ class FinalAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.aggregateid.MyAggregate3IdConverter", EXAMPLES_CONCRETE + ".x.aggregateid.MyAggregate3IdConverter")
-        refReg.putReference("x.aggregateid.AbstractMyAggregate3Id", EXAMPLES_ABSTRACT + ".x.aggregateid.AbstractMyAggregate3Id")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.aggregateid.MyAggregate3IdConverter", "p.x.aggregateid.MyAggregate3IdConverter")
+        refReg.putReference("p.x.aggregateid.AbstractMyAggregate3Id", "p.x.aggregateid.AbstractMyAggregate3Id")
 
         val FinalAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate3Id")
@@ -99,8 +99,8 @@ class FinalAggregateIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.aggregateid.AbstractMyAggregate4Id", EXAMPLES_ABSTRACT + ".x.aggregateid.AbstractMy4AggregateId")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.aggregateid.AbstractMyAggregate4Id", "p.x.aggregateid.AbstractMy4AggregateId")
 
         val FinalAggregateIdArtifactFactory testee = createTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate4Id")
@@ -115,7 +115,7 @@ class FinalAggregateIdArtifactFactoryTest {
         
     private def createTestee() {
         val factory = new FinalAggregateIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

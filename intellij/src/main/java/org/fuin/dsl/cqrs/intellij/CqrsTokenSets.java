@@ -18,7 +18,8 @@ public final class CqrsTokenSets {
 
     /** Every reserved word in the language (structural, value and literal keywords). */
     public static final TokenSet KEYWORDS = TokenSet.create(
-            CqrsTypes.KW_CONTEXT, CqrsTypes.KW_NAMESPACE, CqrsTypes.KW_IMPORT, CqrsTypes.KW_TYPE,
+            CqrsTypes.KW_PROJECT, CqrsTypes.KW_CONTEXT, CqrsTypes.KW_NAMESPACE, CqrsTypes.KW_IMPORT,
+            CqrsTypes.KW_HINT, CqrsTypes.KW_TYPE,
             CqrsTypes.KW_ELEMENT, CqrsTypes.KW_GENERICS, CqrsTypes.KW_CONSTRAINT, CqrsTypes.KW_INPUT,
             CqrsTypes.KW_EXCEPTION, CqrsTypes.KW_BUSINESS_RULE, CqrsTypes.KW_ANNOTATION, CqrsTypes.KW_CID,
             CqrsTypes.KW_MESSAGE, CqrsTypes.KW_VALUE_OBJECT, CqrsTypes.KW_BASE, CqrsTypes.KW_ENTITY_ID,
@@ -50,13 +51,14 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_ARCHIVE, CqrsTypes.KW_REVIEW,
             CqrsTypes.KW_TRUE, CqrsTypes.KW_FALSE, CqrsTypes.KW_NULL);
 
-    public static final TokenSet BRACES = TokenSet.create(CqrsTypes.LBRACE, CqrsTypes.RBRACE);
+    public static final TokenSet BRACES = TokenSet.create(
+            CqrsTypes.LBRACE, CqrsTypes.RBRACE, CqrsTypes.LBRACKET, CqrsTypes.RBRACKET);
 
     public static final TokenSet PARENS = TokenSet.create(CqrsTypes.LPAREN, CqrsTypes.RPAREN);
 
     public static final TokenSet OPERATORS = TokenSet.create(
             CqrsTypes.LT, CqrsTypes.GT, CqrsTypes.AT, CqrsTypes.COMMA, CqrsTypes.DOT,
-            CqrsTypes.PIPE, CqrsTypes.STAR);
+            CqrsTypes.PIPE, CqrsTypes.STAR, CqrsTypes.COLON);
 
     private CqrsTokenSets() {
     }

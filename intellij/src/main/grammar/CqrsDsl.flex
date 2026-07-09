@@ -60,9 +60,11 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "lawful-basis"            { return KW_LAWFUL_BASIS; }
 
   // ---- Structural keywords ----
+  "project"                 { return KW_PROJECT; }
   "context"                 { return KW_CONTEXT; }
   "namespace"               { return KW_NAMESPACE; }
   "import"                  { return KW_IMPORT; }
+  "hint"                    { return KW_HINT; }
   "type"                    { return KW_TYPE; }
   "element"                 { return KW_ELEMENT; }
   "generics"                { return KW_GENERICS; }
@@ -184,6 +186,9 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "."                       { return DOT; }
   "|"                       { return PIPE; }
   "*"                       { return STAR; }
+  ":"                       { return COLON; }
+  "["                       { return LBRACKET; }
+  "]"                       { return RBRACKET; }
 
   // ---- Terminals ----
   {STRING}                  { return STRING; }

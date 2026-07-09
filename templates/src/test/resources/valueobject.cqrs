@@ -1,77 +1,81 @@
-context x {
+project p {
 
-	namespace types {
-		type String
-		type Integer
-	}
-	
-	namespace valueobject {
-		
-		import x.types.*
+	context x {
 
-		/** Value object single attribute and base. */
-		value-object MyValueObject base String {
-			
-			/** Persistent value. */
-			String value 
-			
+		namespace types {
+			type String
+			type Integer
 		}
 
-		/** Value object single attribute and without base. */
-		value-object MyValueObject2 {
-			
-			/** Persistent value. */
-			String id 
-			
-		}
+		namespace valueobject {
 
-		/** Value object multiple attribute and without base. */
-		value-object MyValueObject4  {
-			
-			/** Persistent value A. */
-			String a 
-			
-			/** Persistent value B. */
-			String b
-			
-		}
+			import p.x.types.*
 
-		/** A person's full nomenclature, also known as a personal name. */
-		value-object FullName  {
-			
-			slabel "Name"
-			label "Full name"
-			tooltip "A person's full nomenclature, also known as a personal name"
-			examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
-			
-			/** First name. */
-			String firstName {
-				slabel "First"
-				label "First name"
-				tooltip "A given name, also known as a personal name or forename"
-				prompt "Enter your first name"
-				examples "Peter" "Mary Jane" "Harry"
-			} 
-			
-			/** Last name. */
-			String lastName {
-				slabel "Last"
-				label "Last name"
-				tooltip "A family name, also known as a surname"
-				prompt "Enter your last name"
-				examples "Parker" "Watson" "Osborn"
+			/** Value object single attribute and base. */
+			value-object MyValueObject base String {
+
+				/** Persistent value. */
+				String value 
+
 			}
-			
-		}
 
-		/** Simple value object single attribute and base. */
-		value-object MySimpleStringValueObject base String {
-			
-			examples "one" "two" "three"
-			
-			/** Persistent value. */
-			String value 
-			
+			/** Value object single attribute and without base. */
+			value-object MyValueObject2 {
+
+				/** Persistent value. */
+				String id 
+
+			}
+
+			/** Value object multiple attribute and without base. */
+			value-object MyValueObject4  {
+
+				/** Persistent value A. */
+				String a 
+
+				/** Persistent value B. */
+				String b
+
+			}
+
+			/** A person's full nomenclature, also known as a personal name. */
+			value-object FullName  {
+
+				slabel "Name"
+				label "Full name"
+				tooltip "A person's full nomenclature, also known as a personal name"
+				examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
+
+				/** First name. */
+				String firstName {
+					slabel "First"
+					label "First name"
+					tooltip "A given name, also known as a personal name or forename"
+					prompt "Enter your first name"
+					examples "Peter" "Mary Jane" "Harry"
+				} 
+
+				/** Last name. */
+				String lastName {
+					slabel "Last"
+					label "Last name"
+					tooltip "A family name, also known as a surname"
+					prompt "Enter your last name"
+					examples "Parker" "Watson" "Osborn"
+				}
+
+			}
+
+			/** Simple value object single attribute and base. */
+			value-object MySimpleStringValueObject base String {
+
+				examples "one" "two" "three"
+
+				/** Persistent value. */
+				String value 
+
+			}
+
 		}
 
 	}

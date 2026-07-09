@@ -48,10 +48,10 @@ class ServiceArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.types.Integer", "java.lang.Integer")
-        refReg.putReference("x.services.AnyConstraintViolatedException",
-            EXAMPLES_CONCRETE + ".x.services.AnyConstraintViolatedException")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.services.AnyConstraintViolatedException",
+            "p.x.services.AnyConstraintViolatedException")
 
         val ServiceArtifactFactory testee = createTestee()
         val Service service = model.find(typeof(Service), name)
@@ -66,7 +66,7 @@ class ServiceArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ServiceArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("service", ServiceArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("service", ServiceArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

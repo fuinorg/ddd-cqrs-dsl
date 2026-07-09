@@ -52,8 +52,8 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
         ctx.addImports(ex)
         ctx.addReferences(ex)
 
-        return List.of(new GeneratedArtifact(artifactName, filename,
-            create(ctx, ex, pkg, className).toString().getBytes("UTF-8")));
+        return List.of(newArtifact(filename,
+            create(ctx, ex, pkg, className).toString().getBytes("UTF-8"), ns));
     }
 
     def addImports(CodeSnippetContext ctx, Exception ex) {

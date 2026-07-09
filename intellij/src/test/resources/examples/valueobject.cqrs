@@ -1,41 +1,45 @@
-context x {
-	namespace types {
-		type String
-		type Integer
-	}
+project p_valueobject {
 
-	namespace valueobject {
-		import x.types.*
-
-		value-object MyValueObject base String {
-			String value
+	context x {
+		namespace types {
+			type String
+			type Integer
 		}
 
-		value-object MyValueObject2 {
-			String id
-		}
+		namespace valueobject {
+			import x.types.*
 
-		value-object FullName {
-			slabel "Name"
-			label "Full name"
-			tooltip "A person's full nomenclature, also known as a personal name"
-			examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
-
-			String firstName {
-				slabel "First"
-				label "First name"
-				tooltip "A given name, also known as a personal name or forename"
-				prompt "Enter your first name"
-				examples "Peter" "Mary Jane" "Harry"
+			value-object MyValueObject base String {
+				String value
 			}
 
-			String lastName {
-				slabel "Last"
-				label "Last name"
-				tooltip "A family name, also known as a surname"
-				prompt "Enter your last name"
-				examples "Parker" "Watson" "Osborn"
+			value-object MyValueObject2 {
+				String id
+			}
+
+			value-object FullName {
+				slabel "Name"
+				label "Full name"
+				tooltip "A person's full nomenclature, also known as a personal name"
+				examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
+
+				String firstName {
+					slabel "First"
+					label "First name"
+					tooltip "A given name, also known as a personal name or forename"
+					prompt "Enter your first name"
+					examples "Peter" "Mary Jane" "Harry"
+				}
+
+				String lastName {
+					slabel "Last"
+					label "Last name"
+					tooltip "A family name, also known as a surname"
+					prompt "Enter your last name"
+					examples "Parker" "Watson" "Osborn"
+				}
 			}
 		}
 	}
+
 }

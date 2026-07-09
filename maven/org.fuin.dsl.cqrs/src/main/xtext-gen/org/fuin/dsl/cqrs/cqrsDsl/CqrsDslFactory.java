@@ -33,6 +33,15 @@ public interface CqrsDslFactory extends EFactory
   DomainModel createDomainModel();
 
   /**
+   * Returns a new object of class '<em>Project</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Project</em>'.
+   * @generated
+   */
+  Project createProject();
+
+  /**
    * Returns a new object of class '<em>Context</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -58,6 +67,15 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   Import createImport();
+
+  /**
+   * Returns a new object of class '<em>Hint</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Hint</em>'.
+   * @generated
+   */
+  Hint createHint();
 
   /**
    * Returns a new object of class '<em>Abstract Element</em>'.
@@ -472,6 +490,78 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   Literal createLiteral();
+
+  /**
+   * Returns a new object of class '<em>JSON</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>JSON</em>'.
+   * @generated
+   */
+  JSON createJSON();
+
+  /**
+   * Returns a new object of class '<em>Json Object</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Object</em>'.
+   * @generated
+   */
+  JsonObject createJsonObject();
+
+  /**
+   * Returns a new object of class '<em>Json Member</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Member</em>'.
+   * @generated
+   */
+  JsonMember createJsonMember();
+
+  /**
+   * Returns a new object of class '<em>Json Array</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Array</em>'.
+   * @generated
+   */
+  JsonArray createJsonArray();
+
+  /**
+   * Returns a new object of class '<em>Json String</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json String</em>'.
+   * @generated
+   */
+  JsonString createJsonString();
+
+  /**
+   * Returns a new object of class '<em>Json Number</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Number</em>'.
+   * @generated
+   */
+  JsonNumber createJsonNumber();
+
+  /**
+   * Returns a new object of class '<em>Json Boolean</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Boolean</em>'.
+   * @generated
+   */
+  JsonBoolean createJsonBoolean();
+
+  /**
+   * Returns a new object of class '<em>Json Null</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Json Null</em>'.
+   * @generated
+   */
+  JsonNull createJsonNull();
 
   /**
    * Returns a new object of class '<em>Boolean Literal</em>'.

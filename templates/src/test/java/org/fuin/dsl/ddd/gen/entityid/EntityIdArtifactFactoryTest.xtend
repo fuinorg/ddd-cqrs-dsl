@@ -39,8 +39,8 @@ class EntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.MyEntityIdConverter", EXAMPLES_CONCRETE + ".x.entityid.MyEntityIdConverter")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.MyEntityIdConverter", "p.x.entityid.MyEntityIdConverter")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntityId")
@@ -59,7 +59,7 @@ class EntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity2Id")
@@ -78,8 +78,8 @@ class EntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
-        refReg.putReference("x.entityid.MyEntity3IdConverter", EXAMPLES_CONCRETE + ".x.entityid.MyEntity3IdConverter")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.entityid.MyEntity3IdConverter", "p.x.entityid.MyEntity3IdConverter")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity3Id")
@@ -98,7 +98,7 @@ class EntityIdArtifactFactoryTest {
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.String", "java.lang.String")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity4Id")
@@ -113,7 +113,7 @@ class EntityIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new EntityIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", EntityIdArtifactFactory.name)
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", EntityIdArtifactFactory.name, "project", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

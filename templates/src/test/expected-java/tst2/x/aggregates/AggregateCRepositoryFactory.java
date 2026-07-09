@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package tst2.x.aggregates;
+package p.core.domain.x.aggregates;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import org.fuin.esc.api.EventStore;
+import p.x.aggregates.AggregateCRepository;
 
 /**
  * Creates a AggregateCRepository.

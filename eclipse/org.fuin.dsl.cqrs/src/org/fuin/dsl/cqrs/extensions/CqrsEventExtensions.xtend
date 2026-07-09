@@ -30,7 +30,7 @@ class CqrsEventExtensions {
 		if (event.namespace === null) {
 			throw new IllegalArgumentException("argument 'event.namespace' cannot be null")
 		}
-		return separated(".", event.context.name, event.namespace.name, event.name)
+		return separated(".", event.project.name, event.context.name, event.namespace.name, event.name)
 	}
 
 

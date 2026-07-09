@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package tst.x.entityid;
+package p.shared.domain.x.entityid;
 
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
+import p.x.entityid.AbstractMy4EntityId;
 
 /**
  * Entity ID multiple attribute and without base.
