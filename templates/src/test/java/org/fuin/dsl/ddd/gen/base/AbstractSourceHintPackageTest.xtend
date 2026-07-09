@@ -78,4 +78,78 @@ class AbstractSourceHintPackageTest {
         assertThat(artifact.project).isEqualTo("shared")
         assertThat(artifact.folder).isEqualTo("genJava")
     }
+
+    @Test
+    def void testPackageOnlyHintOverridesDefaultPackage() {
+
+        // PREPARE - a hint that overrides only "package" (no "types"). The default preset
+        // ("srcgen4j-default.json") still supplies the ValueObject type entry (module "shared", group
+        // "domain"), but the model's "package" pattern must win over the preset's.
+        val model = parser.parse('''
+            project myproj {
+                hint SrcGen4J {
+                    "package": "${project}.${context}.${namespace}"
+                }
+                context ctx {
+                    namespace ns {
+                        type String
+                        value-object Money {
+                            String amount
+                        }
+                    }
+                }
+            }
+        ''')
+        val vo = model.find(typeof(ValueObject), "Money")
+
+        val factory = new ValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "project", "folder")
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+
+        // TEST
+        val pkg = factory.asPackage(vo.namespace)
+
+        // VERIFY the model's "package" overwrites the preset's: no ${module}/${group} segment, so the
+        // result is project.context.namespace and NOT the default "myproj.shared.domain.ctx.ns".
+        assertThat(pkg).isEqualTo("myproj.ctx.ns")
+    }
+
+    @Test
+    def void testHintFromAnotherFileOfTheSameProject() {
+
+        // PREPARE - a project split across two ".cqrs" files (two resources in one resource set): the
+        // "SrcGen4J" hint is declared in one file's "project myproj" block...
+        val hintModel = parser.parse('''
+            project myproj {
+                hint SrcGen4J {
+                    "package": "${project}.${context}.${namespace}"
+                }
+            }
+        ''')
+        val resourceSet = hintModel.eResource.resourceSet
+        // ...while the value-object lives in the OTHER file's block for the same project.
+        val elementModel = parser.parse('''
+            project myproj {
+                context ctx {
+                    namespace ns {
+                        type String
+                        value-object Money {
+                            String amount
+                        }
+                    }
+                }
+            }
+        ''', resourceSet)
+        val vo = elementModel.find(typeof(ValueObject), "Money")
+
+        val factory = new ValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "project", "folder")
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+
+        // TEST + VERIFY the hint from the sibling file is picked up (same logical project), overriding
+        // the preset package.
+        assertThat(factory.asPackage(vo.namespace)).isEqualTo("myproj.ctx.ns")
+    }
 }
