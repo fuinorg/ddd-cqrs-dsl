@@ -27,10 +27,13 @@ import p.x.aggregates.AggregateBId;
  */
 public abstract class AbstractAggregateB extends AbstractAggregateRoot<AggregateBId> {
 
+    @SuppressWarnings("NullAway.Init")
     private AggregateBId id;
 
+    @SuppressWarnings("NullAway.Init")
     private String a;
     
+    @SuppressWarnings("NullAway.Init")
     private Integer b;
     
     @Override

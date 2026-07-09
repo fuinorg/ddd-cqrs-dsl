@@ -27,6 +27,7 @@ import p.x.aggregates.AggregateAId;
  */
 public abstract class AbstractAggregateA extends AbstractAggregateRoot<AggregateAId> {
 
+    @SuppressWarnings("NullAway.Init")
     private AggregateAId id;
 
     @Override
