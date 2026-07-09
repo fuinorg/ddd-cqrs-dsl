@@ -4,9 +4,11 @@ import jakarta.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
+import org.fuin.dsl.ddd.gen.aggregate.ESRepositoryArtifactFactory
 import org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.DefaultContext
@@ -151,5 +153,44 @@ class AbstractSourceHintPackageTest {
         // TEST + VERIFY the hint from the sibling file is picked up (same logical project), overriding
         // the preset package.
         assertThat(factory.asPackage(vo.namespace)).isEqualTo("myproj.ctx.ns")
+    }
+
+    @Test
+    def void testTypeOverrideWithoutArtifactsAppliesToPresetArtifacts() {
+
+        // PREPARE - the hint overrides only "module"/"group" of a type (no "artifacts"), so the preset's
+        // artifacts (here the aggregate's ESRepository -> folder "mainJava") must keep applying, but with
+        // the overridden module/group. This mirrors the cqrs-keycloak-example hint.
+        val model = parser.parse('''
+            project myproj {
+                hint SrcGen4J {
+                    "types": [
+                        { "name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "command", "group": "core.domain" }
+                    ]
+                }
+                context ctx {
+                    namespace ns {
+                        type String
+                        aggregate-id OrderId identifies Order {}
+                        aggregate Order identifier OrderId {}
+                    }
+                }
+            }
+        ''')
+        val aggregate = model.find(typeof(Aggregate), "Order")
+
+        val factory = new ESRepositoryArtifactFactory()
+        val config = new ArtifactFactoryConfig("esRepository", ESRepositoryArtifactFactory.name, "project", "folder")
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+
+        // TEST - route the generated artifact through the hint.
+        val artifact = factory.newArtifact("Order.java", "data".getBytes("UTF-8"), aggregate.namespace)
+
+        // VERIFY the overridden module becomes the target project, while the folder still comes from the
+        // preset's ESRepository artifact ("mainJava"); the package uses the overridden module/group.
+        assertThat(artifact.project).isEqualTo("command")
+        assertThat(artifact.folder).isEqualTo("mainJava")
+        assertThat(factory.asPackage(aggregate.namespace)).isEqualTo("myproj.command.core.domain.ctx.ns")
     }
 }
