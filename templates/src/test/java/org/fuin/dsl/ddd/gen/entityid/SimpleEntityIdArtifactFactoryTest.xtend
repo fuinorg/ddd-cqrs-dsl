@@ -54,7 +54,7 @@ class SimpleEntityIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new SimpleEntityIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", SimpleEntityIdArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", SimpleEntityIdArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JPA, "true"))

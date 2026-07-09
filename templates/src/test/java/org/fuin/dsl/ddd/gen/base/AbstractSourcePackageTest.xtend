@@ -50,7 +50,7 @@ class AbstractSourcePackageTest {
 
     private def createTestee() {
         val factory = new PackageInfoArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("packageInfo", PackageInfoArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("packageInfo", PackageInfoArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
         return factory

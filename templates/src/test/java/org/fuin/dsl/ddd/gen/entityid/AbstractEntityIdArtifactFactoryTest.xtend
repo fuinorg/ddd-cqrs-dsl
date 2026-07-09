@@ -111,7 +111,7 @@ class AbstractEntityIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AbstractEntityIdArtifactFactory() {}
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntityId", AbstractEntityIdArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("abstractEntityId", AbstractEntityIdArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

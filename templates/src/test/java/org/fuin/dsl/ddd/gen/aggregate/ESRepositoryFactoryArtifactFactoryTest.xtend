@@ -58,7 +58,7 @@ class ESRepositoryFactoryArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ESRepositoryFactoryArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("esRepositoryFactory", ESRepositoryFactoryArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("esRepositoryFactory", ESRepositoryFactoryArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

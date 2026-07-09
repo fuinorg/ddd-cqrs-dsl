@@ -20,7 +20,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String factoryClassName;
 
-    String project;
+    String module;
 
     String folder;
 
@@ -31,7 +31,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
         factoryClassName = config.getFactoryClassName()
-        project = config.getProject()
+        module = config.getModule()
         folder = config.getFolder()
         varMap = config.varMap
         options = new GenerateOptions(varMap)
@@ -39,7 +39,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     /**
      * Creates a generated artifact for the current factory. The unique artifact name, the target
-     * project and the target folder are taken from the {@link ArtifactFactoryConfig} captured in
+     * module and the target folder are taken from the {@link ArtifactFactoryConfig} captured in
      * {@link #init(ArtifactFactoryConfig)}.
      *
      * @param filename Relative path and filename to write the source code to.
@@ -48,14 +48,14 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return New generated artifact.
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data) {
-        return new GeneratedArtifact(artifactName, filename, data, project, folder)
+        return new GeneratedArtifact(artifactName, filename, data, module, folder)
     }
 
     /**
-     * Creates a generated artifact, taking the target project and folder from the project's "SrcGen4J"
+     * Creates a generated artifact, taking the target module and folder from the project's "SrcGen4J"
      * generator hint when a matching type entry exists: the hint type's "module" becomes the target
-     * project and the matching artifact's "folder" becomes the target folder. When there is no matching
-     * hint, the project and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
+     * module and the matching artifact's "folder" becomes the target folder. When there is no matching
+     * hint, the module and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
      *
      * @param filename Relative path and filename to write the source code to.
      * @param data Generated data.
@@ -64,12 +64,12 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return New generated artifact.
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data, Namespace ns) {
-        var String proj = project
+        var String mod = module
         var String fold = folder
         val type = matchingType(srcGen4JHint(ns))
         if (type !== null) {
             if (type.module !== null) {
-                proj = type.module
+                mod = type.module
             }
             val factoryName = factoryClassName
             val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
@@ -77,7 +77,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
                 fold = artifact.folder
             }
         }
-        return new GeneratedArtifact(artifactName, filename, data, proj, fold)
+        return new GeneratedArtifact(artifactName, filename, data, mod, fold)
     }
 
     override isIncremental() {

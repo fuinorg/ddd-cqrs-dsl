@@ -113,7 +113,7 @@ class AggregateIdArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new AggregateIdArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", AggregateIdArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", AggregateIdArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)
