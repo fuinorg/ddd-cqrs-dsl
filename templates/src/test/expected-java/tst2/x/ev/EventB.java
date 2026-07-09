@@ -41,9 +41,18 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
     
     @JsonbProperty("a")
     @Examples(value = { "Abc" })
+    @SuppressWarnings("NullableProblems")
     private String a;
     
 
+    /**
+     * Protected default constructor for deserialization and the builder.
+     */
+    @SuppressWarnings("NullAway.Init")
+    protected EventB() {
+        super();
+    }
+    
     @Override
     public EventType getEventType() {
         return EVENT_TYPE;

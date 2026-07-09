@@ -135,8 +135,18 @@ class EventArtifactFactory extends AbstractSource<Event> {
                 /** Unique name used to store the event. */
                 public static final EventType EVENT_TYPE = new EventType("«event.name»");
                 
-                «new SrcVarsDecl(ctx, "private", options, event)»
+                «new SrcVarsDecl(ctx, "private", options, event, true)»
             
+                «IF variables.nullSafe.size > 0»
+                    /**
+                     * Protected default constructor for deserialization and the builder.
+                     */
+                    @SuppressWarnings("NullAway.Init")
+                    protected «event.name»() {
+                        super();
+                    }
+                    
+                «ENDIF»
                 @Override
                 public EventType getEventType() {
                     return EVENT_TYPE;

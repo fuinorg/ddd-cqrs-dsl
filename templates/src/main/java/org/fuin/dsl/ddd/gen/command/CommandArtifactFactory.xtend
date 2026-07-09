@@ -143,8 +143,18 @@ class CommandArtifactFactory extends AbstractSource<Command> {
                 /** Unique name used to store the command. */
                 public static final EventType EVENT_TYPE = new EventType("«command.name»");
                 
-                «new SrcVarsDecl(ctx, "private", options, command)»
+                «new SrcVarsDecl(ctx, "private", options, command, true)»
             
+                «IF variables.nullSafe.size > 0»
+                    /**
+                     * Protected default constructor for deserialization and the builder.
+                     */
+                    @SuppressWarnings("NullAway.Init")
+                    protected «command.name»() {
+                        super();
+                    }
+                    
+                «ENDIF»
                 @Override
                 public EventType getEventType() {
                     return EVENT_TYPE;

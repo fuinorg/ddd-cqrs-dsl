@@ -41,13 +41,23 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
     
     @JsonbProperty("a")
     @Examples(value = { "Abc" })
+    @SuppressWarnings("NullableProblems")
     private String a;
     
     @JsonbProperty("b")
     @Examples(value = { "123" })
+    @SuppressWarnings("NullableProblems")
     private Integer b;
     
 
+    /**
+     * Protected default constructor for deserialization and the builder.
+     */
+    @SuppressWarnings("NullAway.Init")
+    protected EventC() {
+        super();
+    }
+    
     @Override
     public EventType getEventType() {
         return EVENT_TYPE;
