@@ -33,6 +33,9 @@ import java.time.ZonedDateTime
 
 class EventArtifactFactory extends AbstractSource<Event> {
 
+    /** DSL annotations that map to an equally named marker interface in "org.fuin.ddd4j.core". */
+    static val EVENT_CATEGORY_ANNOTATIONS = #["GenesisEvent", "ExileEvent", "ExodusEvent"]
+
     override getModelType() {
         typeof(Event)
     }
@@ -74,10 +77,30 @@ class EventArtifactFactory extends AbstractSource<Event> {
         return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
     }
 
+    /**
+     * Returns the names of the "org.fuin.ddd4j.core" marker interfaces the event should implement,
+     * based on the DSL annotations attached to it. The order follows EVENT_CATEGORY_ANNOTATIONS and
+     * is therefore independent of the order the annotations appear in the model.
+     */
+    def List<String> eventCategories(Event event) {
+        EVENT_CATEGORY_ANNOTATIONS.filter[category|
+            event.annotations.nullSafe.exists[annotation?.name == category]
+        ].toList
+    }
+
+    /** Returns the "implements" clause for the event or an empty string if it has no categories. */
+    def String implementsClause(Event event) {
+        val categories = event.eventCategories
+        if (categories.empty) "" else " implements " + categories.join(", ")
+    }
+
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Event event) {
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
         ctx.requiresImport(Serial.name)
-        
+        for (category : event.eventCategories) {
+            ctx.requiresImport("org.fuin.ddd4j.core." + category)
+        }
+
         if (entity === null) {
 	        if (options.jsonb) {
 	            ctx.requiresImport("org.fuin.ddd4j.jsonb.AbstractEvent")        
@@ -90,6 +113,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	        }
             if (event.attributes.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+                ctx.requiresImport("java.util.Objects")
             }
         } else {
 	        if (options.jsonb) {
@@ -102,6 +126,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	            ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractDomainEvent")        
 	        }
             ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
+            ctx.requiresImport("java.util.Objects")
             ctx.requiresImport("org.fuin.ddd4j.core.EventId")
             ctx.requiresImport(ZonedDateTime.name)
         }
@@ -127,7 +152,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, event.name)»
             «ENDIF»
-            public final class «className» extends AbstractDomainEvent<«event.entityIdType.name»> {
+            public final class «className» extends AbstractDomainEvent<«event.entityIdType.name»>«event.implementsClause» {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
@@ -135,8 +160,18 @@ class EventArtifactFactory extends AbstractSource<Event> {
                 /** Unique name used to store the event. */
                 public static final EventType EVENT_TYPE = new EventType("«event.name»");
                 
-                «new SrcVarsDecl(ctx, "private", options, event)»
+                «new SrcVarsDecl(ctx, "private", options, event, true)»
             
+                «IF variables.nullSafe.size > 0»
+                    /**
+                     * Protected default constructor for deserialization and the builder.
+                     */
+                    @SuppressWarnings("NullAway.Init")
+                    protected «event.name»() {
+                        super();
+                    }
+                    
+                «ENDIF»
                 @Override
                 public EventType getEventType() {
                     return EVENT_TYPE;
@@ -146,12 +181,12 @@ class EventArtifactFactory extends AbstractSource<Event> {
             
                 @Override
                 public String toString() {
-                    return KeyValue.replace("«event.message»",
+                    return Objects.requireNonNull(KeyValue.replace("«event.message»",
                         new KeyValue("#entityIdPath", getEntityIdPath())
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                    );
+                    ));
                 }
                 
                 /**
@@ -179,7 +214,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, event.name)»
             «ENDIF»
-            public final class «className» extends AbstractEvent {
+            public final class «className» extends AbstractEvent«event.implementsClause» {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
@@ -223,11 +258,11 @@ class EventArtifactFactory extends AbstractSource<Event> {
                     «IF variables.nullSafe.size == 0»
                         return "«event.message»";
                     «ELSE»
-                        return KeyValue.replace("«event.message»"
+                        return Objects.requireNonNull(KeyValue.replace("«event.message»"
                         «FOR v : variables»
                             , new KeyValue("«v.name»", «v.name»)
                         «ENDFOR»
-                        );
+                        ));
                     «ENDIF»
                 }
                 

@@ -78,9 +78,10 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
             «new SrcJavaDocType(aggregate)»
             public abstract class «className» extends AbstractAggregateRoot<«aggregate.idTypeNullsafe.name»> {
 
+                @SuppressWarnings("NullAway.Init")
                 private «aggregate.idTypeNullsafe.name» id;
             
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate)»
+                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate.attributes, true)»
                 @Override
                 public final EntityType getType() {
                     return «aggregate.idTypeNullsafe.name».TYPE;

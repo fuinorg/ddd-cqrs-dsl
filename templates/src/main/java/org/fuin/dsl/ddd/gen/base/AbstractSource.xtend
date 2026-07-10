@@ -20,7 +20,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String factoryClassName;
 
-    String project;
+    String module;
 
     String folder;
 
@@ -31,7 +31,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     override init(ArtifactFactoryConfig config) {
         artifactName = config.getArtifact()
         factoryClassName = config.getFactoryClassName()
-        project = config.getProject()
+        module = config.getModule()
         folder = config.getFolder()
         varMap = config.varMap
         options = new GenerateOptions(varMap)
@@ -39,7 +39,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     /**
      * Creates a generated artifact for the current factory. The unique artifact name, the target
-     * project and the target folder are taken from the {@link ArtifactFactoryConfig} captured in
+     * module and the target folder are taken from the {@link ArtifactFactoryConfig} captured in
      * {@link #init(ArtifactFactoryConfig)}.
      *
      * @param filename Relative path and filename to write the source code to.
@@ -48,14 +48,14 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return New generated artifact.
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data) {
-        return new GeneratedArtifact(artifactName, filename, data, project, folder)
+        return new GeneratedArtifact(artifactName, filename, data, module, folder)
     }
 
     /**
-     * Creates a generated artifact, taking the target project and folder from the project's "SrcGen4J"
+     * Creates a generated artifact, taking the target module and folder from the project's "SrcGen4J"
      * generator hint when a matching type entry exists: the hint type's "module" becomes the target
-     * project and the matching artifact's "folder" becomes the target folder. When there is no matching
-     * hint, the project and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
+     * module and the matching artifact's "folder" becomes the target folder. When there is no matching
+     * hint, the module and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
      *
      * @param filename Relative path and filename to write the source code to.
      * @param data Generated data.
@@ -64,20 +64,47 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return New generated artifact.
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data, Namespace ns) {
-        var String proj = project
-        var String fold = folder
+        var String mod = module
+        val type = matchingType(srcGen4JHint(ns))
+        if (type !== null && type.module !== null) {
+            mod = type.module
+        }
+        return newArtifact(filename, data, mod, targetFolder(ns))
+    }
+
+    /**
+     * Creates a generated artifact for an explicitly given target module and folder. Used by factories that
+     * write into more than one module, where the module cannot be derived from a single hint type entry.
+     *
+     * @param filename Relative path and filename to write the source code to.
+     * @param data Generated data.
+     * @param module Name of the target module.
+     * @param folder Name of the target folder inside the module.
+     *
+     * @return New generated artifact.
+     */
+    protected def GeneratedArtifact newArtifact(String filename, byte[] data, String module, String folder) {
+        return new GeneratedArtifact(artifactName, filename, data, module, folder)
+    }
+
+    /**
+     * Determines the target folder for artifacts of this factory: the folder of the matching hint artifact
+     * entry, or the folder from the {@link ArtifactFactoryConfig} as a fallback.
+     *
+     * @param ns Namespace the generated element belongs to (drives the hint lookup).
+     *
+     * @return Folder name.
+     */
+    protected def String targetFolder(Namespace ns) {
         val type = matchingType(srcGen4JHint(ns))
         if (type !== null) {
-            if (type.module !== null) {
-                proj = type.module
-            }
             val factoryName = factoryClassName
             val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
             if (artifact !== null && artifact.folder !== null) {
-                fold = artifact.folder
+                return artifact.folder
             }
         }
-        return new GeneratedArtifact(artifactName, filename, data, proj, fold)
+        return folder
     }
 
     override isIncremental() {
@@ -146,12 +173,43 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         if (type === null) {
             return null
         }
+        return expandPackage(hint, type, ns)
+    }
+
+    /**
+     * Expands the hint's "package" pattern for the given type entry and namespace. The type entry supplies
+     * the "module" and "group", the namespace the project, context and namespace names.
+     *
+     * @param hint Effective hint that provides the pattern.
+     * @param type Type entry that supplies "module" and "group".
+     * @param ns Namespace to build the package for.
+     *
+     * @return Package name.
+     */
+    protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, Namespace ns) {
         return hint.packagePattern
             .replace("${project}", (ns.project.name ?: ""))
             .replace("${module}", (type.module ?: ""))
             .replace("${group}", (type.group ?: ""))
             .replace("${context}", (ns.context.name ?: ""))
             .replace("${namespace}", (ns.name ?: ""))
+    }
+
+    /**
+     * Finds the hint type entry that describes the given model element. A model's own hint entries are
+     * merged in front of the preset's (see {@link SrcGen4JHint#merge}), so an override wins.
+     *
+     * @param hint Effective hint.
+     * @param element Model element to look up.
+     *
+     * @return Type entry, or <code>null</code> if the hint has no entry for the element's type.
+     */
+    protected def SrcGen4JType typeForElement(SrcGen4JHint hint, EObject element) {
+        if (hint === null || element === null) {
+            return null
+        }
+        val typeName = element.eClass.instanceTypeName
+        return hint.types.findFirst[name == typeName]
     }
 
     /** Lazily loaded "srcgen4j-default.json" preset, shared by all factory instances. */
@@ -180,7 +238,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
      *         preset with the model hint merged on top.
      */
-    private def SrcGen4JHint srcGen4JHint(Namespace ns) {
+    protected def SrcGen4JHint srcGen4JHint(Namespace ns) {
         val preset = defaultHint()
         val hint = modelHint(ns)
         if (hint === null) {

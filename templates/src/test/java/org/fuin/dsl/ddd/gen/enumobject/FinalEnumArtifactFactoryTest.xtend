@@ -74,7 +74,7 @@ class FinalEnumArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new FinalEnumArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("finalEnumObject", FinalEnumArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("finalEnumObject", FinalEnumArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

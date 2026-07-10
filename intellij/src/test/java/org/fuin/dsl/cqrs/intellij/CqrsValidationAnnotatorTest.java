@@ -5,8 +5,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 /**
  * Verifies {@link CqrsValidationAnnotator} — the semantic validation ported from the Eclipse/Xtext
  * {@code CqrsDslValidator}. Expected errors/warnings are marked inline with {@code <error>}/
- * {@code <warning>} ranges; weak warnings (the unresolved-reference annotator) are ignored so that
- * only the semantic diagnostics are asserted.
+ * {@code <warning>} ranges. Unresolved references are reported separately by
+ * {@link CqrsAnnotator}, so the bodies below only use types they declare.
  */
 public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 

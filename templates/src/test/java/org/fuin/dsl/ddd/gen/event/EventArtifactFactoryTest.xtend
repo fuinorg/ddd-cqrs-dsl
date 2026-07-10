@@ -99,6 +99,27 @@ class EventArtifactFactoryTest {
         
     }
     
+    @Test
+    def void testCreateEventF() {
+
+        val context = new HashMap<String, Object>()
+        val refReg = context.codeReferenceRegistry
+        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
+
+        testCreate(context, "EventF")
+
+    }
+
+    @Test
+    def void testCreateEventG() {
+
+        val context = new HashMap<String, Object>()
+        context.codeReferenceRegistry
+
+        testCreate(context, "EventG")
+
+    }
+
     private def testCreate(Map<String, Object> context, String eventName) {
         
         // PREPARE
@@ -117,7 +138,7 @@ class EventArtifactFactoryTest {
 
     private def createTestee(GenerateOptions options) {
         val factory = new EventArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("event", EventArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("event", EventArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.addVariable(new Variable(GenerateOptions.KEY_JSONB, options.jsonb.toString));

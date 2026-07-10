@@ -68,7 +68,7 @@ class EnumArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new EnumArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("enumObject", EnumArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("enumObject", EnumArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

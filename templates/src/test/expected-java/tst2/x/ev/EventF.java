@@ -17,63 +17,39 @@
  */
 package p.shared.domain.x.ev;
 
-import jakarta.json.bind.annotation.JsonbProperty;
 import java.io.Serial;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
+import org.fuin.ddd4j.core.ExodusEvent;
+import org.fuin.ddd4j.core.GenesisEvent;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
-import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
-import org.fuin.objects4j.ui.Examples;
 import p.x.ev.CustomerId;
 
 /**
- * Aggregate event B.
+ * Aggregate event F - Annotations are listed out of order on purpose.
  */
-public final class EventB extends AbstractDomainEvent<CustomerId> {
+public final class EventF extends AbstractDomainEvent<CustomerId> implements GenesisEvent, ExodusEvent {
 
     @Serial
     private static final long serialVersionUID = 1000L;
 
     /** Unique name used to store the event. */
-    public static final EventType EVENT_TYPE = new EventType("EventB");
-    
-    @JsonbProperty("a")
-    @Examples(value = { "Abc" })
-    @SuppressWarnings("NullAway.Init")
-    private String a;
+    public static final EventType EVENT_TYPE = new EventType("EventF");
     
 
-    /**
-     * Protected default constructor for deserialization and the builder.
-     */
-    @SuppressWarnings("NullAway.Init")
-    protected EventB() {
-        super();
-    }
-    
     @Override
     public EventType getEventType() {
         return EVENT_TYPE;
     }
 
-    /**
-     * Returns: A.
-     *
-     * @return Current value.
-     */
-    public String getA() {
-        return a;
-    }
-    
 
     @Override
     public String toString() {
-        return Objects.requireNonNull(KeyValue.replace("Event B: ${a} [${#entityIdPath}]",
+        return Objects.requireNonNull(KeyValue.replace("Event F [${#entityIdPath}]",
             new KeyValue("#entityIdPath", getEntityIdPath())
-            , new KeyValue("a", a)
         ));
     }
     
@@ -89,34 +65,22 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
     /**
      * Builds an instance of the outer class.
      */
-    public static final class Builder extends AbstractDomainEvent.Builder<CustomerId, EventB, Builder> {
+    public static final class Builder extends AbstractDomainEvent.Builder<CustomerId, EventF, Builder> {
     
-        private EventB delegate;
+        private EventF delegate;
     
         private Builder() {
-            super(new EventB());
+            super(new EventF());
             delegate = delegate();
         }
     
-        /**
-         * Sets: A.
-         *
-         * @param a Value to set.
-         * @return This builder.
-         */
-        public Builder a(final String a) {
-            Contract.requireArgNotNull("a", a);
-            delegate.a = a;
-            return this;
-        }
-        
     
         /**
          * Creates the event and clears the builder.
          *
          * @return New instance.
          */
-        public EventB build() {
+        public EventF build() {
             ensureBuildableAbstractDomainEvent();
             if (delegate.getEventId() == null) {
                 this.eventId(new EventId());
@@ -125,10 +89,9 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
                 this.timestamp(ZonedDateTime.now());
             }
             
-        	ensureNotNull("a", delegate.a);
             
-            final EventB result = delegate;
-            delegate = new EventB();
+            final EventF result = delegate;
+            delegate = new EventF();
             resetAbstractDomainEvent(delegate);
             return result;
         }

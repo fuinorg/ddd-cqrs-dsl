@@ -15,39 +15,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.core.domain.x.aggregates;
+package p.shared.domain.x.ev;
 
-import org.fuin.ddd4j.core.AbstractAggregateRoot;
-import org.fuin.ddd4j.core.EntityType;
-import org.fuin.objects4j.common.Contract;
-import p.x.aggregates.AggregateAId;
+import java.io.Serial;
+import org.fuin.ddd4j.core.EventType;
+import org.fuin.ddd4j.core.ExileEvent;
+import org.fuin.ddd4j.jsonb.AbstractEvent;
 
 /**
- * Aggregate A.
+ * Event G - Independent of an aggregate and annotated.
  */
-public abstract class AbstractAggregateA extends AbstractAggregateRoot<AggregateAId> {
+public final class EventG extends AbstractEvent implements ExileEvent {
 
-    @SuppressWarnings("NullAway.Init")
-    private AggregateAId id;
+    @Serial
+    private static final long serialVersionUID = 1000L;
 
-    @Override
-    public final EntityType getType() {
-        return AggregateAId.TYPE;
-    }
-
-    @Override
-    public final AggregateAId getId() {
-        return id;
-    }
+    /** Unique name used to store the event. */
+    public static final EventType EVENT_TYPE = new EventType("EventG");
+    
 
     /**
-     * Sets the aggregate identifier.
-     * 
-     * @param id Unique aggregate identifier.
-     */
-    protected final void setId(final AggregateAId id) {
-        Contract.requireArgNotNull("id", id);
-        this.id = id;
+     * Event G - Independent of an aggregate and annotated.
+     *
+    */
+    public EventG() {
+        super();
+    }
+
+    @Override
+    public EventType getEventType() {
+        return EVENT_TYPE;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Something interesting happened!";
     }
     
 }

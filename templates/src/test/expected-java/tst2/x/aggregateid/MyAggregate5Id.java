@@ -205,36 +205,42 @@ public final class MyAggregate5Id extends AggregateRootUuid {
         // JAXB XML Adapter
 
         @Override
-        public MyAggregate5Id unmarshal(final UUID value) throws Exception {
+        @Nullable
+        public MyAggregate5Id unmarshal(@Nullable final UUID value) throws Exception {
             return toVO(value);
         }
 
         @Override
-        public UUID marshal(final MyAggregate5Id obj) throws Exception {
+        @Nullable
+        public UUID marshal(@Nullable final MyAggregate5Id obj) throws Exception {
             return fromVO(obj);
         }
 
         // JPA Attribute Converter
 
         @Override
-        public UUID convertToDatabaseColumn(final MyAggregate5Id obj) {
+        @Nullable
+        public UUID convertToDatabaseColumn(@Nullable final MyAggregate5Id obj) {
             return fromVO(obj);
         }
 
         @Override
-        public MyAggregate5Id convertToEntityAttribute(final UUID value) {
+        @Nullable
+        public MyAggregate5Id convertToEntityAttribute(@Nullable final UUID value) {
             return toVO(value);
         }
 
         // JSONB Adapter
 
         @Override
-        public UUID adaptToJson(final MyAggregate5Id obj) throws Exception {
+        @Nullable
+        public UUID adaptToJson(@Nullable final MyAggregate5Id obj) throws Exception {
             return fromVO(obj);
         }
 
         @Override
-        public MyAggregate5Id adaptFromJson(final UUID value) throws Exception {
+        @Nullable
+        public MyAggregate5Id adaptFromJson(@Nullable final UUID value) throws Exception {
             return toVO(value);
         }
 

@@ -16,6 +16,7 @@ class SrcVarDecl implements CodeSnippet {
     val String modifiers
     val GenerateOptions options
     val Variable variable
+    val boolean builderPopulated
 
     /**
      * Constructor with all mandatory data.
@@ -26,10 +27,24 @@ class SrcVarDecl implements CodeSnippet {
      * @param variable Attribute or Parameter.
      */
     new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, Variable variable) {
+        this(ctx, modifiers, options, variable, false)
+    }
+
+    /**
+     * Constructor that allows marking the attribute as assigned by a builder.
+     * 
+     * @param ctx Context.
+     * @param modifiers Modifiers for the attribute.
+     * @param options Options to use.
+     * @param variable Attribute or Parameter.
+     * @param builderPopulated TRUE if a builder assigns the attribute after construction.
+     */
+    new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, Variable variable, boolean builderPopulated) {
         this.ctx = ctx
         this.modifiers = modifiers
         this.options = options
         this.variable = variable
+        this.builderPopulated = builderPopulated
 
         if (variable.optional !== null && !variable.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
@@ -43,7 +58,21 @@ class SrcVarDecl implements CodeSnippet {
             «xmlAnnotations»
             «jsonAnnotations»
             «new SrcMetaAnnotations(ctx, variable.overriddenMeta, null, variable.name)»
+            «nullnessSuppression»
             «modifiers» «variable.type(ctx)» «variable.name»;
+        '''
+    }
+
+    /**
+     * A builder assigns the attribute after construction, so no constructor initializes it. Only a non-optional, non-primitive
+     * attribute needs the suppression: an optional one is already annotated with {@code @Nullable} and a primitive can never be
+     * null.
+     */
+    private def nullnessSuppression() {
+        '''
+            «IF builderPopulated && variable.optional === null && !variable.isPrimitive(ctx)»
+                @SuppressWarnings("NullAway.Init")
+            «ENDIF»
         '''
     }
 

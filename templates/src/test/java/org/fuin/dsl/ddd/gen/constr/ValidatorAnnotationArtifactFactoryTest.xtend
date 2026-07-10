@@ -94,7 +94,7 @@ class ValidatorAnnotationArtifactFactoryTest {
 
     private def createTestee() {
         val factory = new ValidatorAnnotationArtifactFactory()
-        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validatorAnnotation", ValidatorAnnotationArtifactFactory.name, "project", "folder")
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validatorAnnotation", ValidatorAnnotationArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
         config.init(new DefaultContext(), null)

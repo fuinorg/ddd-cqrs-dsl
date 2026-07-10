@@ -63,7 +63,7 @@ class AbstractSourceHintPackageTest {
         val vo = model.find(typeof(ValueObject), "Money")
 
         val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "project", "folder")
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -75,9 +75,9 @@ class AbstractSourceHintPackageTest {
         // VERIFY the package (project/context/namespace from the model, module/group from the hint)
         assertThat(pkg).isEqualTo("myproj.shared.domain.ctx.ns")
 
-        // VERIFY newArtifact takes the target project from the hint "module" and the folder from the
+        // VERIFY newArtifact takes the target module from the hint "module" and the folder from the
         // matching artifact's "folder".
-        assertThat(artifact.project).isEqualTo("shared")
+        assertThat(artifact.module).isEqualTo("shared")
         assertThat(artifact.folder).isEqualTo("genJava")
     }
 
@@ -105,7 +105,7 @@ class AbstractSourceHintPackageTest {
         val vo = model.find(typeof(ValueObject), "Money")
 
         val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "project", "folder")
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -146,7 +146,7 @@ class AbstractSourceHintPackageTest {
         val vo = elementModel.find(typeof(ValueObject), "Money")
 
         val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "project", "folder")
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -180,16 +180,16 @@ class AbstractSourceHintPackageTest {
         val aggregate = model.find(typeof(Aggregate), "Order")
 
         val factory = new ESRepositoryArtifactFactory()
-        val config = new ArtifactFactoryConfig("esRepository", ESRepositoryArtifactFactory.name, "project", "folder")
+        val config = new ArtifactFactoryConfig("esRepository", ESRepositoryArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
         // TEST - route the generated artifact through the hint.
         val artifact = factory.newArtifact("Order.java", "data".getBytes("UTF-8"), aggregate.namespace)
 
-        // VERIFY the overridden module becomes the target project, while the folder still comes from the
+        // VERIFY the overridden module becomes the target module, while the folder still comes from the
         // preset's ESRepository artifact ("mainJava"); the package uses the overridden module/group.
-        assertThat(artifact.project).isEqualTo("command")
+        assertThat(artifact.module).isEqualTo("command")
         assertThat(artifact.folder).isEqualTo("mainJava")
         assertThat(factory.asPackage(aggregate.namespace)).isEqualTo("myproj.command.core.domain.ctx.ns")
     }
