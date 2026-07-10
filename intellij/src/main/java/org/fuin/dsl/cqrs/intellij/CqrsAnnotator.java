@@ -3,6 +3,7 @@ package org.fuin.dsl.cqrs.intellij;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsReferenceElement;
@@ -20,9 +21,10 @@ public final class CqrsAnnotator implements Annotator {
             return;
         }
         if (poly.multiResolve(false).length == 0) {
-            holder.newAnnotation(HighlightSeverity.WEAK_WARNING,
+            holder.newAnnotation(HighlightSeverity.ERROR,
                             "Cannot resolve '" + ref.getReferencedName() + "'")
                     .range(element)
+                    .highlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     .create();
         }
     }
