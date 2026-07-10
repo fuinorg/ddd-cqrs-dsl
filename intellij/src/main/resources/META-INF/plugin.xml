@@ -31,6 +31,10 @@
                 language="CqrsDsl"
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsBraceMatcher"/>
 
+        <lang.foldingBuilder
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsFoldingBuilder"/>
+
         <lang.commenter
                 language="CqrsDsl"
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsCommenter"/>

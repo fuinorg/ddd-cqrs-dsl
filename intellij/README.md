@@ -13,6 +13,9 @@ parser) reproducing the language defined by the Xtext grammar.
 - **Navigation** — go-to-definition (`Ctrl/Cmd+B`), find-usages, rename, and a structure view.
 - **Remote references** — resolves cross-references against remote `.cqrs` models declared in a
   `dependencies.json` catalog (see below), interoperable with the Eclipse plugin's on-disk cache.
+- **Code folding** — collapse any multi-line `{ }` block (project, context, namespace, aggregate,
+  constructor, `instances`, JSON hints, …) and multi-line block/doc comments. Fold at the caret with
+  `Ctrl/Cmd+-`, everything with `Ctrl/Cmd+Shift+-`.
 - Brace matching, line/block commenting (`Ctrl/Cmd+/`) and a color settings page
   (`Settings | Editor | Color Scheme | CQRS DSL`).
 
