@@ -99,6 +99,27 @@ class EventArtifactFactoryTest {
         
     }
     
+    @Test
+    def void testCreateEventF() {
+
+        val context = new HashMap<String, Object>()
+        val refReg = context.codeReferenceRegistry
+        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
+
+        testCreate(context, "EventF")
+
+    }
+
+    @Test
+    def void testCreateEventG() {
+
+        val context = new HashMap<String, Object>()
+        context.codeReferenceRegistry
+
+        testCreate(context, "EventG")
+
+    }
+
     private def testCreate(Map<String, Object> context, String eventName) {
         
         // PREPARE
