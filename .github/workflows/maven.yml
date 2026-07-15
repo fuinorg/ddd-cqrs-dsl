@@ -40,7 +40,7 @@ jobs:
 
     steps:
     - name: Checkout source
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
@@ -55,7 +55,7 @@ jobs:
       run: java -version && ./mvnw -version && gpg --version
 
     - name: Cache Maven packages
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -84,7 +84,7 @@ jobs:
       run: ./mvnw clean deploy -U -B -P central-sonatype-release --file pom.xml -s settings.xml
 
     - name: Upload console fat jar
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ddd-cqrs-dsl-console
         path: maven/console/target/ddd-cqrs-dsl-console.jar
