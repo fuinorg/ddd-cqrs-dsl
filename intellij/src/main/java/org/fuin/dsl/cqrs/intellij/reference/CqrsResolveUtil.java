@@ -22,7 +22,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Name resolution for the CQRS DSL. Mirrors the spirit of the Xtext scoping: a reference resolves
@@ -121,7 +123,35 @@ public final class CqrsResolveUtil {
         Project project = element.getProject();
         List<CqrsNamedElement> all = new ArrayList<>(allDeclarations(project));
         all.addAll(CqrsRemoteScopeResolver.getInstance(project).remoteDeclarations(element.getContainingFile()));
-        return all;
+        return dedupByLocation(all);
+    }
+
+    /**
+     * Collapses declarations that denote the same physical source location. The project scope
+     * ({@link #allDeclarations}) and the remote scope ({@link CqrsRemoteScopeResolver#remoteDeclarations})
+     * overlap — a cached model is also indexed as a project file, and one artifact providing several
+     * imported namespaces is served once per namespace — so the same declaration would otherwise be
+     * offered several times and surface as a bogus "Multiple Implementations" choice. Keying on the
+     * source location (file path + start offset) rather than the name keeps genuinely distinct,
+     * same-named declarations across namespaces separate.
+     */
+    private static List<CqrsNamedElement> dedupByLocation(List<CqrsNamedElement> declarations) {
+        List<CqrsNamedElement> result = new ArrayList<>(declarations.size());
+        Set<String> seen = new LinkedHashSet<>();
+        for (CqrsNamedElement decl : declarations) {
+            if (seen.add(locationKey(decl))) {
+                result.add(decl);
+            }
+        }
+        return result;
+    }
+
+    /** Stable identity of a declaration's source location; falls back to object identity in-memory. */
+    private static String locationKey(CqrsNamedElement decl) {
+        PsiFile file = decl.getContainingFile();
+        VirtualFile vf = file != null ? file.getVirtualFile() : null;
+        String path = vf != null ? vf.getUrl() : "mem:" + System.identityHashCode(file);
+        return path + "#" + decl.getTextRange().getStartOffset();
     }
 
     /** Resolve a (possibly qualified) reference name to its declaration(s). */
