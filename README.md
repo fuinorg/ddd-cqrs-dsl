@@ -16,6 +16,7 @@ The components are:
 - [IntelliJ IDEA Plugin](#intellij-idea-plugin) - Syntax highlighting and code completion for IntelliJ IDEA.
 - [Maven Library](#maven-jar-file) - Allows "standalone" parsing of "*.cqrs" files.
 - [Templates](#ddd-templates-jar-file) - Xtend-based DDD/CQRS Java code generation templates for [SrcGen4J](https://github.com/fuinorg/srcgen4j).
+- [Console Verifier](#console-verifier) - Standalone command line tool (executable fat jar) that verifies "*.cqrs" files.
 - [DSL Examples](dsl-examples) - Examples of the DDD/CQRS DSL you can open and edit after installing the above Eclipse or IntelliJ IDEA plugin.
 
 ## Status
@@ -60,6 +61,13 @@ and will, once released, be available in Maven Central at https://central.sonaty
 Xtend based domain-driven design (DDD) code generation templates for use with [SrcGen4J](https://github.com/fuinorg/srcgen4j/).
 The [templates](templates) module provides several artifact factories that generate Java code (based on the [ddd-4-java](https://github.com/fuinorg/ddd-4-java) utility classes)
 from an Xtext based DDD/CQRS DSL model. See the [module README](templates/README.md) for the full list of available factories.
+
+### Console Verifier
+A standalone [Spring Boot](https://spring.io/projects/spring-boot) command line application that verifies `*.cqrs` files
+(syntax and validation) without an IDE. It is packaged as an executable fat jar and can be used locally or as a CI gate.
+
+The jar is published by the [Maven build](.github/workflows/maven.yml) as the downloadable GitHub Actions artifact
+`ddd-cqrs-dsl-console`. See the [module README](maven/console/README.md) for usage and options.
 
 ## Projects
 The [maven](maven) and [templates](templates) projects form the Maven reactor built from the root `pom.xml`, while

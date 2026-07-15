@@ -35,6 +35,7 @@
 
 	<modules>
 		<module>org.fuin.dsl.cqrs</module>
+		<module>console</module>
 	</modules>
 
 	<dependencyManagement>
