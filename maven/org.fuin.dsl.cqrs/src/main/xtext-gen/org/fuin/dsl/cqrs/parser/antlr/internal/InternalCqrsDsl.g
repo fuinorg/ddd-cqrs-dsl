@@ -230,26 +230,69 @@ ruleContext returns [EObject current=null]
 		}
 		(
 			(
-				{
-					newCompositeNode(grammarAccess.getContextAccess().getNamespacesNamespaceParserRuleCall_3_0());
-				}
-				lv_namespaces_3_0=ruleNamespace
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getContextRule());
+				(
+					{
+						newCompositeNode(grammarAccess.getContextAccess().getNamespacesNamespaceParserRuleCall_3_0_0());
 					}
-					add(
-						$current,
-						"namespaces",
-						lv_namespaces_3_0,
-						"org.fuin.dsl.cqrs.CqrsDsl.Namespace");
-					afterParserOrEnumRuleCall();
-				}
+					lv_namespaces_3_0=ruleNamespace
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getContextRule());
+						}
+						add(
+							$current,
+							"namespaces",
+							lv_namespaces_3_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.Namespace");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)*
+			    |
+			(
+				(
+					(
+						{
+							newCompositeNode(grammarAccess.getContextAccess().getImportsImportParserRuleCall_3_1_0_0());
+						}
+						lv_imports_4_0=ruleImport
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getContextRule());
+							}
+							add(
+								$current,
+								"imports",
+								lv_imports_4_0,
+								"org.fuin.dsl.cqrs.CqrsDsl.Import");
+							afterParserOrEnumRuleCall();
+						}
+					)
+				)*
+				(
+					(
+						{
+							newCompositeNode(grammarAccess.getContextAccess().getElementsAbstractElementParserRuleCall_3_1_1_0());
+						}
+						lv_elements_5_0=ruleAbstractElement
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getContextRule());
+							}
+							add(
+								$current,
+								"elements",
+								lv_elements_5_0,
+								"org.fuin.dsl.cqrs.CqrsDsl.AbstractElement");
+							afterParserOrEnumRuleCall();
+						}
+					)
+				)*
 			)
-		)*
-		otherlv_4='}'
+		)
+		otherlv_6='}'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getContextAccess().getRightCurlyBracketKeyword_4());
+			newLeafNode(otherlv_6, grammarAccess.getContextAccess().getRightCurlyBracketKeyword_4());
 		}
 	)
 ;

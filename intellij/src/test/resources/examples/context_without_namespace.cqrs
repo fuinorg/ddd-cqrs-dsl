@@ -1,0 +1,19 @@
+project p_context_without_namespace {
+
+	context x {
+
+		import p_context_without_namespace.other.*
+
+		type String
+
+		value-object MyValueObject base String {
+			String value
+		}
+
+		value-object MyValueObject2 {
+			String id
+		}
+
+	}
+
+}

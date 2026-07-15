@@ -8,6 +8,7 @@ comment explaining what it shows. They follow the grammar in
 | File | Shows |
 |------|-------|
 | [01-context-namespaces-imports](01-context-namespaces-imports.cqrs) | `context` / `namespace` structure and `import` (wildcard `.*` and a specific namespace) |
+| [01-context-without-namespace](01-context-without-namespace.cqrs) | Optional `namespace`: a `context` holding `import`s and elements directly (package becomes `project.context`) |
 | [02-external-types](02-external-types.cqrs) | External `type`s: plain, `element`, and `generics <n>` |
 | [03-value-object](03-value-object.cqrs) | `value-object` — wrapping a `base` type vs. grouping attributes |
 | [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) and per-attribute overrides |

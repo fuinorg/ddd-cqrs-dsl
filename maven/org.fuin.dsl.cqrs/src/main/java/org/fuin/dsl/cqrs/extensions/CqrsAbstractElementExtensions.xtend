@@ -25,8 +25,10 @@ class CqrsAbstractElementExtensions {
 		if (el.context === null) {
 			throw new IllegalArgumentException("argument 'el.context' cannot be null: " + el.path)
 		}
+		// The namespace is optional: an element may be declared directly inside a context. In that
+		// case the unique name simply drops the namespace segment (project.context.name).
 		if (el.namespace === null) {
-			throw new IllegalArgumentException("argument 'el.namespace' cannot be null: " + el.path)
+			return separated(".", el.project.name, el.context.name, el.name)
 		}
 		return separated(".", el.project.name, el.context.name, el.namespace.name, el.name)
 	}
@@ -45,10 +47,11 @@ class CqrsAbstractElementExtensions {
 		if (el.context === null) {
 			throw new IllegalArgumentException("argument 'el.context' cannot be null")
 		}
+		// The namespace is optional (see uniqueName): drop the segment when absent.
 		if (el.namespace === null) {
-			throw new IllegalArgumentException("argument 'el.namespace' cannot be null")
+			return separated(".", el.project.name, el.context.name, el.abstractName)
 		}
-		return separated(".", el.project.name, el.context.name, el.namespace.name, el.abstractName)		
+		return separated(".", el.project.name, el.context.name, el.namespace.name, el.abstractName)
 	}
 
 

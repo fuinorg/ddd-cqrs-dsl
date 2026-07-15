@@ -27,8 +27,10 @@ class CqrsEventExtensions {
 		if (event.context === null) {
 			throw new IllegalArgumentException("argument 'event.context' cannot be null")
 		}
+		// The namespace is optional: an event may be declared directly inside a context (or inside an
+		// entity that itself lives directly in a context). Drop the namespace segment when absent.
 		if (event.namespace === null) {
-			throw new IllegalArgumentException("argument 'event.namespace' cannot be null")
+			return separated(".", event.project.name, event.context.name, event.name)
 		}
 		return separated(".", event.project.name, event.context.name, event.namespace.name, event.name)
 	}

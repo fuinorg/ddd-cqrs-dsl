@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.constr
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.srcgen4j.commons.GenerateException
@@ -12,7 +11,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
@@ -31,8 +29,7 @@ class ValidatorAnnotationArtifactFactory extends AbstractSource<Constraint> {
         }
 
         val className = constraint.getName()
-        val Namespace ns = constraint.namespace
-        val pkg = ns.asPackage
+        val pkg = constraint.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -50,7 +47,7 @@ class ValidatorAnnotationArtifactFactory extends AbstractSource<Constraint> {
         ctx.addReferences(constraint)
 
         return List.of(newArtifact(filename,
-            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8"), constraint));
     }
 
     def addImports(CodeSnippetContext ctx) {

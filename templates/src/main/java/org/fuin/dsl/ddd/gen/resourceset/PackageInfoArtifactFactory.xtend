@@ -5,7 +5,10 @@ import java.util.Iterator
 import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.ResourceSet
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
+import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
@@ -40,11 +43,13 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
         }
 
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        val Iterator<Namespace> it = resourceSet.allContents.filter(typeof(Namespace)).filter[isPrimary(it)]
+        // The namespace is optional, so elements may live inside a namespace or directly inside a
+        // context. Both are element containers that need a "package-info.java" per target package.
+        val Iterator<EObject> it = resourceSet.allContents.filter(typeof(EObject)).filter[isPrimary(it)]
         while (it.hasNext) {
-            val Namespace ns = it.next
-            if (ns.generatesCode) {
-                artifacts.addAll(createArtifacts(ns))
+            val EObject container = it.next
+            if (container.isElementContainer && container.generatesCode) {
+                artifacts.addAll(createArtifacts(container))
             }
         }
 
@@ -52,21 +57,21 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
     }
 
     /**
-     * Creates one artifact per package the given namespace generates code into.
+     * Creates one artifact per package the given element container generates code into.
      *
-     * @param ns Namespace to create the "package-info.java" file(s) for.
+     * @param container Namespace or (namespace-less) context to create the "package-info.java" file(s) for.
      *
      * @return At least one artifact.
      */
-    private def List<GeneratedArtifact> createArtifacts(Namespace ns) {
+    private def List<GeneratedArtifact> createArtifacts(EObject container) {
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        val Map<String, String> packagesByModule = ns.targetPackages
+        val Map<String, String> packagesByModule = container.targetPackages
         if (packagesByModule.empty) {
             // No "SrcGen4J" hint, or no hint entry for any element: single package from the fallback
-            val String pkg = ns.asPackage
-            artifacts.add(newArtifact(pkg.asFilename, create(pkg).getBytes("UTF-8"), ns))
+            val String pkg = container.asPackage
+            artifacts.add(newArtifact(pkg.asFilename, create(pkg).getBytes("UTF-8"), container))
         } else {
-            val String fold = ns.targetFolder
+            val String fold = container.targetFolder
             for (entry : packagesByModule.entrySet) {
                 val String pkg = entry.value
                 artifacts.add(newArtifact(pkg.asFilename, create(pkg).getBytes("UTF-8"), entry.key, fold))
@@ -76,25 +81,25 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
     }
 
     /**
-     * Collects the packages the elements of the given namespace are generated into, keyed by target module.
-     * A module appears only once: elements of a namespace that share a module also share a package, because
-     * the package pattern is expanded from that same "module" and "group".
+     * Collects the packages the elements of the given container are generated into, keyed by target module.
+     * A module appears only once: elements that share a module also share a package, because the package
+     * pattern is expanded from that same "module" and "group".
      *
-     * @param ns Namespace to inspect.
+     * @param container Namespace or context to inspect.
      *
      * @return Package per module, in declaration order - Empty if nothing could be resolved from the hint.
      */
-    private def Map<String, String> targetPackages(Namespace ns) {
+    private def Map<String, String> targetPackages(EObject container) {
         val Map<String, String> result = new LinkedHashMap<String, String>()
-        val hint = srcGen4JHint(ns)
+        val hint = srcGen4JHint(container)
         if (hint === null) {
             return result
         }
-        for (element : ns.elements) {
+        for (element : container.elements) {
             if (!(element instanceof ExternalType)) {
                 val type = typeForElement(hint, element)
                 if (type !== null && type.module !== null) {
-                    result.putIfAbsent(type.module, expandPackage(hint, type, ns))
+                    result.putIfAbsent(type.module, expandPackage(hint, type, container))
                 }
             }
         }
@@ -106,16 +111,47 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
     }
 
     /**
-     * Determines if a namespace contains at least one element that produces generated code. A
-     * namespace that only declares external types (or is empty) produces no Java source and is
+     * Determines if the given container holds at least one element that produces generated code. A
+     * container that only declares external types (or is empty) produces no Java source and is
      * therefore skipped.
      *
-     * @param ns Namespace to check.
+     * @param container Namespace or context to check.
      *
-     * @return TRUE if the namespace generates at least one source file.
+     * @return TRUE if the container generates at least one source file.
      */
-    def boolean generatesCode(Namespace ns) {
-        ns.elements.exists[!(it instanceof ExternalType)]
+    def boolean generatesCode(EObject container) {
+        container.elements.exists[!(it instanceof ExternalType)]
+    }
+
+    /**
+     * Determines whether the given object is an element container that needs "package-info.java"
+     * files: a namespace, or a context that holds elements directly (the namespace being optional).
+     * A context that only holds namespace blocks is not an element container - its namespaces are.
+     *
+     * @param obj Object to check.
+     *
+     * @return TRUE if the object directly contains model elements.
+     */
+    private def boolean isElementContainer(EObject obj) {
+        obj instanceof Namespace || (obj instanceof Context && !(obj as Context).elements.empty)
+    }
+
+    /**
+     * Returns the model elements a container holds directly (a namespace's or a context's own
+     * elements), or an empty list for anything else.
+     *
+     * @param container Element container.
+     *
+     * @return Direct model elements, never <code>null</code>.
+     */
+    private def List<AbstractElement> elements(EObject container) {
+        if (container instanceof Namespace) {
+            return container.elements
+        }
+        if (container instanceof Context) {
+            return container.elements
+        }
+        return emptyList
     }
 
     def String create(String pkg) {

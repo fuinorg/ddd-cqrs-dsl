@@ -81,6 +81,21 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
         assertTrue("namespace level must offer element keywords: " + lookups, lookups.contains("value-object"));
     }
 
+    public void testContextWithoutNamespaceOffersElementKeywords() {
+        // The namespace is optional: element keywords (and "import") are offered directly inside a
+        // context, while "namespace" is still offered too.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  <caret>
+                }
+                }
+                """);
+        assertFalse("context level must not offer types: " + lookups, lookups.contains("String"));
+        assertTrue("context without namespace must offer element keywords: " + lookups, lookups.contains("value-object"));
+        assertTrue("context without namespace must still offer 'namespace': " + lookups, lookups.contains("namespace"));
+    }
+
     public void testTopLevelDoesNotOfferTypes() {
         List<String> lookups = lookups("""
                 project p {

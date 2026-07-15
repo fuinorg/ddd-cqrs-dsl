@@ -102,19 +102,29 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cNamespacesAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cNamespacesNamespaceParserRuleCall_3_0 = (RuleCall)cNamespacesAssignment_3.eContents().get(0);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Assignment cNamespacesAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
+		private final RuleCall cNamespacesNamespaceParserRuleCall_3_0_0 = (RuleCall)cNamespacesAssignment_3_0.eContents().get(0);
+		private final Group cGroup_3_1 = (Group)cAlternatives_3.eContents().get(1);
+		private final Assignment cImportsAssignment_3_1_0 = (Assignment)cGroup_3_1.eContents().get(0);
+		private final RuleCall cImportsImportParserRuleCall_3_1_0_0 = (RuleCall)cImportsAssignment_3_1_0.eContents().get(0);
+		private final Assignment cElementsAssignment_3_1_1 = (Assignment)cGroup_3_1.eContents().get(1);
+		private final RuleCall cElementsAbstractElementParserRuleCall_3_1_1_0 = (RuleCall)cElementsAssignment_3_1_1.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		///** The setting in which a word or statement appears that determines its meaning. */
 		//Context:
 		//    'context' name=FQN '{'
-		//        namespaces+=Namespace*
+		//        ( namespaces+=Namespace*
+		//        | ( imports+=Import* elements+=AbstractElement* )
+		//        )
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'context' name=FQN '{'
-		//    namespaces+=Namespace*
+		//    ( namespaces+=Namespace*
+		//    | ( imports+=Import* elements+=AbstractElement* )
+		//    )
 		//'}'
 		public Group getGroup() { return cGroup; }
 		
@@ -130,11 +140,31 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 		
+		//( namespaces+=Namespace*
+		//| ( imports+=Import* elements+=AbstractElement* )
+		//)
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
+		
 		//namespaces+=Namespace*
-		public Assignment getNamespacesAssignment_3() { return cNamespacesAssignment_3; }
+		public Assignment getNamespacesAssignment_3_0() { return cNamespacesAssignment_3_0; }
 		
 		//Namespace
-		public RuleCall getNamespacesNamespaceParserRuleCall_3_0() { return cNamespacesNamespaceParserRuleCall_3_0; }
+		public RuleCall getNamespacesNamespaceParserRuleCall_3_0_0() { return cNamespacesNamespaceParserRuleCall_3_0_0; }
+		
+		//( imports+=Import* elements+=AbstractElement* )
+		public Group getGroup_3_1() { return cGroup_3_1; }
+		
+		//imports+=Import*
+		public Assignment getImportsAssignment_3_1_0() { return cImportsAssignment_3_1_0; }
+		
+		//Import
+		public RuleCall getImportsImportParserRuleCall_3_1_0_0() { return cImportsImportParserRuleCall_3_1_0_0; }
+		
+		//elements+=AbstractElement*
+		public Assignment getElementsAssignment_3_1_1() { return cElementsAssignment_3_1_1; }
+		
+		//AbstractElement
+		public RuleCall getElementsAbstractElementParserRuleCall_3_1_1_0() { return cElementsAbstractElementParserRuleCall_3_1_1_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_4() { return cRightCurlyBracketKeyword_4; }
@@ -4960,7 +4990,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** The setting in which a word or statement appears that determines its meaning. */
 	//Context:
 	//    'context' name=FQN '{'
-	//        namespaces+=Namespace*
+	//        ( namespaces+=Namespace*
+	//        | ( imports+=Import* elements+=AbstractElement* )
+	//        )
 	//    '}';
 	public ContextElements getContextAccess() {
 		return pContext;

@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateIdExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
@@ -32,8 +33,8 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         }
 
         val className = aggregateId.getName()
-        val Namespace ns = aggregateId.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val Namespace ns = aggregateId.namespace
+        val pkg = aggregateId.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
@@ -50,7 +51,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         ctx.addReferences(aggregateId)
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, aggregateId, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, aggregateId, pkg, className).toString().getBytes("UTF-8"), aggregateId));
     }
 
     def addImports(CodeSnippetContext ctx, AggregateId aggregateId) {
@@ -93,7 +94,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
     def create(SimpleCodeSnippetContext ctx, Namespace ns, AggregateId id, String pkg, String className) {
         val src = '''
             «new SrcJavaDocType(id)»
-            «new SrcMetaAnnotations(ctx, id.metaInfo, ns.name.toFirstUpper, className)»
+            «new SrcMetaAnnotations(ctx, id.metaInfo, (if (ns === null) id.context.name.toFirstUpper else ns.name.toFirstUpper), className)»
             @Generated("Generated class - Manual changes will be overwritten")
             @Immutable
             @HasEntityTypeConstant

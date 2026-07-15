@@ -5,7 +5,6 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.Hint
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GeneratedArtifact
@@ -63,13 +62,13 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return New generated artifact.
      */
-    protected def GeneratedArtifact newArtifact(String filename, byte[] data, Namespace ns) {
+    protected def GeneratedArtifact newArtifact(String filename, byte[] data, EObject el) {
         var String mod = module
-        val type = matchingType(srcGen4JHint(ns))
+        val type = matchingType(srcGen4JHint(el))
         if (type !== null && type.module !== null) {
             mod = type.module
         }
-        return newArtifact(filename, data, mod, targetFolder(ns))
+        return newArtifact(filename, data, mod, targetFolder(el))
     }
 
     /**
@@ -95,8 +94,8 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return Folder name.
      */
-    protected def String targetFolder(Namespace ns) {
-        val type = matchingType(srcGen4JHint(ns))
+    protected def String targetFolder(EObject el) {
+        val type = matchingType(srcGen4JHint(el))
         if (type !== null) {
             val factoryName = factoryClassName
             val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
@@ -143,14 +142,15 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         return str
     }
 
-    def String asPackage(Namespace ns) {
+    def String asPackage(EObject el) {
         // Primary path: derive the package from the "SrcGen4J" generator hint of the project the
-        // namespace belongs to (this handles remote and local elements the same way).
-        var String pkg = hintPackage(ns)
+        // element belongs to (this handles remote and local elements the same way).
+        var String pkg = hintPackage(el)
         if (pkg === null) {
             // Fallback (no matching SrcGen4J hint for this factory/type): the same for primary and
-            // remotely resolved elements - project.context.namespace.
-            pkg = joinPackage(ns.project.name, ns.context.name, ns.name)
+            // remotely resolved elements - project.context[.namespace]. The namespace is optional;
+            // joinPackage skips it when the element is declared directly in a context.
+            pkg = joinPackage(el.project?.name, el.context?.name, el.namespace?.name)
         }
         return pkg
     }
@@ -167,13 +167,13 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Package name, or <code>null</code> if there is no project, no "SrcGen4J" hint, or no type
      *         entry matching both this factory's model type and its class (caller falls back).
      */
-    protected def String hintPackage(Namespace ns) {
-        val hint = srcGen4JHint(ns)
+    protected def String hintPackage(EObject el) {
+        val hint = srcGen4JHint(el)
         val type = matchingType(hint)
         if (type === null) {
             return null
         }
-        return expandPackage(hint, type, ns)
+        return expandPackage(hint, type, el)
     }
 
     /**
@@ -186,13 +186,61 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return Package name.
      */
-    protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, Namespace ns) {
-        return hint.packagePattern
-            .replace("${project}", (ns.project.name ?: ""))
-            .replace("${module}", (type.module ?: ""))
-            .replace("${group}", (type.group ?: ""))
-            .replace("${context}", (ns.context.name ?: ""))
-            .replace("${namespace}", (ns.name ?: ""))
+    protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, EObject el) {
+        val values = newLinkedHashMap(
+            "project" -> (el.project?.name ?: ""),
+            "module" -> (type.module ?: ""),
+            "group" -> (type.group ?: ""),
+            "context" -> (el.context?.name ?: ""),
+            "namespace" -> (el.namespace?.name ?: "")
+        )
+        return expandPattern(hint.packagePattern, values)
+    }
+
+    /**
+     * Expands a package pattern. Each <code>${var}</code> placeholder is replaced with its value
+     * from the given map. A group wrapped in square brackets - e.g. <code>[.${namespace}]</code> -
+     * is optional: it is removed entirely (including the leading separator inside the brackets) when
+     * any placeholder inside it resolves to an empty value, otherwise the brackets are dropped and
+     * the content is kept. This lets the optional namespace segment disappear for elements that are
+     * declared directly in a context.
+     *
+     * @param pattern Package pattern, possibly containing <code>${var}</code> placeholders and
+     *                optional <code>[...]</code> groups.
+     * @param values Placeholder values by name (a missing or empty value drops its optional group).
+     *
+     * @return Expanded package name.
+     */
+    protected def String expandPattern(String pattern, Map<String, String> values) {
+        // 1. Resolve optional "[ ... ]" groups: drop a group when any placeholder inside is empty.
+        var String result = pattern
+        var int open = result.indexOf("[")
+        while (open >= 0) {
+            val close = result.indexOf("]", open)
+            if (close < 0) {
+                open = -1 // Unbalanced bracket: leave the remainder untouched.
+            } else {
+                val group = result.substring(open + 1, close)
+                val replacement = if (groupHasEmptyValue(group, values)) "" else group
+                result = result.substring(0, open) + replacement + result.substring(close + 1)
+                open = result.indexOf("[")
+            }
+        }
+        // 2. Substitute the remaining "${var}" placeholders.
+        for (e : values.entrySet) {
+            result = result.replace("${" + e.key + "}", e.value ?: "")
+        }
+        return result
+    }
+
+    /** TRUE if the given pattern fragment references a placeholder whose value is null or empty. */
+    private def boolean groupHasEmptyValue(String group, Map<String, String> values) {
+        for (e : values.entrySet) {
+            if (group.contains("${" + e.key + "}") && (e.value === null || e.value.empty)) {
+                return true
+            }
+        }
+        return false
     }
 
     /**
@@ -238,9 +286,9 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
      *         preset with the model hint merged on top.
      */
-    protected def SrcGen4JHint srcGen4JHint(Namespace ns) {
+    protected def SrcGen4JHint srcGen4JHint(EObject el) {
         val preset = defaultHint()
-        val hint = modelHint(ns)
+        val hint = modelHint(el)
         if (hint === null) {
             return preset
         }
@@ -258,12 +306,12 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
      */
-    private def Hint modelHint(Namespace ns) {
-        val project = ns?.project
+    private def Hint modelHint(EObject el) {
+        val project = el?.project
         if (project === null) {
             return null
         }
-        val rs = ns.eResource?.resourceSet
+        val rs = el.eResource?.resourceSet
         if (rs === null) {
             return project.hints.findFirst[name == "SrcGen4J"]
         }

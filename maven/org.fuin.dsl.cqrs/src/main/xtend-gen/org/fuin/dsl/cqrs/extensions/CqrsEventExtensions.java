@@ -30,7 +30,7 @@ public class CqrsEventExtensions {
     Namespace _namespace = CqrsEObjectExtensions.getNamespace(event);
     boolean _tripleEquals_1 = (_namespace == null);
     if (_tripleEquals_1) {
-      throw new IllegalArgumentException("argument \'event.namespace\' cannot be null");
+      return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(event).getName(), CqrsEObjectExtensions.getContext(event).getName(), event.getName());
     }
     return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(event).getName(), CqrsEObjectExtensions.getContext(event).getName(), CqrsEObjectExtensions.getNamespace(event).getName(), event.getName());
   }

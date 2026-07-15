@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.except
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
@@ -20,7 +19,6 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
@@ -34,8 +32,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
     override create(Exception ex, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = ex.getName()
-        val Namespace ns = ex.namespace
-        val pkg = ns.asPackage
+        val pkg = ex.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -53,7 +50,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
         ctx.addReferences(ex)
 
         return List.of(newArtifact(filename,
-            create(ctx, ex, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ex, pkg, className).toString().getBytes("UTF-8"), ex));
     }
 
     def addImports(CodeSnippetContext ctx, Exception ex) {

@@ -95,6 +95,35 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
                 2, results.length);
     }
 
+    /** A reference resolves against a declaration in the same namespace-less context. */
+    public void testReferenceResolvesWithinNamespacelessContext() {
+        PsiFile file = myFixture.configureByText("m.cqrs", """
+                project p {
+                  context c {
+                    type String
+                    value-object Money base String {
+                      String amount
+                    }
+                  }
+                }
+                """);
+
+        CqrsTypeRef ref = null;
+        for (CqrsTypeRef candidate : PsiTreeUtil.findChildrenOfType(file, CqrsTypeRef.class)) {
+            if ("String".equals(candidate.getReferencedName())) {
+                ref = candidate;
+                break;
+            }
+        }
+        assertNotNull("a type reference to 'String' must be present", ref);
+        PsiReference reference = ref.getReference();
+        assertInstanceOf(reference, PsiPolyVariantReference.class);
+        ResolveResult[] results = ((PsiPolyVariantReference) reference).multiResolve(false);
+        assertTrue("reference must resolve within the namespace-less context, but got " + results.length,
+                results.length >= 1);
+        assertNotNull("must resolve to a declaration", results[0].getElement());
+    }
+
     // ---- helpers ---------------------------------------------------------
 
     /** A {@code dependencies.json} whose single {@code local} entry provides all the given namespaces. */

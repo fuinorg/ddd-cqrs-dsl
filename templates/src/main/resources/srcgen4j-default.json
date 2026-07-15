@@ -1,5 +1,5 @@
 {
-	"package": "${project}.${module}.${group}.${context}.${namespace}",
+	"package": "${project}.${module}.${group}.${context}[.${namespace}]",
 	"types": [
 		{
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject", "module": "shared", "group": "domain",

@@ -90,6 +90,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("escaped_keywords");
     }
 
+    /** The namespace is optional: a context may hold imports and elements directly. */
+    public void testContextWithoutNamespace() {
+        assertNoErrors("context_without_namespace");
+    }
+
     private void assertNoErrors(String name) {
         String text;
         try {

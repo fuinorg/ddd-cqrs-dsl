@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityIdExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
@@ -32,8 +33,8 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
         }
 
         val className = entityId.getName()
-        val Namespace ns = entityId.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val Namespace ns = entityId.namespace
+        val pkg = entityId.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
@@ -50,7 +51,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
         ctx.addReferences(entityId)
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, entityId, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, entityId, pkg, className).toString().getBytes("UTF-8"), entityId));
     }
 
     def addImports(CodeSnippetContext ctx, EntityId aggregateId) {
@@ -94,7 +95,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
     def create(SimpleCodeSnippetContext ctx, Namespace ns, EntityId id, String pkg, String className) {
         val src = '''
             «new SrcJavaDocType(id)»
-            «new SrcMetaAnnotations(ctx, id.metaInfo, ns.name.toFirstUpper, className)»
+            «new SrcMetaAnnotations(ctx, id.metaInfo, (if (ns === null) id.context.name.toFirstUpper else ns.name.toFirstUpper), className)»
             @Generated("Generated class - Manual changes will be overwritten")
             @Immutable
             @HasEntityTypeConstant

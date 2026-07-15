@@ -33,7 +33,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
 
         val className = valueObject.name
         val Namespace ns = valueObject.namespace;
-        val pkg = ns.asPackage
+        val pkg = valueObject.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -50,7 +50,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
         ctx.addImports(valueObject)
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8"), valueObject));
     }
 
     def addImports(CodeSnippetContext ctx, ValueObject vo) {
@@ -91,7 +91,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
     def create(SimpleCodeSnippetContext ctx, Namespace ns, ValueObject vo, String pkg, String className) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            «new SrcMetaAnnotations(ctx, vo.metaInfo, ns.name.toFirstUpper, className)»
+            «new SrcMetaAnnotations(ctx, vo.metaInfo, (if (ns === null) vo.context.name.toFirstUpper else ns.name.toFirstUpper), className)»
             @Immutable
             @Generated("Generated class - Manual changes will be overwritten")
             @HasPublicStaticIsValidMethod

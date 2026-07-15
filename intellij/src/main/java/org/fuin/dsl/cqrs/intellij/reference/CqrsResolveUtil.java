@@ -52,11 +52,17 @@ public final class CqrsResolveUtil {
         return String.join(".", parts);
     }
 
-    /** {@code context.namespace} of the namespace enclosing the given element, or "". */
+    /**
+     * {@code context.namespace} of the namespace enclosing the given element. The namespace is
+     * optional: when the element lives directly in a context (no namespace), the enclosing scope is
+     * the context itself, so its name is returned. Returns "" when there is neither.
+     */
     public static String enclosingNamespaceFqn(PsiElement element) {
         CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(element, CqrsNamespaceDef.class);
         if (ns == null) {
-            return "";
+            CqrsContextDef ctxOnly = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
+            String ctxOnlyName = ctxOnly != null ? ctxOnly.getName() : null;
+            return ctxOnlyName != null ? ctxOnlyName : "";
         }
         CqrsContextDef ctx = PsiTreeUtil.getParentOfType(ns, CqrsContextDef.class);
         String nsName = ns.getName();
@@ -93,10 +99,15 @@ public final class CqrsResolveUtil {
 
     private static List<CqrsImportDecl> imports(PsiElement element) {
         CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(element, CqrsNamespaceDef.class);
-        if (ns == null) {
-            return List.of();
+        if (ns != null) {
+            return new ArrayList<>(PsiTreeUtil.getChildrenOfTypeAsList(ns, CqrsImportDecl.class));
         }
-        return new ArrayList<>(PsiTreeUtil.getChildrenOfTypeAsList(ns, CqrsImportDecl.class));
+        // Namespace omitted: imports are declared directly on the enclosing context.
+        CqrsContextDef ctx = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
+        if (ctx != null) {
+            return new ArrayList<>(PsiTreeUtil.getChildrenOfTypeAsList(ctx, CqrsImportDecl.class));
+        }
+        return List.of();
     }
 
     /** All named declarations across the project's {@code .cqrs} files. */

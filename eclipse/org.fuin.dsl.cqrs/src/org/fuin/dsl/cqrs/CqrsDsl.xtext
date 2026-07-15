@@ -18,7 +18,9 @@ Project:
 /** The setting in which a word or statement appears that determines its meaning. */
 Context:
 	'context' name=FQN '{'
-		namespaces+=Namespace*
+		( namespaces+=Namespace*
+		| ( imports+=Import* elements+=AbstractElement* )
+		)
 	'}';
 
 /** Structured hierarchy that allows reuse of names in different sub contexts. */

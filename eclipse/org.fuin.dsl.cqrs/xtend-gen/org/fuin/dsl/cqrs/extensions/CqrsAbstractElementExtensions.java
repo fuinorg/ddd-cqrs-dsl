@@ -30,9 +30,7 @@ public class CqrsAbstractElementExtensions {
     Namespace _namespace = CqrsEObjectExtensions.getNamespace(el);
     boolean _tripleEquals_1 = (_namespace == null);
     if (_tripleEquals_1) {
-      String _path_1 = CqrsEObjectExtensions.getPath(el);
-      String _plus_1 = ("argument \'el.namespace\' cannot be null: " + _path_1);
-      throw new IllegalArgumentException(_plus_1);
+      return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(el).getName(), CqrsEObjectExtensions.getContext(el).getName(), el.getName());
     }
     return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(el).getName(), CqrsEObjectExtensions.getContext(el).getName(), CqrsEObjectExtensions.getNamespace(el).getName(), el.getName());
   }
@@ -56,7 +54,7 @@ public class CqrsAbstractElementExtensions {
     Namespace _namespace = CqrsEObjectExtensions.getNamespace(el);
     boolean _tripleEquals_1 = (_namespace == null);
     if (_tripleEquals_1) {
-      throw new IllegalArgumentException("argument \'el.namespace\' cannot be null");
+      return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(el).getName(), CqrsEObjectExtensions.getContext(el).getName(), CqrsAbstractElementExtensions.abstractName(el));
     }
     return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(el).getName(), CqrsEObjectExtensions.getContext(el).getName(), CqrsEObjectExtensions.getNamespace(el).getName(), CqrsAbstractElementExtensions.abstractName(el));
   }

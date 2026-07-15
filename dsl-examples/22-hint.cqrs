@@ -2,7 +2,7 @@ project shop {
 
 	/** A hint for the SrcGen4J code generation. */
 	hint SrcGen4J {
-		"package": "${project}.${module}.${group}.${context}.${namespace}",
+		"package": "${project}.${module}.${group}.${context}[.${namespace}]",
 		"types": [
 			{
 				"name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",

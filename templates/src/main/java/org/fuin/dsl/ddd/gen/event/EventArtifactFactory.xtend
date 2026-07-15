@@ -3,8 +3,8 @@ package org.fuin.dsl.ddd.gen.event
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
+import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Event
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcGetters
@@ -22,7 +22,6 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEventExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
@@ -44,13 +43,10 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
         val AbstractEntity entity = event.entity;
         val className = event.getName()
-        var Namespace ns;
-        if (entity === null) {
-            ns = event.namespace;
-        } else {
-            ns = entity.namespace;
-        }
-        val pkg = ns.asPackage
+        // The namespace is optional: derive the package from the element itself - the enclosing
+        // entity for a domain event, otherwise the event.
+        val EObject owner = if (entity === null) event else entity
+        val pkg = owner.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -74,7 +70,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             src = createDomainEvent(ctx, event, pkg, className).toString();
         }
 
-        return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8"), owner));
     }
 
     /**

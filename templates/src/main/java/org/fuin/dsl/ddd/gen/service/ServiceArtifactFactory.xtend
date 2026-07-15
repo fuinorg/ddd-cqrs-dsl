@@ -12,7 +12,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 
@@ -31,8 +30,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
         }
 
         val className = service.name
-        val Namespace ns = service.namespace;
-        val pkg = ns.asPackage
+        val pkg = service.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -50,7 +48,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
         ctx.addReferences(service)
 
         return List.of(newArtifact(filename,
-            create(ctx, service, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, service, pkg, className).toString().getBytes("UTF-8"), service));
     }
 
     def addImports(CodeSnippetContext ctx, Service service) {

@@ -177,7 +177,12 @@ project_def ::= KW_PROJECT qualified_name LBRACE hint_def* context_def* RBRACE {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-context_def ::= KW_CONTEXT qualified_name LBRACE namespace_def* RBRACE {
+// The namespace is optional: a context contains either namespace blocks or - when the namespace is
+// omitted - imports and elements directly (the same content a namespace holds).
+// The first alternative uses '+' (not '*') on purpose: this is a PEG parser, so a '*' first branch
+// would always succeed by matching zero namespaces and never fall through to imports/elements. With
+// '+', a namespace-less context (or an empty one) correctly falls through to the second branch.
+context_def ::= KW_CONTEXT qualified_name LBRACE (namespace_def+ | (import_decl* element*)) RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

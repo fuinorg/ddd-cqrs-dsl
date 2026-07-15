@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.aggregateid
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcConstructorsWithParamsAssignment
@@ -19,7 +18,6 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateIdExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import java.util.List
@@ -33,8 +31,7 @@ class AbstractAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
     override create(AggregateId aggregateId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = aggregateId.abstractName
-        val Namespace ns = aggregateId.namespace;
-        val pkg = ns.asPackage
+        val pkg = aggregateId.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -52,7 +49,7 @@ class AbstractAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         ctx.addReferences(aggregateId)
 
         return List.of(newArtifact(filename,
-            create(ctx, aggregateId, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, aggregateId, pkg, className).toString().getBytes("UTF-8"), aggregateId));
     }
 
     def addImports(CodeSnippetContext ctx) {
