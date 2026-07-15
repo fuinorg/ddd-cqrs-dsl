@@ -82,3 +82,10 @@ jobs:
         OSS_SONATYPE_TOKEN: ${{ secrets.OSS_SONATYPE_TOKEN }}
         OSS_SONATYPE_GPG_PASSPHRASE: ${{ secrets.OSS_SONATYPE_GPG_PASSPHRASE }}
       run: ./mvnw clean deploy -U -B -P central-sonatype-release --file pom.xml -s settings.xml
+
+    - name: Upload console fat jar
+      uses: actions/upload-artifact@v4
+      with:
+        name: ddd-cqrs-dsl-console
+        path: maven/console/target/ddd-cqrs-dsl-console.jar
+        if-no-files-found: error
