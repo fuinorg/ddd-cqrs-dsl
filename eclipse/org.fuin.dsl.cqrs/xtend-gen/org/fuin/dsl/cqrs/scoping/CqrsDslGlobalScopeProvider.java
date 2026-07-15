@@ -68,12 +68,19 @@ public class CqrsDslGlobalScopeProvider extends DefaultGlobalScopeProvider {
         for (final Project project : _projects) {
           EList<Context> _contexts = project.getContexts();
           for (final Context context : _contexts) {
-            EList<Namespace> _namespaces = context.getNamespaces();
-            for (final Namespace namespace : _namespaces) {
-              EList<Import> _imports = namespace.getImports();
+            {
+              EList<Import> _imports = context.getImports();
               for (final Import import_ : _imports) {
                 remoteUris.addAll(this.cache.getCachedModelUris(rs, resource.getURI(), 
                   import_.getImportedNamespace(), this.catalog));
+              }
+              EList<Namespace> _namespaces = context.getNamespaces();
+              for (final Namespace namespace : _namespaces) {
+                EList<Import> _imports_1 = namespace.getImports();
+                for (final Import import__1 : _imports_1) {
+                  remoteUris.addAll(this.cache.getCachedModelUris(rs, resource.getURI(), 
+                    import__1.getImportedNamespace(), this.catalog));
+                }
               }
             }
           }

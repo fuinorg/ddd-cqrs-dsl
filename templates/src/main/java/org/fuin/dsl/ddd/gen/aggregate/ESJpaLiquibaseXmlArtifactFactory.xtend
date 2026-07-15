@@ -9,6 +9,7 @@ import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import java.util.List
 
 class ESJpaLiquibaseXmlArtifactFactory extends AbstractSource<Aggregate> implements ArtifactFactory<Aggregate> {
@@ -18,9 +19,9 @@ class ESJpaLiquibaseXmlArtifactFactory extends AbstractSource<Aggregate> impleme
     }
     
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
-        val Namespace ns = aggregate.eContainer() as Namespace;
+        val Namespace ns = aggregate.namespace
         val filename = "changelog-xxxxx-" + aggregate.getName().toSqlLower + "_events.xml"
-        return List.of(newArtifact(filename, create(aggregate, ns).toString().getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, create(aggregate, ns).toString().getBytes("UTF-8"), aggregate));
     }
     
     def create(Aggregate aggregate, Namespace ns) {

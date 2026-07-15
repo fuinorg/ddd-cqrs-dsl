@@ -4,7 +4,6 @@ import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.ConstructorData
 import org.fuin.dsl.ddd.gen.base.ConstructorParameter
@@ -38,8 +37,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
     override create(Entity entity, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = entity.getName()
-        val Namespace ns = entity.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val pkg = entity.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -57,7 +55,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
         ctx.addReferences(entity)
 
         return List.of(newArtifact(filename,
-            create(ctx, entity, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, entity, pkg, className).toString().getBytes("UTF-8"), entity));
     }
 
     def addImports(CodeSnippetContext ctx) {

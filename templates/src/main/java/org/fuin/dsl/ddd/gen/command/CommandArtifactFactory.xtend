@@ -3,7 +3,7 @@ package org.fuin.dsl.ddd.gen.command
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcGetters
@@ -42,13 +42,10 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 
         val Aggregate entity = command.aggregate
         val className = command.getName()
-        var Namespace ns;
-        if (entity === null) {
-            ns = command.namespace;
-        } else {
-            ns = entity.namespace;
-        }
-        val pkg = ns.asPackage
+        // The namespace is optional: derive the package from the element itself - the target
+        // aggregate for a domain command, otherwise the command.
+        val EObject owner = if (entity === null) command else entity
+        val pkg = owner.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -72,7 +69,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             src = createDomainCommand(ctx, command, pkg, className).toString();
         }
 
-        return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8"), owner));
     }
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Command command) {

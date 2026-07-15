@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.entityid
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
@@ -19,7 +18,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityIdExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
@@ -33,8 +31,7 @@ class AbstractEntityIdArtifactFactory extends AbstractSource<EntityId> {
     override create(EntityId entityId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = entityId.abstractName
-        val Namespace ns = entityId.namespace;
-        val pkg = ns.asPackage
+        val pkg = entityId.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -52,7 +49,7 @@ class AbstractEntityIdArtifactFactory extends AbstractSource<EntityId> {
         ctx.addReferences(entityId)
 
         return List.of(newArtifact(filename,
-            create(ctx, entityId, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, entityId, pkg, className).toString().getBytes("UTF-8"), entityId));
     }
 
     def addImports(CodeSnippetContext ctx) {

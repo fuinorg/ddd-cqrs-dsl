@@ -1,0 +1,17 @@
+project p {
+
+	context x {
+
+		type String
+
+		/** Value object declared directly in the context (no namespace). */
+		value-object MyValueObject base String {
+
+			/** Persistent value. */
+			String value
+
+		}
+
+	}
+
+}

@@ -2,8 +2,8 @@ package org.fuin.dsl.ddd.gen.event
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
+import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Event
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcInvokeMethod
@@ -37,13 +37,10 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
     override create(Event event, Map<String, Object> context, boolean preparationRun) throws GenerateException {
         val AbstractEntity entity = event.entity;
         val className = event.getName() + "Test"
-        var Namespace ns;
-        if (entity === null) {
-            ns = event.namespace;
-        } else {
-            ns = entity.namespace;
-        }
-        val pkg = ns.asPackage
+        // The namespace is optional: derive the package from the element itself - the enclosing
+        // entity for a domain event, otherwise the event.
+        val EObject owner = if (entity === null) event else entity
+        val pkg = owner.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -67,7 +64,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
             src = createDomainEventTest(ctx, event, pkg, className).toString();
         }
 
-        return List.of(newArtifact(filename, src.getBytes("UTF-8"), ns));
+        return List.of(newArtifact(filename, src.getBytes("UTF-8"), owner));
     }
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity) {

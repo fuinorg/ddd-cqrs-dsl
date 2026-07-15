@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.valueobject
 
 import java.io.Serializable
 import java.util.Map
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -19,7 +18,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 
@@ -32,8 +30,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     override create(ValueObject valueObject, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = valueObject.abstractName
-        val Namespace ns = valueObject.namespace;
-        val pkg = ns.asPackage
+        val pkg = valueObject.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -51,7 +48,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.addReferences(valueObject)
 
         return List.of(newArtifact(filename,
-            create(ctx, valueObject, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, valueObject, pkg, className).toString().getBytes("UTF-8"), valueObject));
     }
 
     def addImports(CodeSnippetContext ctx) {

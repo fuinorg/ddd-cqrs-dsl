@@ -82,6 +82,50 @@ class AbstractSourceHintPackageTest {
     }
 
     @Test
+    def void testHintDrivenPackageOmitsOptionalNamespace() {
+
+        // PREPARE - the same hint as above (optional "[.${namespace}]" segment), but the value-object
+        // is declared directly in the context, without a namespace.
+        val model = parser.parse('''
+            project myproj {
+                hint SrcGen4J {
+                    "package": "${project}.${module}.${group}.${context}[.${namespace}]",
+                    "types": [
+                        {
+                            "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
+                            "module": "shared",
+                            "group": "domain",
+                            "artifacts": [
+                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genJava" }
+                            ]
+                        }
+                    ]
+                }
+                context ctx {
+                    type String
+                    value-object Money {
+                        String amount
+                    }
+                }
+            }
+        ''')
+        val vo = model.find(typeof(ValueObject), "Money")
+
+        val factory = new ValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+
+        // TEST - derive the package from the element itself (its namespace is null).
+        val pkg = factory.asPackage(vo)
+
+        // VERIFY the optional namespace segment is dropped: the package ends at the context, with no
+        // trailing dot.
+        assertThat(vo.namespace).isNull
+        assertThat(pkg).isEqualTo("myproj.shared.domain.ctx")
+    }
+
+    @Test
     def void testPackageOnlyHintOverridesDefaultPackage() {
 
         // PREPARE - a hint that overrides only "package" (no "types"). The default preset

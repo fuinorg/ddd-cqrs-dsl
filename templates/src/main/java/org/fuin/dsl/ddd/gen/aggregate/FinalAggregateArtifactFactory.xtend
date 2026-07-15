@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.aggregate
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
@@ -33,8 +32,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = aggregate.getName()
-        val Namespace ns = aggregate.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val pkg = aggregate.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -52,7 +50,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
         ctx.addReferences(aggregate)
 
         return List.of(newArtifact(filename,
-            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, aggregate, pkg, className).toString().getBytes("UTF-8"), aggregate));
     }
 
     def addImports(CodeSnippetContext ctx) {

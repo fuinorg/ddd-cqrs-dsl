@@ -33,7 +33,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         val className = vo.name
         val abstractClassName = vo.abstractName
         val Namespace ns = vo.namespace;
-        val pkg = ns.asPackage
+        val pkg = vo.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -60,7 +60,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.requiresImport("java.io.Serial")
 
         return List.of(newArtifact(filename,
-            create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8"), ns));
+            create(ctx, ns, vo, pkg, className, abstractClassName).toString().getBytes("UTF-8"), vo));
     }
 
     def addReferences(CodeSnippetContext ctx, ValueObject vo) {
@@ -70,7 +70,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     def create(SimpleCodeSnippetContext ctx, Namespace ns, ValueObject vo, String pkg, String className, String abstractClassName) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            «new SrcMetaAnnotations(ctx, vo.metaInfo, vo.context.name, ns.name + "." + className)»
+            «new SrcMetaAnnotations(ctx, vo.metaInfo, vo.context.name, (if (ns === null) className else ns.name + "." + className))»
             «IF vo.base === null && options.jaxb»
                 «new SrcXmlRootElement(ctx, vo)»
             «ENDIF»

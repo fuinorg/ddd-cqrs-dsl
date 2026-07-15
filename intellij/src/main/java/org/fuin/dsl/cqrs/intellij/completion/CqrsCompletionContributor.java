@@ -196,9 +196,19 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        // inside a context (but not a namespace)
+        // inside a context (but not a namespace): the namespace is optional, so a context accepts
+        // either a 'namespace' block or imports/elements directly (the same content a namespace holds).
         if (PsiTreeUtil.getParentOfType(position, CqrsContextDef.class) != null) {
             keywords.add("namespace");
+            keywords.add("import");
+            keywords.addAll(ELEMENT_KEYWORDS);
+            keywords.addAll(META_KEYWORDS);
+            keywords.add("optional");
+            keywords.add("protected-by");
+            keywords.add("base");
+            keywords.add("message");
+            keywords.add("constructor");
+            keywords.add("method");
             return keywords;
         }
 

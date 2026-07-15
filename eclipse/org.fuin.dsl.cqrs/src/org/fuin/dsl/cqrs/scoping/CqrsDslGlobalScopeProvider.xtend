@@ -44,6 +44,12 @@ class CqrsDslGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			for (model : resource.contents.filter(DomainModel)) {
 				for (project : model.projects) {
 					for (context : project.contexts) {
+						// Imports may be declared inside a namespace or - when the namespace is
+						// omitted - directly on the context itself. Collect both.
+						for (^import : context.imports) {
+							remoteUris.addAll(cache.getCachedModelUris(rs, resource.URI,
+								^import.importedNamespace, catalog))
+						}
 						for (namespace : context.namespaces) {
 							for (^import : namespace.imports) {
 								remoteUris.addAll(cache.getCachedModelUris(rs, resource.URI,

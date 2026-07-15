@@ -27,7 +27,7 @@ class SrcValidationAnnotation implements CodeSnippet {
         vars = constraint.attributes;
         params = ci.params;
 
-        if ((constraint.context.name + "." + constraint.namespace.name).startsWith("org.fuin.constr")) {
+        if (isFuinConstr(constraint)) {
             for (String pkg : constraint.pkg) {
                 ctx.requiresReference(pkg)
             }
@@ -42,7 +42,7 @@ class SrcValidationAnnotation implements CodeSnippet {
     }
 
     override toString() {
-        if ((constraint.context.name + "." + constraint.namespace.name).startsWith("org.fuin.constr")) {
+        if (isFuinConstr(constraint)) {
             return constraint.annotation
         } else {
             if (vars.size !== params.size) {
@@ -67,6 +67,19 @@ class SrcValidationAnnotation implements CodeSnippet {
             }
         }
 
+    }
+
+    /**
+     * Determines whether the constraint is one of the built-in "org.fuin.constr.*" constraints. The
+     * namespace is optional, so it is only appended to the qualified name when present (a constraint
+     * declared directly in a context is never a built-in one).
+     */
+    private def boolean isFuinConstr(Constraint constr) {
+        val qn = if (constr.namespace === null)
+                constr.context.name
+            else
+                constr.context.name + "." + constr.namespace.name
+        return qn.startsWith("org.fuin.constr")
     }
 
     def Literal findParamByName(String nameToFind) {

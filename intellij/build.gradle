@@ -118,6 +118,14 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.7.0</b> &ndash; The <code>namespace</code> is now optional: a <code>context</code> may
+        hold its imports and elements directly, without an enclosing <code>namespace</code>. Parsing,
+        reference resolution and code completion all handle namespace-less contexts (an element
+        declared directly in a context resolves under the <code>project.context</code> path).</li>
+    <li><b>1.6.1</b> &ndash; Go-to-definition / find-usages no longer shows the same type several
+        times ("Multiple Implementations"): declarations reachable through more than one scope path
+        (a Maven artifact providing several imported namespaces, or a cached model also indexed as a
+        project file) are now de-duplicated by source location.</li>
     <li><b>1.6.0</b> &ndash; Added code folding: every multi-line <code>{ }</code> block collapses
         individually (including an <code>enum</code>'s <code>instances</code> list and JSON
         <code>hint</code> bodies), as do multi-line block and doc comments. Nothing is collapsed when

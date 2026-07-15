@@ -2,7 +2,6 @@ package org.fuin.dsl.ddd.gen.aggregate
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.srcgen4j.commons.ArtifactFactory
@@ -26,8 +25,7 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
 
         val repositoryName = aggregate.name + "Repository"
         val className = repositoryName + "Factory"
-        val Namespace ns = aggregate.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val pkg = aggregate.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
 
@@ -45,7 +43,7 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
         ctx.addReferences(aggregate)
 
         return List.of(newArtifact(filename,
-            create(ctx, aggregate, pkg, className, repositoryName).toString().getBytes("UTF-8"), ns));
+            create(ctx, aggregate, pkg, className, repositoryName).toString().getBytes("UTF-8"), aggregate));
     }
 
     def addImports(CodeSnippetContext ctx) {

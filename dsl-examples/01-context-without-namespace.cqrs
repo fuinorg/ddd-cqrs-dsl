@@ -1,0 +1,25 @@
+project p_01_context_without_namespace {
+
+	// The namespace is optional. When a Bounded Context does not need the extra
+	// grouping, it may hold its imports and elements directly - the same content a
+	// namespace would otherwise carry. A context therefore contains EITHER
+	// namespaces (see 01-context-namespaces-imports) OR imports and elements, but
+	// not both.
+	context shop {
+
+		// Imports are still allowed at the context level. They pull in names from
+		// another context/namespace by its fully qualified path, either as a ".*"
+		// wildcard or a specific namespace.
+		import p_01_context_namespaces_imports.shop.types.*
+
+		type String
+
+		// Elements declared directly in the context end up in the "project.context"
+		// package - the optional namespace segment of the package name is omitted.
+		value-object ProductName base String {
+			String value
+		}
+
+	}
+
+}

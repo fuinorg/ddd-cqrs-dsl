@@ -3,7 +3,6 @@ package org.fuin.dsl.ddd.gen.constr
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractVO
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcInvokeGetter
@@ -32,8 +31,7 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
         }
 
         val className = constraint.getName() + "Validator"
-        val Namespace ns = constraint.eContainer() as Namespace;
-        val pkg = ns.asPackage
+        val pkg = constraint.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         
@@ -51,7 +49,7 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
         ctx.addReferences(constraint)
 
         return List.of(newArtifact(filename,
-            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8"), ns));
+            create(ctx, constraint, pkg, className).toString().getBytes("UTF-8"), constraint));
     }
 
     def addImports(CodeSnippetContext ctx, Constraint constraint) {

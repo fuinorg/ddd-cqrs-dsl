@@ -31,6 +31,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 		}
 		
 		private static void init(ImmutableMap.Builder<AbstractElement, String> builder, CqrsDslGrammarAccess grammarAccess) {
+			builder.put(grammarAccess.getContextAccess().getAlternatives_3(), "rule__Context__Alternatives_3");
 			builder.put(grammarAccess.getImportAccess().getImportedNamespaceAlternatives_1_0(), "rule__Import__ImportedNamespaceAlternatives_1_0");
 			builder.put(grammarAccess.getAbstractElementAccess().getAlternatives(), "rule__AbstractElement__Alternatives");
 			builder.put(grammarAccess.getTypeAccess().getAlternatives(), "rule__Type__Alternatives");
@@ -57,6 +58,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getErasureStrategyAccess().getAlternatives(), "rule__ErasureStrategy__Alternatives");
 			builder.put(grammarAccess.getProjectAccess().getGroup(), "rule__Project__Group__0");
 			builder.put(grammarAccess.getContextAccess().getGroup(), "rule__Context__Group__0");
+			builder.put(grammarAccess.getContextAccess().getGroup_3_1(), "rule__Context__Group_3_1__0");
 			builder.put(grammarAccess.getNamespaceAccess().getGroup(), "rule__Namespace__Group__0");
 			builder.put(grammarAccess.getImportAccess().getGroup(), "rule__Import__Group__0");
 			builder.put(grammarAccess.getHintAccess().getGroup(), "rule__Hint__Group__0");
@@ -174,7 +176,9 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getProjectAccess().getHintsAssignment_3(), "rule__Project__HintsAssignment_3");
 			builder.put(grammarAccess.getProjectAccess().getContextsAssignment_4(), "rule__Project__ContextsAssignment_4");
 			builder.put(grammarAccess.getContextAccess().getNameAssignment_1(), "rule__Context__NameAssignment_1");
-			builder.put(grammarAccess.getContextAccess().getNamespacesAssignment_3(), "rule__Context__NamespacesAssignment_3");
+			builder.put(grammarAccess.getContextAccess().getNamespacesAssignment_3_0(), "rule__Context__NamespacesAssignment_3_0");
+			builder.put(grammarAccess.getContextAccess().getImportsAssignment_3_1_0(), "rule__Context__ImportsAssignment_3_1_0");
+			builder.put(grammarAccess.getContextAccess().getElementsAssignment_3_1_1(), "rule__Context__ElementsAssignment_3_1_1");
 			builder.put(grammarAccess.getNamespaceAccess().getNameAssignment_1(), "rule__Namespace__NameAssignment_1");
 			builder.put(grammarAccess.getNamespaceAccess().getImportsAssignment_3(), "rule__Namespace__ImportsAssignment_3");
 			builder.put(grammarAccess.getNamespaceAccess().getElementsAssignment_4(), "rule__Namespace__ElementsAssignment_4");
