@@ -1,5 +1,8 @@
 package org.fuin.dsl.ddd.gen.base
 
+import java.util.Arrays
+import java.util.Collections
+import java.util.List
 import java.util.Map
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -33,6 +36,17 @@ class GenerateOptions {
     /** Key if to generate Jackson annotations (Type: Boolean). */
     public val static KEY_JACKSON = "jackson"
 
+    /**
+     * Key for the model namespaces that contain the built-in constraints. Constraints from those namespaces are
+     * generated as Jakarta Validation annotations (like '@Size') instead of an annotation of their own. The value is a
+     * comma separated list of namespaces, each of them either a "project.context.namespace" or a "project.context"
+     * (Type: String).
+     */
+    public val static KEY_BUILTIN_CONSTRAINT_NAMESPACES = "builtinConstraintNamespaces"
+
+    /** Namespace of the built-in constraints used if {@link #KEY_BUILTIN_CONSTRAINT_NAMESPACES} is not set. */
+    public val static DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES = "org.fuin.constr"
+
     var String basePkg
 
     var String pkg
@@ -49,11 +63,14 @@ class GenerateOptions {
 
     var String copyrightHeader
 
+    var List<String> builtinConstraintNamespaces
+
     /**
      * Default constructor.
      */
     private new() {
         super()
+        builtinConstraintNamespaces = parseNamespaces(null)
     }
 
     /**
@@ -71,6 +88,7 @@ class GenerateOptions {
         jaxbElements = Boolean.valueOf(varMap.nullSafe.get(KEY_JAXB_ELEMENTS))
         jsonb = Boolean.valueOf(varMap.nullSafe.get(KEY_JSONB))
         jackson = Boolean.valueOf(varMap.nullSafe.get(KEY_JACKSON))
+        builtinConstraintNamespaces = parseNamespaces(varMap.nullSafe.get(KEY_BUILTIN_CONSTRAINT_NAMESPACES))
 
         val String header = varMap.nullSafe.get(KEY_COPYRIGHT_HEADER)
         if (header === null) {
@@ -127,11 +145,33 @@ class GenerateOptions {
 
     /**
      * Returns the copyright header to use.
-     * 
+     *
      * @return Copyright header for source files.
      */
     def String getCopyrightHeader() {
         return copyrightHeader
+    }
+
+    /**
+     * Returns the model namespaces that contain the built-in constraints.
+     *
+     * @return Unmodifiable list of "project.context.namespace" and "project.context" names, never empty.
+     */
+    def List<String> getBuiltinConstraintNamespaces() {
+        return builtinConstraintNamespaces
+    }
+
+    /**
+     * Splits a comma separated list of namespaces. Falls back to {@link #DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES} if
+     * nothing is defined.
+     *
+     * @param str Comma separated list of namespaces or {@literal null}.
+     *
+     * @return Unmodifiable list of trimmed namespaces, never empty.
+     */
+    private static def List<String> parseNamespaces(String str) {
+        val String value = if (str === null || str.trim.empty) DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES else str
+        return Collections.unmodifiableList(Arrays.asList(value.split(",")).map[trim].filter[!empty].toList)
     }
 
     /** 
@@ -171,6 +211,7 @@ class GenerateOptions {
             obj.jsonb = other.jsonb
             obj.jackson = other.jackson
             obj.copyrightHeader = other.copyrightHeader
+            obj.builtinConstraintNamespaces = other.builtinConstraintNamespaces
         }
 
         def Builder withBasePkg(String basePkg) {
@@ -235,6 +276,16 @@ class GenerateOptions {
 
         def Builder withCopyrightHeader(String header) {
             obj.copyrightHeader = header
+            return this
+        }
+
+        /**
+         * Sets the model namespaces that contain the built-in constraints.
+         *
+         * @param namespaces Comma separated list of namespaces. Uses the default if {@literal null} or empty.
+         */
+        def Builder withBuiltinConstraintNamespaces(String namespaces) {
+            obj.builtinConstraintNamespaces = parseNamespaces(namespaces)
             return this
         }
 

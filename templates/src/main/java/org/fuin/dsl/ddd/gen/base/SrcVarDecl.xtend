@@ -79,7 +79,7 @@ class SrcVarDecl implements CodeSnippet {
     private def validationAnnotations() {
         '''
             «FOR cc : variable.constraints SEPARATOR ' '»
-                «new SrcValidationAnnotation(ctx, cc)»
+                «new SrcValidationAnnotation(ctx, options, cc)»
             «ENDFOR»
             «IF variable.optional !== null && !variable.isPrimitive(ctx)»
                 @Nullable

@@ -21,11 +21,13 @@ class SrcValidationAnnotation implements CodeSnippet {
     var Constraint constraint
     var List<Attribute> vars
     var List<Literal> params
+    var GenerateOptions options
 
-    new(CodeSnippetContext ctx, ConstraintInstance ci) {
+    new(CodeSnippetContext ctx, GenerateOptions options, ConstraintInstance ci) {
         constraint = ci.constraint;
         vars = constraint.attributes;
         params = ci.params;
+        this.options = options;
 
         if (isFuinConstr(constraint)) {
             for (String pkg : constraint.pkg) {
@@ -70,16 +72,25 @@ class SrcValidationAnnotation implements CodeSnippet {
     }
 
     /**
-     * Determines whether the constraint is one of the built-in "org.fuin.constr.*" constraints. The
-     * namespace is optional, so it is only appended to the qualified name when present (a constraint
-     * declared directly in a context is never a built-in one).
+     * Determines whether the constraint is one of the built-in constraints that are generated as Jakarta
+     * Validation annotations. This is the case if the namespace the constraint is declared in is one of the
+     * configured ones (see {@link GenerateOptions#KEY_BUILTIN_CONSTRAINT_NAMESPACES}).
      */
     private def boolean isFuinConstr(Constraint constr) {
-        val qn = if (constr.namespace === null)
-                constr.context.name
-            else
-                constr.context.name + "." + constr.namespace.name
-        return qn.startsWith("org.fuin.constr")
+        return options.builtinConstraintNamespaces.contains(namespaceName(constr))
+    }
+
+    /**
+     * Returns the name of the namespace a constraint is declared in. The namespace inside the context is
+     * optional, so it is only appended when present (a constraint may be declared directly in a context).
+     *
+     * @return Either "project.context.namespace" or "project.context".
+     */
+    private def String namespaceName(Constraint constr) {
+        if (constr.namespace === null) {
+            return constr.project.name + "." + constr.context.name
+        }
+        return constr.project.name + "." + constr.context.name + "." + constr.namespace.name
     }
 
     def Literal findParamByName(String nameToFind) {

@@ -42,27 +42,29 @@ import org.fuin.objects4j.common.ValueObjectWithBaseType;
 import org.fuin.objects4j.core.Validators;
 import org.fuin.objects4j.ui.Examples;
 import org.jspecify.annotations.Nullable;
+import p.x.constr.Length;
 
 /**
- * Simple value object single attribute and base.
+ * Simple value object with an invariant that restricts the value.
  */
-@Examples(value = { "one","two","three" })
+@Examples(value = { "abc" })
 @Immutable
 @Generated("Generated class - Manual changes will be overwritten")
 @HasPublicStaticIsValidMethod
 @HasPublicStaticValueOfMethod
-public final class MySimpleStringValueObject implements ValueObjectWithBaseType<String>, Comparable<MySimpleStringValueObject>, Serializable, AsStringCapable {
+public final class MyConstrainedStringValueObject implements ValueObjectWithBaseType<String>, Comparable<MyConstrainedStringValueObject>, Serializable, AsStringCapable {
 
     @Serial
     private static final long serialVersionUID = 1000L;
 
+    @Length(min = 3, max = 10)
     private String value;
 
     /**
      * Protected default constructor for deserialization.
      */
     @SuppressWarnings("NullAway.Init")
-    protected MySimpleStringValueObject() {
+    protected MyConstrainedStringValueObject() {
         super();
     }
 
@@ -72,7 +74,7 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
      * @param value
      *            Value.
      */
-    public MySimpleStringValueObject(final String value) {
+    public MyConstrainedStringValueObject(final String value) {
         super();
         requireArgValid("value", value);
         this.value = value;
@@ -109,12 +111,12 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MySimpleStringValueObject other = (MySimpleStringValueObject) obj;
+        final MyConstrainedStringValueObject other = (MyConstrainedStringValueObject) obj;
         return Objects.equals(value, other.value);
     }
 
     @Override
-    public int compareTo(final MySimpleStringValueObject other) {
+    public int compareTo(final MyConstrainedStringValueObject other) {
         return value.compareTo(other.value);
     }
 
@@ -135,7 +137,7 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
         if (value == null) {
             return true;
         }
-        return Validators.get().validateValue(MySimpleStringValueObject.class, "value", value).isEmpty();
+        return Validators.get().validateValue(MyConstrainedStringValueObject.class, "value", value).isEmpty();
     }
 
     /**
@@ -167,11 +169,11 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
     @Retention(RetentionPolicy.RUNTIME)
     @Constraint(validatedBy = { Validator.class })
     @Documented
-    public @interface MySimpleStringValueObjectStr {
+    public @interface MyConstrainedStringValueObjectStr {
 
         String message()
 
-        default "{p.shared.domain.x.valueobject.MySimpleStringValueObject.message}";
+        default "{p.shared.domain.x.valueobject.MyConstrainedStringValueObject.message}";
 
         Class<?>[] groups() default {};
 
@@ -183,18 +185,18 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
      * Validates if a string is compliant with the type.
      */
     public static final class Validator implements
-            ConstraintValidator<MySimpleStringValueObjectStr, String> {
+            ConstraintValidator<MyConstrainedStringValueObjectStr, String> {
 
         @Override
         public void initialize(
-                final MySimpleStringValueObjectStr annotation) {
+                final MyConstrainedStringValueObjectStr annotation) {
             // Not used
         }
 
         @Override
         public boolean isValid(final String value,
                 final ConstraintValidatorContext context) {
-            return MySimpleStringValueObject.isValid(value);
+            return MyConstrainedStringValueObject.isValid(value);
         }
 
     }
@@ -202,36 +204,36 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
     /**
      * Converts the value object from/to String.
      */
-    public static final class Converter extends XmlAdapter<String, MySimpleStringValueObject> implements AttributeConverter<MySimpleStringValueObject, String>, JsonbAdapter<MySimpleStringValueObject, String> {
+    public static final class Converter extends XmlAdapter<String, MyConstrainedStringValueObject> implements AttributeConverter<MyConstrainedStringValueObject, String>, JsonbAdapter<MyConstrainedStringValueObject, String> {
 
         // General methods
 
         /**
-         * Converts the String into a MySimpleStringValueObject. A {@literal null} parameter will return {@literal null}.
+         * Converts the String into a MyConstrainedStringValueObject. A {@literal null} parameter will return {@literal null}.
          * 
          * @param value
-         *            String to convert into a MySimpleStringValueObject.
+         *            String to convert into a MyConstrainedStringValueObject.
          * 
-         * @return Value object of type MySimpleStringValueObject.
+         * @return Value object of type MyConstrainedStringValueObject.
          */
         @Nullable
-        public MySimpleStringValueObject toVO(@Nullable final String value) {
+        public MyConstrainedStringValueObject toVO(@Nullable final String value) {
             if (value == null) {
                 return null;
             }
-            return new MySimpleStringValueObject(value);
+            return new MyConstrainedStringValueObject(value);
         }
 
         /**
-         * Converts a MySimpleStringValueObject into a String. A {@literal null} parameter will return {@literal null}.
+         * Converts a MyConstrainedStringValueObject into a String. A {@literal null} parameter will return {@literal null}.
          * 
          * @param value
-         *            Value object of type MySimpleStringValueObject.
+         *            Value object of type MyConstrainedStringValueObject.
          * 
          * @return String.
          */
         @Nullable
-        public String fromVO(@Nullable final MySimpleStringValueObject value) {
+        public String fromVO(@Nullable final MyConstrainedStringValueObject value) {
             if (value == null) {
                 return null;
             }
@@ -242,13 +244,13 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
 
         @Override
         @Nullable
-        public MySimpleStringValueObject unmarshal(@Nullable final String value) throws Exception {
+        public MyConstrainedStringValueObject unmarshal(@Nullable final String value) throws Exception {
             return toVO(value);
         }
 
         @Override
         @Nullable
-        public String marshal(@Nullable final MySimpleStringValueObject obj) throws Exception {
+        public String marshal(@Nullable final MyConstrainedStringValueObject obj) throws Exception {
             return fromVO(obj);
         }
 
@@ -256,13 +258,13 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
 
         @Override
         @Nullable
-        public String convertToDatabaseColumn(@Nullable final MySimpleStringValueObject obj) {
+        public String convertToDatabaseColumn(@Nullable final MyConstrainedStringValueObject obj) {
             return fromVO(obj);
         }
 
         @Override
         @Nullable
-        public MySimpleStringValueObject convertToEntityAttribute(@Nullable final String value) {
+        public MyConstrainedStringValueObject convertToEntityAttribute(@Nullable final String value) {
             return toVO(value);
         }
 
@@ -270,13 +272,13 @@ public final class MySimpleStringValueObject implements ValueObjectWithBaseType<
 
         @Override
         @Nullable
-        public String adaptToJson(@Nullable final MySimpleStringValueObject obj) throws Exception {
+        public String adaptToJson(@Nullable final MyConstrainedStringValueObject obj) throws Exception {
             return fromVO(obj);
         }
 
         @Override
         @Nullable
-        public MySimpleStringValueObject adaptFromJson(@Nullable final String value) throws Exception {
+        public MyConstrainedStringValueObject adaptFromJson(@Nullable final String value) throws Exception {
             return toVO(value);
         }
 

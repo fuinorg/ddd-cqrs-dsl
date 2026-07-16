@@ -46,7 +46,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strNoArgConstraint")
         val constraintInstance = attr.invariants.nullSafe.first
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, constraintInstance)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), constraintInstance)
 
         // TEST
         val result = testee.toString
@@ -62,15 +62,15 @@ class SrcValidationAnnotationTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.org.fuin.types.String", "java.lang.String")
-        refReg.putReference("p.org.fuin.types.Integer", "java.lang.Integer")
+        refReg.putReference("org.fuin.types.String", "java.lang.String")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
         refReg.putReference("p.y.a.OneArgConstraint", "a.b.c.OneArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strOneArgConstraint")
         val constraintInstance = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, constraintInstance)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), constraintInstance)
 
         // TEST
         val result = testee.toString
@@ -86,15 +86,15 @@ class SrcValidationAnnotationTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.org.fuin.types.String", "java.lang.String")
-        refReg.putReference("p.org.fuin.types.Integer", "java.lang.Integer")
+        refReg.putReference("org.fuin.types.String", "java.lang.String")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
         refReg.putReference("p.y.a.TwoArgsConstraint", "a.b.c.TwoArgsConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strTwoArgsConstraint")
         val constraintInstance = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, constraintInstance)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), constraintInstance)
 
         // TEST
         val result = testee.toString
@@ -115,7 +115,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("minValueBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -136,7 +136,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("maxValueBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -157,7 +157,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("valueRangeBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -181,7 +181,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("negativeBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -203,7 +203,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("negativeOrZeroBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -224,7 +224,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("positiveBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -246,7 +246,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("positiveOrZeroBigDecimal")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -267,7 +267,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strMinLength")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -288,7 +288,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strMaxLength")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -309,7 +309,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strExactLength")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -330,7 +330,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strLength")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -351,7 +351,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strNotNull")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -372,7 +372,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strNull")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -393,7 +393,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("booleanAssertTrue")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -414,7 +414,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("booleanAssertFalse")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -435,7 +435,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strNotEmpty")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -456,7 +456,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("listNotEmpty")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -479,7 +479,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strNotBlank")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -500,7 +500,7 @@ class SrcValidationAnnotationTest {
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
         val attr = valueObject.attributes.find("strPattern")
         val value = attr.invariants.nullSafe.get(0)
-        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, value)
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, GenerateOptions.empty(), value)
 
         // TEST
         val result = testee.toString
@@ -511,6 +511,70 @@ class SrcValidationAnnotationTest {
 
     }
     
+    @Test
+    def void testConfiguredNamespaceIsTreatedAsBuiltIn() {
+
+        // PREPARE - the constraint is declared in "p.y.a", which is configured as a built-in namespace.
+        val refReg = new SimpleCodeReferenceRegistry()
+        refReg.putReference("p.y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        val ctx = new SimpleCodeSnippetContext(refReg)
+        val options = GenerateOptions.builder.withBuiltinConstraintNamespaces("p.y.a").create
+
+        val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
+        val attr = valueObject.attributes.find("strNoArgConstraint")
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, options, attr.invariants.nullSafe.first)
+
+        // TEST
+        val result = testee.toString
+
+        // VERIFY the Jakarta annotation is used instead of the generated one of the model.
+        assertThat(result).isEqualTo("@NoArgConstraint")
+        assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.NoArgConstraint")
+
+    }
+
+    @Test
+    def void testDefaultNamespaceIsNoLongerBuiltInWhenOverridden() {
+
+        // PREPARE - only "p.y.a" is configured, so "org.fuin.constr" is not a built-in namespace any more.
+        val refReg = new SimpleCodeReferenceRegistry()
+        refReg.putReference("org.fuin.constr.Length", "a.b.c.Length")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
+        val ctx = new SimpleCodeSnippetContext(refReg)
+        val options = GenerateOptions.builder.withBuiltinConstraintNamespaces("p.y.a").create
+
+        val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
+        val attr = valueObject.attributes.find("strLength")
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, options, attr.invariants.nullSafe.get(0))
+
+        // TEST
+        val result = testee.toString
+
+        // VERIFY the annotation of the model is used instead of the Jakarta "@Size".
+        assertThat(result).isEqualTo("@Length(min = 1, max = 100)")
+        assertThat(ctx.imports).containsOnly("a.b.c.Length", "java.lang.Integer")
+
+    }
+
+    @Test
+    def void testDefaultNamespaceRequiresTheFullPathToMatch() {
+
+        // PREPARE - "org.fuin" alone is not the full path of the constraint's namespace ("org.fuin.constr").
+        val refReg = new SimpleCodeReferenceRegistry()
+        refReg.putReference("org.fuin.constr.Length", "a.b.c.Length")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
+        val ctx = new SimpleCodeSnippetContext(refReg)
+        val options = GenerateOptions.builder.withBuiltinConstraintNamespaces("org.fuin").create
+
+        val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
+        val attr = valueObject.attributes.find("strLength")
+        val SrcValidationAnnotation testee = new SrcValidationAnnotation(ctx, options, attr.invariants.nullSafe.get(0))
+
+        // TEST + VERIFY a partial match does not turn the constraint into a built-in one.
+        assertThat(testee.toString).isEqualTo("@Length(min = 1, max = 100)")
+
+    }
+
     private def Attribute find(EList<Attribute> attrs, String nameToFind) {
         for (Attribute attr : attrs) {
             if (attr.name.equals(nameToFind)) {

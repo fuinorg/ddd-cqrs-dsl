@@ -1,6 +1,6 @@
-project p {
+project org {
 
-	context org.fuin {
+	context fuin {
 
 		namespace types {
 			type Number // BigDecimal, BigInteger, Integer, Long, Double, Float

@@ -35,12 +35,22 @@ class SimpleStringValueObjectArtifactFactoryTest {
 
     @Test
     def void testCreateMyValueObject() {
+        testCreate("MySimpleStringValueObject")
+    }
+
+    @Test
+    def void testCreateMyConstrainedValueObject() {
+        testCreate("MyConstrainedStringValueObject")
+    }
+
+    private def void testCreate(String name) {
 
         // PREPARE
-        val name = "MySimpleStringValueObject"
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.constr.Length", "p.x.constr.Length")
         refReg.putReference("p.x.valueobject." + name + "Converter",
             "p.x.valueobject." + name + "Converter")
 
