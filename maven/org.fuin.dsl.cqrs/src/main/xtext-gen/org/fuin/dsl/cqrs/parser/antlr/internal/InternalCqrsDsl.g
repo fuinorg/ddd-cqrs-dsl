@@ -4046,6 +4046,25 @@ ruleReturnType returns [EObject current=null]
 				}
 			)
 		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getReturnTypeAccess().getGenericsGenericArgsParserRuleCall_3_0());
+				}
+				lv_generics_3_0=ruleGenericArgs
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getReturnTypeRule());
+					}
+					set(
+						$current,
+						"generics",
+						lv_generics_3_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.GenericArgs");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)?
 	)
 ;
 

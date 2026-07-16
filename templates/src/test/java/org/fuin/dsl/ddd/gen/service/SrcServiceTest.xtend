@@ -92,6 +92,45 @@ class SrcServiceTest {
 
     }
     
+    @Test
+    def void testServiceC() {
+
+        // PREPARE
+        val refReg = new SimpleCodeReferenceRegistry()
+        refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.List", "java.util.List")
+
+        val ctx = new SimpleCodeSnippetContext(refReg)
+        val Service service = model.find(typeof(Service), "ServiceC")
+        val SrcService testee = new SrcService(ctx, service)
+
+        // TEST
+        val result = testee.toString
+
+        // VERIFY
+        assertThat(result).isEqualTo(
+            '''
+            /**
+             * Service C - Generic return type.
+             */
+            public interface ServiceC {
+                
+                /**
+                 * Lists something.
+                 *
+                 * @param a Key.
+                 *
+                 * @return Values.
+                 */
+                public List<String> list(final Integer a);
+                
+            }
+            '''.toString)
+        assertThat(ctx.imports).containsOnly("java.lang.Integer", "java.lang.String", "java.util.List")
+
+    }
+
     private def model() {
         val DomainModel model = parser.parse(Utils.readAsString(class.getResource("/service.cqrs")))
         validationTester.assertNoIssues(model)

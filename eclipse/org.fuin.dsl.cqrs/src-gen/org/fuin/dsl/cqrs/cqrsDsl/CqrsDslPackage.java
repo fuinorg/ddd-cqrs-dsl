@@ -2414,13 +2414,22 @@ public interface CqrsDslPackage extends EPackage
   int RETURN_TYPE__TYPE = 1;
 
   /**
+   * The feature id for the '<em><b>Generics</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RETURN_TYPE__GENERICS = 2;
+
+  /**
    * The number of structural features of the '<em>Return Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RETURN_TYPE_FEATURE_COUNT = 2;
+  int RETURN_TYPE_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl <em>Method</em>}' class.
@@ -5186,6 +5195,17 @@ public interface CqrsDslPackage extends EPackage
   EReference getReturnType_Type();
 
   /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getGenerics <em>Generics</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Generics</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getGenerics()
+   * @see #getReturnType()
+   * @generated
+   */
+  EReference getReturnType_Generics();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Method <em>Method</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7185,6 +7205,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference RETURN_TYPE__TYPE = eINSTANCE.getReturnType_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Generics</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RETURN_TYPE__GENERICS = eINSTANCE.getReturnType_Generics();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl <em>Method</em>}' class.

@@ -4,6 +4,7 @@
 package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -12,6 +13,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 
@@ -25,6 +27,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Type;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getDoc <em>Doc</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getGenerics <em>Generics</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,6 +63,16 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
    * @ordered
    */
   protected Type type;
+
+  /**
+   * The cached value of the '{@link #getGenerics() <em>Generics</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGenerics()
+   * @generated
+   * @ordered
+   */
+  protected GenericArgs generics;
 
   /**
    * <!-- begin-user-doc -->
@@ -158,6 +171,72 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
    * @generated
    */
   @Override
+  public GenericArgs getGenerics()
+  {
+    return generics;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetGenerics(GenericArgs newGenerics, NotificationChain msgs)
+  {
+    GenericArgs oldGenerics = generics;
+    generics = newGenerics;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.RETURN_TYPE__GENERICS, oldGenerics, newGenerics);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setGenerics(GenericArgs newGenerics)
+  {
+    if (newGenerics != generics)
+    {
+      NotificationChain msgs = null;
+      if (generics != null)
+        msgs = ((InternalEObject)generics).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.RETURN_TYPE__GENERICS, null, msgs);
+      if (newGenerics != null)
+        msgs = ((InternalEObject)newGenerics).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.RETURN_TYPE__GENERICS, null, msgs);
+      msgs = basicSetGenerics(newGenerics, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.RETURN_TYPE__GENERICS, newGenerics, newGenerics));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CqrsDslPackage.RETURN_TYPE__GENERICS:
+        return basicSetGenerics(null, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
@@ -167,6 +246,8 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         if (resolve) return getType();
         return basicGetType();
+      case CqrsDslPackage.RETURN_TYPE__GENERICS:
+        return getGenerics();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -186,6 +267,9 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
         return;
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         setType((Type)newValue);
+        return;
+      case CqrsDslPackage.RETURN_TYPE__GENERICS:
+        setGenerics((GenericArgs)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -207,6 +291,9 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         setType((Type)null);
         return;
+      case CqrsDslPackage.RETURN_TYPE__GENERICS:
+        setGenerics((GenericArgs)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -225,6 +312,8 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
         return DOC_EDEFAULT == null ? doc != null : !DOC_EDEFAULT.equals(doc);
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         return type != null;
+      case CqrsDslPackage.RETURN_TYPE__GENERICS:
+        return generics != null;
     }
     return super.eIsSet(featureID);
   }

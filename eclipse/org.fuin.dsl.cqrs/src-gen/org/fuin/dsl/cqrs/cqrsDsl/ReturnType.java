@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getDoc <em>Doc</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getType <em>Type</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getGenerics <em>Generics</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getReturnType()
@@ -67,5 +68,27 @@ public interface ReturnType extends EObject
    * @generated
    */
   void setType(Type value);
+
+  /**
+   * Returns the value of the '<em><b>Generics</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Generics</em>' containment reference.
+   * @see #setGenerics(GenericArgs)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getReturnType_Generics()
+   * @model containment="true"
+   * @generated
+   */
+  GenericArgs getGenerics();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getGenerics <em>Generics</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Generics</em>' containment reference.
+   * @see #getGenerics()
+   * @generated
+   */
+  void setGenerics(GenericArgs value);
 
 } // ReturnType

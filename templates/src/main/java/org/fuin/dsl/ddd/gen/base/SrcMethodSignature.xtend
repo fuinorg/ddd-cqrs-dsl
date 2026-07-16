@@ -44,9 +44,22 @@ class SrcMethodSignature implements CodeSnippet {
         if (methodData.returnType === null) {
             this.returnType = "void"
         } else {
-            this.returnType = methodData.returnType.type.name
-            ctx.requiresReference(methodData.returnType.type.uniqueName)        
-        }    
+            ctx.requiresReference(methodData.returnType.type.uniqueName)
+            val generics = methodData.returnType.generics
+            if (generics === null) {
+                this.returnType = methodData.returnType.type.name
+            } else {
+                val StringBuilder sb = new StringBuilder()
+                for (arg : generics.args) {
+                    if (sb.length > 0) {
+                        sb.append(", ")
+                    }
+                    sb.append(arg.name)
+                    ctx.requiresReference(arg.uniqueName)
+                }
+                this.returnType = methodData.returnType.type.name + "<" + sb + ">"
+            }
+        }
     }
 
     override toString() {

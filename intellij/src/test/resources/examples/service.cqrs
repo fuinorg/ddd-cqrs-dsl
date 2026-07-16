@@ -4,6 +4,7 @@ project p_service {
 		namespace types {
 			type String
 			type Integer
+			type List generics 1
 		}
 
 		namespace services {
@@ -20,6 +21,13 @@ project p_service {
 				method find {
 					Integer a
 					returns String
+				}
+			}
+
+			service ServiceC {
+				method list {
+					Integer a
+					returns List<String>
 				}
 			}
 		}

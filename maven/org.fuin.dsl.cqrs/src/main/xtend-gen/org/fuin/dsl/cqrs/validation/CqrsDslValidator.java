@@ -46,6 +46,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -135,6 +136,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String MULTIPLE_ENTITY_ID_ELEMENTS = "multipleEntityIdElements";
 
   public static final String VAR_GENERICS_COUNT_MISMATCH = "varGenericsCountMismatch";
+
+  public static final String RETURN_TYPE_GENERICS_COUNT_MISMATCH = "returnTypeGenericsCountMismatch";
 
   public static final String ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch";
 
@@ -572,6 +575,39 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           this.error(_plus_1, v, 
             CqrsDslPackage.Literals.VARIABLE__GENERICS, 
             CqrsDslValidator.VAR_GENERICS_COUNT_MISMATCH);
+        }
+      }
+    }
+  }
+
+  @Check
+  public void checkReturnTypeGenericArgs(final ReturnType rt) {
+    Type _type = rt.getType();
+    if ((_type instanceof ExternalType)) {
+      Type _type_1 = rt.getType();
+      final ExternalType type = ((ExternalType) _type_1);
+      GenericArgs _generics = rt.getGenerics();
+      boolean _tripleEquals = (_generics == null);
+      if (_tripleEquals) {
+        int _generics_1 = type.getGenerics();
+        boolean _greaterThan = (_generics_1 > 0);
+        if (_greaterThan) {
+          int _generics_2 = type.getGenerics();
+          String _plus = ("The number of arguments does not match the number required by the type: " + Integer.valueOf(_generics_2));
+          this.error(_plus, rt, 
+            CqrsDslPackage.Literals.RETURN_TYPE__GENERICS, 
+            CqrsDslValidator.RETURN_TYPE_GENERICS_COUNT_MISMATCH);
+        }
+      } else {
+        int _size = CqrsCollectionExtensions.<Type>nullSafe(rt.getGenerics().getArgs()).size();
+        int _generics_3 = type.getGenerics();
+        boolean _notEquals = (_size != _generics_3);
+        if (_notEquals) {
+          int _generics_4 = type.getGenerics();
+          String _plus_1 = ("The number of arguments does not match the number required by the type: " + Integer.valueOf(_generics_4));
+          this.error(_plus_1, rt, 
+            CqrsDslPackage.Literals.RETURN_TYPE__GENERICS, 
+            CqrsDslValidator.RETURN_TYPE_GENERICS_COUNT_MISMATCH);
         }
       }
     }

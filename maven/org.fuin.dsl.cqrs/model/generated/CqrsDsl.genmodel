@@ -220,6 +220,7 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//ReturnType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//ReturnType/doc"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ReturnType/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ReturnType/generics"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Method">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Method/refMethod"/>
