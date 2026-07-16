@@ -5,6 +5,7 @@ project p {
 		namespace types {
 			type String
 			type Integer
+			type List generics 1
 		}
 
 		namespace services {
@@ -33,6 +34,22 @@ project p {
 
 					/** Value. */
 					returns String
+
+				}
+
+			}
+
+			/** Service C - Generic return type. */
+			service ServiceC {
+
+				/** Lists something. */
+				method list {
+
+					/** Key. */
+					Integer a
+
+					/** Values. */
+					returns List<String>
 
 				}
 

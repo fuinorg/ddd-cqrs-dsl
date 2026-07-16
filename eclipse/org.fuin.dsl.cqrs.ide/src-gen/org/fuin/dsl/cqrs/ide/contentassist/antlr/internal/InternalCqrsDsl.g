@@ -9875,6 +9875,7 @@ rule__ReturnType__Group__2
 	}
 :
 	rule__ReturnType__Group__2__Impl
+	rule__ReturnType__Group__3
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -9889,6 +9890,32 @@ rule__ReturnType__Group__2__Impl
 	{ before(grammarAccess.getReturnTypeAccess().getTypeAssignment_2()); }
 	(rule__ReturnType__TypeAssignment_2)
 	{ after(grammarAccess.getReturnTypeAccess().getTypeAssignment_2()); }
+)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__ReturnType__Group__3
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	rule__ReturnType__Group__3__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__ReturnType__Group__3__Impl
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+(
+	{ before(grammarAccess.getReturnTypeAccess().getGenericsAssignment_3()); }
+	(rule__ReturnType__GenericsAssignment_3)?
+	{ after(grammarAccess.getReturnTypeAccess().getGenericsAssignment_3()); }
 )
 ;
 finally {
@@ -17415,6 +17442,21 @@ rule__ReturnType__TypeAssignment_2
 			{ after(grammarAccess.getReturnTypeAccess().getTypeTypeFQNParserRuleCall_2_0_1()); }
 		)
 		{ after(grammarAccess.getReturnTypeAccess().getTypeTypeCrossReference_2_0()); }
+	)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__ReturnType__GenericsAssignment_3
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	(
+		{ before(grammarAccess.getReturnTypeAccess().getGenericsGenericArgsParserRuleCall_3_0()); }
+		ruleGenericArgs
+		{ after(grammarAccess.getReturnTypeAccess().getGenericsGenericArgsParserRuleCall_3_0()); }
 	)
 ;
 finally {

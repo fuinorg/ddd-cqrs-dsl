@@ -318,8 +318,8 @@ Constructor:
 
 /** Type returned by a method (not a constructor). */
 ReturnType:
-	doc=DOC? 
-	'returns' type=[Type|FQN];
+	doc=DOC?
+	'returns' type=[Type|FQN] generics=GenericArgs?;
 
 /** Defines a function of an object. */
 Method:

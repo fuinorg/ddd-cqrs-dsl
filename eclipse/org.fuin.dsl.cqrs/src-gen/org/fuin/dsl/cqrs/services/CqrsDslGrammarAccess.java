@@ -2467,15 +2467,17 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final CrossReference cTypeTypeCrossReference_2_0 = (CrossReference)cTypeAssignment_2.eContents().get(0);
 		private final RuleCall cTypeTypeFQNParserRuleCall_2_0_1 = (RuleCall)cTypeTypeCrossReference_2_0.eContents().get(1);
+		private final Assignment cGenericsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cGenericsGenericArgsParserRuleCall_3_0 = (RuleCall)cGenericsAssignment_3.eContents().get(0);
 		
 		///** Type returned by a method (not a constructor). */
 		//ReturnType:
 		//    doc=DOC?
-		//    'returns' type=[Type|FQN];
+		//    'returns' type=[Type|FQN] generics=GenericArgs?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'returns' type=[Type|FQN]
+		//'returns' type=[Type|FQN] generics=GenericArgs?
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -2495,6 +2497,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//FQN
 		public RuleCall getTypeTypeFQNParserRuleCall_2_0_1() { return cTypeTypeFQNParserRuleCall_2_0_1; }
+		
+		//generics=GenericArgs?
+		public Assignment getGenericsAssignment_3() { return cGenericsAssignment_3; }
+		
+		//GenericArgs
+		public RuleCall getGenericsGenericArgsParserRuleCall_3_0() { return cGenericsGenericArgsParserRuleCall_3_0; }
 	}
 	public class MethodElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Method");
@@ -5550,7 +5558,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Type returned by a method (not a constructor). */
 	//ReturnType:
 	//    doc=DOC?
-	//    'returns' type=[Type|FQN];
+	//    'returns' type=[Type|FQN] generics=GenericArgs?;
 	public ReturnTypeElements getReturnTypeAccess() {
 		return pReturnType;
 	}

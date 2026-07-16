@@ -30,6 +30,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
+import org.fuin.dsl.cqrs.cqrsDsl.ReturnType
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
@@ -125,6 +126,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val MULTIPLE_ENTITY_ID_ELEMENTS = "multipleEntityIdElements"
 
 	public static val VAR_GENERICS_COUNT_MISMATCH = "varGenericsCountMismatch"
+
+	public static val RETURN_TYPE_GENERICS_COUNT_MISMATCH = "returnTypeGenericsCountMismatch"
 
 	public static val ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch"
 
@@ -611,12 +614,40 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 						CqrsDslPackage.Literals::VARIABLE__GENERICS,
 						VAR_GENERICS_COUNT_MISMATCH
 					)
-				}				
-			} 		
+				}
+			}
 		}
-		
+
 	}
-	
+
+	@Check
+	def checkReturnTypeGenericArgs(ReturnType rt) {
+
+		if (rt.type instanceof ExternalType) {
+			val type = rt.type as ExternalType
+			if (rt.generics === null) {
+				if (type.generics > 0) {
+					error(
+						"The number of arguments does not match the number required by the type: " + type.generics,
+						rt,
+						CqrsDslPackage.Literals::RETURN_TYPE__GENERICS,
+						RETURN_TYPE_GENERICS_COUNT_MISMATCH
+					)
+				}
+			} else {
+				if (rt.generics.args.nullSafe.size != type.generics) {
+					error(
+						"The number of arguments does not match the number required by the type: " + type.generics,
+						rt,
+						CqrsDslPackage.Literals::RETURN_TYPE__GENERICS,
+						RETURN_TYPE_GENERICS_COUNT_MISMATCH
+					)
+				}
+			}
+		}
+
+	}
+
 	@Check
 	def checkAnnotationInstanceArgs(AnnotationInstance ai) {
 		if (ai.annotation.attributes.nullSafe.size !== ai.params.nullSafe.size) {

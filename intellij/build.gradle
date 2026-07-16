@@ -118,6 +118,10 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.9.0</b> &ndash; A method's <code>returns</code> type may now carry generic type
+        arguments, written the same way as on attributes and parameters (e.g.
+        <code>returns List&lt;Customer&gt;</code>). The referenced argument types are resolved and
+        offered by code completion.</li>
     <li><b>1.7.0</b> &ndash; The <code>namespace</code> is now optional: a <code>context</code> may
         hold its imports and elements directly, without an enclosing <code>namespace</code>. Parsing,
         reference resolution and code completion all handle namespace-less contexts (an element
