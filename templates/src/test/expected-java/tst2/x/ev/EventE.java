@@ -24,6 +24,7 @@ import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
+import org.fuin.objects4j.core.KeyValueEL;
 import org.fuin.objects4j.ui.Examples;
 import x.ev.MyString;
 
@@ -95,7 +96,7 @@ public final class EventE extends AbstractEvent {
 
     @Override
     public String toString() {
-        return Objects.requireNonNull(KeyValue.replace("Something interesting happened!"
+        return Objects.requireNonNull(KeyValueEL.replace("Something interesting happened!"
         , new KeyValue("a", a)
         , new KeyValue("b", b)
         ));

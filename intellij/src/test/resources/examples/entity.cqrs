@@ -42,7 +42,7 @@ project p_entity {
 					event EntityCCreatedEvent {
 						String a
 						Integer b
-						message "Entity C was created: ${a} / ${b} [${#entityIdPath}]"
+						message "Entity C was created: ${a} / ${b} [${entityIdPath}]"
 					}
 				}
 			}

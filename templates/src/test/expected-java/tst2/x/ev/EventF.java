@@ -26,6 +26,7 @@ import org.fuin.ddd4j.core.ExodusEvent;
 import org.fuin.ddd4j.core.GenesisEvent;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.objects4j.core.KeyValue;
+import org.fuin.objects4j.core.KeyValueEL;
 import p.x.ev.CustomerId;
 
 /**
@@ -48,8 +49,8 @@ public final class EventF extends AbstractDomainEvent<CustomerId> implements Gen
 
     @Override
     public String toString() {
-        return Objects.requireNonNull(KeyValue.replace("Event F [${#entityIdPath}]",
-            new KeyValue("#entityIdPath", getEntityIdPath())
+        return Objects.requireNonNull(KeyValueEL.replace("Event F [${entityIdPath}]",
+            new KeyValue("entityIdPath", getEntityIdPath())
         ));
     }
     

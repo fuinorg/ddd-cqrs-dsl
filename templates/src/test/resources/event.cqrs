@@ -35,7 +35,7 @@ project p {
 					/** Aggregate event A. */
 					event EventA {
 						// No fields
-						message "Event A [${#entityIdPath}]"					
+						message "Event A [${entityIdPath}]"					
 					}
 
 				}
@@ -46,7 +46,7 @@ project p {
 					String a {
 						examples "Abc"
 					}
-					message "Event B: ${a} [${#entityIdPath}]"					
+					message "Event B: ${a} [${entityIdPath}]"					
 				}
 
 				/** Aggregate event C. */
@@ -59,14 +59,14 @@ project p {
 					Integer b {
 						examples 123
 					}
-					message "Event C: ${a} / ${b} [${#entityIdPath}]"
+					message "Event C: ${a} / ${b} [${entityIdPath}]"
 				}
 
 				/** Aggregate event F - Annotations are listed out of order on purpose. */
 				@ExodusEvent
 				@GenesisEvent
 				event EventF {
-					message "Event F [${#entityIdPath}]"
+					message "Event F [${entityIdPath}]"
 				}
 
 			}

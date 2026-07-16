@@ -22,6 +22,7 @@ import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.UniquelyNumberedException;
 import org.fuin.objects4j.core.KeyValue;
+import org.fuin.objects4j.core.KeyValueEL;
 
 /**
  * Exception F - With CID - Multiple variables
@@ -42,7 +43,7 @@ public final class ExceptionF extends UniquelyNumberedException {
      * @param b B.
      */
     public ExceptionF(final String a, final Integer b) {
-        super(125, Objects.requireNonNull(KeyValue.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
+        super(125, Objects.requireNonNull(KeyValueEL.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
         

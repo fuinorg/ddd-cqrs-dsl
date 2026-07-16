@@ -71,7 +71,7 @@ project p {
 						/** Variable B. */
 						Integer b
 
-						message "Aggregate C was created: ${a} / ${b} [${#entityIdPath}]"
+						message "Aggregate C was created: ${a} / ${b} [${entityIdPath}]"
 
 					}
 

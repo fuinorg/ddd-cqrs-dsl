@@ -76,7 +76,7 @@ project p {
 						/** Variable B. */
 						Integer b
 
-						message "Entity C was created: ${a} / ${b} [${#entityIdPath}]"
+						message "Entity C was created: ${a} / ${b} [${entityIdPath}]"
 
 					}
 

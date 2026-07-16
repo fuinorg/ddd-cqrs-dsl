@@ -121,9 +121,11 @@ final class CqrsValidationUtil {
     }
 
     /**
-     * Returns the first {@code ${name}} placeholder in {@code msg} whose {@code name} is not in
-     * {@code vars} (names starting with {@code #} are ignored), or {@code null} if all are known.
-     * Ported verbatim from the Xtext validator's {@code findUnknownVar}.
+     * Returns the first simple {@code ${name}} placeholder in {@code msg} whose {@code name} is not in
+     * {@code vars}, or {@code null} if all are known. Only plain identifiers are checked; complex
+     * Jakarta EL expressions (e.g. {@code ${name.toUpperCase()}}, {@code ${quantity * price}}) are left
+     * to the EL engine. The implicit {@code entityIdPath} variable is always available and never flagged.
+     * Ported from the Xtext validator's {@code findUnknownVar}.
      */
     static @Nullable String findUnknownVar(@NotNull List<String> vars, @Nullable String msg) {
         if (msg == null) {
@@ -137,12 +139,16 @@ final class CqrsValidationUtil {
                 break;
             }
             String name = msg.substring(start + 2, end);
-            if (!vars.contains(name) && !name.startsWith("#")) {
+            if (isSimpleVariableName(name) && !vars.contains(name) && !name.equals("entityIdPath")) {
                 return name;
             }
             from = end + 1;
         }
         return null;
+    }
+
+    private static boolean isSimpleVariableName(@NotNull String name) {
+        return name.matches("[A-Za-z_$][A-Za-z0-9_$]*");
     }
 
     /** Names of the given attributes (skips attributes without a name). */

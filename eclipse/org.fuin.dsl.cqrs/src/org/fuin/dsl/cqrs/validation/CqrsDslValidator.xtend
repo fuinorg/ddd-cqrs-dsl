@@ -697,13 +697,20 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				from = msg.length();
 			} else {
 				var String name = msg.substring(start + 2, end);
-				if (!vars.contains(name) && !name.startsWith("#")) {
+				// Only plain identifiers are checked. Complex Jakarta EL expressions (e.g.
+				// "name.toUpperCase()", "quantity * price") are left to the EL engine. The implicit
+				// "entityIdPath" variable is always available and therefore never flagged.
+				if (isSimpleVariableName(name) && !vars.contains(name) && !name.equals("entityIdPath")) {
 					return name
 				}
 				from = end + 1;
 			}
 		}
 		return null
+	}
+
+	private static def boolean isSimpleVariableName(String name) {
+		name.matches("[A-Za-z_$][A-Za-z0-9_$]*")
 	}
 
     private static def String typeNames(List<Type> types) {
