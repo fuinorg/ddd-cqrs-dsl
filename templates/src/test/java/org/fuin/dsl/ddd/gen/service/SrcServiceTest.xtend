@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.service
 
+import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import jakarta.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -35,7 +36,7 @@ class SrcServiceTest {
         val refReg = new SimpleCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceA")
-        val SrcService testee = new SrcService(ctx, service)
+        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
 
         // TEST
         val result = testee.toString
@@ -64,7 +65,7 @@ class SrcServiceTest {
         
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceB")
-        val SrcService testee = new SrcService(ctx, service)
+        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
 
         // TEST
         val result = testee.toString
@@ -103,7 +104,7 @@ class SrcServiceTest {
 
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceC")
-        val SrcService testee = new SrcService(ctx, service)
+        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
 
         // TEST
         val result = testee.toString

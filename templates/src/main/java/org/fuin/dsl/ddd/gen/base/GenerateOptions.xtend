@@ -37,15 +37,11 @@ class GenerateOptions {
     public val static KEY_JACKSON = "jackson"
 
     /**
-     * Key for the model namespaces that contain the built-in constraints. Constraints from those namespaces are
-     * generated as Jakarta Validation annotations (like '@Size') instead of an annotation of their own. The value is a
-     * comma separated list of namespaces, each of them either a "project.context.namespace" or a "project.context"
-     * (Type: String).
+     * Key for the mappings of DSL constraints to Java validation annotations. A constraint without a mapping is
+     * generated as an annotation of its own. The value is a list of "DSL=JAVA" mappings separated by whitespace
+     * (see {@link ConstraintMappings}) (Type: String).
      */
-    public val static KEY_BUILTIN_CONSTRAINT_NAMESPACES = "builtinConstraintNamespaces"
-
-    /** Namespace of the built-in constraints used if {@link #KEY_BUILTIN_CONSTRAINT_NAMESPACES} is not set. */
-    public val static DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES = "org.fuin.constr"
+    public val static KEY_CONSTRAINT_MAPPINGS = "constraintMappings"
 
     var String basePkg
 
@@ -63,14 +59,14 @@ class GenerateOptions {
 
     var String copyrightHeader
 
-    var List<String> builtinConstraintNamespaces
+    var ConstraintMappings constraintMappings
 
     /**
      * Default constructor.
      */
     private new() {
         super()
-        builtinConstraintNamespaces = parseNamespaces(null)
+        constraintMappings = ConstraintMappings.parse(null)
     }
 
     /**
@@ -88,7 +84,7 @@ class GenerateOptions {
         jaxbElements = Boolean.valueOf(varMap.nullSafe.get(KEY_JAXB_ELEMENTS))
         jsonb = Boolean.valueOf(varMap.nullSafe.get(KEY_JSONB))
         jackson = Boolean.valueOf(varMap.nullSafe.get(KEY_JACKSON))
-        builtinConstraintNamespaces = parseNamespaces(varMap.nullSafe.get(KEY_BUILTIN_CONSTRAINT_NAMESPACES))
+        constraintMappings = ConstraintMappings.parse(varMap.nullSafe.get(KEY_CONSTRAINT_MAPPINGS))
 
         val String header = varMap.nullSafe.get(KEY_COPYRIGHT_HEADER)
         if (header === null) {
@@ -153,25 +149,23 @@ class GenerateOptions {
     }
 
     /**
-     * Returns the model namespaces that contain the built-in constraints.
+     * Returns the mappings of DSL constraints to Java validation annotations.
      *
-     * @return Unmodifiable list of "project.context.namespace" and "project.context" names, never empty.
+     * @return Mappings, never {@literal null}, but may be empty.
      */
-    def List<String> getBuiltinConstraintNamespaces() {
-        return builtinConstraintNamespaces
+    def ConstraintMappings getConstraintMappings() {
+        return constraintMappings
     }
 
     /**
-     * Splits a comma separated list of namespaces. Falls back to {@link #DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES} if
-     * nothing is defined.
+     * Returns options that have none of the generation flags set, but the same constraint mappings. Used for
+     * nested code snippets that must not create any binding annotations, but have to map the constraints in
+     * the same way as the rest of the generated class.
      *
-     * @param str Comma separated list of namespaces or {@literal null}.
-     *
-     * @return Unmodifiable list of trimmed namespaces, never empty.
+     * @return New instance.
      */
-    private static def List<String> parseNamespaces(String str) {
-        val String value = if (str === null || str.trim.empty) DEFAULT_BUILTIN_CONSTRAINT_NAMESPACES else str
-        return Collections.unmodifiableList(Arrays.asList(value.split(",")).map[trim].filter[!empty].toList)
+    def GenerateOptions mappingsOnly() {
+        return GenerateOptions.builder.withConstraintMappings(constraintMappings).create
     }
 
     /** 
@@ -211,7 +205,7 @@ class GenerateOptions {
             obj.jsonb = other.jsonb
             obj.jackson = other.jackson
             obj.copyrightHeader = other.copyrightHeader
-            obj.builtinConstraintNamespaces = other.builtinConstraintNamespaces
+            obj.constraintMappings = other.constraintMappings
         }
 
         def Builder withBasePkg(String basePkg) {
@@ -280,12 +274,22 @@ class GenerateOptions {
         }
 
         /**
-         * Sets the model namespaces that contain the built-in constraints.
+         * Sets the mappings of DSL constraints to Java validation annotations.
          *
-         * @param namespaces Comma separated list of namespaces. Uses the default if {@literal null} or empty.
+         * @param mappings List of "DSL=JAVA" mappings separated by whitespace or {@literal null} for none.
          */
-        def Builder withBuiltinConstraintNamespaces(String namespaces) {
-            obj.builtinConstraintNamespaces = parseNamespaces(namespaces)
+        def Builder withConstraintMappings(String mappings) {
+            obj.constraintMappings = ConstraintMappings.parse(mappings)
+            return this
+        }
+
+        /**
+         * Sets the mappings of DSL constraints to Java validation annotations.
+         *
+         * @param mappings Already parsed mappings.
+         */
+        def Builder withConstraintMappings(ConstraintMappings mappings) {
+            obj.constraintMappings = mappings
             return this
         }
 

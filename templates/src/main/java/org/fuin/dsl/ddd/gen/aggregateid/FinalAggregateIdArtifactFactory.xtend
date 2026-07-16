@@ -77,7 +77,7 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                 @Serial
                 private static final long serialVersionUID = 1000L;
                 
-                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, false, true)»
+                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, id, false, true)»
                 «IF id.base === null»
                 @Override
                 public final String asString() {

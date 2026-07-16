@@ -79,7 +79,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
                 @SuppressWarnings("NullAway.Init")
                 private «aggregate.idTypeNullsafe.name» id;
             
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate.attributes, true)»
+                «new SrcVarsDecl(ctx, "private", options.mappingsOnly, aggregate.attributes, true)»
                 @Override
                 public final EntityType getType() {
                     return «aggregate.idTypeNullsafe.name».TYPE;
@@ -100,12 +100,12 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
                     this.id = id;
                 }
                 
-                «new SrcGetters(ctx, GenerateOptions.empty(), "protected final", aggregate.attributes)»
-                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", aggregate.attributes)»
-                «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), aggregate)»
+                «new SrcGetters(ctx, options.mappingsOnly, "protected final", aggregate.attributes)»
+                «new SrcSetters(ctx, options.mappingsOnly, "protected final", aggregate.attributes)»
+                «new SrcAbstractChildEntityLocatorMethods(ctx, options.mappingsOnly, aggregate)»
                 «new SrcAbstractHandleEventMethods(ctx, aggregate.allEvents)»
-                «new SrcServices(ctx, aggregate.services)»
-                «new SrcMethods(ctx, GenerateOptions.empty(), aggregate, true)»
+                «new SrcServices(ctx, options, aggregate.services)»
+                «new SrcMethods(ctx, options.mappingsOnly, aggregate, true)»
             }
         '''
 

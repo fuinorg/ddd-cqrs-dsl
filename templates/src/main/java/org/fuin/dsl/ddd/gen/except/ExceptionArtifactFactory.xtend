@@ -79,14 +79,14 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
                 @Serial
                 private static final long serialVersionUID = 1000L;
             
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), ex)»
+                «new SrcVarsDecl(ctx, "private", options.mappingsOnly, ex)»
                 «new SrcJavaDocMethod(ctx, "Constructs a new instance of the exception.", null, ex.attributes.asParameters, null)»
-                public «ex.name»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), ex.attributes.asParameters)») {
+                public «ex.name»(«new SrcParamsDecl(ctx, options.mappingsOnly, ex.attributes.asParameters)») {
                     super(«IF ex.cid > 0»«ex.cid», «ENDIF»«IF !ex.attributes.empty»Objects.requireNonNull(«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»)«ELSE»«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»«ENDIF»);
                     «new SrcParamsAssignment(ctx, ex.attributes.asParameters)»
                 }
             
-                «new SrcGetters(ctx, GenerateOptions.empty(), "public final", ex.attributes)»
+                «new SrcGetters(ctx, options.mappingsOnly, "public final", ex.attributes)»
             }
         '''
 

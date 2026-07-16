@@ -63,6 +63,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
     def create(SimpleCodeSnippetContext ctx, ValueObject vo, String pkg, String className) {
         val GenerateOptions localOptions = new GenerateOptions.Builder()
+            .withConstraintMappings(options.constraintMappings)
             .withJaxb(vo.base === null && options.jaxb)
             .withJaxbElements(options.jaxbElements)
             .withJsonb((vo.base === null && options.jsonb))
@@ -76,8 +77,8 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
                 private static final long serialVersionUID = 1000L;
                 
                 «new SrcVarsDecl(ctx, "private", localOptions, vo)»
-                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), vo, true)»
-                «new SrcGetters(ctx, GenerateOptions.empty(), "public final", vo.attributes)»
+                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, vo, true)»
+                «new SrcGetters(ctx, options.mappingsOnly, "public final", vo.attributes)»
             }
         '''
 

@@ -84,9 +84,9 @@ class EntityIdArtifactFactory extends AbstractSource<EntityId> {
                 @Serial
                 private static final long serialVersionUID = 1000L;
                 
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), id)»
-                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, false)»
-                «new SrcGetters(ctx, GenerateOptions.empty(), "public final", id.attributes)»
+                «new SrcVarsDecl(ctx, "private", options.mappingsOnly, id)»
+                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, id, false)»
+                «new SrcGetters(ctx, options.mappingsOnly, "public final", id.attributes)»
                 «new SrcEntityIdTypeMethods(ctx, id.entityNullsafe.name, id.base)»
                 «IF id.base === null»
                 @Override

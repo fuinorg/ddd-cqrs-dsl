@@ -61,7 +61,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
 
     def create(SimpleCodeSnippetContext ctx, Service service, String pkg, String className) {
         val String src = ''' 
-            «new SrcService(ctx, service)»
+            «new SrcService(ctx, options, service)»
             '''
 
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
