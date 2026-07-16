@@ -1,0 +1,56 @@
+project p_23_message_el_expressions {
+
+	context orders {
+
+		namespace m {
+
+			type String
+			type Integer
+			type BigDecimal
+
+			aggregate-id OrderId identifies Order {}
+
+			aggregate Order identifier OrderId {
+
+				// The generated messages are evaluated with Jakarta EL (KeyValueEL), so a ${...}
+				// placeholder may be a simple variable OR a full EL expression (method call, arithmetic).
+
+				// Event message mixing a simple ${customer} variable with an EL method call
+				// ${customer.toUpperCase()}, plus the implicit ${entityIdPath}.
+				constructor place fires OrderPlacedEvent {
+
+					String customer
+					BigDecimal amount
+
+					event OrderPlacedEvent copies-attributes-of place {
+						message "Order placed by ${customer} (${customer.toUpperCase()}) total ${amount} [${entityIdPath}]"
+					}
+
+				}
+
+				// Event message using an EL arithmetic expression.
+				event OrderRepricedEvent {
+					Integer quantity
+					BigDecimal price
+					message "Repriced: ${quantity} x ${price} = ${quantity * price}"
+				}
+
+			}
+
+			// Command message mixing a simple ${amount} variable with an EL method call.
+			command PlaceOrder target Order.place sla 2 seconds {
+
+				String customer
+				BigDecimal amount
+
+				message "Place order for ${customer} worth ${amount} (${amount.doubleValue()})"
+
+			}
+
+			command-handler OrderHandler handles PlaceOrder uses Order
+
+		}
+
+	}
+
+}

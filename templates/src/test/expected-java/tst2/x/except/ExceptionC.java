@@ -21,6 +21,7 @@ import java.io.Serial;
 import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
+import org.fuin.objects4j.core.KeyValueEL;
 
 /**
  * Exception C - No CID - Single variable
@@ -38,7 +39,7 @@ public final class ExceptionC extends Exception {
      * @param a A.
      */
     public ExceptionC(final String a) {
-        super(Objects.requireNonNull(KeyValue.replace("Exception C: ${a}",  new KeyValue("a", a))));
+        super(Objects.requireNonNull(KeyValueEL.replace("Exception C: ${a}",  new KeyValue("a", a))));
         Contract.requireArgNotNull("a", a);
         
         this.a = a;

@@ -665,7 +665,7 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           from = msg.length();
         } else {
           String name = msg.substring((start + 2), end);
-          if (((!vars.contains(name)) && (!name.startsWith("#")))) {
+          if (((CqrsDslValidator.isSimpleVariableName(name) && (!vars.contains(name))) && (!name.equals("entityIdPath")))) {
             return name;
           }
           from = (end + 1);
@@ -673,6 +673,10 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       }
     }
     return null;
+  }
+
+  private static boolean isSimpleVariableName(final String name) {
+    return name.matches("[A-Za-z_$][A-Za-z0-9_$]*");
   }
 
   private static String typeNames(final List<Type> types) {

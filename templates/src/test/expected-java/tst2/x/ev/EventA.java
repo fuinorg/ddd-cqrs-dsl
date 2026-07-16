@@ -24,6 +24,7 @@ import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
 import org.fuin.objects4j.core.KeyValue;
+import org.fuin.objects4j.core.KeyValueEL;
 import p.x.ev.CustomerId;
 
 /**
@@ -46,8 +47,8 @@ public final class EventA extends AbstractDomainEvent<CustomerId> {
 
     @Override
     public String toString() {
-        return Objects.requireNonNull(KeyValue.replace("Event A [${#entityIdPath}]",
-            new KeyValue("#entityIdPath", getEntityIdPath())
+        return Objects.requireNonNull(KeyValueEL.replace("Event A [${entityIdPath}]",
+            new KeyValue("entityIdPath", getEntityIdPath())
         ));
     }
     

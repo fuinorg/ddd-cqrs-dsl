@@ -29,6 +29,7 @@ comment explaining what it shows. They follow the grammar in
 | [19-projection-and-view](19-projection-and-view.cqrs) | `projection` consuming events and a `view` using it |
 | [20-literals-and-comments](20-literals-and-comments.cqrs) | Comment styles (`//`, `/* */`, `/** */`) and literal values (string, number, boolean, `null`) |
 | [21-data-protection](21-data-protection.cqrs) | GDPR `data-protection` policies (`protection` level, `category`, `subject`, `purpose`, `lawful-basis`, `retention ... then ...`) applied via `protected-by` |
+| [23-message-el-expressions](23-message-el-expressions.cqrs) | `message` with simple `${var}` placeholders and Jakarta EL expressions (method calls, arithmetic) |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

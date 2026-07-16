@@ -10,7 +10,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 
 /**
- * Creates source code for a {@link KeyValue#replace(String, KeyValue...)}.
+ * Creates source code for a {@link org.fuin.objects4j.core.KeyValueEL#replace(String, KeyValue...)}.
  * If the list of variable names is empty, the message will be returned without replacing code.
  */
 class SrcKeyValueReplace implements CodeSnippet {
@@ -24,6 +24,7 @@ class SrcKeyValueReplace implements CodeSnippet {
 
         if (variables.nullSafe.size > 0) {
             ctx.requiresImport(KeyValue.name)
+            ctx.requiresImport("org.fuin.objects4j.core.KeyValueEL")
         }
     }
 
@@ -31,7 +32,7 @@ class SrcKeyValueReplace implements CodeSnippet {
         if (variables.nullSafe.size == 0) {
             '''"«message»"'''
         } else {
-            '''KeyValue.replace("«message»", «FOR name : variables SEPARATOR ','» new KeyValue("«name»", «name»)«ENDFOR»)'''
+            '''KeyValueEL.replace("«message»", «FOR name : variables SEPARATOR ','» new KeyValue("«name»", «name»)«ENDFOR»)'''
         }
     }
 

@@ -17,7 +17,7 @@ project p_event {
 			aggregate Customer identifier CustomerId {
 				constructor create fires EventA, EventB, EventC {
 					event EventA {
-						message "Event A [${#entityIdPath}]"
+						message "Event A [${entityIdPath}]"
 					}
 				}
 
@@ -25,7 +25,7 @@ project p_event {
 					String a {
 						examples "Abc"
 					}
-					message "Event B: ${a} [${#entityIdPath}]"
+					message "Event B: ${a} [${entityIdPath}]"
 				}
 
 				event EventC {
@@ -35,7 +35,7 @@ project p_event {
 					Integer b {
 						examples 123
 					}
-					message "Event C: ${a} / ${b} [${#entityIdPath}]"
+					message "Event C: ${a} / ${b} [${entityIdPath}]"
 				}
 			}
 
