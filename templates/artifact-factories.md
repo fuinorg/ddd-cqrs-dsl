@@ -39,7 +39,7 @@ to the factory's source file.
 | ResourceSet | [PackageInfo](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PackageInfoArtifactFactory.xtend) | Creates a `package-info.java` annotated with JSpecify's `@NullMarked` once for every generated package. |  |
 | Service | [Service](src/main/java/org/fuin/dsl/ddd/gen/service/ServiceArtifactFactory.xtend) | Generates the service interface Java class. | Rename to ServiceInterfaceArtifactFactory |
 | ValueObject | [AbstractValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/AbstractValueObjectArtifactFactory.xtend) | Generates an abstract base value object Java class. |  |
-| ValueObject | [CombinedValueObject²](src/main/java/org/fuin/dsl/ddd/gen/valueobject/CombinedValueObjectArtifactFactory.xtend) | Delegates to `SimpleStringValueObject` when possible, otherwise to `AbstractValueObject`. |  |
+| ValueObject | [CombinedValueObject²](src/main/java/org/fuin/dsl/ddd/gen/valueobject/CombinedValueObjectArtifactFactory.xtend) | Delegates to `SimpleStringValueObject` when possible, otherwise to `AbstractValueObject` **and** `FinalValueObject`. |  |
 | ValueObject | [FinalValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/FinalValueObjectArtifactFactory.xtend) | Generates the final (concrete) value object Java class. |  |
 | ValueObject | [SimpleStringValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/SimpleStringValueObjectArtifactFactory.xtend) | Generates a simple String-based value object Java class. |  |
 | ValueObject | [SimpleStringValueObjectTest](src/main/java/org/fuin/dsl/ddd/gen/valueobject/SimpleStringValueObjectTestArtifactFactory.xtend) | Generates a JUnit test class for a simple String-based value object. |  |
@@ -52,8 +52,12 @@ to the factory's source file.
   external type references and explicitly `return Collections.emptyList()`
   (*"Will never produce anything"*) → **0** artifacts.
 - ² `CombinedValueObject` contains no direct `newArtifact` call; it delegates to
-  `SimpleStringValueObject` or `AbstractValueObject`, each of which yields **1**
-  artifact. It short-circuits to `null` = 0 during the preparation run.
+  `SimpleStringValueObject` (**1** artifact) or to `AbstractValueObject` plus
+  `FinalValueObject` (**2** artifacts), and yields `null` = 0 during the preparation
+  run. Each delegate resolves its own hint entry, so the abstract class lands in the
+  regenerated folder while the final class goes to the non-generated sources. Do not
+  configure it together with `AbstractValueObject`/`FinalValueObject`, or those
+  artifacts are generated twice.
 - All other factories return a single-element list (`List.of(newArtifact(...))`),
   i.e. **1** artifact each (or `null`/0 during the preparation run or when
   preconditions aren't met).
