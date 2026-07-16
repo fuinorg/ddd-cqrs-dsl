@@ -74,7 +74,7 @@ class FinalEnumArtifactFactory extends AbstractSource<EnumObject> {
                 «ENDFOR»
                 «new SrcStaticEnumCode(ctx, eo)»
                 «IF eo.attributes.nullSafe.size > 0»
-                    private «className»(«new SrcParamsDecl(ctx, options.mappingsOnly, eo.attributes.asParameters)») {
+                    private «className»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), eo.attributes.asParameters)») {
                         «new SrcInvokeMethod(ctx, "super", eo.attributes.asParameters.asNames)»
                     }
                     

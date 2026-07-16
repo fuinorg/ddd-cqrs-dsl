@@ -300,7 +300,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
      *         preset with the model hint merged on top.
      */
-    protected def SrcGen4JHint srcGen4JHint(EObject el) {
+    static def SrcGen4JHint srcGen4JHint(EObject el) {
         val preset = defaultHint()
         val hint = modelHint(el)
         if (hint === null) {
@@ -320,7 +320,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
      */
-    private def Hint modelHint(EObject el) {
+    private static def Hint modelHint(EObject el) {
         val project = el?.project
         if (project === null) {
             return null

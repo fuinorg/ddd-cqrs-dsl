@@ -118,31 +118,6 @@ class ConstraintModel {
 
     }
 
-    /**
-     * Returns the mappings of the built-in "org.fuin.constr" constraints to the Jakarta Validation
-     * annotations.
-     *
-     * @return Mappings separated by a line break.
-     */
-    def static String fuinConstrMappings() '''
-        org.fuin.constr.NotNull=jakarta.validation.constraints.NotNull
-        org.fuin.constr.Null=jakarta.validation.constraints.Null
-        org.fuin.constr.AssertTrue=jakarta.validation.constraints.AssertTrue
-        org.fuin.constr.AssertFalse=jakarta.validation.constraints.AssertFalse
-        org.fuin.constr.Negative=jakarta.validation.constraints.Negative
-        org.fuin.constr.NegativeOrZero=jakarta.validation.constraints.NegativeOrZero
-        org.fuin.constr.Positive=jakarta.validation.constraints.Positive
-        org.fuin.constr.PositiveOrZero=jakarta.validation.constraints.PositiveOrZero
-        org.fuin.constr.NotEmpty=jakarta.validation.constraints.NotEmpty
-        org.fuin.constr.NotBlank=jakarta.validation.constraints.NotBlank
-        org.fuin.constr.MinValue(expected)=jakarta.validation.constraints.DecimalMin(value=expected)
-        org.fuin.constr.MaxValue(expected)=jakarta.validation.constraints.DecimalMax(value=expected)
-        org.fuin.constr.ValueRange(min,max)=jakarta.validation.constraints.DecimalMin(value=min),jakarta.validation.constraints.DecimalMax(value=max)
-        org.fuin.constr.MinLength(expected)=jakarta.validation.constraints.Size(min=expected)
-        org.fuin.constr.MaxLength(expected)=jakarta.validation.constraints.Size(max=expected)
-        org.fuin.constr.ExactLength(expected)=jakarta.validation.constraints.Size(min=expected,max=expected)
-        org.fuin.constr.Length(min,max)=jakarta.validation.constraints.Size(min=min,max=max)
-        org.fuin.constr.Pattern(expression)=jakarta.validation.constraints.Pattern(regexp=expression)
-    '''
+
 
 }

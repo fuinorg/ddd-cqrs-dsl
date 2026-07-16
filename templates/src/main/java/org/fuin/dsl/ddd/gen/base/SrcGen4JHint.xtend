@@ -16,6 +16,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonString
  * <pre>
  * hint SrcGen4J {
  *     "package": "...",
+ *     "constraintMappings": [
+ *         "org.fuin.dsl.cqrs.common.constraints.Length(min,max)=jakarta.validation.constraints.Size(min=min,max=max)",
+ *         ...
+ *     ],
  *     "types": [
  *         {
  *             "name":    "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
@@ -29,10 +33,14 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonString
  *     ]
  * }
  * </pre>
+ * The "constraintMappings" belong to the model that declares the constraints, so a model that only uses them
+ * (as a dependency) maps them in exactly the same way without repeating anything.
  */
 class SrcGen4JHint {
 
     val String packagePattern
+
+    val List<String> constraintMappings
 
     val List<SrcGen4JType> types
 
@@ -40,11 +48,23 @@ class SrcGen4JHint {
      * Constructor with all data.
      *
      * @param packagePattern Package name pattern (value of the "package" key) - May be <code>null</code>.
+     * @param constraintMappings Mappings of DSL constraints to Java validation annotations (value of the
+     *            "constraintMappings" array) - Never <code>null</code>.
      * @param types Type configurations (value of the "types" array) - Never <code>null</code>.
      */
-    new(String packagePattern, List<SrcGen4JType> types) {
+    new(String packagePattern, List<String> constraintMappings, List<SrcGen4JType> types) {
         this.packagePattern = packagePattern
+        this.constraintMappings = constraintMappings
         this.types = types
+    }
+
+    /**
+     * Returns the mappings of DSL constraints to Java validation annotations.
+     *
+     * @return Value of the "constraintMappings" array - Never <code>null</code>, but may be empty.
+     */
+    def getConstraintMappings() {
+        constraintMappings
     }
 
     /**
@@ -87,6 +107,7 @@ class SrcGen4JHint {
         val root = json.asObject
         new SrcGen4JHint(
             root.stringValue("package"),
+            root.arrayValues("constraintMappings").map[asStringValue],
             root.arrayValues("types").map[asObject.parseType]
         )
     }
@@ -119,7 +140,7 @@ class SrcGen4JHint {
     def static SrcGen4JHint loadDefault() {
         val stream = typeof(SrcGen4JHint).getResourceAsStream(DEFAULT_RESOURCE)
         if (stream === null) {
-            return new SrcGen4JHint(null, newArrayList)
+            return new SrcGen4JHint(null, newArrayList, newArrayList)
         }
         try {
             val reader = jakarta.json.Json.createReader(stream)
@@ -164,7 +185,11 @@ class SrcGen4JHint {
             }
         }
         types.addAll(preset.types)
-        return new SrcGen4JHint(overrides.packagePattern ?: preset.packagePattern, types)
+        // A mapping of the model wins over one of the preset for the same constraint, so it has to come last
+        val mappings = <String>newArrayList
+        mappings.addAll(preset.constraintMappings)
+        mappings.addAll(overrides.constraintMappings)
+        return new SrcGen4JHint(overrides.packagePattern ?: preset.packagePattern, mappings, types)
     }
 
     // ---- Raw JSON (JSON-P) parsing of the default preset resource ----
@@ -172,6 +197,7 @@ class SrcGen4JHint {
     def private static SrcGen4JHint parseJson(jakarta.json.JsonObject root) {
         new SrcGen4JHint(
             root.jsonString("package"),
+            root.jsonArray("constraintMappings").map[(it as jakarta.json.JsonString).string],
             root.jsonArray("types").map[asJsonObject.parseJsonType]
         )
     }
@@ -232,6 +258,14 @@ class SrcGen4JHint {
         } else {
             throw new IllegalArgumentException(
                 "Expected a JSON string for key '" + key + "', but was: " + value.eClass.name)
+        }
+    }
+
+    def private static String asStringValue(JSON json) {
+        if (json instanceof JsonString) {
+            json.value
+        } else {
+            throw new IllegalArgumentException("Expected a JSON string, but was: " + json?.eClass?.name)
         }
     }
 

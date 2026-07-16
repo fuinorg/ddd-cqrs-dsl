@@ -92,6 +92,44 @@ class ValidatorAnnotationArtifactFactoryTest {
 
     }
 
+
+
+    @Test
+    def void testMappedConstraintCreatesNothing() {
+
+        // PREPARE - the model that declares the constraint maps it to an existing Java validation annotation.
+        val context = new HashMap<String, Object>()
+        val testee = createTestee()
+        val Constraint constraint = mappedModel.find(typeof(Constraint), "MappedConstr")
+
+        // TEST + VERIFY no annotation of its own is created
+        assertThat(testee.create(constraint, context, false)).isNull
+
+    }
+
+    private def mappedModel() {
+        val DomainModel model = parser.parse('''
+            project mapped {
+                hint SrcGen4J {
+                    "constraintMappings": [
+                        "mapped.x.MappedConstr(expected)=jakarta.validation.constraints.Size(min=expected)"
+                    ]
+                }
+                context x {
+                    type String
+                    type Integer
+                    /** Mapped constraint. */
+                    constraint MappedConstr input String {
+                        Integer expected
+                        message "MappedConstr message"
+                    }
+                }
+            }
+        ''')
+        validationTester.assertNoIssues(model)
+        return model
+    }
+
     private def createTestee() {
         val factory = new ValidatorAnnotationArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("validatorAnnotation", ValidatorAnnotationArtifactFactory.name, "module", "folder")

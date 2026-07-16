@@ -16,19 +16,10 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 class SrcService implements CodeSnippet {
 
     val CodeSnippetContext ctx
-    val GenerateOptions options
     val Service service
 
-    /**
-     * Constructor with all mandatory data.
-     *
-     * @param ctx Context.
-     * @param options Options to use.
-     * @param service Service to create the source code for.
-     */
-    new(CodeSnippetContext ctx, GenerateOptions options, Service service) {
+    new(CodeSnippetContext ctx, Service service) {
         this.ctx = ctx
-        this.options = options
         this.service = service
     }
 
@@ -39,7 +30,7 @@ class SrcService implements CodeSnippet {
             
             «FOR method : service.methods.nullSafe»
                 «new SrcJavaDocMethod(ctx, method).toString»
-                «new SrcMethodSignature(ctx, "public", false, options.mappingsOnly, method).toString»;
+                «new SrcMethodSignature(ctx, "public", false, GenerateOptions.empty(), method).toString»;
                 
             «ENDFOR»
         }

@@ -70,7 +70,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
                 @Serial
                 private static final long serialVersionUID = 1000L;
                 
-                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, vo, false, true)»
+                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), vo, false, true)»
                 «new SrcVoBaseMethods(ctx, vo)»
             }
         '''

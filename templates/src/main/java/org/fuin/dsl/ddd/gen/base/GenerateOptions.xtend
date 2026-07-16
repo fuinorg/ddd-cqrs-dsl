@@ -36,12 +36,6 @@ class GenerateOptions {
     /** Key if to generate Jackson annotations (Type: Boolean). */
     public val static KEY_JACKSON = "jackson"
 
-    /**
-     * Key for the mappings of DSL constraints to Java validation annotations. A constraint without a mapping is
-     * generated as an annotation of its own. The value is a list of "DSL=JAVA" mappings separated by whitespace
-     * (see {@link ConstraintMappings}) (Type: String).
-     */
-    public val static KEY_CONSTRAINT_MAPPINGS = "constraintMappings"
 
     var String basePkg
 
@@ -59,14 +53,11 @@ class GenerateOptions {
 
     var String copyrightHeader
 
-    var ConstraintMappings constraintMappings
-
     /**
      * Default constructor.
      */
     private new() {
         super()
-        constraintMappings = ConstraintMappings.parse(null)
     }
 
     /**
@@ -84,7 +75,6 @@ class GenerateOptions {
         jaxbElements = Boolean.valueOf(varMap.nullSafe.get(KEY_JAXB_ELEMENTS))
         jsonb = Boolean.valueOf(varMap.nullSafe.get(KEY_JSONB))
         jackson = Boolean.valueOf(varMap.nullSafe.get(KEY_JACKSON))
-        constraintMappings = ConstraintMappings.parse(varMap.nullSafe.get(KEY_CONSTRAINT_MAPPINGS))
 
         val String header = varMap.nullSafe.get(KEY_COPYRIGHT_HEADER)
         if (header === null) {
@@ -148,25 +138,7 @@ class GenerateOptions {
         return copyrightHeader
     }
 
-    /**
-     * Returns the mappings of DSL constraints to Java validation annotations.
-     *
-     * @return Mappings, never {@literal null}, but may be empty.
-     */
-    def ConstraintMappings getConstraintMappings() {
-        return constraintMappings
-    }
 
-    /**
-     * Returns options that have none of the generation flags set, but the same constraint mappings. Used for
-     * nested code snippets that must not create any binding annotations, but have to map the constraints in
-     * the same way as the rest of the generated class.
-     *
-     * @return New instance.
-     */
-    def GenerateOptions mappingsOnly() {
-        return GenerateOptions.builder.withConstraintMappings(constraintMappings).create
-    }
 
     /** 
      * Returns a new builder instance. Convenience method to shorten the builder creation in the code.
@@ -205,7 +177,6 @@ class GenerateOptions {
             obj.jsonb = other.jsonb
             obj.jackson = other.jackson
             obj.copyrightHeader = other.copyrightHeader
-            obj.constraintMappings = other.constraintMappings
         }
 
         def Builder withBasePkg(String basePkg) {
@@ -273,25 +244,7 @@ class GenerateOptions {
             return this
         }
 
-        /**
-         * Sets the mappings of DSL constraints to Java validation annotations.
-         *
-         * @param mappings List of "DSL=JAVA" mappings separated by whitespace or {@literal null} for none.
-         */
-        def Builder withConstraintMappings(String mappings) {
-            obj.constraintMappings = ConstraintMappings.parse(mappings)
-            return this
-        }
 
-        /**
-         * Sets the mappings of DSL constraints to Java validation annotations.
-         *
-         * @param mappings Already parsed mappings.
-         */
-        def Builder withConstraintMappings(ConstraintMappings mappings) {
-            obj.constraintMappings = mappings
-            return this
-        }
 
         def GenerateOptions create() {
             val GenerateOptions options = obj

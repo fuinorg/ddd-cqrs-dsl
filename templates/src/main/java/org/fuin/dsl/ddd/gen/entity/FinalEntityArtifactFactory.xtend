@@ -70,9 +70,9 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
             «new SrcJavaDocType(entity)»
             public final class «entity.name» extends Abstract«entity.name» {
             
-                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, constructorData(entity, className))»
-                «new SrcChildEntityLocatorMethods(ctx, options.mappingsOnly, entity)»
-                «new SrcMethods(ctx, options.mappingsOnly, entity, false)»
+                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
+                «new SrcChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
+                «new SrcMethods(ctx, GenerateOptions.empty(), entity, false)»
                 «new SrcHandleEventMethods(ctx, entity.allEvents)»
 
                 /**
@@ -84,7 +84,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
                     return new Builder();
                 }
 
-                «new SrcEntityBuilder(ctx, options.mappingsOnly, entity)»
+                «new SrcEntityBuilder(ctx, GenerateOptions.empty(), entity)»
             }
         '''
 

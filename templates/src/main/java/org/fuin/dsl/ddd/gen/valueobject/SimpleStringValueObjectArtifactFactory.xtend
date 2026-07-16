@@ -123,7 +123,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                 private static final long serialVersionUID = 1000L;
 
                 «FOR ci : vo.valueInvariants»
-                «new SrcValidationAnnotation(ctx, options, ci)»
+                «new SrcValidationAnnotation(ctx, ci)»
                 «ENDFOR»
                 «IF vo.attributes.iterator.next.optional !== null»
                 @Nullable

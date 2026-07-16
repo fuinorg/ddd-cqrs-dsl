@@ -84,10 +84,10 @@ abstract class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
             public abstract class «className» extends AbstractEntity<«entity.rootNullsafe.idTypeNullsafe.name», «entity.rootNullsafe.name», «entity.
                 idTypeNullsafe.name»> {
             
-                «new SrcVarDecl(ctx, "private", options.mappingsOnly, idVar)»
+                «new SrcVarDecl(ctx, "private", GenerateOptions.empty(), idVar)»
             
-                «new SrcVarsDecl(ctx, "private", options.mappingsOnly, entity)»
-                «new SrcConstructorsWithParamsAssignment(ctx, options.mappingsOnly, constructorData(entity, className))»
+                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), entity)»
+                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
                 @Override
                 public final EntityType getType() {
                     return «entity.idTypeNullsafe.name».TYPE;
@@ -98,12 +98,12 @@ abstract class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
                     return id;
                 }
             
-                «new SrcGetters(ctx, options.mappingsOnly, "protected final", entity.attributes)»
-                «new SrcSetters(ctx, options.mappingsOnly, "protected final", entity.attributes)»
-                «new SrcAbstractChildEntityLocatorMethods(ctx, options.mappingsOnly, entity)»
+                «new SrcGetters(ctx, GenerateOptions.empty(), "protected final", entity.attributes)»
+                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", entity.attributes)»
+                «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
                 «new SrcAbstractHandleEventMethods(ctx, entity.allEvents)»
-                «new SrcServices(ctx, options, entity.services)»
-                «new SrcMethods(ctx, options.mappingsOnly, entity, true)»
+                «new SrcServices(ctx, entity.services)»
+                «new SrcMethods(ctx, GenerateOptions.empty(), entity, true)»
             }
         '''
 

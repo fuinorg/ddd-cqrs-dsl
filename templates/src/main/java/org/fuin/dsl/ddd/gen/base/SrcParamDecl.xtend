@@ -13,7 +13,6 @@ import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
 class SrcParamDecl implements CodeSnippet {
 
     val CodeSnippetContext ctx
-    val GenerateOptions options
     val Parameter parameter
 
     /**
@@ -25,7 +24,6 @@ class SrcParamDecl implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, GenerateOptions options, Parameter parameter) {
         this.ctx = ctx
-        this.options = options
         this.parameter = parameter
         if (parameter.optional !== null && !parameter.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
@@ -35,7 +33,7 @@ class SrcParamDecl implements CodeSnippet {
 
     override toString() {
         if (parameter.preconditions !== null && parameter.preconditions.constraintInstances.nullSafe.size > 0) {
-            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, options, cc)»«ENDFOR» «IF parameter.optional !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
+            '''«FOR cc : parameter.preconditions.constraintInstances.nullSafe SEPARATOR ' '»«new SrcValidationAnnotation(ctx, cc)»«ENDFOR» «IF parameter.optional !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         } else {
             '''«IF parameter.optional !== null && !parameter.isPrimitive(ctx)»@Nullable «ENDIF»final «parameter.type(ctx)» «parameter.name»'''
         }

@@ -4,6 +4,7 @@ import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractVO
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
 import org.fuin.dsl.ddd.gen.base.AbstractSource
+import org.fuin.dsl.ddd.gen.base.ConstraintMappings
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcInvokeGetter
 import org.fuin.srcgen4j.commons.GenerateException
@@ -27,6 +28,11 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
     override create(Constraint constraint, Map<String, Object> context, boolean preparationRun) throws GenerateException {
         if (constraint.input === null || constraint.input.size > 1) {
             // Do not generate something in case there is no base type or more than one base type
+            return null;
+        }
+        if (ConstraintMappings.of(constraint).mapped(constraint)) {
+            // The constraint is mapped to existing Java validation annotations, so those bring their own
+            // validator
             return null;
         }
 

@@ -38,27 +38,38 @@ class ConstraintMappings {
     }
 
     /**
-     * Parses a list of mappings. The mappings are separated by whitespace, which means a single mapping must
-     * never contain a space: A SrcGen4J variable is an XML attribute and an XML parser replaces the line
-     * breaks inside an attribute value with spaces. This makes a multiline XML string and a list separated
-     * by spaces the same thing.
+     * Returns the mappings that apply to a constraint. They are taken from the "SrcGen4J" hint of the model
+     * that declares the constraint (merged onto the "srcgen4j-default.json" preset), so a model that only
+     * uses the constraint as a dependency maps it in exactly the same way without repeating anything.
      *
-     * @param str Mappings separated by whitespace or {@literal null}.
+     * @param constr Constraint to return the mappings for.
      *
      * @return Mappings, never {@literal null}, but may be empty.
      */
-    static def ConstraintMappings parse(String str) {
+    static def ConstraintMappings of(Constraint constr) {
+        return parse(AbstractSource.srcGen4JHint(constr).constraintMappings)
+    }
+
+    /**
+     * Parses a list of mappings.
+     *
+     * @param mappings Single mappings, each of them in the form "DSL=JAVA".
+     *
+     * @return Mappings, never {@literal null}, but may be empty.
+     */
+    static def ConstraintMappings parse(List<String> mappings) {
         val Map<String, Mapping> map = new LinkedHashMap<String, Mapping>()
-        if (str !== null) {
-            for (String entry : str.trim.split("\\s+")) {
-                if (!entry.empty) {
-                    val Mapping mapping = parseMapping(entry)
+        if (mappings !== null) {
+            for (String entry : mappings) {
+                if (entry !== null && !entry.trim.empty) {
+                    val Mapping mapping = parseMapping(entry.trim)
                     map.put(mapping.dslName, mapping)
                 }
             }
         }
         return new ConstraintMappings(map)
     }
+
 
     /**
      * Determines if there is a mapping for the given constraint.

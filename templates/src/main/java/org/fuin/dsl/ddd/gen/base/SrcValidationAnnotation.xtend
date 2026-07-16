@@ -14,8 +14,9 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 
 /**
  * Creates source code for a validation annotation. A constraint that is mapped to one or more Java
- * validation annotations (see {@link GenerateOptions#KEY_CONSTRAINT_MAPPINGS}) is created from that mapping.
- * In all other cases the annotation generated for the constraint itself is used.
+ * validation annotations by the "SrcGen4J" hint of the model that declares it (see
+ * {@link ConstraintMappings}) is created from that mapping. In all other cases the annotation generated for
+ * the constraint itself is used.
  */
 class SrcValidationAnnotation implements CodeSnippet {
 
@@ -23,17 +24,19 @@ class SrcValidationAnnotation implements CodeSnippet {
     var Constraint constraint
     var List<Attribute> vars
     var List<Literal> params
-    var GenerateOptions options
+    var ConstraintMappings mappings
 
-    new(CodeSnippetContext ctx, GenerateOptions options, ConstraintInstance ci) {
+    new(CodeSnippetContext ctx, ConstraintInstance ci) {
         this.ci = ci;
         constraint = ci.constraint;
         vars = constraint.attributes;
         params = ci.params;
-        this.options = options;
+        // The mappings are taken from the hint of the model the constraint is declared in, so a model that
+        // only uses the constraint maps it in exactly the same way.
+        mappings = ConstraintMappings.of(constraint);
 
-        if (options.constraintMappings.mapped(constraint)) {
-            for (String name : options.constraintMappings.imports(constraint)) {
+        if (mappings.mapped(constraint)) {
+            for (String name : mappings.imports(constraint)) {
                 ctx.requiresReference(name)
             }
         } else {
@@ -47,8 +50,8 @@ class SrcValidationAnnotation implements CodeSnippet {
     }
 
     override toString() {
-        if (options.constraintMappings.mapped(constraint)) {
-            return options.constraintMappings.annotations(ci)
+        if (mappings.mapped(constraint)) {
+            return mappings.annotations(ci)
         } else {
             if (vars.size !== params.size) {
                 throw new IllegalStateException(

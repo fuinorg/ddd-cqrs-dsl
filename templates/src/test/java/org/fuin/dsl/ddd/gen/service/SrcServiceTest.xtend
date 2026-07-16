@@ -36,7 +36,7 @@ class SrcServiceTest {
         val refReg = new SimpleCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceA")
-        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
+        val SrcService testee = new SrcService(ctx, service)
 
         // TEST
         val result = testee.toString
@@ -65,7 +65,7 @@ class SrcServiceTest {
         
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceB")
-        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
+        val SrcService testee = new SrcService(ctx, service)
 
         // TEST
         val result = testee.toString
@@ -104,7 +104,7 @@ class SrcServiceTest {
 
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceC")
-        val SrcService testee = new SrcService(ctx, GenerateOptions.empty(), service)
+        val SrcService testee = new SrcService(ctx, service)
 
         // TEST
         val result = testee.toString
