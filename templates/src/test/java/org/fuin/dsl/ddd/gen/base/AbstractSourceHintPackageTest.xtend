@@ -9,7 +9,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.ddd.gen.aggregate.ESRepositoryArtifactFactory
-import org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory
+import org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.DefaultContext
 import org.junit.jupiter.api.Test
@@ -45,7 +45,7 @@ class AbstractSourceHintPackageTest {
                             "module": "shared",
                             "group": "domain",
                             "artifacts": [
-                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genJava" }
+                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genJava" }
                             ]
                         }
                     ]
@@ -62,8 +62,8 @@ class AbstractSourceHintPackageTest {
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
 
-        val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
+        val factory = new AbstractValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", AbstractValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -96,7 +96,7 @@ class AbstractSourceHintPackageTest {
                             "module": "shared",
                             "group": "domain",
                             "artifacts": [
-                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.ValueObjectArtifactFactory", "folder": "genJava" }
+                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genJava" }
                             ]
                         }
                     ]
@@ -111,8 +111,8 @@ class AbstractSourceHintPackageTest {
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
 
-        val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
+        val factory = new AbstractValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", AbstractValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -148,8 +148,8 @@ class AbstractSourceHintPackageTest {
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
 
-        val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
+        val factory = new AbstractValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", AbstractValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
@@ -189,8 +189,8 @@ class AbstractSourceHintPackageTest {
         ''', resourceSet)
         val vo = elementModel.find(typeof(ValueObject), "Money")
 
-        val factory = new ValueObjectArtifactFactory()
-        val config = new ArtifactFactoryConfig("vo", ValueObjectArtifactFactory.name, "module", "folder")
+        val factory = new AbstractValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", AbstractValueObjectArtifactFactory.name, "module", "folder")
         config.init(new DefaultContext(), null)
         factory.init(config)
 
