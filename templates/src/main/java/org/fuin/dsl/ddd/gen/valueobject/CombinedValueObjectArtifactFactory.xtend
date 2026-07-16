@@ -35,7 +35,7 @@ class CombinedValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
     override create(ValueObject valueObject, Map<String, Object> context, boolean preparationRun) throws GenerateException {
             
-        if (valueObject.base !== null && valueObject.base.name == "String" && valueObject.attributes.size > 0) {            
+        if (valueObject.base !== null && valueObject.base.name == "String" && valueObject.attributes.size == 1) {            
             return simple.create(valueObject, context, preparationRun)
         }
         

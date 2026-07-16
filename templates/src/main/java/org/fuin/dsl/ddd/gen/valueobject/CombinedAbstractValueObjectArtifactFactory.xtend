@@ -46,7 +46,7 @@ class CombinedAbstractValueObjectArtifactFactory extends AbstractSource<ValueObj
             return null
         }
         
-        if (valueObject.base !== null && valueObject.base.name == "String" && valueObject.attributes.size > 0) {            
+        if (valueObject.base !== null && valueObject.base.name == "String" && valueObject.attributes.size == 1) {            
             return simple.create(valueObject, context, preparationRun)
         }
         
