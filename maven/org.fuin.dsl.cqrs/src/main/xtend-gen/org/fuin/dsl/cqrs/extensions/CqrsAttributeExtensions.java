@@ -2,16 +2,37 @@ package org.fuin.dsl.cqrs.extensions;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.Type;
 
 /**
  * Provides extension methods for Attributes.
  */
 @SuppressWarnings("all")
 public class CqrsAttributeExtensions {
+  /**
+   * Copies the generic arguments.
+   * The arguments are cross references, and EMF keeps a list of those unique: adding them with
+   * "addAll" would silently drop the second argument of a "Map&lt;String, String&gt;", because it
+   * is the same object as the first one.
+   * 
+   * @param generics Arguments to copy.
+   * 
+   * @return Copy that has all arguments, including the repeated ones.
+   */
+  private static GenericArgs copyOf(final GenericArgs generics) {
+    final GenericArgs copy = CqrsDslFactory.eINSTANCE.createGenericArgs();
+    EList<Type> _args = copy.getArgs();
+    final InternalEList<Type> args = ((InternalEList<Type>) _args);
+    args.addAllUnique(generics.getArgs());
+    return copy;
+  }
+
   /**
    * Copies the attribute and assigns a new name to the copy.
    * CAUTION: This is a shallow copy (no deep copy).
@@ -28,9 +49,7 @@ public class CqrsAttributeExtensions {
     newAttr.setOptional(attr.getOptional());
     newAttr.setType(attr.getType());
     if (((attr.getGenerics() != null) && (attr.getGenerics().getArgs() != null))) {
-      final GenericArgs generics = CqrsDslFactory.eINSTANCE.createGenericArgs();
-      generics.getArgs().addAll(attr.getGenerics().getArgs());
-      newAttr.setGenerics(generics);
+      newAttr.setGenerics(CqrsAttributeExtensions.copyOf(attr.getGenerics()));
     }
     newAttr.setInvariants(attr.getInvariants());
     newAttr.setOverridden(attr.getOverridden());
@@ -56,9 +75,7 @@ public class CqrsAttributeExtensions {
     param.setOptional(attr.getOptional());
     param.setType(attr.getType());
     if (((attr.getGenerics() != null) && (attr.getGenerics().getArgs() != null))) {
-      final GenericArgs generics = CqrsDslFactory.eINSTANCE.createGenericArgs();
-      generics.getArgs().addAll(attr.getGenerics().getArgs());
-      param.setGenerics(generics);
+      param.setGenerics(CqrsAttributeExtensions.copyOf(attr.getGenerics()));
     }
     param.setName(attr.getName());
     param.setOverridden(attr.getOverridden());

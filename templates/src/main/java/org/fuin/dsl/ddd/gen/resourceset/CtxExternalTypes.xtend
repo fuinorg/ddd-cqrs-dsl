@@ -1,6 +1,7 @@
 package org.fuin.dsl.ddd.gen.resourceset
 
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.Currency
 import java.util.Iterator
 import java.util.Locale
@@ -41,6 +42,8 @@ import java.util.Collections
  *         type UUID
  *         type Currency
  *         type BigDecimal
+ *         type BigInteger
+ *         type Number
  *         type Locale
  *         type Object
  *         type EntityIdPath
@@ -97,6 +100,8 @@ class CtxExternalTypes extends AbstractSource<ResourceSet> {
             refReg.putReference(name + "." + pkg + ".UUID", uuidType)
             refReg.putReference(name + "." + pkg + ".Currency", Currency.name)
             refReg.putReference(name + "." + pkg + ".BigDecimal", BigDecimal.name)
+            refReg.putReference(name + "." + pkg + ".BigInteger", BigInteger.name)
+            refReg.putReference(name + "." + pkg + ".Number", Number.name)
             refReg.putReference(name + "." + pkg + ".Locale", Locale.name)
             refReg.putReference(name + "." + pkg + ".Object", Object.name)
             refReg.putReference(name + "." + pkg + ".EntityIdPath", "org.fuin.ddd4j.core.EntityIdPath")
