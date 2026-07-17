@@ -2,9 +2,12 @@ package org.fuin.dsl.cqrs.extensions
 
 import java.util.ArrayList
 import java.util.List
+import org.eclipse.emf.ecore.util.InternalEList
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory
+import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
+import org.fuin.dsl.cqrs.cqrsDsl.Type
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsInvariantsExtensions.*
 
@@ -12,6 +15,23 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsInvariantsExtensions.*
  * Provides extension methods for Attributes.
  */
 class CqrsAttributeExtensions {
+
+	/**
+	 * Copies the generic arguments.
+	 * The arguments are cross references, and EMF keeps a list of those unique: adding them with
+	 * "addAll" would silently drop the second argument of a "Map&lt;String, String&gt;", because it
+	 * is the same object as the first one.
+	 *
+	 * @param generics Arguments to copy.
+	 *
+	 * @return Copy that has all arguments, including the repeated ones.
+	 */
+	private static def GenericArgs copyOf(GenericArgs generics) {
+		val copy = CqrsDslFactory.eINSTANCE.createGenericArgs
+		val args = copy.args as InternalEList<Type>
+		args.addAllUnique(generics.args)
+		return copy
+	}
 
 	/**
 	 * Copies the attribute and assigns a new name to the copy.
@@ -29,9 +49,7 @@ class CqrsAttributeExtensions {
 		newAttr.optional = attr.optional;
 		newAttr.type = attr.type;
 		if (attr.generics !== null && attr.generics.args !== null) {
-			val generics = CqrsDslFactory.eINSTANCE.createGenericArgs
-			generics.args.addAll(attr.generics.args)
-			newAttr.generics = generics
+			newAttr.generics = copyOf(attr.generics)
 		}
 		newAttr.invariants = attr.invariants;
 		newAttr.overridden = attr.overridden;
@@ -57,9 +75,7 @@ class CqrsAttributeExtensions {
 		param.optional = attr.optional
 		param.type = attr.type
 		if (attr.generics !== null && attr.generics.args !== null) {
-			val generics = CqrsDslFactory.eINSTANCE.createGenericArgs
-			generics.args.addAll(attr.generics.args)
-			param.generics = generics
+			param.generics = copyOf(attr.generics)
 		}
 		param.name = attr.name
 		param.overridden = attr.overridden
