@@ -118,6 +118,12 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.10.0</b> &ndash; A value object with a <code>base</code> is no longer required to have
+        exactly one attribute of the base type. Only "<code>base String</code> plus exactly one
+        attribute" is generated as a complete class; every other shape becomes an abstract base class
+        plus a hand-written final class supplying <code>asBaseType()</code>. Value objects such as
+        <code>PhoneNumber</code>, which pack several attributes into one base representation, are
+        legal and no longer flagged.</li>
     <li><b>1.9.0</b> &ndash; A method's <code>returns</code> type may now carry generic type
         arguments, written the same way as on attributes and parameters (e.g.
         <code>returns List&lt;Customer&gt;</code>). The referenced argument types are resolved and
@@ -221,6 +227,42 @@ String updatePluginsXml(String id, String name, String version, String sinceBuil
 """
 }
 
+/**
+ * Renders the change notes as Markdown. The HTML in {@code ext.pluginChangeNotes} is the single
+ * source of truth (the marketplace and updatePlugins.xml need exactly that format); this is only the
+ * readable mirror of it. Handles the subset of HTML the notes use: one {@code <li>} per version,
+ * starting with the version in {@code <b>} followed by an en dash.
+ */
+String changeNotesMarkdown(String changeNotes) {
+    def entries = (changeNotes =~ /(?s)<li>(.*?)<\/li>/).collect { it[1].toString() }
+    def sb = new StringBuilder('# Changelog\n\n')
+    sb.append('Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.\n')
+    entries.each { entry ->
+        def matcher = entry =~ /(?s)^\s*<b>(.*?)<\/b>\s*&ndash;\s*(.*)$/
+        if (!matcher) {
+            throw new GradleException("Change note is not '<b>version</b> &ndash; text': ${entry}")
+        }
+        sb.append('\n## ').append(htmlToMarkdown(matcher[0][1].toString())).append('\n')
+        sb.append('- ').append(htmlToMarkdown(matcher[0][2].toString())).append('\n')
+    }
+    return sb.toString()
+}
+
+/** Converts the inline HTML of a change note to Markdown and joins its wrapped lines. */
+String htmlToMarkdown(String html) {
+    return html.replaceAll(/(?s)<code>(.*?)<\/code>/, '`$1`')
+            .replaceAll(/(?s)<b>(.*?)<\/b>/, '**$1**')
+            .replace('&ndash;', '-')
+            .replace('&lt;', '<')
+            .replace('&gt;', '>')
+            .replace('&quot;', '"')
+            .replace('&nbsp;', ' ')
+            // Last: an escaped ampersand must not turn another entity into a literal
+            .replace('&amp;', '&')
+            .replaceAll(/\s+/, ' ')
+            .trim()
+}
+
 void httpPut(String urlStr, File file, String user, String token) {
     def client = java.net.http.HttpClient.newHttpClient()
     def auth = Base64.encoder.encodeToString("${user}:${token}".getBytes('UTF-8'))
@@ -235,6 +277,20 @@ void httpPut(String urlStr, File file, String user, String token) {
         throw new GradleException("Upload failed (HTTP ${code}) for ${urlStr}\n${response.body()}")
     }
     logger.lifecycle("  ${urlStr} -> ${code}")
+}
+
+def generateChangeLog = tasks.register('generateChangeLog') {
+    description = 'Generates CHANGELOG.md from the change notes in this build script.'
+    group = 'documentation'
+    def changeNotes = project.ext.pluginChangeNotes.toString()
+    def outFile = file('CHANGELOG.md')
+    // Only rewritten when the notes actually change
+    inputs.property('changeNotes', changeNotes)
+    outputs.file(outFile)
+    doLast {
+        outFile.text = changeNotesMarkdown(changeNotes)
+        logger.lifecycle("Wrote ${outFile}")
+    }
 }
 
 def generateUpdatePlugins = tasks.register('generateUpdatePlugins') {
@@ -260,6 +316,9 @@ def generateUpdatePlugins = tasks.register('generateUpdatePlugins') {
 // Produce updatePlugins.xml whenever the plugin is assembled.
 tasks.named('buildPlugin') { finalizedBy generateUpdatePlugins }
 tasks.named('build') { dependsOn generateUpdatePlugins }
+
+// Keep CHANGELOG.md in sync with the change notes.
+tasks.named('build') { dependsOn generateChangeLog }
 
 tasks.register('publishToArtifactory') {
     description = 'Uploads the plugin zip and updatePlugins.xml to JFrog Artifactory.'

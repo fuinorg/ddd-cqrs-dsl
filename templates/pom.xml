@@ -29,7 +29,7 @@
 
 	<properties>
 		<org-fuin-bom.version>1.0.2-SNAPSHOT</org-fuin-bom.version>
-		<objects4j-bom.version>0.11.1-SNAPSHOT</objects4j-bom.version>
+		<objects4j-bom.version>0.12.0-SNAPSHOT</objects4j-bom.version>
 
 		<!-- Not managed by the fuin.org BOM -->
 		<cqrs-4-java.version>0.7.0-SNAPSHOT</cqrs-4-java.version>

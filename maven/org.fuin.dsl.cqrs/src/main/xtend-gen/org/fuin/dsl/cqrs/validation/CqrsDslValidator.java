@@ -141,8 +141,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   public static final String ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch";
 
-  public static final String VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE = "valueObjectBaseRequiresSingleMatchingAttribute";
-
   public static final String VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods";
 
   @Inject
@@ -624,23 +622,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       this.error(_plus, ai, 
         CqrsDslPackage.Literals.ANNOTATION_INSTANCE__PARAMS, 
         CqrsDslValidator.ANNOTATION_PARAM_COUNT_MISMATCH);
-    }
-  }
-
-  @Check
-  public void checkValueObjectBaseHasSingleMatchingAttribute(final ValueObject vo) {
-    ExternalType _base = vo.getBase();
-    boolean _tripleNotEquals = (_base != null);
-    if (_tripleNotEquals) {
-      final List<Attribute> attributes = CqrsCollectionExtensions.<Attribute>nullSafe(vo.getAttributes());
-      if (((attributes.size() != 1) || (!Objects.equals(attributes.get(0).getType(), vo.getBase())))) {
-        String _name = vo.getBase().getName();
-        String _plus = ("A value object with a \'base\' is only allowed to have exactly one attribute with the same type as the \'base\' (" + _name);
-        String _plus_1 = (_plus + ")");
-        this.error(_plus_1, vo, 
-          CqrsDslPackage.Literals.ABSTRACT_VO__BASE, 
-          CqrsDslValidator.VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE);
-      }
     }
   }
 
