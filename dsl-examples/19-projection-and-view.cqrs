@@ -16,10 +16,27 @@ project p_19_projection_and_view {
 			}
 
 			// A projection consumes one or more events to build a read model.
+			// The events are optional: a projection may also be declared without any input.
 			projection UserList input User.create.UserCreatedEvent
 
-			// A view is the result produced by a projection.
-			view UserListView uses UserList
+			exception UnknownUserException { message "Unknown user" }
+
+			// A view is the result produced by a projection. Like a service it may declare
+			// business rules and methods to query it - the body may also be left empty.
+			view UserListView uses UserList {
+
+				/** The requested user must exist in the read model. */
+				business-rule UserKnown exception UnknownUserException {
+					consistency strong
+				}
+
+				/** Returns the name of a single user. */
+				method findName business-rules UserKnown {
+					UserId id
+					returns String
+				}
+
+			}
 
 		}
 

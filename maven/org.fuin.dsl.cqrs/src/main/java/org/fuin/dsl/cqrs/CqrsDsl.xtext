@@ -437,10 +437,13 @@ Projection:
 	doc=DOC?
 	'projection' name=ID ('input' events+=[Event|FQN] (',' events+=[Event|FQN])*)?;
 
-/** Result of a projection. */
+/** Result of a projection. Like a service it may offer methods to query it. */
 View:
 	doc=DOC?
-	'view' name=ID 'uses' projection=[Projection|FQN];
+	'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		businessRules+=BusinessRule*
+		methods+=Method*
+	'}';
 
 /** A notation for representing a fixed value in source code. */
 Literal:

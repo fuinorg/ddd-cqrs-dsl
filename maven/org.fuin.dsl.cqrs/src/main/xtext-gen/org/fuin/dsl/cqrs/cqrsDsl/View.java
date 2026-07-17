@@ -3,6 +3,7 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl;
 
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,6 +15,8 @@ package org.fuin.dsl.cqrs.cqrsDsl;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getProjection <em>Projection</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules <em>Business Rules</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMethods <em>Methods</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView()
@@ -43,5 +46,29 @@ public interface View extends AbstractElement
    * @generated
    */
   void setProjection(Projection value);
+
+  /**
+   * Returns the value of the '<em><b>Business Rules</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Business Rules</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_BusinessRules()
+   * @model containment="true"
+   * @generated
+   */
+  EList<BusinessRule> getBusinessRules();
+
+  /**
+   * Returns the value of the '<em><b>Methods</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Method}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Methods</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_Methods()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Method> getMethods();
 
 } // View

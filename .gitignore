@@ -28,3 +28,4 @@ eclipse-build/test-results/
 /templates/src/main/generated-sources/
 /templates/src/test/resources/.project
 /dsl-examples/.project
+/dsl-examples/dsl-examples.iml

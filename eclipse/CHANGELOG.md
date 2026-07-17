@@ -2,6 +2,10 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.10.0
+- A `view` may now declare `business-rule`s and `method`s in a body, the same way a `service` does, so the operations that query a read model can be modelled where the view is defined. The body is mandatory (it may be empty), so an existing `view X uses Y` becomes `view X uses Y { }`.
+- Documented that a `projection` may be declared without any `input` events; this already worked but was never spelled out.
+
 ## 1.9.0
 - Removed the validation rule that required a value object with a `base` to have exactly one attribute of the base type. The rule contradicted the code generation: only "`base String` plus exactly one attribute" is generated as a complete class, while every other shape is generated as an abstract base class plus a hand-written final class that supplies `asBaseType()`. Value objects such as `PhoneNumber` (a `base String` packing a `PhoneType` and the number into one representation) are legal and no longer flagged.
 

@@ -3386,13 +3386,31 @@ public interface CqrsDslPackage extends EPackage
   int VIEW__PROJECTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Business Rules</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIEW__BUSINESS_RULES = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Methods</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIEW__METHODS = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
    * The number of structural features of the '<em>View</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.LiteralImpl <em>Literal</em>}' class.
@@ -5804,6 +5822,28 @@ public interface CqrsDslPackage extends EPackage
   EReference getView_Projection();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules <em>Business Rules</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Business Rules</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules()
+   * @see #getView()
+   * @generated
+   */
+  EReference getView_BusinessRules();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMethods <em>Methods</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Methods</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getMethods()
+   * @see #getView()
+   * @generated
+   */
+  EReference getView_Methods();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Literal <em>Literal</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7697,6 +7737,22 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference VIEW__PROJECTION = eINSTANCE.getView_Projection();
+
+    /**
+     * The meta object literal for the '<em><b>Business Rules</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VIEW__BUSINESS_RULES = eINSTANCE.getView_BusinessRules();
+
+    /**
+     * The meta object literal for the '<em><b>Methods</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VIEW__METHODS = eINSTANCE.getView_Methods();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.LiteralImpl <em>Literal</em>}' class.
