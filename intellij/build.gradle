@@ -118,6 +118,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.12.0</b> &ndash; A <code>view</code> may now declare <code>business-rule</code>s and
+        <code>method</code>s in a body, the same way a <code>service</code> does, so the operations that query a
+        read model can be modelled where the view is defined. The body is mandatory (it may be empty), so an
+        existing <code>view X uses Y</code> becomes <code>view X uses Y { }</code>. A <code>projection</code> may
+        be declared without any <code>input</code> events.</li>
     <li><b>1.11.0</b> &ndash; Two errors that the Eclipse plugin reports are no longer missed. A type
         that exists somewhere in the project but is <b>not imported</b> now shows as unresolved
         instead of silently resolving, and a command's <code>target</code> only accepts the method or

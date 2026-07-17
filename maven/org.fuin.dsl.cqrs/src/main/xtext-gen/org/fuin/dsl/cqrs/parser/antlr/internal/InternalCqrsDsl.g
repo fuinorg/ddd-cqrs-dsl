@@ -5971,6 +5971,52 @@ ruleView returns [EObject current=null]
 				}
 			)
 		)
+		otherlv_5='{'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getViewAccess().getLeftCurlyBracketKeyword_5());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getViewAccess().getBusinessRulesBusinessRuleParserRuleCall_6_0());
+				}
+				lv_businessRules_6_0=ruleBusinessRule
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getViewRule());
+					}
+					add(
+						$current,
+						"businessRules",
+						lv_businessRules_6_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.BusinessRule");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getViewAccess().getMethodsMethodParserRuleCall_7_0());
+				}
+				lv_methods_7_0=ruleMethod
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getViewRule());
+					}
+					add(
+						$current,
+						"methods",
+						lv_methods_7_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.Method");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		otherlv_8='}'
+		{
+			newLeafNode(otherlv_8, grammarAccess.getViewAccess().getRightCurlyBracketKeyword_8());
+		}
 	)
 ;
 

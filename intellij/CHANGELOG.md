@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.12.0
+- A `view` may now declare `business-rule`s and `method`s in a body, the same way a `service` does, so the operations that query a read model can be modelled where the view is defined. The body is mandatory (it may be empty), so an existing `view X uses Y` becomes `view X uses Y { }`. A `projection` may be declared without any `input` events.
+
 ## 1.11.0
 - Two errors that the Eclipse plugin reports are no longer missed. A type that exists somewhere in the project but is **not imported** now shows as unresolved instead of silently resolving, and a command's `target` only accepts the method or constructor it triggers, so pointing it at an attribute is reported. Both cases used to look valid in the editor and then fail the build.
 

@@ -1,0 +1,53 @@
+project p_projection_and_view {
+
+	context x {
+		namespace types {
+			type String
+			type UUID
+		}
+
+		namespace readmodel {
+			import x.types.*
+
+			exception UnknownUserException {
+				message "Unknown user"
+			}
+
+			aggregate-id UserId identifies User base UUID {
+				examples "6bc75dd5-be5b-4c57-977e-8ee404b21c74"
+			}
+
+			aggregate User identifier UserId {
+				constructor create fires UserCreatedEvent {
+					String name
+					event UserCreatedEvent { message "created" }
+				}
+			}
+
+			// A projection may consume one or more events ...
+			projection UserList input User.create.UserCreatedEvent
+
+			// ... or none at all: the input is optional.
+			projection EmptyList
+
+			// A view with an empty body.
+			view EmptyView uses EmptyList {
+			}
+
+			// A view may declare business rules and methods, like a service.
+			view UserListView uses UserList {
+
+				business-rule UserKnown exception UnknownUserException {
+					consistency strong
+				}
+
+				method findName business-rules UserKnown {
+					UserId id
+					returns String
+				}
+
+			}
+		}
+	}
+
+}

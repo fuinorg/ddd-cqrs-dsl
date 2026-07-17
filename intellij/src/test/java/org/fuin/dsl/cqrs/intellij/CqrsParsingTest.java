@@ -60,6 +60,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("service");
     }
 
+    /** A projection with and without input, and a view with an empty and a filled body. */
+    public void testProjectionAndView() {
+        assertNoErrors("projection_and_view");
+    }
+
     public void testException() {
         assertNoErrors("exception");
     }

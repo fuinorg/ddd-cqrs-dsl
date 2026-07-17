@@ -295,6 +295,8 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//View">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//View/projection"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//View/businessRules"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//View/methods"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Literal">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Literal/value"/>

@@ -331,7 +331,7 @@ projection_def ::= KW_PROJECTION ID (KW_INPUT type_ref (COMMA type_ref)*)? {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-view_def ::= KW_VIEW ID KW_USES type_ref {
+view_def ::= KW_VIEW ID KW_USES type_ref LBRACE business_rule* method_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

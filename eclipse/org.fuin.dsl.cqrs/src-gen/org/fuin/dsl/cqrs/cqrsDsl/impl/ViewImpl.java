@@ -3,14 +3,24 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 
@@ -23,6 +33,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.View;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getProjection <em>Projection</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getBusinessRules <em>Business Rules</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getMethods <em>Methods</em>}</li>
  * </ul>
  *
  * @generated
@@ -38,6 +50,26 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @ordered
    */
   protected Projection projection;
+
+  /**
+   * The cached value of the '{@link #getBusinessRules() <em>Business Rules</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getBusinessRules()
+   * @generated
+   * @ordered
+   */
+  protected EList<BusinessRule> businessRules;
+
+  /**
+   * The cached value of the '{@link #getMethods() <em>Methods</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMethods()
+   * @generated
+   * @ordered
+   */
+  protected EList<Method> methods;
 
   /**
    * <!-- begin-user-doc -->
@@ -111,6 +143,54 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @generated
    */
   @Override
+  public EList<BusinessRule> getBusinessRules()
+  {
+    if (businessRules == null)
+    {
+      businessRules = new EObjectContainmentEList<BusinessRule>(BusinessRule.class, this, CqrsDslPackage.VIEW__BUSINESS_RULES);
+    }
+    return businessRules;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Method> getMethods()
+  {
+    if (methods == null)
+    {
+      methods = new EObjectContainmentEList<Method>(Method.class, this, CqrsDslPackage.VIEW__METHODS);
+    }
+    return methods;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CqrsDslPackage.VIEW__BUSINESS_RULES:
+        return ((InternalEList<?>)getBusinessRules()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.VIEW__METHODS:
+        return ((InternalEList<?>)getMethods()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
@@ -118,6 +198,10 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         if (resolve) return getProjection();
         return basicGetProjection();
+      case CqrsDslPackage.VIEW__BUSINESS_RULES:
+        return getBusinessRules();
+      case CqrsDslPackage.VIEW__METHODS:
+        return getMethods();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -127,6 +211,7 @@ public class ViewImpl extends AbstractElementImpl implements View
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -134,6 +219,14 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)newValue);
+        return;
+      case CqrsDslPackage.VIEW__BUSINESS_RULES:
+        getBusinessRules().clear();
+        getBusinessRules().addAll((Collection<? extends BusinessRule>)newValue);
+        return;
+      case CqrsDslPackage.VIEW__METHODS:
+        getMethods().clear();
+        getMethods().addAll((Collection<? extends Method>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -152,6 +245,12 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)null);
         return;
+      case CqrsDslPackage.VIEW__BUSINESS_RULES:
+        getBusinessRules().clear();
+        return;
+      case CqrsDslPackage.VIEW__METHODS:
+        getMethods().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -168,6 +267,10 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         return projection != null;
+      case CqrsDslPackage.VIEW__BUSINESS_RULES:
+        return businessRules != null && !businessRules.isEmpty();
+      case CqrsDslPackage.VIEW__METHODS:
+        return methods != null && !methods.isEmpty();
     }
     return super.eIsSet(featureID);
   }

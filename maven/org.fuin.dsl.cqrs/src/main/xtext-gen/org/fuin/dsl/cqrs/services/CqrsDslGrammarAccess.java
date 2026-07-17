@@ -3748,15 +3748,27 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cProjectionAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final CrossReference cProjectionProjectionCrossReference_4_0 = (CrossReference)cProjectionAssignment_4.eContents().get(0);
 		private final RuleCall cProjectionProjectionFQNParserRuleCall_4_0_1 = (RuleCall)cProjectionProjectionCrossReference_4_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cBusinessRulesAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_6_0 = (RuleCall)cBusinessRulesAssignment_6.eContents().get(0);
+		private final Assignment cMethodsAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cMethodsMethodParserRuleCall_7_0 = (RuleCall)cMethodsAssignment_7.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		
-		///** Result of a projection. */
+		///** Result of a projection. Like a service it may offer methods to query it. */
 		//View:
 		//    doc=DOC?
-		//    'view' name=ID 'uses' projection=[Projection|FQN];
+		//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//        businessRules+=BusinessRule*
+		//        methods+=Method*
+		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'view' name=ID 'uses' projection=[Projection|FQN]
+		//'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//    businessRules+=BusinessRule*
+		//    methods+=Method*
+		//'}'
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -3785,6 +3797,24 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//FQN
 		public RuleCall getProjectionProjectionFQNParserRuleCall_4_0_1() { return cProjectionProjectionFQNParserRuleCall_4_0_1; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
+		
+		//businessRules+=BusinessRule*
+		public Assignment getBusinessRulesAssignment_6() { return cBusinessRulesAssignment_6; }
+		
+		//BusinessRule
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_6_0() { return cBusinessRulesBusinessRuleParserRuleCall_6_0; }
+		
+		//methods+=Method*
+		public Assignment getMethodsAssignment_7() { return cMethodsAssignment_7; }
+		
+		//Method
+		public RuleCall getMethodsMethodParserRuleCall_7_0() { return cMethodsMethodParserRuleCall_7_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
 	}
 	public class LiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Literal");
@@ -5802,10 +5832,13 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getProjectionAccess().getRule();
 	}
 	
-	///** Result of a projection. */
+	///** Result of a projection. Like a service it may offer methods to query it. */
 	//View:
 	//    doc=DOC?
-	//    'view' name=ID 'uses' projection=[Projection|FQN];
+	//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+	//        businessRules+=BusinessRule*
+	//        methods+=Method*
+	//    '}';
 	public ViewElements getViewAccess() {
 		return pView;
 	}
