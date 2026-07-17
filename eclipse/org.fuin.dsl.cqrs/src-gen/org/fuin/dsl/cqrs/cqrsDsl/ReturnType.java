@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getDoc <em>Doc</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getOptional <em>Optional</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getType <em>Type</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getGenerics <em>Generics</em>}</li>
  * </ul>
@@ -46,6 +47,28 @@ public interface ReturnType extends EObject
    * @generated
    */
   void setDoc(String value);
+
+  /**
+   * Returns the value of the '<em><b>Optional</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Optional</em>' attribute.
+   * @see #setOptional(String)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getReturnType_Optional()
+   * @model
+   * @generated
+   */
+  String getOptional();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getOptional <em>Optional</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Optional</em>' attribute.
+   * @see #getOptional()
+   * @generated
+   */
+  void setOptional(String value);
 
   /**
    * Returns the value of the '<em><b>Type</b></em>' reference.

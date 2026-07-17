@@ -320,8 +320,9 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getConstructorAccess().getServicesAssignment_9(), "rule__Constructor__ServicesAssignment_9");
 			builder.put(grammarAccess.getConstructorAccess().getEventsAssignment_10(), "rule__Constructor__EventsAssignment_10");
 			builder.put(grammarAccess.getReturnTypeAccess().getDocAssignment_0(), "rule__ReturnType__DocAssignment_0");
-			builder.put(grammarAccess.getReturnTypeAccess().getTypeAssignment_2(), "rule__ReturnType__TypeAssignment_2");
-			builder.put(grammarAccess.getReturnTypeAccess().getGenericsAssignment_3(), "rule__ReturnType__GenericsAssignment_3");
+			builder.put(grammarAccess.getReturnTypeAccess().getOptionalAssignment_2(), "rule__ReturnType__OptionalAssignment_2");
+			builder.put(grammarAccess.getReturnTypeAccess().getTypeAssignment_3(), "rule__ReturnType__TypeAssignment_3");
+			builder.put(grammarAccess.getReturnTypeAccess().getGenericsAssignment_4(), "rule__ReturnType__GenericsAssignment_4");
 			builder.put(grammarAccess.getMethodAccess().getDocAssignment_0(), "rule__Method__DocAssignment_0");
 			builder.put(grammarAccess.getMethodAccess().getNameAssignment_2(), "rule__Method__NameAssignment_2");
 			builder.put(grammarAccess.getMethodAccess().getRefMethodAssignment_3_1(), "rule__Method__RefMethodAssignment_3_1");

@@ -359,7 +359,7 @@ method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (K
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-return_type ::= KW_RETURNS type_ref generic_args? { pin=1 }
+return_type ::= KW_RETURNS KW_OPTIONAL? type_ref generic_args? { pin=1 }
 
 attribute ::= KW_OPTIONAL? type_ref generic_args? ID invariants? data_protection_instance? overridden_meta? {
   pin=4

@@ -30,6 +30,17 @@ project p_service {
 					returns List<String>
 				}
 			}
+
+			service ServiceD {
+				method find {
+					Integer a
+					returns optional String
+				}
+				method list {
+					Integer a
+					returns optional List<String>
+				}
+			}
 		}
 	}
 

@@ -4032,13 +4032,27 @@ ruleReturnType returns [EObject current=null]
 		}
 		(
 			(
+				lv_optional_2_0='optional'
+				{
+					newLeafNode(lv_optional_2_0, grammarAccess.getReturnTypeAccess().getOptionalOptionalKeyword_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getReturnTypeRule());
+					}
+					setWithLastConsumed($current, "optional", lv_optional_2_0, "optional");
+				}
+			)
+		)?
+		(
+			(
 				{
 					if ($current==null) {
 						$current = createModelElement(grammarAccess.getReturnTypeRule());
 					}
 				}
 				{
-					newCompositeNode(grammarAccess.getReturnTypeAccess().getTypeTypeCrossReference_2_0());
+					newCompositeNode(grammarAccess.getReturnTypeAccess().getTypeTypeCrossReference_3_0());
 				}
 				ruleFQN
 				{
@@ -4049,9 +4063,9 @@ ruleReturnType returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getReturnTypeAccess().getGenericsGenericArgsParserRuleCall_3_0());
+					newCompositeNode(grammarAccess.getReturnTypeAccess().getGenericsGenericArgsParserRuleCall_4_0());
 				}
-				lv_generics_3_0=ruleGenericArgs
+				lv_generics_4_0=ruleGenericArgs
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getReturnTypeRule());
@@ -4059,7 +4073,7 @@ ruleReturnType returns [EObject current=null]
 					set(
 						$current,
 						"generics",
-						lv_generics_3_0,
+						lv_generics_4_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.GenericArgs");
 					afterParserOrEnumRuleCall();
 				}

@@ -2050,9 +2050,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EAttribute getReturnType_Optional()
+  {
+    return (EAttribute)returnTypeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getReturnType_Type()
   {
-    return (EReference)returnTypeEClass.getEStructuralFeatures().get(1);
+    return (EReference)returnTypeEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2063,7 +2074,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EReference getReturnType_Generics()
   {
-    return (EReference)returnTypeEClass.getEStructuralFeatures().get(2);
+    return (EReference)returnTypeEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -3212,6 +3223,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     returnTypeEClass = createEClass(RETURN_TYPE);
     createEAttribute(returnTypeEClass, RETURN_TYPE__DOC);
+    createEAttribute(returnTypeEClass, RETURN_TYPE__OPTIONAL);
     createEReference(returnTypeEClass, RETURN_TYPE__TYPE);
     createEReference(returnTypeEClass, RETURN_TYPE__GENERICS);
 
@@ -3561,6 +3573,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(returnTypeEClass, ReturnType.class, "ReturnType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getReturnType_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, ReturnType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getReturnType_Optional(), ecorePackage.getEString(), "optional", null, 0, 1, ReturnType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getReturnType_Type(), this.getType(), null, "type", null, 0, 1, ReturnType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getReturnType_Generics(), this.getGenericArgs(), null, "generics", null, 0, 1, ReturnType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

@@ -252,6 +252,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Constructor" eSuperTypes="#//AbstractMethod"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReturnType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Type"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="generics" eType="#//GenericArgs"
         containment="true"/>

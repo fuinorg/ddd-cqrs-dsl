@@ -46,8 +46,9 @@ class SrcMethodSignature implements CodeSnippet {
         } else {
             ctx.requiresReference(methodData.returnType.type.uniqueName)
             val generics = methodData.returnType.generics
+            var String type
             if (generics === null) {
-                this.returnType = methodData.returnType.type.name
+                type = methodData.returnType.type.name
             } else {
                 val StringBuilder sb = new StringBuilder()
                 for (arg : generics.args) {
@@ -57,7 +58,14 @@ class SrcMethodSignature implements CodeSnippet {
                     sb.append(arg.name)
                     ctx.requiresReference(arg.uniqueName)
                 }
-                this.returnType = methodData.returnType.type.name + "<" + sb + ">"
+                type = methodData.returnType.type.name + "<" + sb + ">"
+            }
+            if (methodData.returnType.optional === null) {
+                this.returnType = type
+            } else {
+                // An absent result is expressed as an empty Optional of the declared type
+                ctx.requiresImport("java.util.Optional")
+                this.returnType = "Optional<" + type + ">"
             }
         }
     }
