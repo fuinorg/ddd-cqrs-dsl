@@ -29,19 +29,18 @@ import java.nio.file.Path;
  */
 public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
 
-    private static final String CONSUMER = """
-            project cp {
-              context cc {
-                namespace nn {
-                  import c.n.*
-                  import c.m.*
-                  event E {
-                    Foo value
-                  }
-                }
-              }
-            }
-            """;
+    /**
+     * A consumer that references {@code Foo}, importing the given namespaces. An imported namespace
+     * is the fully qualified {@code project.context.namespace} of the declaring model - the same name
+     * the catalog routes - because a reference only resolves against what is actually imported.
+     */
+    private static String consumer(String... imports) {
+        StringBuilder sb = new StringBuilder("project cp {\n  context cc {\n    namespace nn {\n");
+        for (String imp : imports) {
+            sb.append("      import ").append(imp).append(".*\n");
+        }
+        return sb.append("      event E {\n        Foo value\n      }\n    }\n  }\n}\n").toString();
+    }
 
     private Path workDir;
     private Path projectDir;
@@ -70,11 +69,11 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
 
     /** One remote declaration reached through two imported namespaces must resolve exactly once. */
     public void testSameTypeReachedTwiceResolvesOnce() throws Exception {
-        writeCatalog("c.n", "c.m");
+        writeCatalog("rp.c.n", "rp.c.m");
         // The single model declares Foo only in namespace n, yet both imports route to this same dir.
         writeModel("foo.cqrs", "project rp { context c { namespace n { type Foo } } }");
 
-        CqrsFile consumer = writeAndLoadConsumer();
+        CqrsFile consumer = writeAndLoadConsumer(consumer("rp.c.n", "rp.c.m"));
         ResolveResult[] results = resolveFoo(consumer);
 
         assertEquals("the same declaration reached through two imports must be de-duplicated",
@@ -84,11 +83,11 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
 
     /** Two genuinely distinct types named {@code Foo} must still resolve to several targets. */
     public void testGenuinelyDistinctTypesStayMultiple() throws Exception {
-        writeCatalog("c.n", "c.m");
+        writeCatalog("rn.c.n", "rm.c.m");
         writeModel("foo_n.cqrs", "project rn { context c { namespace n { type Foo } } }");
         writeModel("foo_m.cqrs", "project rm { context c { namespace m { type Foo } } }");
 
-        CqrsFile consumer = writeAndLoadConsumer();
+        CqrsFile consumer = writeAndLoadConsumer(consumer("rn.c.n", "rm.c.m"));
         ResolveResult[] results = resolveFoo(consumer);
 
         assertEquals("two distinct declarations must both remain as separate targets",
@@ -124,6 +123,47 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
         assertNotNull("must resolve to a declaration", results[0].getElement());
     }
 
+    /**
+     * Two files, one namespace: a reference resolves against a declaration that lives in the same
+     * namespace but in another file, without an import. This is what "same namespace" means &mdash;
+     * being in the same file is not a requirement.
+     */
+    public void testReferenceResolvesAcrossFilesWithinSameNamespace() {
+        myFixture.configureByText("types.cqrs", """
+                project p {
+                  context c {
+                    namespace n {
+                      type String
+                    }
+                  }
+                }
+                """);
+        PsiFile file = myFixture.configureByText("money.cqrs", """
+                project p {
+                  context c {
+                    namespace n {
+                      value-object Money base String {
+                        String amount
+                      }
+                    }
+                  }
+                }
+                """);
+
+        CqrsTypeRef ref = null;
+        for (CqrsTypeRef candidate : PsiTreeUtil.findChildrenOfType(file, CqrsTypeRef.class)) {
+            if ("String".equals(candidate.getReferencedName())) {
+                ref = candidate;
+                break;
+            }
+        }
+        assertNotNull("a type reference to 'String' must be present", ref);
+        ResolveResult[] results = ((PsiPolyVariantReference) ref.getReference()).multiResolve(false);
+        assertTrue("must resolve to the declaration in the same namespace of the other file, but got "
+                + results.length, results.length >= 1);
+        assertNotNull("must resolve to a declaration", results[0].getElement());
+    }
+
     // ---- helpers ---------------------------------------------------------
 
     /** A {@code dependencies.json} whose single {@code local} entry provides all the given namespaces. */
@@ -148,9 +188,9 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
         LocalFileSystem.getInstance().refreshAndFindFileByNioFile(model);
     }
 
-    private CqrsFile writeAndLoadConsumer() throws Exception {
+    private CqrsFile writeAndLoadConsumer(String content) throws Exception {
         Path consumer = projectDir.resolve("consumer.cqrs");
-        Files.writeString(consumer, CONSUMER, StandardCharsets.UTF_8);
+        Files.writeString(consumer, content, StandardCharsets.UTF_8);
         VirtualFile vf = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(consumer);
         assertNotNull("virtual file for " + consumer, vf);
         PsiFile psi = PsiManager.getInstance(getProject()).findFile(vf);

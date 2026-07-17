@@ -11,8 +11,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.fuin.dsl.cqrs.intellij.CqrsFile;
 import org.fuin.dsl.cqrs.intellij.CqrsFileType;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsContextDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsImportDecl;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsPsiUtil;
@@ -27,11 +30,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Name resolution for the CQRS DSL. Mirrors the spirit of the Xtext scoping: a reference resolves
- * against declarations that are local (same file/namespace), imported, or provided by a remote
- * model (see {@link CqrsRemoteScopeResolver}). The matching is intentionally lenient — an IDE
- * preferring a useful navigation target over a strict miss — while the annotator reports names
- * that resolve to nothing at all.
+ * Name resolution for the CQRS DSL. Mirrors the Xtext scoping: a reference resolves against
+ * declarations that are local (same file or same namespace), imported, or provided by a remote model
+ * (see {@link CqrsRemoteScopeResolver}) — and against nothing else. A name that exists somewhere in
+ * the project but is not imported does <em>not</em> resolve, so the annotator reports it exactly like
+ * the Eclipse plugin and the SrcGen4J build do. Resolving it anyway would be more convenient to
+ * navigate, but it would hide a model error until the build fails.
  */
 public final class CqrsResolveUtil {
 
@@ -53,24 +57,21 @@ public final class CqrsResolveUtil {
     }
 
     /**
-     * {@code context.namespace} of the namespace enclosing the given element. The namespace is
-     * optional: when the element lives directly in a context (no namespace), the enclosing scope is
-     * the context itself, so its name is returned. Returns "" when there is neither.
+     * Fully qualified name ({@code project.context.namespace}) of the namespace enclosing the given
+     * element. The namespace is optional: when the element lives directly in a context (no
+     * namespace), the enclosing scope is the context itself ({@code project.context}). Returns ""
+     * when there is neither.
+     * <p>
+     * The name includes the project, so that it can be compared with the qualified name of a
+     * declaration and with the imports, which are fully qualified as well.
      */
     public static String enclosingNamespaceFqn(PsiElement element) {
         CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(element, CqrsNamespaceDef.class);
-        if (ns == null) {
-            CqrsContextDef ctxOnly = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
-            String ctxOnlyName = ctxOnly != null ? ctxOnly.getName() : null;
-            return ctxOnlyName != null ? ctxOnlyName : "";
+        if (ns != null) {
+            return getQualifiedName(ns);
         }
-        CqrsContextDef ctx = PsiTreeUtil.getParentOfType(ns, CqrsContextDef.class);
-        String nsName = ns.getName();
-        String ctxName = ctx != null ? ctx.getName() : null;
-        if (ctxName == null) {
-            return nsName != null ? nsName : "";
-        }
-        return nsName != null ? ctxName + "." + nsName : ctxName;
+        CqrsContextDef ctx = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
+        return ctx != null ? getQualifiedName(ctx) : "";
     }
 
     /** Namespaces imported with a trailing wildcard ({@code import a.b.*}). */
@@ -177,8 +178,7 @@ public final class CqrsResolveUtil {
         List<String> specifics = specificImports(context);
 
         boolean qualified = referencedName.contains(".");
-        List<CqrsNamedElement> strict = new ArrayList<>();
-        List<CqrsNamedElement> lenient = new ArrayList<>();
+        List<CqrsNamedElement> result = new ArrayList<>();
 
         for (CqrsNamedElement decl : candidates) {
             String simple = decl.getName();
@@ -189,7 +189,7 @@ public final class CqrsResolveUtil {
 
             if (qualified) {
                 if (fqn.equals(referencedName) || fqn.endsWith("." + referencedName)) {
-                    strict.add(decl);
+                    result.add(decl);
                 }
                 continue;
             }
@@ -197,19 +197,41 @@ public final class CqrsResolveUtil {
             if (!simple.equals(referencedName)) {
                 continue;
             }
-            // simple-name reference
+            // simple-name reference: only visible when local or imported
             boolean sameFile = contextFile != null && contextFile.equals(decl.getContainingFile());
             boolean sameNamespace = !currentNs.isEmpty() && fqn.equals(currentNs + "." + simple);
             String declNs = namespaceOf(fqn);
             boolean wildcardImported = wildcards.contains(declNs);
             boolean specificImported = specifics.contains(fqn);
             if (sameFile || sameNamespace || wildcardImported || specificImported) {
-                strict.add(decl);
-            } else {
-                lenient.add(decl);
+                result.add(decl);
             }
         }
-        return !strict.isEmpty() ? strict : lenient;
+        return ofExpectedKind(context, result);
+    }
+
+    /**
+     * Keeps only the declarations the reference may point to. A command's {@code target} names the
+     * method or constructor the command triggers, so anything else (an attribute, for example) is not
+     * a candidate - the reference is left unresolved and the annotator reports it.
+     * <p>
+     * Only the target is restricted: it is the single {@code type_ref} that is a direct child of a
+     * command, while the type of an attribute sits below its own element. The remaining references
+     * would need the preceding keyword to tell them apart (a method has one for 'ref', 'fires' and
+     * its service alike), so they stay unrestricted for now.
+     */
+    private static List<CqrsNamedElement> ofExpectedKind(PsiElement context,
+            List<CqrsNamedElement> candidates) {
+        if (!(context.getParent() instanceof CqrsCommandDef)) {
+            return candidates;
+        }
+        List<CqrsNamedElement> result = new ArrayList<>();
+        for (CqrsNamedElement decl : candidates) {
+            if (decl instanceof CqrsMethodDef || decl instanceof CqrsConstructorDef) {
+                result.add(decl);
+            }
+        }
+        return result;
     }
 
     private static String namespaceOf(String fqn) {

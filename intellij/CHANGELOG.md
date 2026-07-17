@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.11.0
+- Two errors that the Eclipse plugin reports are no longer missed. A type that exists somewhere in the project but is **not imported** now shows as unresolved instead of silently resolving, and a command's `target` only accepts the method or constructor it triggers, so pointing it at an attribute is reported. Both cases used to look valid in the editor and then fail the build.
+
 ## 1.10.0
 - A value object with a `base` is no longer required to have exactly one attribute of the base type. Only "`base String` plus exactly one attribute" is generated as a complete class; every other shape becomes an abstract base class plus a hand-written final class supplying `asBaseType()`. Value objects such as `PhoneNumber`, which pack several attributes into one base representation, are legal and no longer flagged.
 
