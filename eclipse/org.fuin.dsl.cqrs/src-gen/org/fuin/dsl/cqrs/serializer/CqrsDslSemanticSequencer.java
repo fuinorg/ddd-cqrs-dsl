@@ -1154,7 +1154,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ReturnType returns ReturnType
 	 *
 	 * Constraint:
-	 *     (doc=DOC? type=[Type|FQN] generics=GenericArgs?)
+	 *     (doc=DOC? optional='optional'? type=[Type|FQN] generics=GenericArgs?)
 	 * </pre>
 	 */
 	protected void sequence_ReturnType(ISerializationContext context, ReturnType semanticObject) {

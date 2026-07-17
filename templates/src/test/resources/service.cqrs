@@ -55,6 +55,33 @@ project p {
 
 			}
 
+			/** Service D - Optional return type. */
+			service ServiceD {
+
+				/** Finds something that may not exist. */
+				method find {
+
+					/** Key. */
+					Integer a
+
+					/** Value, if there is one. */
+					returns optional String
+
+				}
+
+				/** Lists something that may not exist. */
+				method list {
+
+					/** Key. */
+					Integer a
+
+					/** Values, if there are any. */
+					returns optional List<String>
+
+				}
+
+			}
+
 		}
 
 	}

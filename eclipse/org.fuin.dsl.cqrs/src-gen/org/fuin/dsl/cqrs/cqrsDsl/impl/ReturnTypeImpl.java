@@ -26,6 +26,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Type;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getDoc <em>Doc</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getOptional <em>Optional</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ReturnTypeImpl#getGenerics <em>Generics</em>}</li>
  * </ul>
@@ -53,6 +54,26 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
    * @ordered
    */
   protected String doc = DOC_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getOptional() <em>Optional</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOptional()
+   * @generated
+   * @ordered
+   */
+  protected static final String OPTIONAL_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getOptional() <em>Optional</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOptional()
+   * @generated
+   * @ordered
+   */
+  protected String optional = OPTIONAL_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' reference.
@@ -118,6 +139,31 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
     doc = newDoc;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.RETURN_TYPE__DOC, oldDoc, doc));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getOptional()
+  {
+    return optional;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setOptional(String newOptional)
+  {
+    String oldOptional = optional;
+    optional = newOptional;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.RETURN_TYPE__OPTIONAL, oldOptional, optional));
   }
 
   /**
@@ -243,6 +289,8 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
     {
       case CqrsDslPackage.RETURN_TYPE__DOC:
         return getDoc();
+      case CqrsDslPackage.RETURN_TYPE__OPTIONAL:
+        return getOptional();
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         if (resolve) return getType();
         return basicGetType();
@@ -264,6 +312,9 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
     {
       case CqrsDslPackage.RETURN_TYPE__DOC:
         setDoc((String)newValue);
+        return;
+      case CqrsDslPackage.RETURN_TYPE__OPTIONAL:
+        setOptional((String)newValue);
         return;
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         setType((Type)newValue);
@@ -288,6 +339,9 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
       case CqrsDslPackage.RETURN_TYPE__DOC:
         setDoc(DOC_EDEFAULT);
         return;
+      case CqrsDslPackage.RETURN_TYPE__OPTIONAL:
+        setOptional(OPTIONAL_EDEFAULT);
+        return;
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         setType((Type)null);
         return;
@@ -310,6 +364,8 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
     {
       case CqrsDslPackage.RETURN_TYPE__DOC:
         return DOC_EDEFAULT == null ? doc != null : !DOC_EDEFAULT.equals(doc);
+      case CqrsDslPackage.RETURN_TYPE__OPTIONAL:
+        return OPTIONAL_EDEFAULT == null ? optional != null : !OPTIONAL_EDEFAULT.equals(optional);
       case CqrsDslPackage.RETURN_TYPE__TYPE:
         return type != null;
       case CqrsDslPackage.RETURN_TYPE__GENERICS:
@@ -331,6 +387,8 @@ public class ReturnTypeImpl extends MinimalEObjectImpl.Container implements Retu
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (doc: ");
     result.append(doc);
+    result.append(", optional: ");
+    result.append(optional);
     result.append(')');
     return result.toString();
   }

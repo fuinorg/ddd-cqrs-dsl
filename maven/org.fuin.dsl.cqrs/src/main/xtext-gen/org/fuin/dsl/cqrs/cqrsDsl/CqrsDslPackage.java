@@ -2405,13 +2405,22 @@ public interface CqrsDslPackage extends EPackage
   int RETURN_TYPE__DOC = 0;
 
   /**
+   * The feature id for the '<em><b>Optional</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RETURN_TYPE__OPTIONAL = 1;
+
+  /**
    * The feature id for the '<em><b>Type</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RETURN_TYPE__TYPE = 1;
+  int RETURN_TYPE__TYPE = 2;
 
   /**
    * The feature id for the '<em><b>Generics</b></em>' containment reference.
@@ -2420,7 +2429,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RETURN_TYPE__GENERICS = 2;
+  int RETURN_TYPE__GENERICS = 3;
 
   /**
    * The number of structural features of the '<em>Return Type</em>' class.
@@ -2429,7 +2438,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RETURN_TYPE_FEATURE_COUNT = 3;
+  int RETURN_TYPE_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl <em>Method</em>}' class.
@@ -5202,6 +5211,17 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getReturnType_Doc();
 
   /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getOptional <em>Optional</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Optional</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getOptional()
+   * @see #getReturnType()
+   * @generated
+   */
+  EAttribute getReturnType_Optional();
+
+  /**
    * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ReturnType#getType <em>Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7237,6 +7257,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EAttribute RETURN_TYPE__DOC = eINSTANCE.getReturnType_Doc();
+
+    /**
+     * The meta object literal for the '<em><b>Optional</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RETURN_TYPE__OPTIONAL = eINSTANCE.getReturnType_Optional();
 
     /**
      * The meta object literal for the '<em><b>Type</b></em>' reference feature.

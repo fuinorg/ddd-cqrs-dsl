@@ -2464,20 +2464,22 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
 		private final Keyword cReturnsKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final CrossReference cTypeTypeCrossReference_2_0 = (CrossReference)cTypeAssignment_2.eContents().get(0);
-		private final RuleCall cTypeTypeFQNParserRuleCall_2_0_1 = (RuleCall)cTypeTypeCrossReference_2_0.eContents().get(1);
-		private final Assignment cGenericsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cGenericsGenericArgsParserRuleCall_3_0 = (RuleCall)cGenericsAssignment_3.eContents().get(0);
+		private final Assignment cOptionalAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final Keyword cOptionalOptionalKeyword_2_0 = (Keyword)cOptionalAssignment_2.eContents().get(0);
+		private final Assignment cTypeAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final CrossReference cTypeTypeCrossReference_3_0 = (CrossReference)cTypeAssignment_3.eContents().get(0);
+		private final RuleCall cTypeTypeFQNParserRuleCall_3_0_1 = (RuleCall)cTypeTypeCrossReference_3_0.eContents().get(1);
+		private final Assignment cGenericsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cGenericsGenericArgsParserRuleCall_4_0 = (RuleCall)cGenericsAssignment_4.eContents().get(0);
 		
-		///** Type returned by a method (not a constructor). */
+		///** Type returned by a method (not a constructor). An 'optional' result may be absent. */
 		//ReturnType:
 		//    doc=DOC?
-		//    'returns' type=[Type|FQN] generics=GenericArgs?;
+		//    'returns' (optional='optional')? type=[Type|FQN] generics=GenericArgs?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'returns' type=[Type|FQN] generics=GenericArgs?
+		//'returns' (optional='optional')? type=[Type|FQN] generics=GenericArgs?
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -2489,20 +2491,26 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'returns'
 		public Keyword getReturnsKeyword_1() { return cReturnsKeyword_1; }
 		
+		//(optional='optional')?
+		public Assignment getOptionalAssignment_2() { return cOptionalAssignment_2; }
+		
+		//'optional'
+		public Keyword getOptionalOptionalKeyword_2_0() { return cOptionalOptionalKeyword_2_0; }
+		
 		//type=[Type|FQN]
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
+		public Assignment getTypeAssignment_3() { return cTypeAssignment_3; }
 		
 		//[Type|FQN]
-		public CrossReference getTypeTypeCrossReference_2_0() { return cTypeTypeCrossReference_2_0; }
+		public CrossReference getTypeTypeCrossReference_3_0() { return cTypeTypeCrossReference_3_0; }
 		
 		//FQN
-		public RuleCall getTypeTypeFQNParserRuleCall_2_0_1() { return cTypeTypeFQNParserRuleCall_2_0_1; }
+		public RuleCall getTypeTypeFQNParserRuleCall_3_0_1() { return cTypeTypeFQNParserRuleCall_3_0_1; }
 		
 		//generics=GenericArgs?
-		public Assignment getGenericsAssignment_3() { return cGenericsAssignment_3; }
+		public Assignment getGenericsAssignment_4() { return cGenericsAssignment_4; }
 		
 		//GenericArgs
-		public RuleCall getGenericsGenericArgsParserRuleCall_3_0() { return cGenericsGenericArgsParserRuleCall_3_0; }
+		public RuleCall getGenericsGenericArgsParserRuleCall_4_0() { return cGenericsGenericArgsParserRuleCall_4_0; }
 	}
 	public class MethodElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Method");
@@ -5585,10 +5593,10 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getConstructorAccess().getRule();
 	}
 	
-	///** Type returned by a method (not a constructor). */
+	///** Type returned by a method (not a constructor). An 'optional' result may be absent. */
 	//ReturnType:
 	//    doc=DOC?
-	//    'returns' type=[Type|FQN] generics=GenericArgs?;
+	//    'returns' (optional='optional')? type=[Type|FQN] generics=GenericArgs?;
 	public ReturnTypeElements getReturnTypeAccess() {
 		return pReturnType;
 	}

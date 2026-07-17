@@ -43,6 +43,12 @@ class ServiceArtifactFactoryTest {
         testCreate("ServiceB")
     }
 
+    /** An 'optional' result is returned as a "java.util.Optional" of the declared type. */
+    @Test
+    def void testCreateServiceD() {
+        testCreate("ServiceD")
+    }
+
     private def void testCreate(String name) {
 
         // PREPARE
@@ -50,6 +56,7 @@ class ServiceArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
+        refReg.putReference("p.x.types.List", "java.util.List")
         refReg.putReference("p.x.services.AnyConstraintViolatedException",
             "p.x.services.AnyConstraintViolatedException")
 

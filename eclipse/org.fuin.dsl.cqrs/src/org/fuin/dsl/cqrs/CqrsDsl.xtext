@@ -316,10 +316,10 @@ Constructor:
 		events+=Event*
 	'}';
 
-/** Type returned by a method (not a constructor). */
+/** Type returned by a method (not a constructor). An 'optional' result may be absent. */
 ReturnType:
 	doc=DOC?
-	'returns' type=[Type|FQN] generics=GenericArgs?;
+	'returns' (optional='optional')? type=[Type|FQN] generics=GenericArgs?;
 
 /** Defines a function of an object. */
 Method:
