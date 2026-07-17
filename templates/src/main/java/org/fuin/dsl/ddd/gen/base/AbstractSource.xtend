@@ -28,8 +28,22 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     GenerateOptions options;
 
     override init(ArtifactFactoryConfig config) {
+        initFrom(config, config.getFactoryClassName())
+    }
+
+    /**
+     * Initializes the factory from the given configuration, but looks the "SrcGen4J" hint up with the
+     * given factory class name instead of the one from the configuration. A factory that delegates to
+     * other factories passes its own configuration on to them; without this, every delegate would match
+     * the hint entry of the delegating factory and inherit its target module and folder instead of using
+     * its own.
+     *
+     * @param config Configuration to take the artifact name, module, folder and variables from.
+     * @param hintFactoryClassName Factory class name the hint lookup matches against.
+     */
+    def void initFrom(ArtifactFactoryConfig config, String hintFactoryClassName) {
         artifactName = config.getArtifact()
-        factoryClassName = config.getFactoryClassName()
+        factoryClassName = hintFactoryClassName
         module = config.getModule()
         folder = config.getFolder()
         varMap = config.varMap
@@ -286,7 +300,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
      *         preset with the model hint merged on top.
      */
-    protected def SrcGen4JHint srcGen4JHint(EObject el) {
+    static def SrcGen4JHint srcGen4JHint(EObject el) {
         val preset = defaultHint()
         val hint = modelHint(el)
         if (hint === null) {
@@ -306,7 +320,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
      */
-    private def Hint modelHint(EObject el) {
+    private static def Hint modelHint(EObject el) {
         val project = el?.project
         if (project === null) {
             return null

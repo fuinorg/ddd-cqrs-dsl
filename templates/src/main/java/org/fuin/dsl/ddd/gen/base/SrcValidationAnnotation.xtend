@@ -2,34 +2,42 @@ package org.fuin.dsl.ddd.gen.base
 
 import java.util.ArrayList
 import java.util.List
+import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
 import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Literal
-import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 
 /**
- * Creates source code for a validation annotation.
+ * Creates source code for a validation annotation. A constraint that is mapped to one or more Java
+ * validation annotations by the "SrcGen4J" hint of the model that declares it (see
+ * {@link ConstraintMappings}) is created from that mapping. In all other cases the annotation generated for
+ * the constraint itself is used.
  */
 class SrcValidationAnnotation implements CodeSnippet {
 
+    var ConstraintInstance ci
     var Constraint constraint
     var List<Attribute> vars
     var List<Literal> params
+    var ConstraintMappings mappings
 
     new(CodeSnippetContext ctx, ConstraintInstance ci) {
+        this.ci = ci;
         constraint = ci.constraint;
         vars = constraint.attributes;
         params = ci.params;
+        // The mappings are taken from the hint of the model the constraint is declared in, so a model that
+        // only uses the constraint maps it in exactly the same way.
+        mappings = ConstraintMappings.of(constraint);
 
-        if (isFuinConstr(constraint)) {
-            for (String pkg : constraint.pkg) {
-                ctx.requiresReference(pkg)
+        if (mappings.mapped(constraint)) {
+            for (String name : mappings.imports(constraint)) {
+                ctx.requiresReference(name)
             }
         } else {
             ctx.requiresReference(constraint.uniqueName)
@@ -42,8 +50,8 @@ class SrcValidationAnnotation implements CodeSnippet {
     }
 
     override toString() {
-        if (isFuinConstr(constraint)) {
-            return constraint.annotation
+        if (mappings.mapped(constraint)) {
+            return mappings.annotations(ci)
         } else {
             if (vars.size !== params.size) {
                 throw new IllegalStateException(
@@ -67,73 +75,6 @@ class SrcValidationAnnotation implements CodeSnippet {
             }
         }
 
-    }
-
-    /**
-     * Determines whether the constraint is one of the built-in "org.fuin.constr.*" constraints. The
-     * namespace is optional, so it is only appended to the qualified name when present (a constraint
-     * declared directly in a context is never a built-in one).
-     */
-    private def boolean isFuinConstr(Constraint constr) {
-        val qn = if (constr.namespace === null)
-                constr.context.name
-            else
-                constr.context.name + "." + constr.namespace.name
-        return qn.startsWith("org.fuin.constr")
-    }
-
-    def Literal findParamByName(String nameToFind) {
-        for (var i = 0; i < vars.size(); i++) {
-            val String nameFound = vars.get(i).name;
-            if (nameFound.equals(nameToFind)) {
-                return params.get(i)
-            }
-        }
-        throw new IllegalStateException("Cannot find parameter '" + nameToFind + "' in constraint '" + constraint.name +
-            "' instance")
-    }
-
-    def String annotation(Constraint constr) {
-        switch constr.name {
-            case "MinValue": '''@DecimalMin(«findParamByName("expected").str»)'''
-            case "MaxValue": '''@DecimalMax(«findParamByName("expected").str»)'''
-            case "ValueRange": '''
-                @DecimalMin(«findParamByName("min").str»)
-                @DecimalMax(«findParamByName("max").str»)
-            '''
-            case "Pattern": '''@Pattern(regexp=«findParamByName("expression").str»)'''
-            case "MinLength": '''@Size(min=«findParamByName("expected").value»)'''
-            case "MaxLength": '''@Size(max=«findParamByName("expected").value»)'''
-            case "ExactLength": '''@Size(min=«findParamByName("expected").value», max=«findParamByName("expected").value»)'''
-            case "Length": '''@Size(min=«findParamByName("min").value», max=«findParamByName("max").value»)'''
-            default: '''@«constr.name»'''
-        }
-    }
-
-    def List<String> pkg(Constraint constr) {
-        val list = new ArrayList<String>()
-        val p = "jakarta.validation.constraints."
-        switch constr.name {
-            case "MaxValue":
-                list.add(p + "DecimalMax")
-            case "MinValue":
-                list.add(p + "DecimalMin")
-            case "ValueRange": {
-                list.add(p + "DecimalMin");
-                list.add(p + "DecimalMax")
-            }
-            case "MaxLength":
-                list.add(p + "Size")
-            case "MinLength":
-                list.add(p + "Size")
-            case "ExactLength":
-                list.add(p + "Size")
-            case "Length":
-                list.add(p + "Size")
-            default:
-                list.add(p + constr.name)
-        }
-        return list
     }
 
 }

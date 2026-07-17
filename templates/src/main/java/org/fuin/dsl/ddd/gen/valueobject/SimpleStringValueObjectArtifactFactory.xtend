@@ -1,12 +1,15 @@
 package org.fuin.dsl.ddd.gen.valueobject
 
+import java.util.Collections
 import java.util.Map
+import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
+import org.fuin.dsl.ddd.gen.base.SrcValidationAnnotation
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
@@ -16,6 +19,7 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
 import java.util.List
 
 class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject> {
@@ -53,7 +57,24 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
             create(ctx, ns, valueObject, pkg, className).toString().getBytes("UTF-8"), valueObject));
     }
 
+    /**
+     * Returns the invariants that apply to the generated "value" field. The generated class always stores the value in
+     * a String field, so invariants of an attribute with another type would be verified against the wrong type.
+     *
+     * @param vo Value object to return the invariants for.
+     *
+     * @return Constraint instances of the attribute or an empty list if the attribute is not a String.
+     */
+    private def List<ConstraintInstance> valueInvariants(ValueObject vo) {
+        val attr = vo.attributes.iterator.next
+        if (attr.type.name != "String") {
+            return Collections.emptyList
+        }
+        return attr.constraints
+    }
+
     def addImports(CodeSnippetContext ctx, ValueObject vo) {
+        ctx.requiresImport("org.fuin.objects4j.core.Validators")
         ctx.requiresImport("jakarta.validation.Constraint")
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
@@ -100,13 +121,13 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
-            
-                private static final int MAX_LENGTH = 100;
-            
+
+                «FOR ci : vo.valueInvariants»
+                «new SrcValidationAnnotation(ctx, ci)»
+                «ENDFOR»
                 «IF vo.attributes.iterator.next.optional !== null»
                 @Nullable
                 «ENDIF»
-                @«className»Str
                 private String value;
             
                 /**
@@ -186,11 +207,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
                     if (value == null) {
                         return true;
                     }
-                    if (value.isEmpty()) {
-                        return false;
-                    }
-                    final String trimmed = value.trim();
-                    return trimmed.length() <= MAX_LENGTH;
+                    return Validators.get().validateValue(«className».class, "value", value).isEmpty();
                 }
             
                 /**

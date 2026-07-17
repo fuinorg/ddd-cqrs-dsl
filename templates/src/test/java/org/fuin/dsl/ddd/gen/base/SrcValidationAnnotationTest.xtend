@@ -18,8 +18,6 @@ import static org.assertj.core.api.Assertions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDomainModelExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsInvariantsExtensions.*
-import java.net.URL
-import org.apache.commons.io.IOUtils
 import org.eclipse.emf.common.util.EList
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 
@@ -62,8 +60,8 @@ class SrcValidationAnnotationTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.org.fuin.types.String", "java.lang.String")
-        refReg.putReference("p.org.fuin.types.Integer", "java.lang.Integer")
+        refReg.putReference("org.fuin.types.String", "java.lang.String")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
         refReg.putReference("p.y.a.OneArgConstraint", "a.b.c.OneArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
@@ -86,8 +84,8 @@ class SrcValidationAnnotationTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.org.fuin.types.String", "java.lang.String")
-        refReg.putReference("p.org.fuin.types.Integer", "java.lang.Integer")
+        refReg.putReference("org.fuin.types.String", "java.lang.String")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
         refReg.putReference("p.y.a.TwoArgsConstraint", "a.b.c.TwoArgsConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
@@ -121,7 +119,7 @@ class SrcValidationAnnotationTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("@DecimalMin(\"123.45\")")
+        assertThat(result).isEqualTo("@DecimalMin(value=\"123.45\")")
         assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.DecimalMin")
 
     }
@@ -142,7 +140,7 @@ class SrcValidationAnnotationTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo("@DecimalMax(\"123.45\")")
+        assertThat(result).isEqualTo("@DecimalMax(value=\"123.45\")")
         assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.DecimalMax")
 
     }
@@ -163,10 +161,7 @@ class SrcValidationAnnotationTest {
         val result = testee.toString
 
         // VERIFY
-        assertThat(result).isEqualTo('''
-                                      @DecimalMin("0")
-                                      @DecimalMax("100")
-                                      '''.toString)
+        assertThat(result).isEqualTo("@DecimalMin(value=\"0\")\n@DecimalMax(value=\"100\")")
         assertThat(ctx.imports).containsOnly("jakarta.validation.constraints.DecimalMin", "jakarta.validation.constraints.DecimalMax")
 
     }
@@ -511,6 +506,9 @@ class SrcValidationAnnotationTest {
 
     }
     
+
+
+
     private def Attribute find(EList<Attribute> attrs, String nameToFind) {
         for (Attribute attr : attrs) {
             if (attr.name.equals(nameToFind)) {
@@ -521,109 +519,9 @@ class SrcValidationAnnotationTest {
     }
     
 
+
     def DomainModel createModel() {
-        
-        val URL url = class.classLoader.getResource("org/fuin/dsl/ddd/Basics.cqrs")
-        val basics = IOUtils.toString(url, "utf-8")
-        
-        val DomainModel model = parser.parse(
-            basics +
-            '''
-				project p {
-            context y {
-            
-                namespace a {
-                    
-                    import org.fuin.types.*
-                    import org.fuin.constr.*
-            
-                    constraint NoArgConstraint input String {
-                        message "NoArgConstraint message"
-                    }
-            
-                    constraint OneArgConstraint input String {
-                        Integer expected
-                        message "OneArgConstraint message"
-                    }
-            
-                    constraint TwoArgsConstraint input String {
-                        Integer min
-                        Integer max
-                        message "TwoArgsConstraint message"
-                    }
-            
-                    value-object MyValueObject {
-            
-                        String strNoArgConstraint invariants NoArgConstraint
-                        String strOneArgConstraint invariants OneArgConstraint(50)
-                        String strTwoArgsConstraint invariants TwoArgsConstraint(1, 100)
-            
-                        String strNotNull invariants NotNull
-                        String strNull invariants Null
-                        Boolean booleanAssertTrue invariants AssertTrue
-                        Boolean booleanAssertFalse invariants AssertFalse
-            
-                        BigDecimal minValueBigDecimal invariants MinValue("123.45")
-                        BigInteger minValueBigInteger invariants MinValue("123")
-                        Integer minValueInteger invariants MinValue("234")
-                        Long minValueLong invariants MinValue("-345")
-            
-                        BigDecimal maxValueBigDecimal invariants MaxValue("123.45")
-                        BigInteger maxValueBigInteger invariants MaxValue("123")
-                        Integer maxValueInteger invariants MaxValue("234")
-                        Long maxValueLong invariants MaxValue("-345")
-            
-                        BigDecimal valueRangeBigDecimal invariants ValueRange("0", "100")
-                        BigInteger valueRangeBigInteger invariants ValueRange("1", "99")
-                        Integer valueRangeInteger invariants ValueRange("-2", "2")
-                        Long valueRangeLong invariants ValueRange("-1", "1")
-            
-                        BigDecimal negativeBigDecimal invariants Negative
-                        BigInteger negativeBigInteger invariants Negative
-                        Integer negativeInteger invariants Negative
-                        Long negativeLong invariants Negative
-                        Float negativeFloat invariants Negative
-                        Double negativeDouble invariants Negative
-            
-                        BigDecimal negativeOrZeroBigDecimal invariants NegativeOrZero
-                        BigInteger negativeOrZeroBigInteger invariants NegativeOrZero
-                        Integer negativeOrZeroInteger invariants NegativeOrZero
-                        Long negativeOrZeroLong invariants NegativeOrZero
-                        Float negativeOrZeroFloat invariants NegativeOrZero
-                        Double negativeOrZeroDouble invariants NegativeOrZero
-            
-                        BigDecimal positiveBigDecimal invariants Positive
-                        BigInteger positiveBigInteger invariants Positive
-                        Integer positiveInteger invariants Positive
-                        Long positiveLong invariants Positive
-                        Float positiveFloat invariants Positive
-                        Double positiveDouble invariants Positive
-            
-                        BigDecimal positiveOrZeroBigDecimal invariants PositiveOrZero
-                        BigInteger positiveOrZeroBigInteger invariants PositiveOrZero
-                        Integer positiveOrZeroInteger invariants PositiveOrZero
-                        Long positiveOrZeroLong invariants PositiveOrZero
-                        Float positiveOrZeroFloat invariants PositiveOrZero
-                        Double positiveOrZeroDouble invariants PositiveOrZero
-            
-                        String strMinLength invariants MinLength(1)
-                        String strMaxLength invariants MaxLength(2)
-                        String strExactLength invariants ExactLength(3)
-                        String strLength invariants Length(1, 100)
-            
-                        String strNotEmpty invariants NotEmpty
-                        List<String> listNotEmpty invariants NotEmpty
-                        String strNotBlank invariants NotBlank
-                        String strPattern invariants Pattern("\\d")
-            
-                    }
-            
-                }
-            
-            }
-            }
-			'''
-        )
+        val DomainModel model = parser.parse(ConstraintModel.text)
         validationTester.assertNoIssues(model)
         return model
     }

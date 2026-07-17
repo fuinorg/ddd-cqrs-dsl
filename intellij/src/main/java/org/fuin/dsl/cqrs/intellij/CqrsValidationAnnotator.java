@@ -104,11 +104,6 @@ public final class CqrsValidationAnnotator implements Annotator {
         if (base == null) {
             return;
         }
-        List<CqrsAttribute> attributes = vo.getAttributeList();
-        if (attributes.size() != 1 || !sameType(attributes.get(0).getTypeRef(), base)) {
-            error(holder, base, "A value object with a 'base' is only allowed to have exactly one attribute"
-                    + " with the same type as the 'base' (" + base.getReferencedName() + ")");
-        }
         for (CqrsConstructorDef constructor : vo.getConstructorDefList()) {
             error(holder, nameRange(constructor), "A value object with a 'base' is not allowed to have constructors");
         }

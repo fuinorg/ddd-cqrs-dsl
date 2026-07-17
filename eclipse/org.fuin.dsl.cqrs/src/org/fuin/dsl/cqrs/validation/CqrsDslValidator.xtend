@@ -131,8 +131,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	public static val ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch"
 
-	public static val VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE = "valueObjectBaseRequiresSingleMatchingAttribute"
-
 	public static val VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods"
 
 	@Inject
@@ -660,22 +658,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		}
 	}
 	
-	@Check
-	def checkValueObjectBaseHasSingleMatchingAttribute(ValueObject vo) {
-		if (vo.base !== null) {
-			val attributes = vo.attributes.nullSafe
-			if (attributes.size != 1 || attributes.get(0).type != vo.base) {
-				error(
-					"A value object with a 'base' is only allowed to have exactly one attribute with the same type as the 'base' (" +
-						vo.base.name + ")",
-					vo,
-					CqrsDslPackage.Literals::ABSTRACT_VO__BASE,
-					VALUE_OBJECT_BASE_REQUIRES_SINGLE_MATCHING_ATTRIBUTE
-				)
-			}
-		}
-	}
-
 	@Check
 	def checkValueObjectBaseHasNoConstructorsOrMethods(ValueObject vo) {
 		if (vo.base !== null) {

@@ -21,7 +21,7 @@ class SrcServices implements CodeSnippet {
     }
 
     override toString() {
-        '''    
+        '''
         «FOR service : services.nullSafe»
             «new SrcService(ctx, service).toString»
             

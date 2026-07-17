@@ -17,7 +17,7 @@ class SrcParamDecl implements CodeSnippet {
 
     /**
      * Constructor with all mandatory data.
-     * 
+     *
      * @param ctx Context.
      * @param options Options to use.
      * @param parameter Parameter.

@@ -1,5 +1,8 @@
 package org.fuin.dsl.ddd.gen.base
 
+import java.util.Arrays
+import java.util.Collections
+import java.util.List
 import java.util.Map
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -32,6 +35,7 @@ class GenerateOptions {
 
     /** Key if to generate Jackson annotations (Type: Boolean). */
     public val static KEY_JACKSON = "jackson"
+
 
     var String basePkg
 
@@ -127,12 +131,14 @@ class GenerateOptions {
 
     /**
      * Returns the copyright header to use.
-     * 
+     *
      * @return Copyright header for source files.
      */
     def String getCopyrightHeader() {
         return copyrightHeader
     }
+
+
 
     /** 
      * Returns a new builder instance. Convenience method to shorten the builder creation in the code.
@@ -237,6 +243,8 @@ class GenerateOptions {
             obj.copyrightHeader = header
             return this
         }
+
+
 
         def GenerateOptions create() {
             val GenerateOptions options = obj

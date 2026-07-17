@@ -7,9 +7,29 @@ project p {
 			type Integer
 		}
 
+		namespace constr {
+
+			import p.x.types.*
+
+			/** Makes sure a string has a defined length (min/max). */
+			constraint Length input String {
+
+				/** Expected minimum length (inclusive). */
+				Integer min
+
+				/** Expected maximum length (inclusive). */
+				Integer max
+
+				message "Expected a length between {min} and {max} characters"
+
+			}
+
+		}
+
 		namespace valueobject {
 
 			import p.x.types.*
+			import p.x.constr.*
 
 			/** Value object single attribute and base. */
 			value-object MyValueObject base String {
@@ -72,7 +92,17 @@ project p {
 				examples "one" "two" "three"
 
 				/** Persistent value. */
-				String value 
+				String value
+
+			}
+
+			/** Simple value object with an invariant that restricts the value. */
+			value-object MyConstrainedStringValueObject base String {
+
+				examples "abc"
+
+				/** Persistent value. */
+				String value invariants Length(3, 10)
 
 			}
 

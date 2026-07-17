@@ -16,7 +16,11 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
         myFixture.checkHighlighting(true, false, false);
     }
 
-    // --- value object 'base': exactly one attribute with the base type --------------------------
+    // --- value object 'base' ---------------------------------------------------------------------
+    // A 'base' does not restrict the attributes: only "base String + exactly one attribute" is
+    // generated as a complete class (SimpleStringValueObjectArtifactFactory); every other shape
+    // gets an abstract base class plus a hand-written final class supplying asBaseType(). See
+    // CombinedValueObjectArtifactFactory.
 
     public void testValueObjectBaseSingleMatchingAttributeIsValid() {
         check("""
@@ -33,15 +37,22 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 """);
     }
 
-    public void testValueObjectBaseWithTwoAttributesIsFlagged() {
+    /** The PhoneNumber shape: a String-backed VO whose base representation packs several attributes. */
+    public void testValueObjectBaseWithSeveralAttributesIsValid() {
         check("""
                 project p {
                 context c {
                   namespace n {
                     type String
-                    value-object X base <error>String</error> {
-                      String a
-                      String b
+                    enum PhoneType {
+                      instances {
+                        MOBILE
+                        LANDLINE
+                      }
+                    }
+                    value-object PhoneNumber base String {
+                      PhoneType typ
+                      String value
                     }
                   }
                 }
@@ -49,14 +60,14 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 """);
     }
 
-    public void testValueObjectBaseWithMismatchingAttributeTypeIsFlagged() {
+    public void testValueObjectBaseWithMismatchingAttributeTypeIsValid() {
         check("""
                 project p {
                 context c {
                   namespace n {
                     type String
                     type Integer
-                    value-object X base <error>Integer</error> {
+                    value-object X base Integer {
                       String value
                     }
                   }

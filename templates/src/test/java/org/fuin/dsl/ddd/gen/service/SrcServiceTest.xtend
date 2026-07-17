@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.service
 
+import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import jakarta.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
