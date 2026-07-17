@@ -118,6 +118,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.11.0</b> &ndash; Two errors that the Eclipse plugin reports are no longer missed. A type
+        that exists somewhere in the project but is <b>not imported</b> now shows as unresolved
+        instead of silently resolving, and a command's <code>target</code> only accepts the method or
+        constructor it triggers, so pointing it at an attribute is reported. Both cases used to look
+        valid in the editor and then fail the build.</li>
     <li><b>1.10.0</b> &ndash; A value object with a <code>base</code> is no longer required to have
         exactly one attribute of the base type. Only "<code>base String</code> plus exactly one
         attribute" is generated as a complete class; every other shape becomes an abstract base class
