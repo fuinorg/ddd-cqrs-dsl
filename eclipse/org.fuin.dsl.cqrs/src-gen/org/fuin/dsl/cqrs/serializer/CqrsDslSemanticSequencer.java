@@ -1320,7 +1320,15 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     View returns View
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID projection=[Projection|FQN] businessRules+=BusinessRule* methods+=Method*)
+	 *     (
+	 *         doc=DOC? 
+	 *         name=ID 
+	 *         projection=[Projection|FQN] 
+	 *         restPath=STRING? 
+	 *         cron=STRING? 
+	 *         businessRules+=BusinessRule* 
+	 *         methods+=Method*
+	 *     )
 	 * </pre>
 	 */
 	protected void sequence_View(ISerializationContext context, View semanticObject) {

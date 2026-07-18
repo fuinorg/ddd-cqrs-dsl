@@ -118,6 +118,14 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.15.0</b> &ndash; A <code>view</code> body may now declare an optional
+        <code>rest-path</code> and <code>cron-schedule</code>: <code>rest-path</code> sets the base path
+        of the generated REST controller (otherwise derived from the aggregate name) and
+        <code>cron-schedule</code> sets the projection schedule (otherwise the default
+        <code>* * * * * *</code>). Both keywords are syntax-highlighted and offered in context-aware
+        completion inside a <code>view</code> body, and <code>cron-schedule</code> is validated as a
+        Spring Boot cron expression (on a <code>view</code> and a <code>process-manager</code>).
+        Grammar-only for now; code generation follows.</li>
     <li><b>1.14.0</b> &ndash; New <code>process-manager</code> element for modelling orchestration
         (sagas): it reacts to domain events and issues commands through a small, documented state
         machine &ndash; <code>process-states</code> plus guarded <code>reacts-to &lt;Event&gt; in-state

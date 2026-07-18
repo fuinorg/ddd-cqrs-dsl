@@ -15,6 +15,8 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getProjection <em>Projection</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMethods <em>Methods</em>}</li>
  * </ul>
@@ -46,6 +48,50 @@ public interface View extends AbstractElement
    * @generated
    */
   void setProjection(Projection value);
+
+  /**
+   * Returns the value of the '<em><b>Rest Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rest Path</em>' attribute.
+   * @see #setRestPath(String)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_RestPath()
+   * @model
+   * @generated
+   */
+  String getRestPath();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Rest Path</em>' attribute.
+   * @see #getRestPath()
+   * @generated
+   */
+  void setRestPath(String value);
+
+  /**
+   * Returns the value of the '<em><b>Cron</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Cron</em>' attribute.
+   * @see #setCron(String)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_Cron()
+   * @model
+   * @generated
+   */
+  String getCron();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getCron <em>Cron</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Cron</em>' attribute.
+   * @see #getCron()
+   * @generated
+   */
+  void setCron(String value);
 
   /**
    * Returns the value of the '<em><b>Business Rules</b></em>' containment reference list.

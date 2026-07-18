@@ -25,6 +25,11 @@ project p_19_projection_and_view {
 			// business rules and methods to query it - the body may also be left empty.
 			view UserListView uses UserList {
 
+				// Optional: REST base path for the generated controller (else derived
+				// from the aggregate name) and the projection cron (else "* * * * * *").
+				rest-path "/users"
+				cron-schedule "* * * * * *"
+
 				/** The requested user must exist in the read model. */
 				business-rule UserKnown exception UnknownUserException {
 					consistency strong

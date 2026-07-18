@@ -2,6 +2,9 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.13.0
+- A `view` may now declare an optional `rest-path` and `cron-schedule` in its body. `rest-path` sets the base path of the generated REST controller (otherwise derived from the aggregate name); `cron-schedule` sets the projection schedule (otherwise the default `* * * * * *`) and is validated as a Spring Boot cron expression (the same check now also applies to a `process-manager`'s `cron-schedule`). Both are optional. Like the rest of the `view` element it is grammar-only for now; code generation follows.
+
 ## 1.12.0
 - New `process-manager` element for modelling orchestration (sagas). It reacts to domain events and issues commands through a small, documented state machine: an optional `cron-schedule` and `correlation-id`, a `process-states { … }` list, and one or more `reacts-to <Event> in-state <State> { … }` reactions that may `correlate-by` an event attribute, `issues-commands`, `transition-to` another state, and `arm-timeout`/`cancel-timeout`. Every state and reaction may carry its own doc comment. Two validations are added: duplicate state names within a process manager, and a `correlate-by` key that is not an attribute of the reacted event. Like `command-handler`/`view` it is grammar-only for now; code generation follows.
 

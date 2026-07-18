@@ -18,6 +18,78 @@ Brief orientation notes for working on this DSL. Verify specifics against the co
   It does NOT reuse the Xtext grammar. `cd intellij && ./gradlew test` regenerates lexer/parser.
   ⇒ Any grammar/keyword change must be made in **both** the Xtext grammar and the JFlex/BNF grammar.
 
+## Propagating a grammar change — full checklist
+Worked example: adding optional `rest-path`/`cron-schedule` clauses to the `view` rule. Note the two
+kinds of keyword: `rest-path` is a **brand-new** keyword (touches all four IntelliJ files below);
+`cron-schedule` **reuses the existing** process-manager token (`KW_CRON_SCHEDULE` / the `.flex` entry /
+the highlighting set already exist), so it only needs the rule reference + the completion string.
+
+**Xtext side (eclipse = source of truth, maven = mirror):**
+1. Edit the rule in **both** `eclipse/org.fuin.dsl.cqrs/.../CqrsDsl.xtext` and the maven mirror
+   (identical text). Then **regenerate the committed generated code** — neither the Eclipse PDE
+   build nor `mvnw` runs MWE2 as part of a normal build, so stale `src-gen`/`xtext-gen` would
+   silently ship. Recipe (offline, JDK 21 at `~/.sdkman/.../21.0.11-zulu`):
+   - `./mvnw -o -pl maven/org.fuin.dsl.cqrs generate-sources -s settings.xml` (maven core: EMF model
+     + xtext-gen; regenerates e.g. `ViewImpl.getRestPath()/getCron()`).
+   - `./mvnw -o -pl maven/org.fuin.dsl.cqrs dependency:build-classpath -Dmdep.outputFile=$PWD/cp.txt`
+     then `java -cp "$(cat cp.txt):eclipse/org.fuin.dsl.cqrs/src`
+     `" org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher org.fuin.dsl.cqrs.GenerateCqrsDsl`
+     `-p rootPath=<abs>/eclipse` (eclipse core + `.ide` content-assist ANTLR + `.ui`).
+   - `./mvnw -o -pl maven/org.fuin.dsl.cqrs install -DskipTests` (compiles xtend + generated Java).
+   - Verify with `./mirror-eclipse-sources-to-maven.sh -n` → prints no diffs.
+   - A harmless `warning(200): … "'}'" using multiple alternatives` appears because the `view` body
+     ends in two optional trailing lists (`businessRule* method*`); pre-existing, not an error.
+
+**IntelliJ side (separate hand-written plugin) — a NEW keyword touches FOUR files, not one; reusing
+an existing keyword token in another rule needs only steps 2 (the rule reference) and 5:**
+2. `intellij/src/main/grammar/CqrsDsl.bnf` — for a new keyword, declare the token in the `tokens { }`
+   block (e.g. `KW_REST_PATH='rest-path'`); for any keyword, reference the token in the rule
+   (`view_def`). Reusing an existing token (`KW_CRON_SCHEDULE`) needs only the reference — no new decl.
+3. `intellij/src/main/grammar/CqrsDsl.flex` — map the literal to the token (new keywords only).
+   **Hyphenated** keywords go in the "Hyphenated keywords (must precede the ID rule)" block;
+   **plain-word** keywords in the "Structural keywords" block. JFlex longest-match keeps a shorter
+   literal from shadowing a longer one that shares its prefix.
+4. `intellij/src/main/java/.../CqrsTokenSets.java` — **highlighting is a hand-maintained `TokenSet`**
+   (`KEYWORDS`), NOT auto-derived from the generated `CqrsTypes`. A new keyword omitted here parses
+   fine but renders uncolored. Add its `CqrsTypes.KW_*` (reused tokens are already in the set).
+5. `intellij/src/main/java/.../completion/CqrsCompletionContributor.java` — **completion is a
+   hand-written context-aware contributor**, not free from Grammar-Kit. Add the keyword strings in
+   the matching context branch (e.g. the `enclosingView(...)` branch) or it will never be offered.
+   Regenerate + verify: `./gradlew --offline generateCqrsParser generateCqrsLexer compileJava`
+   (JDK 25 for the Gradle JVM, Java-21 toolchain auto-used for codegen). Bare `STRING` clauses get
+   no generated PSI accessor — expected, and irrelevant to parse/highlight/complete.
+   Tests: fixtures in `intellij/src/test/resources/examples/*.cqrs` drive `CqrsParsingTest`;
+   `CqrsCompletionContributorTest` asserts the offered keyword set (uses `containsAll`).
+
+**Versions + changelogs — three independent lines, bump each where the change lives:**
+6. IntelliJ: `intellij/gradle.properties` `pluginVersion` + prepend a `<li>` in
+   `intellij/build.gradle` `ext.pluginChangeNotes`. **Never hand-edit `intellij/CHANGELOG.md`** —
+   it is generated from those change-notes by the `generateChangeLog` task.
+7. Eclipse: bump all **five** `Bundle-Version` lines (`org.fuin.dsl.cqrs`, `.ui`, `.ide`, `.tests`,
+   `.ui.tests`) **and** `org.fuin.dsl.cqrs.feature/feature.xml` together (OSGi `x.y.z.qualifier`);
+   hand-edit `eclipse/CHANGELOG.md`.
+8. Maven submodules stay `*-SNAPSHOT`; log DSL/grammar changes as bullets under the single
+   `## 1.0.0-SNAPSHOT` heading in the root `CHANGELOG.md`.
+
+## Semantic validation lives in TWO hand-synced validators
+- **Xtext:** `.../validation/CqrsDslValidator.xtend` — `@Check def` methods auto-invoked (no manual
+  registration); report via `error(msg, obj, CqrsDslPackage.Literals::&lt;FEATURE&gt;, CODE)`. Edit it in
+  **both** eclipse + maven; its generated `.java` is produced by the maven xtend build and copied to
+  eclipse (byte-identical), like the other `xtend-gen`.
+- **IntelliJ:** `.../intellij/CqrsValidationAnnotator.java` — an `Annotator` (registered in
+  `plugin.xml`) that ports the same rules onto the PSI; report via
+  `holder.newAnnotation(HighlightSeverity.ERROR, msg).range(psi).create()`. Add a branch to its
+  `instanceof` dispatch. Reaching a bare literal with no Grammar-Kit accessor (e.g. a `view`'s
+  `cron-schedule` STRING, since the rule has two STRINGs) uses the keyword-scan helper
+  `CqrsValidationUtil.firstTokenAfter(parent, keyword, token)`; a rule with a single STRING (e.g.
+  `process-manager`) has a generated `getString()`.
+- **Shared pure logic must be duplicated**, not shared — the two plugins have no common jar. Example:
+  `SpringCronExpression.isValid(...)` (validates a `cron-schedule` as a Spring 6-field cron / macro)
+  exists as an identical copy in `org.fuin.dsl.cqrs.validation` (Xtext, mirrored eclipse→maven) and
+  `org.fuin.dsl.cqrs.intellij` (IntelliJ). Keep the copies in sync. IntelliJ validation tests use
+  `BasePlatformTestCase.checkHighlighting` with inline `&lt;error&gt;…&lt;/error&gt;` markup (the tags are
+  stripped before parsing and assert a semantic error over that exact range — not DSL syntax).
+
 ## ddd-cqrs-dsl modules
 - `maven/org.fuin.dsl.cqrs` — grammar, parser, EMF model, scoping/validation (the runtime jar).
 - `templates` (artifact `ddd-templates`) — ~42 `ArtifactFactory` (Xtend) code generators driven by
@@ -59,5 +131,6 @@ Brief orientation notes for working on this DSL. Verify specifics against the co
 - Test harnesses: Xtext side `maven/.../src/test/.../CqrsDslParsingTest` etc. (`ParseHelper`,
   `CqrsDslInjectorProvider`); IntelliJ side `ParsingTestCase` (parsing) + `BasePlatformTestCase`
   (resolution/completion/validation) with fixtures in `intellij/src/test/resources/examples/`.
-- The IntelliJ change-notes are an inline ext.pluginChangeNotes in build.gradle;
-  The Eclipse changelog lives in eclipse/README.md
+- Three changelogs (see the propagation checklist above): root `CHANGELOG.md` (maven submodules),
+  `eclipse/CHANGELOG.md` (hand-written), and `intellij/CHANGELOG.md` (generated from
+  `ext.pluginChangeNotes` in `intellij/build.gradle` — do not hand-edit).
