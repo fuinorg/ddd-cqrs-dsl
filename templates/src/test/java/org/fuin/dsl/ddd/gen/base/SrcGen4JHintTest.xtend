@@ -33,7 +33,7 @@ class SrcGen4JHintTest {
                             "group": "domain",
                             "artifacts": [
                                 { "artifactFactory": "AbstractValueObject", "folder": "genJava" },
-                                { "artifactFactory": "FinalValueObject", "folder": "mainJava" }
+                                { "artifactFactory": "FinalValueObject", "folder": "mainJava", "module": "api", "group": "dto" }
                             ]
                         }
                     ]
@@ -58,10 +58,16 @@ class SrcGen4JHintTest {
         val first = type.artifacts.get(0)
         assertThat(first.artifactFactory).isEqualTo("AbstractValueObject")
         assertThat(first.folder).isEqualTo("genJava")
+        // No per-artifact override: module/group fall back to the type's values.
+        assertThat(first.module).isNull
+        assertThat(first.group).isNull
 
         val second = type.artifacts.get(1)
         assertThat(second.artifactFactory).isEqualTo("FinalValueObject")
         assertThat(second.folder).isEqualTo("mainJava")
+        // Per-artifact override of module/group.
+        assertThat(second.module).isEqualTo("api")
+        assertThat(second.group).isEqualTo("dto")
     }
 
 }

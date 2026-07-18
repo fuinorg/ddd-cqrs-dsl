@@ -27,6 +27,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonString
  *             "group":   "domain",
  *             "artifacts": [
  *                 { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObject", "folder": "genJava" },
+ *                 { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObject", "folder": "mainJava",
+ *                   "module": "api", "group": "dto" },
  *                 ...
  *             ]
  *         }
@@ -124,7 +126,9 @@ class SrcGen4JHint {
     def private static SrcGen4JArtifact parseArtifact(JsonObject obj) {
         new SrcGen4JArtifact(
             obj.stringValue("artifactFactory"),
-            obj.stringValue("folder")
+            obj.stringValue("folder"),
+            obj.stringValue("module"),
+            obj.stringValue("group")
         )
     }
 
@@ -214,7 +218,9 @@ class SrcGen4JHint {
     def private static SrcGen4JArtifact parseJsonArtifact(jakarta.json.JsonObject obj) {
         new SrcGen4JArtifact(
             obj.jsonString("artifactFactory"),
-            obj.jsonString("folder")
+            obj.jsonString("folder"),
+            obj.jsonString("module"),
+            obj.jsonString("group")
         )
     }
 
@@ -336,7 +342,9 @@ class SrcGen4JType {
 
 /**
  * A single entry of the "artifacts" array: the name of an artifact factory class and the target
- * folder its output should be written to.
+ * folder its output should be written to. The optional "module" and "group" override the values of the
+ * enclosing {@link SrcGen4JType} for this artifact only; when they are not set the type's values are
+ * used as the default.
  */
 class SrcGen4JArtifact {
 
@@ -344,15 +352,23 @@ class SrcGen4JArtifact {
 
     val String folder
 
+    val String module
+
+    val String group
+
     /**
      * Constructor with all data.
      *
      * @param artifactFactory Artifact factory class name (value of the "artifactFactory" key) - May be <code>null</code>.
      * @param folder Target folder (value of the "folder" key) - May be <code>null</code>.
+     * @param module Module override (value of the "module" key) - <code>null</code> inherits the type's module.
+     * @param group Group override (value of the "group" key) - <code>null</code> inherits the type's group.
      */
-    new(String artifactFactory, String folder) {
+    new(String artifactFactory, String folder, String module, String group) {
         this.artifactFactory = artifactFactory
         this.folder = folder
+        this.module = module
+        this.group = group
     }
 
     /** @return Artifact factory class name (value of the "artifactFactory" key) or <code>null</code> if not set. */
@@ -363,6 +379,16 @@ class SrcGen4JArtifact {
     /** @return Target folder (value of the "folder" key) or <code>null</code> if not set. */
     def getFolder() {
         folder
+    }
+
+    /** @return Module override (value of the "module" key) or <code>null</code> to inherit the type's module. */
+    def getModule() {
+        module
+    }
+
+    /** @return Group override (value of the "group" key) or <code>null</code> to inherit the type's group. */
+    def getGroup() {
+        group
     }
 
 }

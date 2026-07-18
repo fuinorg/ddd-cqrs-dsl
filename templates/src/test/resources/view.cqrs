@@ -1,0 +1,30 @@
+project p {
+
+    context x {
+
+        namespace m {
+
+            type String
+
+            aggregate-id UserId identifies User {}
+
+            aggregate User identifier UserId {
+                constructor create fires UserCreatedEvent {
+                    String name
+                    event UserCreatedEvent { message "created" }
+                }
+            }
+
+            projection UserList input User.create.UserCreatedEvent
+
+            // View name deliberately ends in "View" to exercise the suffix stripping.
+            view PersonListView uses UserList {
+                rest-path "/persons"
+                cron-schedule "* * * * * *"
+            }
+
+        }
+
+    }
+
+}
