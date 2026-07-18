@@ -63,6 +63,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
@@ -392,6 +395,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseView(View object)
       {
         return createViewAdapter();
+      }
+      @Override
+      public Adapter caseProcessManager(ProcessManager object)
+      {
+        return createProcessManagerAdapter();
+      }
+      @Override
+      public Adapter caseProcessState(ProcessState object)
+      {
+        return createProcessStateAdapter();
+      }
+      @Override
+      public Adapter caseProcessReaction(ProcessReaction object)
+      {
+        return createProcessReactionAdapter();
       }
       @Override
       public Adapter caseLiteral(Literal object)
@@ -1241,6 +1259,51 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createViewAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager <em>Process Manager</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
+   * @generated
+   */
+  public Adapter createProcessManagerAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessState <em>Process State</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessState
+   * @generated
+   */
+  public Adapter createProcessStateAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction <em>Process Reaction</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction
+   * @generated
+   */
+  public Adapter createProcessReactionAdapter()
   {
     return null;
   }

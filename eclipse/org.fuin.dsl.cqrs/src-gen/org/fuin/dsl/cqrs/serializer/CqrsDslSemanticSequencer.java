@@ -58,6 +58,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
@@ -217,6 +220,15 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.PRECONDITIONS:
 				sequence_Preconditions(context, (Preconditions) semanticObject); 
+				return; 
+			case CqrsDslPackage.PROCESS_MANAGER:
+				sequence_ProcessManager(context, (ProcessManager) semanticObject); 
+				return; 
+			case CqrsDslPackage.PROCESS_REACTION:
+				sequence_ProcessReaction(context, (ProcessReaction) semanticObject); 
+				return; 
+			case CqrsDslPackage.PROCESS_STATE:
+				sequence_ProcessState(context, (ProcessState) semanticObject); 
 				return; 
 			case CqrsDslPackage.PROJECT:
 				sequence_Project(context, (Project) semanticObject); 
@@ -1115,6 +1127,65 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * </pre>
 	 */
 	protected void sequence_Preconditions(ISerializationContext context, Preconditions semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     AbstractElement returns ProcessManager
+	 *     ProcessManager returns ProcessManager
+	 *
+	 * Constraint:
+	 *     (
+	 *         doc=DOC? 
+	 *         name=ID 
+	 *         cron=STRING? 
+	 *         correlationId=[Type|FQN]? 
+	 *         states+=ProcessState* 
+	 *         reactions+=ProcessReaction*
+	 *     )
+	 * </pre>
+	 */
+	protected void sequence_ProcessManager(ISerializationContext context, ProcessManager semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     ProcessReaction returns ProcessReaction
+	 *
+	 * Constraint:
+	 *     (
+	 *         doc=DOC? 
+	 *         event=[Event|FQN] 
+	 *         fromState=[ProcessState|FQN]? 
+	 *         correlationKey=ID? 
+	 *         (commands+=[Command|FQN] commands+=[Command|FQN]*)? 
+	 *         toState=[ProcessState|FQN]? 
+	 *         armTimeout=Duration? 
+	 *         cancelTimeout?='cancel-timeout'?
+	 *     )
+	 * </pre>
+	 */
+	protected void sequence_ProcessReaction(ISerializationContext context, ProcessReaction semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     ProcessState returns ProcessState
+	 *
+	 * Constraint:
+	 *     (doc=DOC? name=ID)
+	 * </pre>
+	 */
+	protected void sequence_ProcessState(ISerializationContext context, ProcessState semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

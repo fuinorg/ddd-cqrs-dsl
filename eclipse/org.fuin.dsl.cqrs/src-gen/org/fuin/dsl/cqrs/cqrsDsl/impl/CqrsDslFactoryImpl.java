@@ -71,6 +71,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
@@ -189,6 +192,9 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.COMMAND_HANDLER: return createCommandHandler();
       case CqrsDslPackage.PROJECTION: return createProjection();
       case CqrsDslPackage.VIEW: return createView();
+      case CqrsDslPackage.PROCESS_MANAGER: return createProcessManager();
+      case CqrsDslPackage.PROCESS_STATE: return createProcessState();
+      case CqrsDslPackage.PROCESS_REACTION: return createProcessReaction();
       case CqrsDslPackage.LITERAL: return createLiteral();
       case CqrsDslPackage.JSON: return createJSON();
       case CqrsDslPackage.JSON_OBJECT: return createJsonObject();
@@ -879,6 +885,42 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     ViewImpl view = new ViewImpl();
     return view;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ProcessManager createProcessManager()
+  {
+    ProcessManagerImpl processManager = new ProcessManagerImpl();
+    return processManager;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ProcessState createProcessState()
+  {
+    ProcessStateImpl processState = new ProcessStateImpl();
+    return processState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ProcessReaction createProcessReaction()
+  {
+    ProcessReactionImpl processReaction = new ProcessReactionImpl();
+    return processReaction;
   }
 
   /**

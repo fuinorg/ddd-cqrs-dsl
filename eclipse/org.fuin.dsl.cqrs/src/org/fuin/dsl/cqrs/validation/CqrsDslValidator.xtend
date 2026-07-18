@@ -46,6 +46,9 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.fuin.dsl.cqrs.cqrsDsl.Command
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessState
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance
 import java.util.Collections
 import java.util.ArrayList
@@ -68,6 +71,10 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val CONSTRAINT_MSG_UNKNOWN_VAR = 'constraintMsgUnknownVar'
 
 	public static val EXCEPTION_MSG_UNKNOWN_VAR = 'exceptionMsgUnknownVar'
+
+	public static val PROCESS_STATE_DUPLICATE = 'processStateDuplicate'
+
+	public static val PROCESS_CORRELATION_KEY_UNKNOWN = 'processCorrelationKeyUnknown'
 
 	public static val REF_TO_AGGREGATE_NOT_ALLOWED = 'refToAggregateNotAllowed'
 
@@ -285,6 +292,42 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					event,
 					CqrsDslPackage.Literals::EVENT__MESSAGE,
 					EVENT_MSG_UNKNOWN_VAR
+				)
+			}
+		}
+	}
+
+	@Check
+	def checkUniqueProcessStateNames(ProcessManager pm) {
+		val Set<String> seen = new HashSet<String>()
+		for (ProcessState state : pm.states) {
+			if (!seen.add(state.name)) {
+				error(
+					"Duplicate process state '" + state.name + "'",
+					state,
+					CqrsDslPackage.Literals::PROCESS_STATE__NAME,
+					PROCESS_STATE_DUPLICATE
+				)
+			}
+		}
+	}
+
+	@Check
+	def checkCorrelateByAttribute(ProcessReaction reaction) {
+		val String key = reaction.correlationKey
+		val Event event = reaction.event
+		if (key !== null && event !== null && !event.eIsProxy) {
+			val List<String> vars = new ArrayList<String>(event.attributes.asNames)
+			// Attributes copied from a constructor/method via 'copies-attributes-of' are also valid
+			if (event.origin !== null) {
+				vars.addAll(event.origin.parameters.asNames)
+			}
+			if (!vars.contains(key)) {
+				error(
+					"The correlation key '" + key + "' is not an attribute of event '" + event.name + "'",
+					reaction,
+					CqrsDslPackage.Literals::PROCESS_REACTION__CORRELATION_KEY,
+					PROCESS_CORRELATION_KEY_UNKNOWN
 				)
 			}
 		}

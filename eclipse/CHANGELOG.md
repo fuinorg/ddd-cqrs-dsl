@@ -2,6 +2,9 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.12.0
+- New `process-manager` element for modelling orchestration (sagas). It reacts to domain events and issues commands through a small, documented state machine: an optional `cron-schedule` and `correlation-id`, a `process-states { … }` list, and one or more `reacts-to <Event> in-state <State> { … }` reactions that may `correlate-by` an event attribute, `issues-commands`, `transition-to` another state, and `arm-timeout`/`cancel-timeout`. Every state and reaction may carry its own doc comment. Two validations are added: duplicate state names within a process manager, and a `correlate-by` key that is not an attribute of the reacted event. Like `command-handler`/`view` it is grammar-only for now; code generation follows.
+
 ## 1.11.0
 - A method's `returns` may now be declared `optional` (`returns optional String`), the same way an attribute or a parameter can, to express that the result may be absent. The code generation maps it to a `java.util.Optional` of the declared type.
 

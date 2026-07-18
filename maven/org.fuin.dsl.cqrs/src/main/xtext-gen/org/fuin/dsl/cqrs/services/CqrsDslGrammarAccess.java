@@ -309,14 +309,15 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cCommandHandlerParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
 		private final RuleCall cProjectionParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		private final RuleCall cViewParserRuleCall_8 = (RuleCall)cAlternatives.eContents().get(8);
-		private final RuleCall cDataProtectionParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
+		private final RuleCall cProcessManagerParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
+		private final RuleCall cDataProtectionParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
 		
 		///** Common properties of domain model elements. */
 		//AbstractElement:
-		//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
+		//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection
+		//Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Constraint
@@ -346,8 +347,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//View
 		public RuleCall getViewParserRuleCall_8() { return cViewParserRuleCall_8; }
 		
+		//ProcessManager
+		public RuleCall getProcessManagerParserRuleCall_9() { return cProcessManagerParserRuleCall_9; }
+		
 		//DataProtection
-		public RuleCall getDataProtectionParserRuleCall_9() { return cDataProtectionParserRuleCall_9; }
+		public RuleCall getDataProtectionParserRuleCall_10() { return cDataProtectionParserRuleCall_10; }
 	}
 	public class TypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Type");
@@ -3824,6 +3828,342 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
 	}
+	public class ProcessManagerElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProcessManager");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Keyword cProcessManagerKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cCronScheduleKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cCronAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cCronSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cCronAssignment_4_1.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cCorrelationIdKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cCorrelationIdAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final CrossReference cCorrelationIdTypeCrossReference_5_1_0 = (CrossReference)cCorrelationIdAssignment_5_1.eContents().get(0);
+		private final RuleCall cCorrelationIdTypeFQNParserRuleCall_5_1_0_1 = (RuleCall)cCorrelationIdTypeCrossReference_5_1_0.eContents().get(1);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cProcessStatesKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_6_1 = (Keyword)cGroup_6.eContents().get(1);
+		private final Assignment cStatesAssignment_6_2 = (Assignment)cGroup_6.eContents().get(2);
+		private final RuleCall cStatesProcessStateParserRuleCall_6_2_0 = (RuleCall)cStatesAssignment_6_2.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_6_3 = (Keyword)cGroup_6.eContents().get(3);
+		private final Assignment cReactionsAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cReactionsProcessReactionParserRuleCall_7_0 = (RuleCall)cReactionsAssignment_7.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		
+		///**
+		// * A process manager (also known as a saga) that coordinates a long-running process across
+		// * aggregates. It reacts to domain events and issues commands, moving through a small, documented
+		// * state machine. It is the place the model expresses orchestration that no single aggregate owns.
+		// */
+		//ProcessManager:
+		//    doc=DOC?
+		//    'process-manager' name=ID '{'
+		//        ('cron-schedule' cron=STRING)?
+		//        ('correlation-id' correlationId=[Type|FQN])?
+		//        ('process-states' '{' states+=ProcessState+ '}')?
+		//        reactions+=ProcessReaction*
+		//    '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//'process-manager' name=ID '{'
+		//    ('cron-schedule' cron=STRING)?
+		//    ('correlation-id' correlationId=[Type|FQN])?
+		//    ('process-states' '{' states+=ProcessState+ '}')?
+		//    reactions+=ProcessReaction*
+		//'}'
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//'process-manager'
+		public Keyword getProcessManagerKeyword_1() { return cProcessManagerKeyword_1; }
+		
+		//name=ID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_2_0() { return cNameIDTerminalRuleCall_2_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
+		
+		//('cron-schedule' cron=STRING)?
+		public Group getGroup_4() { return cGroup_4; }
+		
+		//'cron-schedule'
+		public Keyword getCronScheduleKeyword_4_0() { return cCronScheduleKeyword_4_0; }
+		
+		//cron=STRING
+		public Assignment getCronAssignment_4_1() { return cCronAssignment_4_1; }
+		
+		//STRING
+		public RuleCall getCronSTRINGTerminalRuleCall_4_1_0() { return cCronSTRINGTerminalRuleCall_4_1_0; }
+		
+		//('correlation-id' correlationId=[Type|FQN])?
+		public Group getGroup_5() { return cGroup_5; }
+		
+		//'correlation-id'
+		public Keyword getCorrelationIdKeyword_5_0() { return cCorrelationIdKeyword_5_0; }
+		
+		//correlationId=[Type|FQN]
+		public Assignment getCorrelationIdAssignment_5_1() { return cCorrelationIdAssignment_5_1; }
+		
+		//[Type|FQN]
+		public CrossReference getCorrelationIdTypeCrossReference_5_1_0() { return cCorrelationIdTypeCrossReference_5_1_0; }
+		
+		//FQN
+		public RuleCall getCorrelationIdTypeFQNParserRuleCall_5_1_0_1() { return cCorrelationIdTypeFQNParserRuleCall_5_1_0_1; }
+		
+		//('process-states' '{' states+=ProcessState+ '}')?
+		public Group getGroup_6() { return cGroup_6; }
+		
+		//'process-states'
+		public Keyword getProcessStatesKeyword_6_0() { return cProcessStatesKeyword_6_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_6_1() { return cLeftCurlyBracketKeyword_6_1; }
+		
+		//states+=ProcessState+
+		public Assignment getStatesAssignment_6_2() { return cStatesAssignment_6_2; }
+		
+		//ProcessState
+		public RuleCall getStatesProcessStateParserRuleCall_6_2_0() { return cStatesProcessStateParserRuleCall_6_2_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_6_3() { return cRightCurlyBracketKeyword_6_3; }
+		
+		//reactions+=ProcessReaction*
+		public Assignment getReactionsAssignment_7() { return cReactionsAssignment_7; }
+		
+		//ProcessReaction
+		public RuleCall getReactionsProcessReactionParserRuleCall_7_0() { return cReactionsProcessReactionParserRuleCall_7_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
+	}
+	public class ProcessStateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProcessState");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameIDTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		
+		///** A named state a process manager can be in. */
+		//ProcessState:
+		//    doc=DOC?
+		//    name=ID;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//name=ID
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//name=ID
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_1_0() { return cNameIDTerminalRuleCall_1_0; }
+	}
+	public class ProcessReactionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProcessReaction");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Keyword cReactsToKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cEventAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final CrossReference cEventEventCrossReference_2_0 = (CrossReference)cEventAssignment_2.eContents().get(0);
+		private final RuleCall cEventEventFQNParserRuleCall_2_0_1 = (RuleCall)cEventEventCrossReference_2_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cInStateKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cFromStateAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final CrossReference cFromStateProcessStateCrossReference_3_1_0 = (CrossReference)cFromStateAssignment_3_1.eContents().get(0);
+		private final RuleCall cFromStateProcessStateFQNParserRuleCall_3_1_0_1 = (RuleCall)cFromStateProcessStateCrossReference_3_1_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cCorrelateByKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cCorrelationKeyAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cCorrelationKeyIDTerminalRuleCall_5_1_0 = (RuleCall)cCorrelationKeyAssignment_5_1.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cIssuesCommandsKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cCommandsAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final CrossReference cCommandsCommandCrossReference_6_1_0 = (CrossReference)cCommandsAssignment_6_1.eContents().get(0);
+		private final RuleCall cCommandsCommandFQNParserRuleCall_6_1_0_1 = (RuleCall)cCommandsCommandCrossReference_6_1_0.eContents().get(1);
+		private final Group cGroup_6_2 = (Group)cGroup_6.eContents().get(2);
+		private final Keyword cCommaKeyword_6_2_0 = (Keyword)cGroup_6_2.eContents().get(0);
+		private final Assignment cCommandsAssignment_6_2_1 = (Assignment)cGroup_6_2.eContents().get(1);
+		private final CrossReference cCommandsCommandCrossReference_6_2_1_0 = (CrossReference)cCommandsAssignment_6_2_1.eContents().get(0);
+		private final RuleCall cCommandsCommandFQNParserRuleCall_6_2_1_0_1 = (RuleCall)cCommandsCommandCrossReference_6_2_1_0.eContents().get(1);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cTransitionToKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cToStateAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final CrossReference cToStateProcessStateCrossReference_7_1_0 = (CrossReference)cToStateAssignment_7_1.eContents().get(0);
+		private final RuleCall cToStateProcessStateFQNParserRuleCall_7_1_0_1 = (RuleCall)cToStateProcessStateCrossReference_7_1_0.eContents().get(1);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cArmTimeoutKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cArmTimeoutAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cArmTimeoutDurationParserRuleCall_8_1_0 = (RuleCall)cArmTimeoutAssignment_8_1.eContents().get(0);
+		private final Assignment cCancelTimeoutAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final Keyword cCancelTimeoutCancelTimeoutKeyword_9_0 = (Keyword)cCancelTimeoutAssignment_9.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		
+		///**
+		// * A reaction of a process manager: when a domain event arrives (optionally only while the process
+		// * is in a given state), it may correlate to a running process, issue commands, move to another
+		// * state, and arm or cancel a timeout.
+		// */
+		//ProcessReaction:
+		//    doc=DOC?
+		//    'reacts-to' event=[Event|FQN] ('in-state' fromState=[ProcessState|FQN])? '{'
+		//        ('correlate-by' correlationKey=ID)?
+		//        ('issues-commands' commands+=[Command|FQN] (',' commands+=[Command|FQN])*)?
+		//        ('transition-to' toState=[ProcessState|FQN])?
+		//        ('arm-timeout' armTimeout=Duration)?
+		//        (cancelTimeout?='cancel-timeout')?
+		//    '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//'reacts-to' event=[Event|FQN] ('in-state' fromState=[ProcessState|FQN])? '{'
+		//    ('correlate-by' correlationKey=ID)?
+		//    ('issues-commands' commands+=[Command|FQN] (',' commands+=[Command|FQN])*)?
+		//    ('transition-to' toState=[ProcessState|FQN])?
+		//    ('arm-timeout' armTimeout=Duration)?
+		//    (cancelTimeout?='cancel-timeout')?
+		//'}'
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//'reacts-to'
+		public Keyword getReactsToKeyword_1() { return cReactsToKeyword_1; }
+		
+		//event=[Event|FQN]
+		public Assignment getEventAssignment_2() { return cEventAssignment_2; }
+		
+		//[Event|FQN]
+		public CrossReference getEventEventCrossReference_2_0() { return cEventEventCrossReference_2_0; }
+		
+		//FQN
+		public RuleCall getEventEventFQNParserRuleCall_2_0_1() { return cEventEventFQNParserRuleCall_2_0_1; }
+		
+		//('in-state' fromState=[ProcessState|FQN])?
+		public Group getGroup_3() { return cGroup_3; }
+		
+		//'in-state'
+		public Keyword getInStateKeyword_3_0() { return cInStateKeyword_3_0; }
+		
+		//fromState=[ProcessState|FQN]
+		public Assignment getFromStateAssignment_3_1() { return cFromStateAssignment_3_1; }
+		
+		//[ProcessState|FQN]
+		public CrossReference getFromStateProcessStateCrossReference_3_1_0() { return cFromStateProcessStateCrossReference_3_1_0; }
+		
+		//FQN
+		public RuleCall getFromStateProcessStateFQNParserRuleCall_3_1_0_1() { return cFromStateProcessStateFQNParserRuleCall_3_1_0_1; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
+		
+		//('correlate-by' correlationKey=ID)?
+		public Group getGroup_5() { return cGroup_5; }
+		
+		//'correlate-by'
+		public Keyword getCorrelateByKeyword_5_0() { return cCorrelateByKeyword_5_0; }
+		
+		//correlationKey=ID
+		public Assignment getCorrelationKeyAssignment_5_1() { return cCorrelationKeyAssignment_5_1; }
+		
+		//ID
+		public RuleCall getCorrelationKeyIDTerminalRuleCall_5_1_0() { return cCorrelationKeyIDTerminalRuleCall_5_1_0; }
+		
+		//('issues-commands' commands+=[Command|FQN] (',' commands+=[Command|FQN])*)?
+		public Group getGroup_6() { return cGroup_6; }
+		
+		//'issues-commands'
+		public Keyword getIssuesCommandsKeyword_6_0() { return cIssuesCommandsKeyword_6_0; }
+		
+		//commands+=[Command|FQN]
+		public Assignment getCommandsAssignment_6_1() { return cCommandsAssignment_6_1; }
+		
+		//[Command|FQN]
+		public CrossReference getCommandsCommandCrossReference_6_1_0() { return cCommandsCommandCrossReference_6_1_0; }
+		
+		//FQN
+		public RuleCall getCommandsCommandFQNParserRuleCall_6_1_0_1() { return cCommandsCommandFQNParserRuleCall_6_1_0_1; }
+		
+		//(',' commands+=[Command|FQN])*
+		public Group getGroup_6_2() { return cGroup_6_2; }
+		
+		//','
+		public Keyword getCommaKeyword_6_2_0() { return cCommaKeyword_6_2_0; }
+		
+		//commands+=[Command|FQN]
+		public Assignment getCommandsAssignment_6_2_1() { return cCommandsAssignment_6_2_1; }
+		
+		//[Command|FQN]
+		public CrossReference getCommandsCommandCrossReference_6_2_1_0() { return cCommandsCommandCrossReference_6_2_1_0; }
+		
+		//FQN
+		public RuleCall getCommandsCommandFQNParserRuleCall_6_2_1_0_1() { return cCommandsCommandFQNParserRuleCall_6_2_1_0_1; }
+		
+		//('transition-to' toState=[ProcessState|FQN])?
+		public Group getGroup_7() { return cGroup_7; }
+		
+		//'transition-to'
+		public Keyword getTransitionToKeyword_7_0() { return cTransitionToKeyword_7_0; }
+		
+		//toState=[ProcessState|FQN]
+		public Assignment getToStateAssignment_7_1() { return cToStateAssignment_7_1; }
+		
+		//[ProcessState|FQN]
+		public CrossReference getToStateProcessStateCrossReference_7_1_0() { return cToStateProcessStateCrossReference_7_1_0; }
+		
+		//FQN
+		public RuleCall getToStateProcessStateFQNParserRuleCall_7_1_0_1() { return cToStateProcessStateFQNParserRuleCall_7_1_0_1; }
+		
+		//('arm-timeout' armTimeout=Duration)?
+		public Group getGroup_8() { return cGroup_8; }
+		
+		//'arm-timeout'
+		public Keyword getArmTimeoutKeyword_8_0() { return cArmTimeoutKeyword_8_0; }
+		
+		//armTimeout=Duration
+		public Assignment getArmTimeoutAssignment_8_1() { return cArmTimeoutAssignment_8_1; }
+		
+		//Duration
+		public RuleCall getArmTimeoutDurationParserRuleCall_8_1_0() { return cArmTimeoutDurationParserRuleCall_8_1_0; }
+		
+		//(cancelTimeout?='cancel-timeout')?
+		public Assignment getCancelTimeoutAssignment_9() { return cCancelTimeoutAssignment_9; }
+		
+		//'cancel-timeout'
+		public Keyword getCancelTimeoutCancelTimeoutKeyword_9_0() { return cCancelTimeoutCancelTimeoutKeyword_9_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
+	}
 	public class LiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Literal");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -4868,6 +5208,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final CommandHandlerElements pCommandHandler;
 	private final ProjectionElements pProjection;
 	private final ViewElements pView;
+	private final ProcessManagerElements pProcessManager;
+	private final ProcessStateElements pProcessState;
+	private final ProcessReactionElements pProcessReaction;
 	private final LiteralElements pLiteral;
 	private final JSONElements pJSON;
 	private final JsonObjectElements pJsonObject;
@@ -4958,6 +5301,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pCommandHandler = new CommandHandlerElements();
 		this.pProjection = new ProjectionElements();
 		this.pView = new ViewElements();
+		this.pProcessManager = new ProcessManagerElements();
+		this.pProcessState = new ProcessStateElements();
+		this.pProcessReaction = new ProcessReactionElements();
 		this.pLiteral = new LiteralElements();
 		this.pJSON = new JSONElements();
 		this.pJsonObject = new JsonObjectElements();
@@ -5087,7 +5433,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///** Common properties of domain model elements. */
 	//AbstractElement:
-	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
+	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 	public AbstractElementElements getAbstractElementAccess() {
 		return pAbstractElement;
 	}
@@ -5853,6 +6199,61 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getViewRule() {
 		return getViewAccess().getRule();
+	}
+	
+	///**
+	// * A process manager (also known as a saga) that coordinates a long-running process across
+	// * aggregates. It reacts to domain events and issues commands, moving through a small, documented
+	// * state machine. It is the place the model expresses orchestration that no single aggregate owns.
+	// */
+	//ProcessManager:
+	//    doc=DOC?
+	//    'process-manager' name=ID '{'
+	//        ('cron-schedule' cron=STRING)?
+	//        ('correlation-id' correlationId=[Type|FQN])?
+	//        ('process-states' '{' states+=ProcessState+ '}')?
+	//        reactions+=ProcessReaction*
+	//    '}';
+	public ProcessManagerElements getProcessManagerAccess() {
+		return pProcessManager;
+	}
+	
+	public ParserRule getProcessManagerRule() {
+		return getProcessManagerAccess().getRule();
+	}
+	
+	///** A named state a process manager can be in. */
+	//ProcessState:
+	//    doc=DOC?
+	//    name=ID;
+	public ProcessStateElements getProcessStateAccess() {
+		return pProcessState;
+	}
+	
+	public ParserRule getProcessStateRule() {
+		return getProcessStateAccess().getRule();
+	}
+	
+	///**
+	// * A reaction of a process manager: when a domain event arrives (optionally only while the process
+	// * is in a given state), it may correlate to a running process, issue commands, move to another
+	// * state, and arm or cancel a timeout.
+	// */
+	//ProcessReaction:
+	//    doc=DOC?
+	//    'reacts-to' event=[Event|FQN] ('in-state' fromState=[ProcessState|FQN])? '{'
+	//        ('correlate-by' correlationKey=ID)?
+	//        ('issues-commands' commands+=[Command|FQN] (',' commands+=[Command|FQN])*)?
+	//        ('transition-to' toState=[ProcessState|FQN])?
+	//        ('arm-timeout' armTimeout=Duration)?
+	//        (cancelTimeout?='cancel-timeout')?
+	//    '}';
+	public ProcessReactionElements getProcessReactionAccess() {
+		return pProcessReaction;
+	}
+	
+	public ParserRule getProcessReactionRule() {
+		return getProcessReactionAccess().getRule();
 	}
 	
 	///** A notation for representing a fixed value in source code. */

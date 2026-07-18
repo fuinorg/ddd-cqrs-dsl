@@ -65,6 +65,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("projection_and_view");
     }
 
+    /** A process manager with states, guarded reactions, issued commands and timeouts. */
+    public void testProcessManager() {
+        assertNoErrors("process_manager");
+    }
+
     public void testException() {
         assertNoErrors("exception");
     }

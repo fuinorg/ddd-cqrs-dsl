@@ -41,7 +41,7 @@ Hint:
 
 /** Common properties of domain model elements. */
 AbstractElement:
-	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | DataProtection;
+	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 
 /** Common properties of all types. */
 Type:
@@ -443,6 +443,40 @@ View:
 	'view' name=ID 'uses' projection=[Projection|FQN] '{'
 		businessRules+=BusinessRule*
 		methods+=Method*
+	'}';
+
+/**
+ * A process manager (also known as a saga) that coordinates a long-running process across
+ * aggregates. It reacts to domain events and issues commands, moving through a small, documented
+ * state machine. It is the place the model expresses orchestration that no single aggregate owns.
+ */
+ProcessManager:
+	doc=DOC?
+	'process-manager' name=ID '{'
+		('cron-schedule' cron=STRING)?
+		('correlation-id' correlationId=[Type|FQN])?
+		('process-states' '{' states+=ProcessState+ '}')?
+		reactions+=ProcessReaction*
+	'}';
+
+/** A named state a process manager can be in. */
+ProcessState:
+	doc=DOC?
+	name=ID;
+
+/**
+ * A reaction of a process manager: when a domain event arrives (optionally only while the process
+ * is in a given state), it may correlate to a running process, issue commands, move to another
+ * state, and arm or cancel a timeout.
+ */
+ProcessReaction:
+	doc=DOC?
+	'reacts-to' event=[Event|FQN] ('in-state' fromState=[ProcessState|FQN])? '{'
+		('correlate-by' correlationKey=ID)?
+		('issues-commands' commands+=[Command|FQN] (',' commands+=[Command|FQN])*)?
+		('transition-to' toState=[ProcessState|FQN])?
+		('arm-timeout' armTimeout=Duration)?
+		(cancelTimeout?='cancel-timeout')?
 	'}';
 
 /** A notation for representing a fixed value in source code. */

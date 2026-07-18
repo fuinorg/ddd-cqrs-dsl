@@ -66,6 +66,17 @@
     KW_USES='uses'
     KW_PROJECTION='projection'
     KW_VIEW='view'
+    KW_PROCESS_MANAGER='process-manager'
+    KW_CRON_SCHEDULE='cron-schedule'
+    KW_CORRELATION_ID='correlation-id'
+    KW_PROCESS_STATES='process-states'
+    KW_REACTS_TO='reacts-to'
+    KW_IN_STATE='in-state'
+    KW_CORRELATE_BY='correlate-by'
+    KW_ISSUES_COMMANDS='issues-commands'
+    KW_TRANSITION_TO='transition-to'
+    KW_ARM_TIMEOUT='arm-timeout'
+    KW_CANCEL_TIMEOUT='cancel-timeout'
     KW_CONSISTENCY='consistency'
     KW_ACCEPTABLE='acceptable'
     KW_DETECTION='detection'
@@ -226,6 +237,7 @@ element ::= constraint_def
           | command_handler
           | projection_def
           | view_def
+          | process_manager
           | data_protection_def {
   recoverWhile=element_recover
 }
@@ -234,7 +246,7 @@ private element_recover ::= !(RBRACE | element_start)
 // 'AT' (@) starts an annotation instance prefixing a value-object/event, so it must end recovery.
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
           | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
-          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_DATA_PROTECTION
+          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
 
 external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
   pin=1
@@ -335,6 +347,32 @@ view_def ::= KW_VIEW ID KW_USES type_ref LBRACE business_rule* method_def* RBRAC
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+process_manager ::= KW_PROCESS_MANAGER ID LBRACE
+    (KW_CRON_SCHEDULE STRING)?
+    (KW_CORRELATION_ID type_ref)?
+    (KW_PROCESS_STATES LBRACE process_state+ RBRACE)?
+    process_reaction*
+  RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+process_state ::= ID {
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+process_reaction ::= KW_REACTS_TO type_ref (KW_IN_STATE type_ref)? LBRACE
+    (KW_CORRELATE_BY ID)?
+    (KW_ISSUES_COMMANDS type_ref (COMMA type_ref)*)?
+    (KW_TRANSITION_TO type_ref)?
+    (KW_ARM_TIMEOUT duration)?
+    KW_CANCEL_TIMEOUT?
+  RBRACE {
+  pin=1
 }
 
 // =========================================================================
