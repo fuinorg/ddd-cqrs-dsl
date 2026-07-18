@@ -125,7 +125,11 @@ ext.pluginChangeNotes = '''\
         <code>issues-commands</code>, <code>transition-to</code> another state, and
         <code>arm-timeout</code>/<code>cancel-timeout</code>. Every state and reaction may carry its own
         doc comment. Grammar-only for now (like <code>command-handler</code>/<code>view</code>); code
-        generation follows.</li>
+        generation follows. The new keywords are syntax-highlighted and offered in context-aware
+        completion (the manager clauses inside the block, the reaction clauses inside a
+        <code>reacts-to</code>, and the time units after <code>arm-timeout</code>). Separately,
+        <code>view</code> bodies now offer their <code>business-rule</code> and <code>method</code>
+        keywords in completion.</li>
     <li><b>1.13.0</b> &ndash; A method's <code>returns</code> may now be declared
         <code>optional</code> (<code>returns optional String</code>), the same way an attribute or a
         parameter can, to express that the result may be absent. The code generation maps it to a
