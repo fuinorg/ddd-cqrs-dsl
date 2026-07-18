@@ -63,6 +63,31 @@ final class CqrsValidationUtil {
         return refs.isEmpty() ? null : refs.get(0);
     }
 
+    /**
+     * The first {@code token} that immediately follows {@code keyword} inside {@code parent}, or
+     * {@code null}. Used to reach a bare literal for which Grammar-Kit generates no named accessor
+     * (e.g. the {@code STRING} after {@code cron-schedule} in a {@code view}, which also has a
+     * {@code rest-path} {@code STRING}).
+     */
+    static @Nullable PsiElement firstTokenAfter(@NotNull PsiElement parent, @NotNull IElementType keyword,
+            @NotNull IElementType token) {
+        boolean active = false;
+        for (PsiElement child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child instanceof PsiWhiteSpace || child instanceof PsiComment) {
+                continue;
+            }
+            IElementType type = child.getNode().getElementType();
+            if (type == keyword) {
+                active = true;
+            } else if (active && type == token) {
+                return child;
+            } else {
+                active = false;
+            }
+        }
+        return null;
+    }
+
     /** First declaration {@code ref} resolves to, or {@code null} if it is unresolved. */
     static @Nullable CqrsNamedElement resolve(@Nullable CqrsTypeRef ref) {
         if (ref == null) {

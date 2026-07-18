@@ -33,6 +33,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.View;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getProjection <em>Projection</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getMethods <em>Methods</em>}</li>
  * </ul>
@@ -50,6 +52,46 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @ordered
    */
   protected Projection projection;
+
+  /**
+   * The default value of the '{@link #getRestPath() <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRestPath()
+   * @generated
+   * @ordered
+   */
+  protected static final String REST_PATH_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRestPath() <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRestPath()
+   * @generated
+   * @ordered
+   */
+  protected String restPath = REST_PATH_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getCron() <em>Cron</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCron()
+   * @generated
+   * @ordered
+   */
+  protected static final String CRON_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getCron() <em>Cron</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCron()
+   * @generated
+   * @ordered
+   */
+  protected String cron = CRON_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getBusinessRules() <em>Business Rules</em>}' containment reference list.
@@ -143,6 +185,56 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @generated
    */
   @Override
+  public String getRestPath()
+  {
+    return restPath;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setRestPath(String newRestPath)
+  {
+    String oldRestPath = restPath;
+    restPath = newRestPath;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VIEW__REST_PATH, oldRestPath, restPath));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getCron()
+  {
+    return cron;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setCron(String newCron)
+  {
+    String oldCron = cron;
+    cron = newCron;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VIEW__CRON, oldCron, cron));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<BusinessRule> getBusinessRules()
   {
     if (businessRules == null)
@@ -198,6 +290,10 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         if (resolve) return getProjection();
         return basicGetProjection();
+      case CqrsDslPackage.VIEW__REST_PATH:
+        return getRestPath();
+      case CqrsDslPackage.VIEW__CRON:
+        return getCron();
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
         return getBusinessRules();
       case CqrsDslPackage.VIEW__METHODS:
@@ -219,6 +315,12 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)newValue);
+        return;
+      case CqrsDslPackage.VIEW__REST_PATH:
+        setRestPath((String)newValue);
+        return;
+      case CqrsDslPackage.VIEW__CRON:
+        setCron((String)newValue);
         return;
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
         getBusinessRules().clear();
@@ -245,6 +347,12 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)null);
         return;
+      case CqrsDslPackage.VIEW__REST_PATH:
+        setRestPath(REST_PATH_EDEFAULT);
+        return;
+      case CqrsDslPackage.VIEW__CRON:
+        setCron(CRON_EDEFAULT);
+        return;
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
         getBusinessRules().clear();
         return;
@@ -267,12 +375,35 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         return projection != null;
+      case CqrsDslPackage.VIEW__REST_PATH:
+        return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
+      case CqrsDslPackage.VIEW__CRON:
+        return CRON_EDEFAULT == null ? cron != null : !CRON_EDEFAULT.equals(cron);
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
         return businessRules != null && !businessRules.isEmpty();
       case CqrsDslPackage.VIEW__METHODS:
         return methods != null && !methods.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (restPath: ");
+    result.append(restPath);
+    result.append(", cron: ");
+    result.append(cron);
+    result.append(')');
+    return result.toString();
   }
 
 } //ViewImpl

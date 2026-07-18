@@ -34,6 +34,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsServiceDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypeRef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsViewDef;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +46,7 @@ import java.util.Set;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.attributeNames;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.concrete;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.findUnknownVar;
+import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.firstTokenAfter;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.firstTypeRefAfter;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.nameRange;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.parameterNames;
@@ -100,9 +102,13 @@ public final class CqrsValidationAnnotator implements Annotator {
         } else if (element instanceof CqrsAnnotationInstance) {
             checkAnnotationInstanceArgs((CqrsAnnotationInstance) element, holder);
         } else if (element instanceof CqrsProcessManager) {
-            checkProcessManager((CqrsProcessManager) element, holder);
+            CqrsProcessManager pm = (CqrsProcessManager) element;
+            checkProcessManager(pm, holder);
+            checkProcessManagerCronSchedule(pm, holder);
         } else if (element instanceof CqrsProcessReaction) {
             checkProcessReaction((CqrsProcessReaction) element, holder);
+        } else if (element instanceof CqrsViewDef) {
+            checkViewCronSchedule((CqrsViewDef) element, holder);
         }
     }
 
@@ -116,6 +122,30 @@ public final class CqrsValidationAnnotator implements Annotator {
             if (!seen.add(name)) {
                 error(holder, state, "Duplicate process state '" + name + "'");
             }
+        }
+    }
+
+    /** Reports a process-manager 'cron-schedule' that is not a valid Spring cron expression. */
+    private void checkProcessManagerCronSchedule(@NotNull CqrsProcessManager pm, @NotNull AnnotationHolder holder) {
+        checkCronSchedule(pm.getString(), holder);
+    }
+
+    // --- view -----------------------------------------------------------------------------------
+
+    /** Reports a view 'cron-schedule' that is not a valid Spring cron expression. */
+    private void checkViewCronSchedule(@NotNull CqrsViewDef view, @NotNull AnnotationHolder holder) {
+        // 'view' has two STRING tokens (rest-path, cron-schedule), so there is no named accessor;
+        // reach the cron STRING by scanning for the token after the 'cron-schedule' keyword.
+        checkCronSchedule(firstTokenAfter(view, CqrsTypes.KW_CRON_SCHEDULE, CqrsTypes.STRING), holder);
+    }
+
+    private void checkCronSchedule(@Nullable PsiElement cronToken, @NotNull AnnotationHolder holder) {
+        if (cronToken == null) {
+            return;
+        }
+        String value = stringValue(cronToken);
+        if (value != null && !SpringCronExpression.isValid(value)) {
+            error(holder, cronToken, "Invalid Spring cron expression: '" + value + "'");
         }
     }
 

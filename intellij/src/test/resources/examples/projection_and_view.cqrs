@@ -35,7 +35,11 @@ project p_projection_and_view {
 			}
 
 			// A view may declare business rules and methods, like a service.
+			// It may also set an optional REST base path and projection cron.
 			view UserListView uses UserList {
+
+				rest-path "/users"
+				cron-schedule "* * * * * *"
 
 				business-rule UserKnown exception UnknownUserException {
 					consistency strong

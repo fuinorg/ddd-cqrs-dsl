@@ -46,6 +46,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.fuin.dsl.cqrs.cqrsDsl.Command
+import org.fuin.dsl.cqrs.cqrsDsl.View
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction
@@ -139,6 +140,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch"
 
 	public static val VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods"
+
+	public static val INVALID_CRON_EXPRESSION = "invalidCronExpression"
 
 	@Inject
 	IContainer.Manager containerManager
@@ -294,6 +297,30 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					EVENT_MSG_UNKNOWN_VAR
 				)
 			}
+		}
+	}
+
+	@Check
+	def checkViewCronSchedule(View view) {
+		if (view.cron !== null && !SpringCronExpression.isValid(view.cron)) {
+			error(
+				"Invalid Spring cron expression: '" + view.cron + "'",
+				view,
+				CqrsDslPackage.Literals::VIEW__CRON,
+				INVALID_CRON_EXPRESSION
+			)
+		}
+	}
+
+	@Check
+	def checkProcessManagerCronSchedule(ProcessManager pm) {
+		if (pm.cron !== null && !SpringCronExpression.isValid(pm.cron)) {
+			error(
+				"Invalid Spring cron expression: '" + pm.cron + "'",
+				pm,
+				CqrsDslPackage.Literals::PROCESS_MANAGER__CRON,
+				INVALID_CRON_EXPRESSION
+			)
 		}
 	}
 

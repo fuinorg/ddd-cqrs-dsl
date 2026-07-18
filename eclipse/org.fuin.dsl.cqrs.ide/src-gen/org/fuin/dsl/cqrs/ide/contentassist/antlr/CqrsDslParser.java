@@ -154,6 +154,8 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getProjectionAccess().getGroup_3(), "rule__Projection__Group_3__0");
 			builder.put(grammarAccess.getProjectionAccess().getGroup_3_2(), "rule__Projection__Group_3_2__0");
 			builder.put(grammarAccess.getViewAccess().getGroup(), "rule__View__Group__0");
+			builder.put(grammarAccess.getViewAccess().getGroup_6(), "rule__View__Group_6__0");
+			builder.put(grammarAccess.getViewAccess().getGroup_7(), "rule__View__Group_7__0");
 			builder.put(grammarAccess.getProcessManagerAccess().getGroup(), "rule__ProcessManager__Group__0");
 			builder.put(grammarAccess.getProcessManagerAccess().getGroup_4(), "rule__ProcessManager__Group_4__0");
 			builder.put(grammarAccess.getProcessManagerAccess().getGroup_5(), "rule__ProcessManager__Group_5__0");
@@ -409,8 +411,10 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getViewAccess().getDocAssignment_0(), "rule__View__DocAssignment_0");
 			builder.put(grammarAccess.getViewAccess().getNameAssignment_2(), "rule__View__NameAssignment_2");
 			builder.put(grammarAccess.getViewAccess().getProjectionAssignment_4(), "rule__View__ProjectionAssignment_4");
-			builder.put(grammarAccess.getViewAccess().getBusinessRulesAssignment_6(), "rule__View__BusinessRulesAssignment_6");
-			builder.put(grammarAccess.getViewAccess().getMethodsAssignment_7(), "rule__View__MethodsAssignment_7");
+			builder.put(grammarAccess.getViewAccess().getRestPathAssignment_6_1(), "rule__View__RestPathAssignment_6_1");
+			builder.put(grammarAccess.getViewAccess().getCronAssignment_7_1(), "rule__View__CronAssignment_7_1");
+			builder.put(grammarAccess.getViewAccess().getBusinessRulesAssignment_8(), "rule__View__BusinessRulesAssignment_8");
+			builder.put(grammarAccess.getViewAccess().getMethodsAssignment_9(), "rule__View__MethodsAssignment_9");
 			builder.put(grammarAccess.getProcessManagerAccess().getDocAssignment_0(), "rule__ProcessManager__DocAssignment_0");
 			builder.put(grammarAccess.getProcessManagerAccess().getNameAssignment_2(), "rule__ProcessManager__NameAssignment_2");
 			builder.put(grammarAccess.getProcessManagerAccess().getCronAssignment_4_1(), "rule__ProcessManager__CronAssignment_4_1");

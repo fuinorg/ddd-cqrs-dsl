@@ -69,6 +69,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "transition-to"           { return KW_TRANSITION_TO; }
   "arm-timeout"             { return KW_ARM_TIMEOUT; }
   "cancel-timeout"          { return KW_CANCEL_TIMEOUT; }
+  "rest-path"               { return KW_REST_PATH; }
 
   // ---- Structural keywords ----
   "project"                 { return KW_PROJECT; }

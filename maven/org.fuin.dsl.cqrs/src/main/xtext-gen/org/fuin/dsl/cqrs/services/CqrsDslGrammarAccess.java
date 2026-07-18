@@ -3761,16 +3761,26 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final CrossReference cProjectionProjectionCrossReference_4_0 = (CrossReference)cProjectionAssignment_4.eContents().get(0);
 		private final RuleCall cProjectionProjectionFQNParserRuleCall_4_0_1 = (RuleCall)cProjectionProjectionCrossReference_4_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cBusinessRulesAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_6_0 = (RuleCall)cBusinessRulesAssignment_6.eContents().get(0);
-		private final Assignment cMethodsAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMethodsMethodParserRuleCall_7_0 = (RuleCall)cMethodsAssignment_7.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cRestPathKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cRestPathAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cRestPathSTRINGTerminalRuleCall_6_1_0 = (RuleCall)cRestPathAssignment_6_1.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cCronScheduleKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cCronAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cCronSTRINGTerminalRuleCall_7_1_0 = (RuleCall)cCronAssignment_7_1.eContents().get(0);
+		private final Assignment cBusinessRulesAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_8_0 = (RuleCall)cBusinessRulesAssignment_8.eContents().get(0);
+		private final Assignment cMethodsAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cMethodsMethodParserRuleCall_9_0 = (RuleCall)cMethodsAssignment_9.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
 		
 		///** Result of a projection. Like a service it may offer methods to query it. */
 		//View:
 		//    doc=DOC?
 		//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//        ('rest-path' restPath=STRING)?
+		//        ('cron-schedule' cron=STRING)?
 		//        businessRules+=BusinessRule*
 		//        methods+=Method*
 		//    '}';
@@ -3778,6 +3788,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC?
 		//'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//    ('rest-path' restPath=STRING)?
+		//    ('cron-schedule' cron=STRING)?
 		//    businessRules+=BusinessRule*
 		//    methods+=Method*
 		//'}'
@@ -3813,20 +3825,44 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
 		
+		//('rest-path' restPath=STRING)?
+		public Group getGroup_6() { return cGroup_6; }
+		
+		//'rest-path'
+		public Keyword getRestPathKeyword_6_0() { return cRestPathKeyword_6_0; }
+		
+		//restPath=STRING
+		public Assignment getRestPathAssignment_6_1() { return cRestPathAssignment_6_1; }
+		
+		//STRING
+		public RuleCall getRestPathSTRINGTerminalRuleCall_6_1_0() { return cRestPathSTRINGTerminalRuleCall_6_1_0; }
+		
+		//('cron-schedule' cron=STRING)?
+		public Group getGroup_7() { return cGroup_7; }
+		
+		//'cron-schedule'
+		public Keyword getCronScheduleKeyword_7_0() { return cCronScheduleKeyword_7_0; }
+		
+		//cron=STRING
+		public Assignment getCronAssignment_7_1() { return cCronAssignment_7_1; }
+		
+		//STRING
+		public RuleCall getCronSTRINGTerminalRuleCall_7_1_0() { return cCronSTRINGTerminalRuleCall_7_1_0; }
+		
 		//businessRules+=BusinessRule*
-		public Assignment getBusinessRulesAssignment_6() { return cBusinessRulesAssignment_6; }
+		public Assignment getBusinessRulesAssignment_8() { return cBusinessRulesAssignment_8; }
 		
 		//BusinessRule
-		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_6_0() { return cBusinessRulesBusinessRuleParserRuleCall_6_0; }
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_8_0() { return cBusinessRulesBusinessRuleParserRuleCall_8_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_7() { return cMethodsAssignment_7; }
+		public Assignment getMethodsAssignment_9() { return cMethodsAssignment_9; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_7_0() { return cMethodsMethodParserRuleCall_7_0; }
+		public RuleCall getMethodsMethodParserRuleCall_9_0() { return cMethodsMethodParserRuleCall_9_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
+		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
 	}
 	public class ProcessManagerElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProcessManager");
@@ -6190,6 +6226,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//View:
 	//    doc=DOC?
 	//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+	//        ('rest-path' restPath=STRING)?
+	//        ('cron-schedule' cron=STRING)?
 	//        businessRules+=BusinessRule*
 	//        methods+=Method*
 	//    '}';

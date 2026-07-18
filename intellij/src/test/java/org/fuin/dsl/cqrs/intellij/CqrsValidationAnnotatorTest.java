@@ -146,4 +146,65 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 }
                 """);
     }
+
+    // --- cron-schedule (Spring cron validation) -------------------------------------------------
+
+    public void testViewValidCronScheduleIsAccepted() {
+        check("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      cron-schedule "0 0 12 * * MON-FRI"
+                    }
+                  }
+                }
+                }
+                """);
+    }
+
+    public void testViewMacroCronScheduleIsAccepted() {
+        check("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      cron-schedule "@daily"
+                    }
+                  }
+                }
+                }
+                """);
+    }
+
+    public void testViewInvalidCronScheduleIsReported() {
+        check("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      cron-schedule <error>"not a cron"</error>
+                    }
+                  }
+                }
+                }
+                """);
+    }
+
+    public void testProcessManagerInvalidCronScheduleIsReported() {
+        check("""
+                project p {
+                context c {
+                  namespace n {
+                    process-manager PM {
+                      cron-schedule <error>"99 * * * * *"</error>
+                    }
+                  }
+                }
+                }
+                """);
+    }
 }
