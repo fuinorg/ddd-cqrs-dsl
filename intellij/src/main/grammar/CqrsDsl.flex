@@ -58,6 +58,17 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "data-protection"         { return KW_DATA_PROTECTION; }
   "protected-by"            { return KW_PROTECTED_BY; }
   "lawful-basis"            { return KW_LAWFUL_BASIS; }
+  "process-manager"         { return KW_PROCESS_MANAGER; }
+  "cron-schedule"           { return KW_CRON_SCHEDULE; }
+  "correlation-id"          { return KW_CORRELATION_ID; }
+  "process-states"          { return KW_PROCESS_STATES; }
+  "reacts-to"               { return KW_REACTS_TO; }
+  "in-state"                { return KW_IN_STATE; }
+  "correlate-by"            { return KW_CORRELATE_BY; }
+  "issues-commands"         { return KW_ISSUES_COMMANDS; }
+  "transition-to"           { return KW_TRANSITION_TO; }
+  "arm-timeout"             { return KW_ARM_TIMEOUT; }
+  "cancel-timeout"          { return KW_CANCEL_TIMEOUT; }
 
   // ---- Structural keywords ----
   "project"                 { return KW_PROJECT; }

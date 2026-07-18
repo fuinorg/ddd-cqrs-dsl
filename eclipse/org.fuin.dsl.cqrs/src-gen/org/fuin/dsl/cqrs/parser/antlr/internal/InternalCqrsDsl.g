@@ -622,11 +622,20 @@ ruleAbstractElement returns [EObject current=null]
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getAbstractElementAccess().getDataProtectionParserRuleCall_9());
+			newCompositeNode(grammarAccess.getAbstractElementAccess().getProcessManagerParserRuleCall_9());
 		}
-		this_DataProtection_9=ruleDataProtection
+		this_ProcessManager_9=ruleProcessManager
 		{
-			$current = $this_DataProtection_9.current;
+			$current = $this_ProcessManager_9.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getAbstractElementAccess().getDataProtectionParserRuleCall_10());
+		}
+		this_DataProtection_10=ruleDataProtection
+		{
+			$current = $this_DataProtection_10.current;
 			afterParserOrEnumRuleCall();
 		}
 	)
@@ -6030,6 +6039,442 @@ ruleView returns [EObject current=null]
 		otherlv_8='}'
 		{
 			newLeafNode(otherlv_8, grammarAccess.getViewAccess().getRightCurlyBracketKeyword_8());
+		}
+	)
+;
+
+// Entry rule entryRuleProcessManager
+entryRuleProcessManager returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getProcessManagerRule()); }
+	iv_ruleProcessManager=ruleProcessManager
+	{ $current=$iv_ruleProcessManager.current; }
+	EOF;
+
+// Rule ProcessManager
+ruleProcessManager returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			(
+				lv_doc_0_0=RULE_DOC
+				{
+					newLeafNode(lv_doc_0_0, grammarAccess.getProcessManagerAccess().getDocDOCTerminalRuleCall_0_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessManagerRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"doc",
+						lv_doc_0_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.DOC");
+				}
+			)
+		)?
+		otherlv_1='process-manager'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getProcessManagerAccess().getProcessManagerKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_ID
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getProcessManagerAccess().getNameIDTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessManagerRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.ID");
+				}
+			)
+		)
+		otherlv_3='{'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getProcessManagerAccess().getLeftCurlyBracketKeyword_3());
+		}
+		(
+			otherlv_4='cron-schedule'
+			{
+				newLeafNode(otherlv_4, grammarAccess.getProcessManagerAccess().getCronScheduleKeyword_4_0());
+			}
+			(
+				(
+					lv_cron_5_0=RULE_STRING
+					{
+						newLeafNode(lv_cron_5_0, grammarAccess.getProcessManagerAccess().getCronSTRINGTerminalRuleCall_4_1_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessManagerRule());
+						}
+						setWithLastConsumed(
+							$current,
+							"cron",
+							lv_cron_5_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
+					}
+				)
+			)
+		)?
+		(
+			otherlv_6='correlation-id'
+			{
+				newLeafNode(otherlv_6, grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessManagerRule());
+						}
+					}
+					{
+						newCompositeNode(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+		)?
+		(
+			otherlv_8='process-states'
+			{
+				newLeafNode(otherlv_8, grammarAccess.getProcessManagerAccess().getProcessStatesKeyword_6_0());
+			}
+			otherlv_9='{'
+			{
+				newLeafNode(otherlv_9, grammarAccess.getProcessManagerAccess().getLeftCurlyBracketKeyword_6_1());
+			}
+			(
+				(
+					{
+						newCompositeNode(grammarAccess.getProcessManagerAccess().getStatesProcessStateParserRuleCall_6_2_0());
+					}
+					lv_states_10_0=ruleProcessState
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getProcessManagerRule());
+						}
+						add(
+							$current,
+							"states",
+							lv_states_10_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.ProcessState");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)+
+			otherlv_11='}'
+			{
+				newLeafNode(otherlv_11, grammarAccess.getProcessManagerAccess().getRightCurlyBracketKeyword_6_3());
+			}
+		)?
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getProcessManagerAccess().getReactionsProcessReactionParserRuleCall_7_0());
+				}
+				lv_reactions_12_0=ruleProcessReaction
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getProcessManagerRule());
+					}
+					add(
+						$current,
+						"reactions",
+						lv_reactions_12_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.ProcessReaction");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		otherlv_13='}'
+		{
+			newLeafNode(otherlv_13, grammarAccess.getProcessManagerAccess().getRightCurlyBracketKeyword_8());
+		}
+	)
+;
+
+// Entry rule entryRuleProcessState
+entryRuleProcessState returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getProcessStateRule()); }
+	iv_ruleProcessState=ruleProcessState
+	{ $current=$iv_ruleProcessState.current; }
+	EOF;
+
+// Rule ProcessState
+ruleProcessState returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			(
+				lv_doc_0_0=RULE_DOC
+				{
+					newLeafNode(lv_doc_0_0, grammarAccess.getProcessStateAccess().getDocDOCTerminalRuleCall_0_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessStateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"doc",
+						lv_doc_0_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.DOC");
+				}
+			)
+		)?
+		(
+			(
+				lv_name_1_0=RULE_ID
+				{
+					newLeafNode(lv_name_1_0, grammarAccess.getProcessStateAccess().getNameIDTerminalRuleCall_1_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessStateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_1_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.ID");
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleProcessReaction
+entryRuleProcessReaction returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getProcessReactionRule()); }
+	iv_ruleProcessReaction=ruleProcessReaction
+	{ $current=$iv_ruleProcessReaction.current; }
+	EOF;
+
+// Rule ProcessReaction
+ruleProcessReaction returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			(
+				lv_doc_0_0=RULE_DOC
+				{
+					newLeafNode(lv_doc_0_0, grammarAccess.getProcessReactionAccess().getDocDOCTerminalRuleCall_0_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessReactionRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"doc",
+						lv_doc_0_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.DOC");
+				}
+			)
+		)?
+		otherlv_1='reacts-to'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getProcessReactionAccess().getReactsToKeyword_1());
+		}
+		(
+			(
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessReactionRule());
+					}
+				}
+				{
+					newCompositeNode(grammarAccess.getProcessReactionAccess().getEventEventCrossReference_2_0());
+				}
+				ruleFQN
+				{
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		(
+			otherlv_3='in-state'
+			{
+				newLeafNode(otherlv_3, grammarAccess.getProcessReactionAccess().getInStateKeyword_3_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessReactionRule());
+						}
+					}
+					{
+						newCompositeNode(grammarAccess.getProcessReactionAccess().getFromStateProcessStateCrossReference_3_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+		)?
+		otherlv_5='{'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getProcessReactionAccess().getLeftCurlyBracketKeyword_4());
+		}
+		(
+			otherlv_6='correlate-by'
+			{
+				newLeafNode(otherlv_6, grammarAccess.getProcessReactionAccess().getCorrelateByKeyword_5_0());
+			}
+			(
+				(
+					lv_correlationKey_7_0=RULE_ID
+					{
+						newLeafNode(lv_correlationKey_7_0, grammarAccess.getProcessReactionAccess().getCorrelationKeyIDTerminalRuleCall_5_1_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessReactionRule());
+						}
+						setWithLastConsumed(
+							$current,
+							"correlationKey",
+							lv_correlationKey_7_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.ID");
+					}
+				)
+			)
+		)?
+		(
+			otherlv_8='issues-commands'
+			{
+				newLeafNode(otherlv_8, grammarAccess.getProcessReactionAccess().getIssuesCommandsKeyword_6_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessReactionRule());
+						}
+					}
+					{
+						newCompositeNode(grammarAccess.getProcessReactionAccess().getCommandsCommandCrossReference_6_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+			(
+				otherlv_10=','
+				{
+					newLeafNode(otherlv_10, grammarAccess.getProcessReactionAccess().getCommaKeyword_6_2_0());
+				}
+				(
+					(
+						{
+							if ($current==null) {
+								$current = createModelElement(grammarAccess.getProcessReactionRule());
+							}
+						}
+						{
+							newCompositeNode(grammarAccess.getProcessReactionAccess().getCommandsCommandCrossReference_6_2_1_0());
+						}
+						ruleFQN
+						{
+							afterParserOrEnumRuleCall();
+						}
+					)
+				)
+			)*
+		)?
+		(
+			otherlv_12='transition-to'
+			{
+				newLeafNode(otherlv_12, grammarAccess.getProcessReactionAccess().getTransitionToKeyword_7_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getProcessReactionRule());
+						}
+					}
+					{
+						newCompositeNode(grammarAccess.getProcessReactionAccess().getToStateProcessStateCrossReference_7_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+		)?
+		(
+			otherlv_14='arm-timeout'
+			{
+				newLeafNode(otherlv_14, grammarAccess.getProcessReactionAccess().getArmTimeoutKeyword_8_0());
+			}
+			(
+				(
+					{
+						newCompositeNode(grammarAccess.getProcessReactionAccess().getArmTimeoutDurationParserRuleCall_8_1_0());
+					}
+					lv_armTimeout_15_0=ruleDuration
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getProcessReactionRule());
+						}
+						set(
+							$current,
+							"armTimeout",
+							lv_armTimeout_15_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.Duration");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+		)?
+		(
+			(
+				lv_cancelTimeout_16_0='cancel-timeout'
+				{
+					newLeafNode(lv_cancelTimeout_16_0, grammarAccess.getProcessReactionAccess().getCancelTimeoutCancelTimeoutKeyword_9_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getProcessReactionRule());
+					}
+					setWithLastConsumed($current, "cancelTimeout", lv_cancelTimeout_16_0 != null, "cancel-timeout");
+				}
+			)
+		)?
+		otherlv_17='}'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getProcessReactionAccess().getRightCurlyBracketKeyword_10());
 		}
 	)
 ;

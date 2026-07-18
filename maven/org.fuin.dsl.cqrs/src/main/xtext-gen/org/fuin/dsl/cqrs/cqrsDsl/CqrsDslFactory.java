@@ -483,6 +483,33 @@ public interface CqrsDslFactory extends EFactory
   View createView();
 
   /**
+   * Returns a new object of class '<em>Process Manager</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Process Manager</em>'.
+   * @generated
+   */
+  ProcessManager createProcessManager();
+
+  /**
+   * Returns a new object of class '<em>Process State</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Process State</em>'.
+   * @generated
+   */
+  ProcessState createProcessState();
+
+  /**
+   * Returns a new object of class '<em>Process Reaction</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Process Reaction</em>'.
+   * @generated
+   */
+  ProcessReaction createProcessReaction();
+
+  /**
    * Returns a new object of class '<em>Literal</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

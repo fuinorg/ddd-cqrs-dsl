@@ -3422,6 +3422,207 @@ public interface CqrsDslPackage extends EPackage
   int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
 
   /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl <em>Process Manager</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessManager()
+   * @generated
+   */
+  int PROCESS_MANAGER = 51;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__DOC = ABSTRACT_ELEMENT__DOC;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__NAME = ABSTRACT_ELEMENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Cron</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Correlation Id</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__CORRELATION_ID = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>States</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__STATES = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Reactions</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER__REACTIONS = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
+
+  /**
+   * The number of structural features of the '<em>Process Manager</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_MANAGER_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessStateImpl <em>Process State</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessStateImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessState()
+   * @generated
+   */
+  int PROCESS_STATE = 52;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_STATE__DOC = 0;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_STATE__NAME = 1;
+
+  /**
+   * The number of structural features of the '<em>Process State</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_STATE_FEATURE_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessReactionImpl <em>Process Reaction</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessReactionImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessReaction()
+   * @generated
+   */
+  int PROCESS_REACTION = 53;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__DOC = 0;
+
+  /**
+   * The feature id for the '<em><b>Event</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__EVENT = 1;
+
+  /**
+   * The feature id for the '<em><b>From State</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__FROM_STATE = 2;
+
+  /**
+   * The feature id for the '<em><b>Correlation Key</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__CORRELATION_KEY = 3;
+
+  /**
+   * The feature id for the '<em><b>Commands</b></em>' reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__COMMANDS = 4;
+
+  /**
+   * The feature id for the '<em><b>To State</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__TO_STATE = 5;
+
+  /**
+   * The feature id for the '<em><b>Arm Timeout</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__ARM_TIMEOUT = 6;
+
+  /**
+   * The feature id for the '<em><b>Cancel Timeout</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION__CANCEL_TIMEOUT = 7;
+
+  /**
+   * The number of structural features of the '<em>Process Reaction</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROCESS_REACTION_FEATURE_COUNT = 8;
+
+  /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.LiteralImpl <em>Literal</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3429,7 +3630,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLiteral()
    * @generated
    */
-  int LITERAL = 51;
+  int LITERAL = 54;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3457,7 +3658,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJSON()
    * @generated
    */
-  int JSON = 52;
+  int JSON = 55;
 
   /**
    * The number of structural features of the '<em>JSON</em>' class.
@@ -3476,7 +3677,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonObject()
    * @generated
    */
-  int JSON_OBJECT = 53;
+  int JSON_OBJECT = 56;
 
   /**
    * The feature id for the '<em><b>Members</b></em>' containment reference list.
@@ -3504,7 +3705,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonMember()
    * @generated
    */
-  int JSON_MEMBER = 54;
+  int JSON_MEMBER = 57;
 
   /**
    * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -3541,7 +3742,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonArray()
    * @generated
    */
-  int JSON_ARRAY = 55;
+  int JSON_ARRAY = 58;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -3569,7 +3770,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonString()
    * @generated
    */
-  int JSON_STRING = 56;
+  int JSON_STRING = 59;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3597,7 +3798,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonNumber()
    * @generated
    */
-  int JSON_NUMBER = 57;
+  int JSON_NUMBER = 60;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3625,7 +3826,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonBoolean()
    * @generated
    */
-  int JSON_BOOLEAN = 58;
+  int JSON_BOOLEAN = 61;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3653,7 +3854,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonNull()
    * @generated
    */
-  int JSON_NULL = 59;
+  int JSON_NULL = 62;
 
   /**
    * The number of structural features of the '<em>Json Null</em>' class.
@@ -3672,7 +3873,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 60;
+  int BOOLEAN_LITERAL = 63;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3700,7 +3901,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 61;
+  int NULL_LITERAL = 64;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3728,7 +3929,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNumberLiteral()
    * @generated
    */
-  int NUMBER_LITERAL = 62;
+  int NUMBER_LITERAL = 65;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3756,7 +3957,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 63;
+  int STRING_LITERAL = 66;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3784,7 +3985,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTimeUnit()
    * @generated
    */
-  int TIME_UNIT = 64;
+  int TIME_UNIT = 67;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel <em>Consistency Level</em>}' enum.
@@ -3794,7 +3995,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConsistencyLevel()
    * @generated
    */
-  int CONSISTENCY_LEVEL = 65;
+  int CONSISTENCY_LEVEL = 68;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection <em>Inconsistency Detection</em>}' enum.
@@ -3804,7 +4005,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyDetection()
    * @generated
    */
-  int INCONSISTENCY_DETECTION = 66;
+  int INCONSISTENCY_DETECTION = 69;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution <em>Inconsistency Resolution</em>}' enum.
@@ -3814,7 +4015,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyResolution()
    * @generated
    */
-  int INCONSISTENCY_RESOLUTION = 67;
+  int INCONSISTENCY_RESOLUTION = 70;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}' enum.
@@ -3824,7 +4025,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProtectionLevel()
    * @generated
    */
-  int PROTECTION_LEVEL = 68;
+  int PROTECTION_LEVEL = 71;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}' enum.
@@ -3834,7 +4035,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLawfulBasis()
    * @generated
    */
-  int LAWFUL_BASIS = 69;
+  int LAWFUL_BASIS = 72;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}' enum.
@@ -3844,7 +4045,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getSpecialCategory()
    * @generated
    */
-  int SPECIAL_CATEGORY = 70;
+  int SPECIAL_CATEGORY = 73;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}' enum.
@@ -3854,7 +4055,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getErasureStrategy()
    * @generated
    */
-  int ERASURE_STRATEGY = 71;
+  int ERASURE_STRATEGY = 74;
 
 
   /**
@@ -5864,6 +6065,190 @@ public interface CqrsDslPackage extends EPackage
   EReference getView_Methods();
 
   /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager <em>Process Manager</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Process Manager</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
+   * @generated
+   */
+  EClass getProcessManager();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCron <em>Cron</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Cron</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCron()
+   * @see #getProcessManager()
+   * @generated
+   */
+  EAttribute getProcessManager_Cron();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId <em>Correlation Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Correlation Id</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId()
+   * @see #getProcessManager()
+   * @generated
+   */
+  EReference getProcessManager_CorrelationId();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getStates <em>States</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>States</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getStates()
+   * @see #getProcessManager()
+   * @generated
+   */
+  EReference getProcessManager_States();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getReactions <em>Reactions</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Reactions</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getReactions()
+   * @see #getProcessManager()
+   * @generated
+   */
+  EReference getProcessManager_Reactions();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessState <em>Process State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Process State</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessState
+   * @generated
+   */
+  EClass getProcessState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessState#getDoc <em>Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessState#getDoc()
+   * @see #getProcessState()
+   * @generated
+   */
+  EAttribute getProcessState_Doc();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessState#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessState#getName()
+   * @see #getProcessState()
+   * @generated
+   */
+  EAttribute getProcessState_Name();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction <em>Process Reaction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Process Reaction</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction
+   * @generated
+   */
+  EClass getProcessReaction();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getDoc <em>Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Doc</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getDoc()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EAttribute getProcessReaction_Doc();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getEvent <em>Event</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Event</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getEvent()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EReference getProcessReaction_Event();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getFromState <em>From State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>From State</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getFromState()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EReference getProcessReaction_FromState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getCorrelationKey <em>Correlation Key</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Correlation Key</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getCorrelationKey()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EAttribute getProcessReaction_CorrelationKey();
+
+  /**
+   * Returns the meta object for the reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getCommands <em>Commands</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference list '<em>Commands</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getCommands()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EReference getProcessReaction_Commands();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getToState <em>To State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>To State</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getToState()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EReference getProcessReaction_ToState();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getArmTimeout <em>Arm Timeout</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Arm Timeout</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#getArmTimeout()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EReference getProcessReaction_ArmTimeout();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#isCancelTimeout <em>Cancel Timeout</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Cancel Timeout</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction#isCancelTimeout()
+   * @see #getProcessReaction()
+   * @generated
+   */
+  EAttribute getProcessReaction_CancelTimeout();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Literal <em>Literal</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7781,6 +8166,148 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference VIEW__METHODS = eINSTANCE.getView_Methods();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl <em>Process Manager</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessManager()
+     * @generated
+     */
+    EClass PROCESS_MANAGER = eINSTANCE.getProcessManager();
+
+    /**
+     * The meta object literal for the '<em><b>Cron</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_MANAGER__CRON = eINSTANCE.getProcessManager_Cron();
+
+    /**
+     * The meta object literal for the '<em><b>Correlation Id</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_MANAGER__CORRELATION_ID = eINSTANCE.getProcessManager_CorrelationId();
+
+    /**
+     * The meta object literal for the '<em><b>States</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_MANAGER__STATES = eINSTANCE.getProcessManager_States();
+
+    /**
+     * The meta object literal for the '<em><b>Reactions</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_MANAGER__REACTIONS = eINSTANCE.getProcessManager_Reactions();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessStateImpl <em>Process State</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessStateImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessState()
+     * @generated
+     */
+    EClass PROCESS_STATE = eINSTANCE.getProcessState();
+
+    /**
+     * The meta object literal for the '<em><b>Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_STATE__DOC = eINSTANCE.getProcessState_Doc();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_STATE__NAME = eINSTANCE.getProcessState_Name();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessReactionImpl <em>Process Reaction</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessReactionImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessReaction()
+     * @generated
+     */
+    EClass PROCESS_REACTION = eINSTANCE.getProcessReaction();
+
+    /**
+     * The meta object literal for the '<em><b>Doc</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_REACTION__DOC = eINSTANCE.getProcessReaction_Doc();
+
+    /**
+     * The meta object literal for the '<em><b>Event</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_REACTION__EVENT = eINSTANCE.getProcessReaction_Event();
+
+    /**
+     * The meta object literal for the '<em><b>From State</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_REACTION__FROM_STATE = eINSTANCE.getProcessReaction_FromState();
+
+    /**
+     * The meta object literal for the '<em><b>Correlation Key</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_REACTION__CORRELATION_KEY = eINSTANCE.getProcessReaction_CorrelationKey();
+
+    /**
+     * The meta object literal for the '<em><b>Commands</b></em>' reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_REACTION__COMMANDS = eINSTANCE.getProcessReaction_Commands();
+
+    /**
+     * The meta object literal for the '<em><b>To State</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_REACTION__TO_STATE = eINSTANCE.getProcessReaction_ToState();
+
+    /**
+     * The meta object literal for the '<em><b>Arm Timeout</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROCESS_REACTION__ARM_TIMEOUT = eINSTANCE.getProcessReaction_ArmTimeout();
+
+    /**
+     * The meta object literal for the '<em><b>Cancel Timeout</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROCESS_REACTION__CANCEL_TIMEOUT = eINSTANCE.getProcessReaction_CancelTimeout();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.LiteralImpl <em>Literal</em>}' class.

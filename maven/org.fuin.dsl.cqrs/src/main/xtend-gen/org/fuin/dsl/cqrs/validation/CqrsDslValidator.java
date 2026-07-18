@@ -46,6 +46,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
+import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
@@ -78,6 +81,10 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String CONSTRAINT_MSG_UNKNOWN_VAR = "constraintMsgUnknownVar";
 
   public static final String EXCEPTION_MSG_UNKNOWN_VAR = "exceptionMsgUnknownVar";
+
+  public static final String PROCESS_STATE_DUPLICATE = "processStateDuplicate";
+
+  public static final String PROCESS_CORRELATION_KEY_UNKNOWN = "processCorrelationKeyUnknown";
 
   public static final String REF_TO_AGGREGATE_NOT_ALLOWED = "refToAggregateNotAllowed";
 
@@ -279,6 +286,49 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           (("A variable with the name \'" + name) + "\' is unknown"), event, 
           CqrsDslPackage.Literals.EVENT__MESSAGE, 
           CqrsDslValidator.EVENT_MSG_UNKNOWN_VAR);
+      }
+    }
+  }
+
+  @Check
+  public void checkUniqueProcessStateNames(final ProcessManager pm) {
+    final Set<String> seen = new HashSet<String>();
+    EList<ProcessState> _states = pm.getStates();
+    for (final ProcessState state : _states) {
+      boolean _add = seen.add(state.getName());
+      boolean _not = (!_add);
+      if (_not) {
+        String _name = state.getName();
+        String _plus = ("Duplicate process state \'" + _name);
+        String _plus_1 = (_plus + "\'");
+        this.error(_plus_1, state, 
+          CqrsDslPackage.Literals.PROCESS_STATE__NAME, 
+          CqrsDslValidator.PROCESS_STATE_DUPLICATE);
+      }
+    }
+  }
+
+  @Check
+  public void checkCorrelateByAttribute(final ProcessReaction reaction) {
+    final String key = reaction.getCorrelationKey();
+    final Event event = reaction.getEvent();
+    if ((((key != null) && (event != null)) && (!event.eIsProxy()))) {
+      List<String> _asNames = CqrsAttributeExtensions.asNames(event.getAttributes());
+      final List<String> vars = new ArrayList<String>(_asNames);
+      AbstractMethod _origin = event.getOrigin();
+      boolean _tripleNotEquals = (_origin != null);
+      if (_tripleNotEquals) {
+        vars.addAll(CqrsParameterExtensions.asNames(event.getOrigin().getParameters()));
+      }
+      boolean _contains = vars.contains(key);
+      boolean _not = (!_contains);
+      if (_not) {
+        String _name = event.getName();
+        String _plus = ((("The correlation key \'" + key) + "\' is not an attribute of event \'") + _name);
+        String _plus_1 = (_plus + "\'");
+        this.error(_plus_1, reaction, 
+          CqrsDslPackage.Literals.PROCESS_REACTION__CORRELATION_KEY, 
+          CqrsDslValidator.PROCESS_CORRELATION_KEY_UNKNOWN);
       }
     }
   }

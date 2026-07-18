@@ -118,6 +118,14 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.14.0</b> &ndash; New <code>process-manager</code> element for modelling orchestration
+        (sagas): it reacts to domain events and issues commands through a small, documented state
+        machine &ndash; <code>process-states</code> plus guarded <code>reacts-to &lt;Event&gt; in-state
+        &lt;State&gt;</code> reactions that <code>correlate-by</code> an event attribute,
+        <code>issues-commands</code>, <code>transition-to</code> another state, and
+        <code>arm-timeout</code>/<code>cancel-timeout</code>. Every state and reaction may carry its own
+        doc comment. Grammar-only for now (like <code>command-handler</code>/<code>view</code>); code
+        generation follows.</li>
     <li><b>1.13.0</b> &ndash; A method's <code>returns</code> may now be declared
         <code>optional</code> (<code>returns optional String</code>), the same way an attribute or a
         parameter can, to express that the result may be absent. The code generation maps it to a

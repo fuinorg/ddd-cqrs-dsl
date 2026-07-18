@@ -25,6 +25,9 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsGenericArgs;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsInvariants;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessManager;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessReaction;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessState;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsParameter;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsPreconditions;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsServiceDef;
@@ -35,7 +38,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.attributeNames;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.concrete;
@@ -94,6 +99,54 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkNoEventsInServiceMethod((CqrsMethodDef) element, holder);
         } else if (element instanceof CqrsAnnotationInstance) {
             checkAnnotationInstanceArgs((CqrsAnnotationInstance) element, holder);
+        } else if (element instanceof CqrsProcessManager) {
+            checkProcessManager((CqrsProcessManager) element, holder);
+        } else if (element instanceof CqrsProcessReaction) {
+            checkProcessReaction((CqrsProcessReaction) element, holder);
+        }
+    }
+
+    // --- process manager ------------------------------------------------------------------------
+
+    /** Reports duplicate state names within a process manager. */
+    private void checkProcessManager(@NotNull CqrsProcessManager pm, @NotNull AnnotationHolder holder) {
+        Set<String> seen = new HashSet<>();
+        for (CqrsProcessState state : pm.getProcessStateList()) {
+            String name = state.getId().getText();
+            if (!seen.add(name)) {
+                error(holder, state, "Duplicate process state '" + name + "'");
+            }
+        }
+    }
+
+    /** Reports a 'correlate-by' key that is not an attribute of the reacted event. */
+    private void checkProcessReaction(@NotNull CqrsProcessReaction reaction, @NotNull AnnotationHolder holder) {
+        PsiElement key = reaction.getId(); // the 'correlate-by' identifier (optional)
+        if (key == null) {
+            return;
+        }
+        List<CqrsTypeRef> refs = reaction.getTypeRefList();
+        if (refs.isEmpty()) {
+            return;
+        }
+        CqrsNamedElement target = resolve(refs.get(0)); // the 'reacts-to' event
+        if (!(target instanceof CqrsEventDef)) {
+            return; // unresolved or not an event: be lenient and skip the check
+        }
+        CqrsEventDef event = (CqrsEventDef) target;
+        List<String> vars = new ArrayList<>(attributeNames(event.getAttributeList()));
+        CqrsTypeRef origin = event.getTypeRef(); // 'copies-attributes-of'
+        if (origin != null) {
+            CqrsNamedElement originTarget = resolve(origin);
+            if (originTarget == null) {
+                return; // origin present but unresolved: be lenient
+            }
+            vars.addAll(parameterNames(originTarget));
+        }
+        String keyText = key.getText();
+        if (!vars.contains(keyText)) {
+            error(holder, key,
+                    "The correlation key '" + keyText + "' is not an attribute of event '" + event.getId().getText() + "'");
         }
     }
 
