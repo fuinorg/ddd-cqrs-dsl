@@ -59,7 +59,7 @@
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.Command", "module": "shared", "group": "domain",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Command", "module": "command", "group": "api",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.command.CommandArtifactFactory", "folder": "genMainJava" }
 			]
@@ -72,7 +72,7 @@
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "core", "group": "domain",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "command.core", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.AbstractAggregateArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregate.AggregateDocArtifactFactory", "folder": "genMainRes" },
@@ -86,20 +86,35 @@
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.Entity", "module": "core", "group": "domain",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Entity", "module": "command.core", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entity.AbstractEntityArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entity.FinalEntityArtifactFactory", "folder": "mainJava" }
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.Service", "module": "core", "group": "domain",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Service", "module": "command.core", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.service.ServiceArtifactFactory", "folder": "genMainJava" }
 			]
 		},
 		{
-			"name": "org.eclipse.emf.ecore.resource.ResourceSet", "module": "core", "group": "domain",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.View", "module": "query.core", "group": "view",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewApiArtifactFactory", "folder": "genMainJava", "module": "query.api" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.FinalViewArtifactFactory", "folder": "mainJava" }
+			]
+		},
+		{
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.ProcessManager", "module": "process", "group": "core",
+			"artifacts": [
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.processmanager.AbstractProcessManagerArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.processmanager.ProcessManagerArtifactFactory", "folder": "mainJava" }
+			]
+		},
+		{
+			"name": "org.eclipse.emf.ecore.resource.ResourceSet", "module": "command.core", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.resourceset.PackageInfoArtifactFactory", "folder": "genMainJava" }
 			]

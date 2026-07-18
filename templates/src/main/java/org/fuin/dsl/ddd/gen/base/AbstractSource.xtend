@@ -79,8 +79,9 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     protected def GeneratedArtifact newArtifact(String filename, byte[] data, EObject el) {
         var String mod = module
         val type = matchingType(srcGen4JHint(el))
-        if (type !== null && type.module !== null) {
-            mod = type.module
+        val effMod = effectiveModule(type)
+        if (effMod !== null) {
+            mod = effMod
         }
         return newArtifact(filename, data, mod, targetFolder(el))
     }
@@ -109,13 +110,9 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * @return Folder name.
      */
     protected def String targetFolder(EObject el) {
-        val type = matchingType(srcGen4JHint(el))
-        if (type !== null) {
-            val factoryName = factoryClassName
-            val artifact = type.artifacts.findFirst[artifactFactory == factoryName]
-            if (artifact !== null && artifact.folder !== null) {
-                return artifact.folder
-            }
+        val artifact = matchingArtifact(matchingType(srcGen4JHint(el)))
+        if (artifact !== null && artifact.folder !== null) {
+            return artifact.folder
         }
         return folder
     }
@@ -203,8 +200,8 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, EObject el) {
         val values = newLinkedHashMap(
             "project" -> (el.project?.name ?: ""),
-            "module" -> (type.module ?: ""),
-            "group" -> (type.group ?: ""),
+            "module" -> (effectiveModule(type) ?: ""),
+            "group" -> (effectiveGroup(type) ?: ""),
             "context" -> (el.context?.name ?: ""),
             "namespace" -> (el.namespace?.name ?: "")
         )
@@ -356,6 +353,45 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         return hint.types.findFirst [ t |
             t.name == modelTypeName && t.artifacts.exists[artifactFactory == factoryName]
         ]
+    }
+
+    /**
+     * Finds this factory's artifact entry within the given type (matched by this factory's class name).
+     *
+     * @param type Type entry (may be <code>null</code>).
+     *
+     * @return Artifact entry, or <code>null</code> if the type is null or has no entry for this factory.
+     */
+    private def SrcGen4JArtifact matchingArtifact(SrcGen4JType type) {
+        if (type === null) {
+            return null
+        }
+        val factoryName = factoryClassName
+        return type.artifacts.findFirst[artifactFactory == factoryName]
+    }
+
+    /**
+     * Module for this factory's artifact: the artifact-level "module" override, or the type's "module"
+     * as the default when the artifact does not set one.
+     *
+     * @param type Type entry (may be <code>null</code>).
+     *
+     * @return Effective module, or <code>null</code> if neither level sets it.
+     */
+    private def String effectiveModule(SrcGen4JType type) {
+        matchingArtifact(type)?.module ?: type?.module
+    }
+
+    /**
+     * Group for this factory's artifact: the artifact-level "group" override, or the type's "group" as
+     * the default when the artifact does not set one.
+     *
+     * @param type Type entry (may be <code>null</code>).
+     *
+     * @return Effective group, or <code>null</code> if neither level sets it.
+     */
+    private def String effectiveGroup(SrcGen4JType type) {
+        matchingArtifact(type)?.group ?: type?.group
     }
 
     /**

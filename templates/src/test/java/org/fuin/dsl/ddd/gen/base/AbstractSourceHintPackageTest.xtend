@@ -237,4 +237,52 @@ class AbstractSourceHintPackageTest {
         assertThat(artifact.folder).isEqualTo("mainJava")
         assertThat(factory.asPackage(aggregate.namespace)).isEqualTo("myproj.command.core.domain.ctx.ns")
     }
+
+    @Test
+    def void testArtifactLevelModuleGroupOverridesType() {
+
+        // PREPARE - the type sets module "shared"/group "domain", but the AbstractValueObject artifact
+        // overrides them with "api"/"dto". The per-artifact override must win for both the target module
+        // and the package (a sibling artifact without an override would keep inheriting the type's values).
+        val model = parser.parse('''
+            project myproj {
+                hint SrcGen4J {
+                    "package": "${project}.${module}.${group}.${context}.${namespace}",
+                    "types": [
+                        {
+                            "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
+                            "module": "shared",
+                            "group": "domain",
+                            "artifacts": [
+                                { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genJava", "module": "api", "group": "dto" }
+                            ]
+                        }
+                    ]
+                }
+                context ctx {
+                    namespace ns {
+                        type String
+                        value-object Money {
+                            String amount
+                        }
+                    }
+                }
+            }
+        ''')
+        val vo = model.find(typeof(ValueObject), "Money")
+
+        val factory = new AbstractValueObjectArtifactFactory()
+        val config = new ArtifactFactoryConfig("vo", AbstractValueObjectArtifactFactory.name, "module", "folder")
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+
+        // TEST
+        val pkg = factory.asPackage(vo.namespace)
+        val artifact = factory.newArtifact("Money.java", "data".getBytes("UTF-8"), vo.namespace)
+
+        // VERIFY the artifact-level module/group win over the type's, for both the package and the module.
+        assertThat(pkg).isEqualTo("myproj.api.dto.ctx.ns")
+        assertThat(artifact.module).isEqualTo("api")
+        assertThat(artifact.folder).isEqualTo("genJava")
+    }
 }

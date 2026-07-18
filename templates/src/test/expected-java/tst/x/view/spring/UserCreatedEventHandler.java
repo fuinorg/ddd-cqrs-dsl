@@ -15,29 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.command.core.domain.x.aggregates;
+package p.query.core.view.x.m;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Produces;
-import org.fuin.esc.api.EventStore;
-import p.x.aggregates.AggregateCRepository;
+import com.example.UserCreatedEvent;
+import jakarta.persistence.EntityManager;
+import org.fuin.cqrs4j.core.EventHandler;
+import org.fuin.ddd4j.core.EventType;
 
 /**
- * Creates a AggregateCRepository.
+ * Handles the {@link UserCreatedEvent} by updating the read model. TODO Implement the update.
  */
-@Dependent
-public class AggregateCRepositoryFactory {
+public class UserCreatedEventHandler implements EventHandler<UserCreatedEvent> {
 
-    /**
-     * Produces a AggregateCRepository.
-     * 
-     * @param eventStore The event store to use for construction.
-     *
-     * @return The new repository instance.
-     */
-    @Produces
-    public AggregateCRepository create(final EventStore eventStore) {
-        return new AggregateCRepository(eventStore);
+    @Override
+    public EventType getEventType() {
+        return UserCreatedEvent.TYPE;
+    }
+
+    @Override
+    public void handle(final EntityManager em, final UserCreatedEvent event) {
+        // TODO Update the read model for this event.
     }
 
 }

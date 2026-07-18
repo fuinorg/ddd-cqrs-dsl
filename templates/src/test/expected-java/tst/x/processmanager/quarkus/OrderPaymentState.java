@@ -15,29 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.command.core.domain.x.aggregates;
+package p.process.core.x.m;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Produces;
-import org.fuin.esc.api.EventStore;
-import p.x.aggregates.AggregateCRepository;
 
 /**
- * Creates a AggregateCRepository.
+ * States the "OrderPaymentProcess" process manager can be in.
  */
-@Dependent
-public class AggregateCRepositoryFactory {
+public enum OrderPaymentState {
 
-    /**
-     * Produces a AggregateCRepository.
-     * 
-     * @param eventStore The event store to use for construction.
-     *
-     * @return The new repository instance.
-     */
-    @Produces
-    public AggregateCRepository create(final EventStore eventStore) {
-        return new AggregateCRepository(eventStore);
-    }
-
+    AWAITING,
+    DONE
 }

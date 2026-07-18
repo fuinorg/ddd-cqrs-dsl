@@ -44,8 +44,8 @@ class PackageInfoArtifactFactoryTest {
 
         // VERIFY
         // Only the "resourceset" namespace generates code; the "types" namespace is skipped. It feeds two
-        // modules: its aggregates go to "core" and its aggregate/entity ids to "shared", so each of those
-        // packages gets its own "package-info.java".
+        // modules: its aggregates go to "command.core" and its aggregate/entity ids to "shared", so each of
+        // those packages gets its own "package-info.java".
         assertThat(result).hasSize(2)
 
         val shared = result.findFirst[module == "shared"]
@@ -54,10 +54,10 @@ class PackageInfoArtifactFactoryTest {
         assertThat(shared.pathAndName).isEqualTo("p/shared/domain/x/resourceset/package-info.java")
         assertThat(new String(shared.data)).isEqualTo("x/resourceset/package-info.java".loadConcreteExample)
 
-        val core = result.findFirst[module == "core"]
+        val core = result.findFirst[module == "command.core"]
         assertThat(core).isNotNull
         assertThat(core.folder).isEqualTo("genMainJava")
-        assertThat(core.pathAndName).isEqualTo("p/core/domain/x/resourceset/package-info.java")
+        assertThat(core.pathAndName).isEqualTo("p/command/core/domain/x/resourceset/package-info.java")
         assertThat(new String(core.data)).isEqualTo("x/resourceset/package-info-core.java".loadConcreteExample)
 
     }
