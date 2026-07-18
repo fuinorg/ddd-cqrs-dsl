@@ -199,4 +199,95 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
         assertFalse("must not offer namespace element keywords inside the block: " + lookups,
                 lookups.contains("value-object"));
     }
+
+    // ---- process-manager completion -----------------------------------------------------
+
+    public void testNamespaceOffersProcessManagerElementKeyword() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    <caret>
+                  }
+                }
+                }
+                """);
+        assertTrue("expected 'process-manager' among element keywords, got: " + lookups,
+                lookups.contains("process-manager"));
+    }
+
+    public void testProcessManagerBodyOffersClauseKeywords() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    process-manager P {
+                      <caret>
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected process-manager clauses, got: " + lookups,
+                lookups.containsAll(List.of("cron-schedule", "correlation-id", "process-states", "reacts-to")));
+        assertFalse("must not offer namespace element keywords inside the block: " + lookups,
+                lookups.contains("value-object"));
+    }
+
+    public void testProcessReactionBodyOffersReactionKeywords() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    event E { message "e" }
+                    process-manager P {
+                      reacts-to E {
+                        <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected reaction clauses, got: " + lookups,
+                lookups.containsAll(List.of("correlate-by", "issues-commands", "transition-to", "arm-timeout", "cancel-timeout")));
+    }
+
+    public void testArmTimeoutNumberOffersTimeUnits() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    event E { message "e" }
+                    process-manager P {
+                      reacts-to E {
+                        arm-timeout 15 <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected time units after the arm-timeout number, got: " + lookups,
+                lookups.containsAll(List.of("seconds", "minutes", "hours")));
+    }
+
+    public void testViewBodyOffersBusinessRuleAndMethod() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      <caret>
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected view-body keywords, got: " + lookups,
+                lookups.containsAll(List.of("business-rule", "method")));
+        assertFalse("must not offer namespace element keywords inside the view body: " + lookups,
+                lookups.contains("value-object"));
+    }
 }

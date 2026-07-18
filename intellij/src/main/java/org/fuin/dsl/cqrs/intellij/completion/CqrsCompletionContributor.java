@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.lang.ASTNode;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -30,9 +31,12 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsContextDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessManager;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessReaction;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProjectDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsViewDef;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,8 +54,14 @@ public final class CqrsCompletionContributor extends CompletionContributor {
 
     private static final List<String> ELEMENT_KEYWORDS = List.of(
             "type", "value-object", "entity-id", "aggregate-id", "enum", "entity", "aggregate",
-            "exception", "event", "command", "command-handler", "projection", "view", "constraint",
-            "annotation", "service", "data-protection");
+            "exception", "event", "command", "command-handler", "projection", "view", "process-manager",
+            "constraint", "annotation", "service", "data-protection");
+
+    // ---- process-manager block: manager clauses and reaction clauses ---------------------
+    private static final List<String> PM_BODY_KEYWORDS = List.of(
+            "cron-schedule", "correlation-id", "process-states", "reacts-to");
+    private static final List<String> PM_REACTION_KEYWORDS = List.of(
+            "correlate-by", "issues-commands", "transition-to", "arm-timeout", "cancel-timeout");
 
     private static final List<String> META_KEYWORDS = List.of(
             "slabel", "label", "tooltip", "prompt", "examples");
@@ -183,6 +193,21 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
+        // A 'process-manager { ... }' block (and its 'reacts-to { ... }' reactions) is nested inside a
+        // namespace/context, so it must be checked before them - a caret in a reaction body is offered
+        // the reaction clauses; elsewhere in the manager body, the manager clauses.
+        if (enclosingProcessManager(position) != null) {
+            return processManagerKeywords(position);
+        }
+
+        // A 'view ... { ... }' body holds business rules and methods (a caret inside a view method is
+        // already handled by the constructor/method branch above).
+        if (enclosingView(position) != null) {
+            keywords.add("business-rule");
+            keywords.add("method");
+            return keywords;
+        }
+
         if (PsiTreeUtil.getParentOfType(position, CqrsNamespaceDef.class) != null) {
             keywords.add("import");
             keywords.addAll(ELEMENT_KEYWORDS);
@@ -231,6 +256,79 @@ public final class CqrsCompletionContributor extends CompletionContributor {
      * visible leaf (part of the well-formed prefix). A previous leaf of {@code &#125;} means the
      * block is already closed and the caret is back at the enclosing level, so it is excluded.
      */
+    /**
+     * Completion inside a {@code process-manager { ... }} block. Inside a {@code reacts-to} reaction
+     * body the reaction clauses are offered (and, right after a duration number, the time units for
+     * {@code arm-timeout}); before the reaction's brace only {@code in-state} applies. Elsewhere in
+     * the manager body the manager clauses are offered.
+     */
+    private static Set<String> processManagerKeywords(PsiElement position) {
+        Set<String> keywords = new LinkedHashSet<>();
+        CqrsProcessReaction reaction = enclosingProcessReaction(position);
+        if (reaction != null) {
+            ASTNode lbrace = reaction.getNode().findChildByType(CqrsTypes.LBRACE);
+            boolean inBody = lbrace != null && lbrace.getStartOffset() < position.getTextOffset();
+            if (!inBody) {
+                keywords.add("in-state"); // still in the 'reacts-to <Event> ...' header
+                return keywords;
+            }
+            PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+            IElementType type = prev == null ? null : prev.getNode().getElementType();
+            if (type == CqrsTypes.NUMBER) {
+                keywords.addAll(TIME_UNITS); // 'arm-timeout <number> <unit>'
+            } else {
+                keywords.addAll(PM_REACTION_KEYWORDS);
+            }
+            return keywords;
+        }
+        keywords.addAll(PM_BODY_KEYWORDS);
+        return keywords;
+    }
+
+    /**
+     * The {@code process-manager} block surrounding the caret, or {@code null}. Mirrors
+     * {@link #enclosingDataProtection}: when the caret token lands just outside the pinned node via
+     * error recovery, it retries from the previous visible leaf, excluding a closing {@code &#125;}
+     * (which means the block is already closed and the caret is back at the enclosing level).
+     */
+    private static CqrsProcessManager enclosingProcessManager(PsiElement position) {
+        CqrsProcessManager pm = PsiTreeUtil.getParentOfType(position, CqrsProcessManager.class);
+        if (pm != null) {
+            return pm;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsProcessManager.class);
+    }
+
+    /** The {@code view} block surrounding the caret, or {@code null} (same error recovery as above). */
+    private static CqrsViewDef enclosingView(PsiElement position) {
+        CqrsViewDef view = PsiTreeUtil.getParentOfType(position, CqrsViewDef.class);
+        if (view != null) {
+            return view;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsViewDef.class);
+    }
+
+    /** The {@code reacts-to} reaction surrounding the caret, or {@code null} (same recovery as above). */
+    private static CqrsProcessReaction enclosingProcessReaction(PsiElement position) {
+        CqrsProcessReaction reaction = PsiTreeUtil.getParentOfType(position, CqrsProcessReaction.class);
+        if (reaction != null) {
+            return reaction;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsProcessReaction.class);
+    }
+
     private static CqrsDataProtectionDef enclosingDataProtection(PsiElement position) {
         CqrsDataProtectionDef dp = PsiTreeUtil.getParentOfType(position, CqrsDataProtectionDef.class);
         if (dp != null) {
