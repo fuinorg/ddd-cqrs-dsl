@@ -2,6 +2,9 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.15.0
+- A `JpaHint` table may now declare JPA associations to the other tables of the same hint: a `manyToOnes` entry generates the owning side (`@ManyToOne` + `@JoinColumn`, with `"foreignKey": "NO_CONSTRAINT"` to skip the database constraint) and a `oneToManys` entry generates the inverse collection (`@OneToMany` with `mappedBy`, `fetch`, `orphanRemoval` and `cascade`). The new `manyToOnes`/`oneToManys` keys are validated live against the JSON schema.
+
 ## 1.14.0
 - A `view` body may now carry generator `hint`s, the same JSON-structured hints a `project` declares, placed right after the opening `{`. Grammar-only for now, like the rest of the `view` element.
 - A `JpaHint` declared inside a `view` now generates JPA `@Entity` classes into the view's package (all `@Table`/`@Column` attributes plus `@Digits`/`@DecimalMin`). A hint's JSON is validated live against a JSON schema (`JpaHint` and `SrcGen4J`), and a `JpaHint` outside a view is flagged as a warning.

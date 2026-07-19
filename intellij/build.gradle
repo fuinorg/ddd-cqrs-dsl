@@ -144,6 +144,13 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.17.0</b> &ndash; A <code>JpaHint</code> table may now declare JPA associations to the
+        other tables of the same hint: <code>@ManyToOne</code> (with a <code>@JoinColumn</code>, and
+        <code>"foreignKey": "NO_CONSTRAINT"</code> to skip the database constraint) on the owning
+        side, and <code>@OneToMany</code> (with <code>mappedBy</code>, <code>fetch</code>,
+        <code>orphanRemoval</code> and <code>cascade</code>) on the inverse side. The new
+        <code>manyToOnes</code> and <code>oneToManys</code> keys are validated live against the JSON
+        schema.</li>
     <li><b>1.16.0</b> &ndash; A <code>view</code> body may now declare generator
         <code>hint</code>s (JSON-structured, like a <code>project</code>), placed right after the
         opening <code>{</code>. The <code>hint</code> keyword is syntax-highlighted and offered in

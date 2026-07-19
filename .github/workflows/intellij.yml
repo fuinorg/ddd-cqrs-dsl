@@ -7,6 +7,9 @@ on:
       - '**'
     paths:
       - 'intellij/**'
+      # The plugin build copies the JSON hint schemas from the Eclipse core bundle (single source of
+      # truth, see build.gradle), so a schema change there must rebuild/republish the plugin too.
+      - 'eclipse/org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/schema/**'
       - '.github/workflows/intellij.yml'
       - '!**/README.md'
       - '!**/CHANGELOG.md'
@@ -15,6 +18,9 @@ on:
       - '**'
     paths:
       - 'intellij/**'
+      # The plugin build copies the JSON hint schemas from the Eclipse core bundle (single source of
+      # truth, see build.gradle), so a schema change there must rebuild/republish the plugin too.
+      - 'eclipse/org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/schema/**'
       - '.github/workflows/intellij.yml'
       - '!**/README.md'
       - '!**/CHANGELOG.md'

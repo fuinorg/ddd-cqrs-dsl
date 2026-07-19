@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.17.0
+- A `JpaHint` table may now declare JPA associations to the other tables of the same hint: `@ManyToOne` (with a `@JoinColumn`, and `"foreignKey": "NO_CONSTRAINT"` to skip the database constraint) on the owning side, and `@OneToMany` (with `mappedBy`, `fetch`, `orphanRemoval` and `cascade`) on the inverse side. The new `manyToOnes` and `oneToManys` keys are validated live against the JSON schema.
+
 ## 1.16.0
 - A `view` body may now declare generator `hint`s (JSON-structured, like a `project`), placed right after the opening `{`. The `hint` keyword is syntax-highlighted and offered in context-aware completion inside a view body. A hint's JSON is now validated live against a JSON schema (`JpaHint` and `SrcGen4J`), and a `JpaHint` declared outside a `view` is flagged with a warning.
 
