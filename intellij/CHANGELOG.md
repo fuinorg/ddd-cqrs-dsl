@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.18.0
+- The process-manager `correlation-id` element was renamed to `instance-key` (it clashed with the unrelated event/command correlation id). `instance-key` names the value that identifies which running process instance an incoming event belongs to; it references any type, exactly as before. The keyword is syntax-highlighted and offered in context-aware completion inside a process-manager body.
+
 ## 1.17.0
 - A `JpaHint` table may now declare JPA associations to the other tables of the same hint: `@ManyToOne` (with a `@JoinColumn`, and `"foreignKey": "NO_CONSTRAINT"` to skip the database constraint) on the owning side, and `@OneToMany` (with `mappedBy`, `fetch`, `orphanRemoval` and `cascade`) on the inverse side. The new `manyToOnes` and `oneToManys` keys are validated live against the JSON schema.
 

@@ -457,7 +457,7 @@ ProcessManager:
 	doc=DOC?
 	'process-manager' name=ID '{'
 		('cron-schedule' cron=STRING)?
-		('correlation-id' correlationId=[Type|FQN])?
+		('instance-key' instanceKey=[Type|FQN])?
 		('process-states' '{' states+=ProcessState+ '}')?
 		reactions+=ProcessReaction*
 	'}';

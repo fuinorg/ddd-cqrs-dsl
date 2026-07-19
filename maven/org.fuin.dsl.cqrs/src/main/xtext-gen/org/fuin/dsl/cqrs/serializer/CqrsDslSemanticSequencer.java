@@ -1142,7 +1142,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         doc=DOC? 
 	 *         name=ID 
 	 *         cron=STRING? 
-	 *         correlationId=[Type|FQN]? 
+	 *         instanceKey=[Type|FQN]? 
 	 *         states+=ProcessState* 
 	 *         reactions+=ProcessReaction*
 	 *     )

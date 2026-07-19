@@ -59,7 +59,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
 
     // ---- process-manager block: manager clauses and reaction clauses ---------------------
     private static final List<String> PM_BODY_KEYWORDS = List.of(
-            "cron-schedule", "correlation-id", "process-states", "reacts-to");
+            "cron-schedule", "instance-key", "process-states", "reacts-to");
     private static final List<String> PM_REACTION_KEYWORDS = List.of(
             "correlate-by", "issues-commands", "transition-to", "arm-timeout", "cancel-timeout");
 

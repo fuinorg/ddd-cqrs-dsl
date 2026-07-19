@@ -229,7 +229,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 }
                 """);
         assertTrue("expected process-manager clauses, got: " + lookups,
-                lookups.containsAll(List.of("cron-schedule", "correlation-id", "process-states", "reacts-to")));
+                lookups.containsAll(List.of("cron-schedule", "instance-key", "process-states", "reacts-to")));
         assertFalse("must not offer namespace element keywords inside the block: " + lookups,
                 lookups.contains("value-object"));
     }

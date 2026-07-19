@@ -144,6 +144,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.18.0</b> &ndash; The process-manager <code>correlation-id</code> element was renamed to
+        <code>instance-key</code> (it clashed with the unrelated event/command correlation id).
+        <code>instance-key</code> names the value that identifies which running process instance an
+        incoming event belongs to; it references any type, exactly as before. The keyword is
+        syntax-highlighted and offered in context-aware completion inside a process-manager body.</li>
     <li><b>1.17.0</b> &ndash; A <code>JpaHint</code> table may now declare JPA associations to the
         other tables of the same hint: <code>@ManyToOne</code> (with a <code>@JoinColumn</code>, and
         <code>"foreignKey": "NO_CONSTRAINT"</code> to skip the database constraint) on the owning

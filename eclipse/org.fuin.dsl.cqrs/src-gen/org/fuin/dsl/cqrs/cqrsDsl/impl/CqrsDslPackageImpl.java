@@ -2800,7 +2800,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getProcessManager_CorrelationId()
+  public EReference getProcessManager_InstanceKey()
   {
     return (EReference)processManagerEClass.getEStructuralFeatures().get(1);
   }
@@ -3552,7 +3552,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     processManagerEClass = createEClass(PROCESS_MANAGER);
     createEAttribute(processManagerEClass, PROCESS_MANAGER__CRON);
-    createEReference(processManagerEClass, PROCESS_MANAGER__CORRELATION_ID);
+    createEReference(processManagerEClass, PROCESS_MANAGER__INSTANCE_KEY);
     createEReference(processManagerEClass, PROCESS_MANAGER__STATES);
     createEReference(processManagerEClass, PROCESS_MANAGER__REACTIONS);
 
@@ -3926,7 +3926,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(processManagerEClass, ProcessManager.class, "ProcessManager", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getProcessManager_Cron(), ecorePackage.getEString(), "cron", null, 0, 1, ProcessManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getProcessManager_CorrelationId(), this.getType(), null, "correlationId", null, 0, 1, ProcessManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getProcessManager_InstanceKey(), this.getType(), null, "instanceKey", null, 0, 1, ProcessManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getProcessManager_States(), this.getProcessState(), null, "states", null, 0, -1, ProcessManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getProcessManager_Reactions(), this.getProcessReaction(), null, "reactions", null, 0, -1, ProcessManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

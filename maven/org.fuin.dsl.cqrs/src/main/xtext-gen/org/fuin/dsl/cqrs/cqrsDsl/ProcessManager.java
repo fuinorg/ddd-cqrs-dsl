@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCron <em>Cron</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId <em>Correlation Id</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getInstanceKey <em>Instance Key</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getStates <em>States</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getReactions <em>Reactions</em>}</li>
  * </ul>
@@ -49,26 +49,26 @@ public interface ProcessManager extends AbstractElement
   void setCron(String value);
 
   /**
-   * Returns the value of the '<em><b>Correlation Id</b></em>' reference.
+   * Returns the value of the '<em><b>Instance Key</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Correlation Id</em>' reference.
-   * @see #setCorrelationId(Type)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getProcessManager_CorrelationId()
+   * @return the value of the '<em>Instance Key</em>' reference.
+   * @see #setInstanceKey(Type)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getProcessManager_InstanceKey()
    * @model
    * @generated
    */
-  Type getCorrelationId();
+  Type getInstanceKey();
 
   /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId <em>Correlation Id</em>}' reference.
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getInstanceKey <em>Instance Key</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Correlation Id</em>' reference.
-   * @see #getCorrelationId()
+   * @param value the new value of the '<em>Instance Key</em>' reference.
+   * @see #getInstanceKey()
    * @generated
    */
-  void setCorrelationId(Type value);
+  void setInstanceKey(Type value);
 
   /**
    * Returns the value of the '<em><b>States</b></em>' containment reference list.

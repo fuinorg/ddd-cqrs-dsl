@@ -60,7 +60,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "lawful-basis"            { return KW_LAWFUL_BASIS; }
   "process-manager"         { return KW_PROCESS_MANAGER; }
   "cron-schedule"           { return KW_CRON_SCHEDULE; }
-  "correlation-id"          { return KW_CORRELATION_ID; }
+  "instance-key"            { return KW_INSTANCE_KEY; }
   "process-states"          { return KW_PROCESS_STATES; }
   "reacts-to"               { return KW_REACTS_TO; }
   "in-state"                { return KW_IN_STATE; }

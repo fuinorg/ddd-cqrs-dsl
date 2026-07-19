@@ -304,7 +304,7 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//ProcessManager">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//ProcessManager/cron"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessManager/correlationId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessManager/instanceKey"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessManager/states"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessManager/reactions"/>
     </genClasses>

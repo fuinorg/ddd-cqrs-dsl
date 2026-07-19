@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_HEX", "RULE_INT", "RULE_DECIMAL", "RULE_ID", "RULE_DOC", "RULE_STRING", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "'true'", "'false'", "'millis'", "'seconds'", "'minutes'", "'hours'", "'days'", "'weeks'", "'months'", "'years'", "'weak'", "'strong'", "'never'", "'manually'", "'automatic'", "'workflow'", "'none'", "'personal'", "'sensitive'", "'consent'", "'explicit_consent'", "'contract'", "'legal_obligation'", "'vital_interests'", "'public_task'", "'legitimate_interests'", "'health'", "'genetic'", "'biometric'", "'racial'", "'political'", "'religious'", "'philosophical'", "'trade_union'", "'sex_life'", "'sexual_orientation'", "'delete'", "'anonymize'", "'pseudonymize'", "'archive'", "'review'", "'project'", "'{'", "'}'", "'context'", "'namespace'", "'import'", "'hint'", "'type'", "'generics'", "'acceptable'", "'detection'", "'resolution'", "'consistency'", "'data-protection'", "'protection'", "'category'", "','", "'subject'", "'purpose'", "'lawful-basis'", "'retention'", "'then'", "'protected-by'", "'constraint'", "'input'", "'|'", "'exception'", "'message'", "'business-rule'", "'annotation'", "'cid'", "'value-object'", "'base'", "'entity-id'", "'identifies'", "'aggregate-id'", "'enum'", "'instances'", "'('", "')'", "'event'", "'copies-attributes-of'", "'entity'", "'identifier'", "'root'", "'aggregate'", "'constructor'", "'fires'", "'returns'", "'method'", "'ref'", "'slabel'", "'label'", "'tooltip'", "'prompt'", "'examples'", "'<'", "'>'", "'invariants'", "'preconditions'", "'business-rules'", "'@'", "'service'", "'command'", "'target'", "'sla'", "'command-handler'", "'handles'", "'uses'", "'projection'", "'view'", "'rest-path'", "'cron-schedule'", "'process-manager'", "'correlation-id'", "'process-states'", "'reacts-to'", "'in-state'", "'correlate-by'", "'issues-commands'", "'transition-to'", "'arm-timeout'", "':'", "'['", "']'", "'null'", "'.'", "'*'", "'element'", "'deprecated'", "'optional'", "'cancel-timeout'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_HEX", "RULE_INT", "RULE_DECIMAL", "RULE_ID", "RULE_DOC", "RULE_STRING", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "'true'", "'false'", "'millis'", "'seconds'", "'minutes'", "'hours'", "'days'", "'weeks'", "'months'", "'years'", "'weak'", "'strong'", "'never'", "'manually'", "'automatic'", "'workflow'", "'none'", "'personal'", "'sensitive'", "'consent'", "'explicit_consent'", "'contract'", "'legal_obligation'", "'vital_interests'", "'public_task'", "'legitimate_interests'", "'health'", "'genetic'", "'biometric'", "'racial'", "'political'", "'religious'", "'philosophical'", "'trade_union'", "'sex_life'", "'sexual_orientation'", "'delete'", "'anonymize'", "'pseudonymize'", "'archive'", "'review'", "'project'", "'{'", "'}'", "'context'", "'namespace'", "'import'", "'hint'", "'type'", "'generics'", "'acceptable'", "'detection'", "'resolution'", "'consistency'", "'data-protection'", "'protection'", "'category'", "','", "'subject'", "'purpose'", "'lawful-basis'", "'retention'", "'then'", "'protected-by'", "'constraint'", "'input'", "'|'", "'exception'", "'message'", "'business-rule'", "'annotation'", "'cid'", "'value-object'", "'base'", "'entity-id'", "'identifies'", "'aggregate-id'", "'enum'", "'instances'", "'('", "')'", "'event'", "'copies-attributes-of'", "'entity'", "'identifier'", "'root'", "'aggregate'", "'constructor'", "'fires'", "'returns'", "'method'", "'ref'", "'slabel'", "'label'", "'tooltip'", "'prompt'", "'examples'", "'<'", "'>'", "'invariants'", "'preconditions'", "'business-rules'", "'@'", "'service'", "'command'", "'target'", "'sla'", "'command-handler'", "'handles'", "'uses'", "'projection'", "'view'", "'rest-path'", "'cron-schedule'", "'process-manager'", "'instance-key'", "'process-states'", "'reacts-to'", "'in-state'", "'correlate-by'", "'issues-commands'", "'transition-to'", "'arm-timeout'", "':'", "'['", "']'", "'null'", "'.'", "'*'", "'element'", "'deprecated'", "'optional'", "'cancel-timeout'"
     };
     public static final int T__144=144;
     public static final int T__143=143;
@@ -47604,21 +47604,21 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ProcessManager__Group_5__0__Impl"
-    // InternalCqrsDsl.g:14751:1: rule__ProcessManager__Group_5__0__Impl : ( 'correlation-id' ) ;
+    // InternalCqrsDsl.g:14751:1: rule__ProcessManager__Group_5__0__Impl : ( 'instance-key' ) ;
     public final void rule__ProcessManager__Group_5__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:14755:1: ( ( 'correlation-id' ) )
-            // InternalCqrsDsl.g:14756:1: ( 'correlation-id' )
+            // InternalCqrsDsl.g:14755:1: ( ( 'instance-key' ) )
+            // InternalCqrsDsl.g:14756:1: ( 'instance-key' )
             {
-            // InternalCqrsDsl.g:14756:1: ( 'correlation-id' )
-            // InternalCqrsDsl.g:14757:2: 'correlation-id'
+            // InternalCqrsDsl.g:14756:1: ( 'instance-key' )
+            // InternalCqrsDsl.g:14757:2: 'instance-key'
             {
-             before(grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0()); 
+             before(grammarAccess.getProcessManagerAccess().getInstanceKeyKeyword_5_0()); 
             match(input,128,FOLLOW_2); 
-             after(grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0()); 
+             after(grammarAccess.getProcessManagerAccess().getInstanceKeyKeyword_5_0()); 
 
             }
 
@@ -47674,31 +47674,31 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ProcessManager__Group_5__1__Impl"
-    // InternalCqrsDsl.g:14777:1: rule__ProcessManager__Group_5__1__Impl : ( ( rule__ProcessManager__CorrelationIdAssignment_5_1 ) ) ;
+    // InternalCqrsDsl.g:14777:1: rule__ProcessManager__Group_5__1__Impl : ( ( rule__ProcessManager__InstanceKeyAssignment_5_1 ) ) ;
     public final void rule__ProcessManager__Group_5__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCqrsDsl.g:14781:1: ( ( ( rule__ProcessManager__CorrelationIdAssignment_5_1 ) ) )
-            // InternalCqrsDsl.g:14782:1: ( ( rule__ProcessManager__CorrelationIdAssignment_5_1 ) )
+            // InternalCqrsDsl.g:14781:1: ( ( ( rule__ProcessManager__InstanceKeyAssignment_5_1 ) ) )
+            // InternalCqrsDsl.g:14782:1: ( ( rule__ProcessManager__InstanceKeyAssignment_5_1 ) )
             {
-            // InternalCqrsDsl.g:14782:1: ( ( rule__ProcessManager__CorrelationIdAssignment_5_1 ) )
-            // InternalCqrsDsl.g:14783:2: ( rule__ProcessManager__CorrelationIdAssignment_5_1 )
+            // InternalCqrsDsl.g:14782:1: ( ( rule__ProcessManager__InstanceKeyAssignment_5_1 ) )
+            // InternalCqrsDsl.g:14783:2: ( rule__ProcessManager__InstanceKeyAssignment_5_1 )
             {
-             before(grammarAccess.getProcessManagerAccess().getCorrelationIdAssignment_5_1()); 
-            // InternalCqrsDsl.g:14784:2: ( rule__ProcessManager__CorrelationIdAssignment_5_1 )
-            // InternalCqrsDsl.g:14784:3: rule__ProcessManager__CorrelationIdAssignment_5_1
+             before(grammarAccess.getProcessManagerAccess().getInstanceKeyAssignment_5_1()); 
+            // InternalCqrsDsl.g:14784:2: ( rule__ProcessManager__InstanceKeyAssignment_5_1 )
+            // InternalCqrsDsl.g:14784:3: rule__ProcessManager__InstanceKeyAssignment_5_1
             {
             pushFollow(FOLLOW_2);
-            rule__ProcessManager__CorrelationIdAssignment_5_1();
+            rule__ProcessManager__InstanceKeyAssignment_5_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getProcessManagerAccess().getCorrelationIdAssignment_5_1()); 
+             after(grammarAccess.getProcessManagerAccess().getInstanceKeyAssignment_5_1()); 
 
             }
 
@@ -63066,9 +63066,9 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__ProcessManager__CronAssignment_4_1"
 
 
-    // $ANTLR start "rule__ProcessManager__CorrelationIdAssignment_5_1"
-    // InternalCqrsDsl.g:20372:1: rule__ProcessManager__CorrelationIdAssignment_5_1 : ( ( ruleFQN ) ) ;
-    public final void rule__ProcessManager__CorrelationIdAssignment_5_1() throws RecognitionException {
+    // $ANTLR start "rule__ProcessManager__InstanceKeyAssignment_5_1"
+    // InternalCqrsDsl.g:20372:1: rule__ProcessManager__InstanceKeyAssignment_5_1 : ( ( ruleFQN ) ) ;
+    public final void rule__ProcessManager__InstanceKeyAssignment_5_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
@@ -63079,21 +63079,21 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
             // InternalCqrsDsl.g:20377:2: ( ( ruleFQN ) )
             // InternalCqrsDsl.g:20378:3: ( ruleFQN )
             {
-             before(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0()); 
+             before(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeCrossReference_5_1_0()); 
             // InternalCqrsDsl.g:20379:3: ( ruleFQN )
             // InternalCqrsDsl.g:20380:4: ruleFQN
             {
-             before(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeFQNParserRuleCall_5_1_0_1()); 
+             before(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeFQNParserRuleCall_5_1_0_1()); 
             pushFollow(FOLLOW_2);
             ruleFQN();
 
             state._fsp--;
 
-             after(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeFQNParserRuleCall_5_1_0_1()); 
+             after(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeFQNParserRuleCall_5_1_0_1()); 
 
             }
 
-             after(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0()); 
+             after(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeCrossReference_5_1_0()); 
 
             }
 
@@ -63112,7 +63112,7 @@ public class InternalCqrsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__ProcessManager__CorrelationIdAssignment_5_1"
+    // $ANTLR end "rule__ProcessManager__InstanceKeyAssignment_5_1"
 
 
     // $ANTLR start "rule__ProcessManager__StatesAssignment_6_2"

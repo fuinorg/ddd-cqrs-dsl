@@ -2,6 +2,9 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.16.0
+- The `process-manager` `correlation-id` element was renamed to `instance-key` (it clashed with the unrelated event/command correlation id). `instance-key` names the value that identifies which running process instance an incoming event belongs to; it references any type, exactly as before, and `correlate-by` is unchanged.
+
 ## 1.15.0
 - A `JpaHint` table may now declare JPA associations to the other tables of the same hint: a `manyToOnes` entry generates the owning side (`@ManyToOne` + `@JoinColumn`, with `"foreignKey": "NO_CONSTRAINT"` to skip the database constraint) and a `oneToManys` entry generates the inverse collection (`@OneToMany` with `mappedBy`, `fetch`, `orphanRemoval` and `cascade`). The new `manyToOnes`/`oneToManys` keys are validated live against the JSON schema.
 

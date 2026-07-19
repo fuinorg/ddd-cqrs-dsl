@@ -3486,13 +3486,13 @@ public interface CqrsDslPackage extends EPackage
   int PROCESS_MANAGER__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Correlation Id</b></em>' reference.
+   * The feature id for the '<em><b>Instance Key</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROCESS_MANAGER__CORRELATION_ID = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+  int PROCESS_MANAGER__INSTANCE_KEY = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>States</b></em>' containment reference list.
@@ -6146,15 +6146,15 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getProcessManager_Cron();
 
   /**
-   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId <em>Correlation Id</em>}'.
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getInstanceKey <em>Instance Key</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Correlation Id</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getCorrelationId()
+   * @return the meta object for the reference '<em>Instance Key</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getInstanceKey()
    * @see #getProcessManager()
    * @generated
    */
-  EReference getProcessManager_CorrelationId();
+  EReference getProcessManager_InstanceKey();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.ProcessManager#getStates <em>States</em>}'.
@@ -8270,12 +8270,12 @@ public interface CqrsDslPackage extends EPackage
     EAttribute PROCESS_MANAGER__CRON = eINSTANCE.getProcessManager_Cron();
 
     /**
-     * The meta object literal for the '<em><b>Correlation Id</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Instance Key</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PROCESS_MANAGER__CORRELATION_ID = eINSTANCE.getProcessManager_CorrelationId();
+    EReference PROCESS_MANAGER__INSTANCE_KEY = eINSTANCE.getProcessManager_InstanceKey();
 
     /**
      * The meta object literal for the '<em><b>States</b></em>' containment reference list feature.

@@ -55,7 +55,7 @@ project p_process_manager {
 
 				cron-schedule "*/5 * * * * *"
 
-				correlation-id UUID
+				instance-key UUID
 
 				process-states {
 

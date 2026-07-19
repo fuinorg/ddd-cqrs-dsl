@@ -14754,9 +14754,9 @@ rule__ProcessManager__Group_5__0__Impl
 	}
 :
 (
-	{ before(grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0()); }
-	'correlation-id'
-	{ after(grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0()); }
+	{ before(grammarAccess.getProcessManagerAccess().getInstanceKeyKeyword_5_0()); }
+	'instance-key'
+	{ after(grammarAccess.getProcessManagerAccess().getInstanceKeyKeyword_5_0()); }
 )
 ;
 finally {
@@ -14780,9 +14780,9 @@ rule__ProcessManager__Group_5__1__Impl
 	}
 :
 (
-	{ before(grammarAccess.getProcessManagerAccess().getCorrelationIdAssignment_5_1()); }
-	(rule__ProcessManager__CorrelationIdAssignment_5_1)
-	{ after(grammarAccess.getProcessManagerAccess().getCorrelationIdAssignment_5_1()); }
+	{ before(grammarAccess.getProcessManagerAccess().getInstanceKeyAssignment_5_1()); }
+	(rule__ProcessManager__InstanceKeyAssignment_5_1)
+	{ after(grammarAccess.getProcessManagerAccess().getInstanceKeyAssignment_5_1()); }
 )
 ;
 finally {
@@ -20369,19 +20369,19 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__ProcessManager__CorrelationIdAssignment_5_1
+rule__ProcessManager__InstanceKeyAssignment_5_1
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0()); }
+		{ before(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeCrossReference_5_1_0()); }
 		(
-			{ before(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeFQNParserRuleCall_5_1_0_1()); }
+			{ before(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeFQNParserRuleCall_5_1_0_1()); }
 			ruleFQN
-			{ after(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeFQNParserRuleCall_5_1_0_1()); }
+			{ after(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeFQNParserRuleCall_5_1_0_1()); }
 		)
-		{ after(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0()); }
+		{ after(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeCrossReference_5_1_0()); }
 	)
 ;
 finally {

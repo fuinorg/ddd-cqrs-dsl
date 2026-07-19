@@ -19,7 +19,7 @@ project p {
             // Process-manager name deliberately ends in "Process" to exercise the suffix stripping.
             process-manager OrderPaymentProcess {
                 cron-schedule "* * * * * *"
-                correlation-id UUID
+                instance-key UUID
                 process-states {
                     AWAITING
                     DONE

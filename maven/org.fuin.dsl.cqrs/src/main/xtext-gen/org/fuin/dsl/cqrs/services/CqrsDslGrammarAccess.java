@@ -3888,10 +3888,10 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cCronAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
 		private final RuleCall cCronSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cCronAssignment_4_1.eContents().get(0);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cCorrelationIdKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cCorrelationIdAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final CrossReference cCorrelationIdTypeCrossReference_5_1_0 = (CrossReference)cCorrelationIdAssignment_5_1.eContents().get(0);
-		private final RuleCall cCorrelationIdTypeFQNParserRuleCall_5_1_0_1 = (RuleCall)cCorrelationIdTypeCrossReference_5_1_0.eContents().get(1);
+		private final Keyword cInstanceKeyKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cInstanceKeyAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final CrossReference cInstanceKeyTypeCrossReference_5_1_0 = (CrossReference)cInstanceKeyAssignment_5_1.eContents().get(0);
+		private final RuleCall cInstanceKeyTypeFQNParserRuleCall_5_1_0_1 = (RuleCall)cInstanceKeyTypeCrossReference_5_1_0.eContents().get(1);
 		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
 		private final Keyword cProcessStatesKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_6_1 = (Keyword)cGroup_6.eContents().get(1);
@@ -3911,7 +3911,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//    doc=DOC?
 		//    'process-manager' name=ID '{'
 		//        ('cron-schedule' cron=STRING)?
-		//        ('correlation-id' correlationId=[Type|FQN])?
+		//        ('instance-key' instanceKey=[Type|FQN])?
 		//        ('process-states' '{' states+=ProcessState+ '}')?
 		//        reactions+=ProcessReaction*
 		//    '}';
@@ -3920,7 +3920,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//doc=DOC?
 		//'process-manager' name=ID '{'
 		//    ('cron-schedule' cron=STRING)?
-		//    ('correlation-id' correlationId=[Type|FQN])?
+		//    ('instance-key' instanceKey=[Type|FQN])?
 		//    ('process-states' '{' states+=ProcessState+ '}')?
 		//    reactions+=ProcessReaction*
 		//'}'
@@ -3956,20 +3956,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//STRING
 		public RuleCall getCronSTRINGTerminalRuleCall_4_1_0() { return cCronSTRINGTerminalRuleCall_4_1_0; }
 		
-		//('correlation-id' correlationId=[Type|FQN])?
+		//('instance-key' instanceKey=[Type|FQN])?
 		public Group getGroup_5() { return cGroup_5; }
 		
-		//'correlation-id'
-		public Keyword getCorrelationIdKeyword_5_0() { return cCorrelationIdKeyword_5_0; }
+		//'instance-key'
+		public Keyword getInstanceKeyKeyword_5_0() { return cInstanceKeyKeyword_5_0; }
 		
-		//correlationId=[Type|FQN]
-		public Assignment getCorrelationIdAssignment_5_1() { return cCorrelationIdAssignment_5_1; }
+		//instanceKey=[Type|FQN]
+		public Assignment getInstanceKeyAssignment_5_1() { return cInstanceKeyAssignment_5_1; }
 		
 		//[Type|FQN]
-		public CrossReference getCorrelationIdTypeCrossReference_5_1_0() { return cCorrelationIdTypeCrossReference_5_1_0; }
+		public CrossReference getInstanceKeyTypeCrossReference_5_1_0() { return cInstanceKeyTypeCrossReference_5_1_0; }
 		
 		//FQN
-		public RuleCall getCorrelationIdTypeFQNParserRuleCall_5_1_0_1() { return cCorrelationIdTypeFQNParserRuleCall_5_1_0_1; }
+		public RuleCall getInstanceKeyTypeFQNParserRuleCall_5_1_0_1() { return cInstanceKeyTypeFQNParserRuleCall_5_1_0_1; }
 		
 		//('process-states' '{' states+=ProcessState+ '}')?
 		public Group getGroup_6() { return cGroup_6; }
@@ -6259,7 +6259,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//    doc=DOC?
 	//    'process-manager' name=ID '{'
 	//        ('cron-schedule' cron=STRING)?
-	//        ('correlation-id' correlationId=[Type|FQN])?
+	//        ('instance-key' instanceKey=[Type|FQN])?
 	//        ('process-states' '{' states+=ProcessState+ '}')?
 	//        reactions+=ProcessReaction*
 	//    '}';

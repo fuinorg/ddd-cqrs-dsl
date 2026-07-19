@@ -6195,9 +6195,9 @@ ruleProcessManager returns [EObject current=null]
 			)
 		)?
 		(
-			otherlv_6='correlation-id'
+			otherlv_6='instance-key'
 			{
-				newLeafNode(otherlv_6, grammarAccess.getProcessManagerAccess().getCorrelationIdKeyword_5_0());
+				newLeafNode(otherlv_6, grammarAccess.getProcessManagerAccess().getInstanceKeyKeyword_5_0());
 			}
 			(
 				(
@@ -6207,7 +6207,7 @@ ruleProcessManager returns [EObject current=null]
 						}
 					}
 					{
-						newCompositeNode(grammarAccess.getProcessManagerAccess().getCorrelationIdTypeCrossReference_5_1_0());
+						newCompositeNode(grammarAccess.getProcessManagerAccess().getInstanceKeyTypeCrossReference_5_1_0());
 					}
 					ruleFQN
 					{

@@ -33,7 +33,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Type;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl#getCron <em>Cron</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl#getCorrelationId <em>Correlation Id</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl#getInstanceKey <em>Instance Key</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl#getStates <em>States</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl#getReactions <em>Reactions</em>}</li>
  * </ul>
@@ -63,14 +63,14 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
   protected String cron = CRON_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getCorrelationId() <em>Correlation Id</em>}' reference.
+   * The cached value of the '{@link #getInstanceKey() <em>Instance Key</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCorrelationId()
+   * @see #getInstanceKey()
    * @generated
    * @ordered
    */
-  protected Type correlationId;
+  protected Type instanceKey;
 
   /**
    * The cached value of the '{@link #getStates() <em>States</em>}' containment reference list.
@@ -144,19 +144,19 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
    * @generated
    */
   @Override
-  public Type getCorrelationId()
+  public Type getInstanceKey()
   {
-    if (correlationId != null && correlationId.eIsProxy())
+    if (instanceKey != null && instanceKey.eIsProxy())
     {
-      InternalEObject oldCorrelationId = (InternalEObject)correlationId;
-      correlationId = (Type)eResolveProxy(oldCorrelationId);
-      if (correlationId != oldCorrelationId)
+      InternalEObject oldInstanceKey = (InternalEObject)instanceKey;
+      instanceKey = (Type)eResolveProxy(oldInstanceKey);
+      if (instanceKey != oldInstanceKey)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID, oldCorrelationId, correlationId));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY, oldInstanceKey, instanceKey));
       }
     }
-    return correlationId;
+    return instanceKey;
   }
 
   /**
@@ -164,9 +164,9 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
    * <!-- end-user-doc -->
    * @generated
    */
-  public Type basicGetCorrelationId()
+  public Type basicGetInstanceKey()
   {
-    return correlationId;
+    return instanceKey;
   }
 
   /**
@@ -175,12 +175,12 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
    * @generated
    */
   @Override
-  public void setCorrelationId(Type newCorrelationId)
+  public void setInstanceKey(Type newInstanceKey)
   {
-    Type oldCorrelationId = correlationId;
-    correlationId = newCorrelationId;
+    Type oldInstanceKey = instanceKey;
+    instanceKey = newInstanceKey;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID, oldCorrelationId, correlationId));
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY, oldInstanceKey, instanceKey));
   }
 
   /**
@@ -243,9 +243,9 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
     {
       case CqrsDslPackage.PROCESS_MANAGER__CRON:
         return getCron();
-      case CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID:
-        if (resolve) return getCorrelationId();
-        return basicGetCorrelationId();
+      case CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY:
+        if (resolve) return getInstanceKey();
+        return basicGetInstanceKey();
       case CqrsDslPackage.PROCESS_MANAGER__STATES:
         return getStates();
       case CqrsDslPackage.PROCESS_MANAGER__REACTIONS:
@@ -268,8 +268,8 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
       case CqrsDslPackage.PROCESS_MANAGER__CRON:
         setCron((String)newValue);
         return;
-      case CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID:
-        setCorrelationId((Type)newValue);
+      case CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY:
+        setInstanceKey((Type)newValue);
         return;
       case CqrsDslPackage.PROCESS_MANAGER__STATES:
         getStates().clear();
@@ -296,8 +296,8 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
       case CqrsDslPackage.PROCESS_MANAGER__CRON:
         setCron(CRON_EDEFAULT);
         return;
-      case CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID:
-        setCorrelationId((Type)null);
+      case CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY:
+        setInstanceKey((Type)null);
         return;
       case CqrsDslPackage.PROCESS_MANAGER__STATES:
         getStates().clear();
@@ -321,8 +321,8 @@ public class ProcessManagerImpl extends AbstractElementImpl implements ProcessMa
     {
       case CqrsDslPackage.PROCESS_MANAGER__CRON:
         return CRON_EDEFAULT == null ? cron != null : !CRON_EDEFAULT.equals(cron);
-      case CqrsDslPackage.PROCESS_MANAGER__CORRELATION_ID:
-        return correlationId != null;
+      case CqrsDslPackage.PROCESS_MANAGER__INSTANCE_KEY:
+        return instanceKey != null;
       case CqrsDslPackage.PROCESS_MANAGER__STATES:
         return states != null && !states.isEmpty();
       case CqrsDslPackage.PROCESS_MANAGER__REACTIONS:

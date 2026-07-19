@@ -69,7 +69,7 @@
     KW_REST_PATH='rest-path'
     KW_PROCESS_MANAGER='process-manager'
     KW_CRON_SCHEDULE='cron-schedule'
-    KW_CORRELATION_ID='correlation-id'
+    KW_INSTANCE_KEY='instance-key'
     KW_PROCESS_STATES='process-states'
     KW_REACTS_TO='reacts-to'
     KW_IN_STATE='in-state'
@@ -356,7 +356,7 @@ view_def ::= KW_VIEW ID KW_USES type_ref LBRACE
 
 process_manager ::= KW_PROCESS_MANAGER ID LBRACE
     (KW_CRON_SCHEDULE STRING)?
-    (KW_CORRELATION_ID type_ref)?
+    (KW_INSTANCE_KEY type_ref)?
     (KW_PROCESS_STATES LBRACE process_state+ RBRACE)?
     process_reaction*
   RBRACE {
