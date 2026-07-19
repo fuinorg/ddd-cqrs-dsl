@@ -1324,6 +1324,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         doc=DOC? 
 	 *         name=ID 
 	 *         projection=[Projection|FQN] 
+	 *         hints+=Hint* 
 	 *         restPath=STRING? 
 	 *         cron=STRING? 
 	 *         businessRules+=BusinessRule* 

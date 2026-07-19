@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature id="org.fuin.dsl.cqrs.feature"
 	label="CqrsDsl Feature "
-	version="1.13.0.qualifier">
+	version="1.14.0.qualifier">
 	<plugin
 			id="org.fuin.dsl.cqrs"
 			download-size="0"

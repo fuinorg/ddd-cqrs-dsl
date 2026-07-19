@@ -286,7 +286,7 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 }
                 """);
         assertTrue("expected view-body keywords, got: " + lookups,
-                lookups.containsAll(List.of("rest-path", "cron-schedule", "business-rule", "method")));
+                lookups.containsAll(List.of("hint", "rest-path", "cron-schedule", "business-rule", "method")));
         assertFalse("must not offer namespace element keywords inside the view body: " + lookups,
                 lookups.contains("value-object"));
     }

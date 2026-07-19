@@ -118,6 +118,10 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.16.0</b> &ndash; A <code>view</code> body may now declare generator
+        <code>hint</code>s (JSON-structured, like a <code>project</code>), placed right after the
+        opening <code>{</code>. The <code>hint</code> keyword is syntax-highlighted and offered in
+        context-aware completion inside a view body.</li>
     <li><b>1.15.0</b> &ndash; A <code>view</code> body may now declare an optional
         <code>rest-path</code> and <code>cron-schedule</code>: <code>rest-path</code> sets the base path
         of the generated REST controller (otherwise derived from the aggregate name) and

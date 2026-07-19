@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
@@ -33,6 +34,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.View;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getProjection <em>Projection</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getRestPath <em>Rest Path</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getBusinessRules <em>Business Rules</em>}</li>
@@ -52,6 +54,16 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @ordered
    */
   protected Projection projection;
+
+  /**
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHints()
+   * @generated
+   * @ordered
+   */
+  protected EList<Hint> hints;
 
   /**
    * The default value of the '{@link #getRestPath() <em>Rest Path</em>}' attribute.
@@ -185,6 +197,21 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @generated
    */
   @Override
+  public EList<Hint> getHints()
+  {
+    if (hints == null)
+    {
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.VIEW__HINTS);
+    }
+    return hints;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public String getRestPath()
   {
     return restPath;
@@ -269,6 +296,8 @@ public class ViewImpl extends AbstractElementImpl implements View
   {
     switch (featureID)
     {
+      case CqrsDslPackage.VIEW__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
         return ((InternalEList<?>)getBusinessRules()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.VIEW__METHODS:
@@ -290,6 +319,8 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         if (resolve) return getProjection();
         return basicGetProjection();
+      case CqrsDslPackage.VIEW__HINTS:
+        return getHints();
       case CqrsDslPackage.VIEW__REST_PATH:
         return getRestPath();
       case CqrsDslPackage.VIEW__CRON:
@@ -315,6 +346,10 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)newValue);
+        return;
+      case CqrsDslPackage.VIEW__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
       case CqrsDslPackage.VIEW__REST_PATH:
         setRestPath((String)newValue);
@@ -347,6 +382,9 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__PROJECTION:
         setProjection((Projection)null);
         return;
+      case CqrsDslPackage.VIEW__HINTS:
+        getHints().clear();
+        return;
       case CqrsDslPackage.VIEW__REST_PATH:
         setRestPath(REST_PATH_EDEFAULT);
         return;
@@ -375,6 +413,8 @@ public class ViewImpl extends AbstractElementImpl implements View
     {
       case CqrsDslPackage.VIEW__PROJECTION:
         return projection != null;
+      case CqrsDslPackage.VIEW__HINTS:
+        return hints != null && !hints.isEmpty();
       case CqrsDslPackage.VIEW__REST_PATH:
         return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
       case CqrsDslPackage.VIEW__CRON:

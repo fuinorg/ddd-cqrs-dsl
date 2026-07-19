@@ -441,6 +441,7 @@ Projection:
 View:
 	doc=DOC?
 	'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		hints+=Hint*
 		('rest-path' restPath=STRING)?
 		('cron-schedule' cron=STRING)?
 		businessRules+=BusinessRule*

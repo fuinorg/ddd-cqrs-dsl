@@ -3395,13 +3395,22 @@ public interface CqrsDslPackage extends EPackage
   int VIEW__PROJECTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Hints</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIEW__HINTS = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Rest Path</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VIEW__REST_PATH = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+  int VIEW__REST_PATH = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Cron</b></em>' attribute.
@@ -3410,7 +3419,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+  int VIEW__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Business Rules</b></em>' containment reference list.
@@ -3419,7 +3428,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__BUSINESS_RULES = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
+  int VIEW__BUSINESS_RULES = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Methods</b></em>' containment reference list.
@@ -3428,7 +3437,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__METHODS = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
+  int VIEW__METHODS = ABSTRACT_ELEMENT_FEATURE_COUNT + 5;
 
   /**
    * The number of structural features of the '<em>View</em>' class.
@@ -3437,7 +3446,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 5;
+  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 6;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl <em>Process Manager</em>}' class.
@@ -6061,6 +6070,17 @@ public interface CqrsDslPackage extends EPackage
   EReference getView_Projection();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Hints</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getHints()
+   * @see #getView()
+   * @generated
+   */
+  EReference getView_Hints();
+
+  /**
    * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -8190,6 +8210,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference VIEW__PROJECTION = eINSTANCE.getView_Projection();
+
+    /**
+     * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VIEW__HINTS = eINSTANCE.getView_Hints();
 
     /**
      * The meta object literal for the '<em><b>Rest Path</b></em>' attribute feature.

@@ -203,6 +203,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         // A 'view ... { ... }' body holds business rules and methods (a caret inside a view method is
         // already handled by the constructor/method branch above).
         if (enclosingView(position) != null) {
+            keywords.add("hint");
             keywords.add("rest-path");
             keywords.add("cron-schedule");
             keywords.add("business-rule");

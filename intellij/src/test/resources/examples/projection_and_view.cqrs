@@ -38,6 +38,9 @@ project p_projection_and_view {
 			// It may also set an optional REST base path and projection cron.
 			view UserListView uses UserList {
 
+				// A view may carry generator hints, like a project.
+				hint SrcGen4J { "folder": "genMainJava" }
+
 				rest-path "/users"
 				cron-schedule "* * * * * *"
 

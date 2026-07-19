@@ -2,6 +2,15 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.16.0
+- A `view` body may now declare generator `hint`s (JSON-structured, like a `project`), placed right after the opening `{`. The `hint` keyword is syntax-highlighted and offered in context-aware completion inside a view body.
+
+## 1.15.0
+- A `view` body may now declare an optional `rest-path` and `cron-schedule`: `rest-path` sets the base path of the generated REST controller (otherwise derived from the aggregate name) and `cron-schedule` sets the projection schedule (otherwise the default `* * * * * *`). Both keywords are syntax-highlighted and offered in context-aware completion inside a `view` body, and `cron-schedule` is validated as a Spring Boot cron expression (on a `view` and a `process-manager`). Grammar-only for now; code generation follows.
+
+## 1.14.0
+- New `process-manager` element for modelling orchestration (sagas): it reacts to domain events and issues commands through a small, documented state machine - `process-states` plus guarded `reacts-to <Event> in-state <State>` reactions that `correlate-by` an event attribute, `issues-commands`, `transition-to` another state, and `arm-timeout`/`cancel-timeout`. Every state and reaction may carry its own doc comment. Grammar-only for now (like `command-handler`/`view`); code generation follows. The new keywords are syntax-highlighted and offered in context-aware completion (the manager clauses inside the block, the reaction clauses inside a `reacts-to`, and the time units after `arm-timeout`). Separately, `view` bodies now offer their `business-rule` and `method` keywords in completion.
+
 ## 1.13.0
 - A method's `returns` may now be declared `optional` (`returns optional String`), the same way an attribute or a parameter can, to express that the result may be absent. The code generation maps it to a `java.util.Optional` of the declared type.
 

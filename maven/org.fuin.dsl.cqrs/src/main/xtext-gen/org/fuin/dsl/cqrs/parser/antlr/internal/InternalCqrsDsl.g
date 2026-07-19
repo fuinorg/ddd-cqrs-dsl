@@ -5999,15 +5999,34 @@ ruleView returns [EObject current=null]
 			newLeafNode(otherlv_5, grammarAccess.getViewAccess().getLeftCurlyBracketKeyword_5());
 		}
 		(
-			otherlv_6='rest-path'
+			(
+				{
+					newCompositeNode(grammarAccess.getViewAccess().getHintsHintParserRuleCall_6_0());
+				}
+				lv_hints_6_0=ruleHint
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getViewRule());
+					}
+					add(
+						$current,
+						"hints",
+						lv_hints_6_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.Hint");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		(
+			otherlv_7='rest-path'
 			{
-				newLeafNode(otherlv_6, grammarAccess.getViewAccess().getRestPathKeyword_6_0());
+				newLeafNode(otherlv_7, grammarAccess.getViewAccess().getRestPathKeyword_7_0());
 			}
 			(
 				(
-					lv_restPath_7_0=RULE_STRING
+					lv_restPath_8_0=RULE_STRING
 					{
-						newLeafNode(lv_restPath_7_0, grammarAccess.getViewAccess().getRestPathSTRINGTerminalRuleCall_6_1_0());
+						newLeafNode(lv_restPath_8_0, grammarAccess.getViewAccess().getRestPathSTRINGTerminalRuleCall_7_1_0());
 					}
 					{
 						if ($current==null) {
@@ -6016,22 +6035,22 @@ ruleView returns [EObject current=null]
 						setWithLastConsumed(
 							$current,
 							"restPath",
-							lv_restPath_7_0,
+							lv_restPath_8_0,
 							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
 					}
 				)
 			)
 		)?
 		(
-			otherlv_8='cron-schedule'
+			otherlv_9='cron-schedule'
 			{
-				newLeafNode(otherlv_8, grammarAccess.getViewAccess().getCronScheduleKeyword_7_0());
+				newLeafNode(otherlv_9, grammarAccess.getViewAccess().getCronScheduleKeyword_8_0());
 			}
 			(
 				(
-					lv_cron_9_0=RULE_STRING
+					lv_cron_10_0=RULE_STRING
 					{
-						newLeafNode(lv_cron_9_0, grammarAccess.getViewAccess().getCronSTRINGTerminalRuleCall_7_1_0());
+						newLeafNode(lv_cron_10_0, grammarAccess.getViewAccess().getCronSTRINGTerminalRuleCall_8_1_0());
 					}
 					{
 						if ($current==null) {
@@ -6040,7 +6059,7 @@ ruleView returns [EObject current=null]
 						setWithLastConsumed(
 							$current,
 							"cron",
-							lv_cron_9_0,
+							lv_cron_10_0,
 							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
 					}
 				)
@@ -6049,9 +6068,9 @@ ruleView returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getViewAccess().getBusinessRulesBusinessRuleParserRuleCall_8_0());
+					newCompositeNode(grammarAccess.getViewAccess().getBusinessRulesBusinessRuleParserRuleCall_9_0());
 				}
-				lv_businessRules_10_0=ruleBusinessRule
+				lv_businessRules_11_0=ruleBusinessRule
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getViewRule());
@@ -6059,7 +6078,7 @@ ruleView returns [EObject current=null]
 					add(
 						$current,
 						"businessRules",
-						lv_businessRules_10_0,
+						lv_businessRules_11_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.BusinessRule");
 					afterParserOrEnumRuleCall();
 				}
@@ -6068,9 +6087,9 @@ ruleView returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getViewAccess().getMethodsMethodParserRuleCall_9_0());
+					newCompositeNode(grammarAccess.getViewAccess().getMethodsMethodParserRuleCall_10_0());
 				}
-				lv_methods_11_0=ruleMethod
+				lv_methods_12_0=ruleMethod
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getViewRule());
@@ -6078,15 +6097,15 @@ ruleView returns [EObject current=null]
 					add(
 						$current,
 						"methods",
-						lv_methods_11_0,
+						lv_methods_12_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Method");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_12='}'
+		otherlv_13='}'
 		{
-			newLeafNode(otherlv_12, grammarAccess.getViewAccess().getRightCurlyBracketKeyword_10());
+			newLeafNode(otherlv_13, grammarAccess.getViewAccess().getRightCurlyBracketKeyword_11());
 		}
 	)
 ;

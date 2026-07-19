@@ -345,6 +345,7 @@ projection_def ::= KW_PROJECTION ID (KW_INPUT type_ref (COMMA type_ref)*)? {
 }
 
 view_def ::= KW_VIEW ID KW_USES type_ref LBRACE
+    hint_def*
     (KW_REST_PATH STRING)?
     (KW_CRON_SCHEDULE STRING)?
     business_rule* method_def* RBRACE {
