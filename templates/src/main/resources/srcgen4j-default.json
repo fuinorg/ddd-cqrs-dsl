@@ -1,5 +1,5 @@
 {
-	"package": "${project}.${module}.${group}.${context}[.${namespace}]",
+	"package": "${project}.${module}[.${group}].${context}[.${namespace}]",
 	"types": [
 		{
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject", "module": "shared", "group": "domain",
@@ -59,7 +59,7 @@
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.Command", "module": "command", "group": "api",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.Command", "module": "command.api", "group": "",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.command.CommandArtifactFactory", "folder": "genMainJava" }
 			]
@@ -108,7 +108,7 @@
 			]
 		},
 		{
-			"name": "org.fuin.dsl.cqrs.cqrsDsl.ProcessManager", "module": "process", "group": "core",
+			"name": "org.fuin.dsl.cqrs.cqrsDsl.ProcessManager", "module": "process.core", "group": "",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.processmanager.AbstractProcessManagerArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.processmanager.ProcessManagerArtifactFactory", "folder": "mainJava" }
