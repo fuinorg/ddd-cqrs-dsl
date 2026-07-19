@@ -41,6 +41,27 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonString
  * }
  * </pre>
  * There is deliberately no "package" key: the target package is the enclosing view's package.
+ * <p>
+ * A table may additionally declare associations to other tables of the same hint (same package):
+ * <pre>
+ * "manyToOnes": [
+ *     {
+ *         "fieldName": "order", "targetClassName": "Order", "fetch": "LAZY", "optional": false,
+ *         "joinColumn": { "name": "ORDER_ID", "referencedColumnName": "ID", "nullable": false,
+ *                         "foreignKey": "NO_CONSTRAINT" }
+ *     }
+ * ],
+ * "oneToManys": [
+ *     {
+ *         "fieldName": "lines", "targetClassName": "OrderLine", "mappedBy": "order",
+ *         "fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
+ *     }
+ * ]
+ * </pre>
+ * A "manyToOnes" entry renders the owning side ({@code @ManyToOne} + {@code @JoinColumn}); a
+ * "oneToManys" entry renders the inverse collection ({@code @OneToMany(mappedBy = ...)}). The
+ * {@code joinColumn.foreignKey} value {@code "NO_CONSTRAINT"} disables the DB foreign key (typical for
+ * a projection-maintained read model); any other value becomes the {@code @ForeignKey} name.
  */
 class JpaHint {
 
@@ -91,7 +112,9 @@ class JpaHint {
             obj.stringValue("schema"),
             obj.arrayValues("uniqueConstraints").map[asObject.parseUniqueConstraint],
             obj.arrayValues("indexes").map[asObject.parseIndex],
-            obj.arrayValues("columns").map[asObject.parseColumn]
+            obj.arrayValues("columns").map[asObject.parseColumn],
+            obj.arrayValues("manyToOnes").map[asObject.parseManyToOne],
+            obj.arrayValues("oneToManys").map[asObject.parseOneToMany]
         )
     }
 
@@ -107,6 +130,37 @@ class JpaHint {
             obj.stringValue("name"),
             obj.stringValue("columnList"),
             obj.booleanValue("unique")
+        )
+    }
+
+    def private static JpaManyToOne parseManyToOne(JsonObject obj) {
+        new JpaManyToOne(
+            obj.stringValue("fieldName"),
+            obj.stringValue("targetClassName"),
+            obj.stringValue("fetch"),
+            obj.booleanValue("optional"),
+            obj.objectValue("joinColumn")?.parseJoinColumn
+        )
+    }
+
+    def private static JpaJoinColumn parseJoinColumn(JsonObject obj) {
+        new JpaJoinColumn(
+            obj.stringValue("name"),
+            obj.stringValue("referencedColumnName"),
+            obj.booleanValue("nullable"),
+            obj.booleanValue("unique"),
+            obj.stringValue("foreignKey")
+        )
+    }
+
+    def private static JpaOneToMany parseOneToMany(JsonObject obj) {
+        new JpaOneToMany(
+            obj.stringValue("fieldName"),
+            obj.stringValue("targetClassName"),
+            obj.stringValue("mappedBy"),
+            obj.stringValue("fetch"),
+            obj.booleanValue("orphanRemoval"),
+            obj.arrayValues("cascade").map[asStringValue]
         )
     }
 
@@ -236,9 +290,12 @@ class JpaTable {
     val List<JpaUniqueConstraint> uniqueConstraints
     val List<JpaIndex> indexes
     val List<JpaColumn> columns
+    val List<JpaManyToOne> manyToOnes
+    val List<JpaOneToMany> oneToManys
 
     new(String className, String name, String catalog, String schema,
-        List<JpaUniqueConstraint> uniqueConstraints, List<JpaIndex> indexes, List<JpaColumn> columns) {
+        List<JpaUniqueConstraint> uniqueConstraints, List<JpaIndex> indexes, List<JpaColumn> columns,
+        List<JpaManyToOne> manyToOnes, List<JpaOneToMany> oneToManys) {
         this.className = className
         this.name = name
         this.catalog = catalog
@@ -246,6 +303,8 @@ class JpaTable {
         this.uniqueConstraints = uniqueConstraints
         this.indexes = indexes
         this.columns = columns
+        this.manyToOnes = manyToOnes
+        this.oneToManys = oneToManys
     }
 
     /** @return Generated Java class name (value of the "className" key) or <code>null</code>. */
@@ -268,6 +327,12 @@ class JpaTable {
 
     /** @return Column definitions (value of the "columns" array) - Never <code>null</code>, but may be empty. */
     def getColumns() { columns }
+
+    /** @return {@code @ManyToOne} associations (value of the "manyToOnes" array) - Never <code>null</code>, but may be empty. */
+    def getManyToOnes() { manyToOnes }
+
+    /** @return {@code @OneToMany} associations (value of the "oneToManys" array) - Never <code>null</code>, but may be empty. */
+    def getOneToManys() { oneToManys }
 
 }
 
@@ -435,5 +500,117 @@ class JpaDecimalMin {
 
     /** @return {@code @DecimalMin} "inclusive" or <code>null</code>. */
     def getInclusive() { inclusive }
+
+}
+
+/** A {@code @ManyToOne} association: the owning side of a relationship, backed by a {@code @JoinColumn}. */
+class JpaManyToOne {
+
+    val String fieldName
+    val String targetClassName
+    val String fetch
+    val Boolean optional
+    val JpaJoinColumn joinColumn
+
+    new(String fieldName, String targetClassName, String fetch, Boolean optional, JpaJoinColumn joinColumn) {
+        this.fieldName = fieldName
+        this.targetClassName = targetClassName
+        this.fetch = fetch
+        this.optional = optional
+        this.joinColumn = joinColumn
+    }
+
+    /** @return Java field name of the association (value of the "fieldName" key) or <code>null</code>. */
+    def getFieldName() { fieldName }
+
+    /** @return "className" of the referenced entity (used as the field type) or <code>null</code>. */
+    def getTargetClassName() { targetClassName }
+
+    /** @return {@code @ManyToOne} "fetch" (a {@code FetchType} name) or <code>null</code>. */
+    def getFetch() { fetch }
+
+    /** @return {@code @ManyToOne} "optional" or <code>null</code>. */
+    def getOptional() { optional }
+
+    /** @return The {@code @JoinColumn} or <code>null</code> when not set. */
+    def getJoinColumn() { joinColumn }
+
+}
+
+/** The {@code @JoinColumn} of a {@code @ManyToOne} (the foreign-key column). */
+class JpaJoinColumn {
+
+    val String name
+    val String referencedColumnName
+    val Boolean nullable
+    val Boolean unique
+    val String foreignKey
+
+    new(String name, String referencedColumnName, Boolean nullable, Boolean unique, String foreignKey) {
+        this.name = name
+        this.referencedColumnName = referencedColumnName
+        this.nullable = nullable
+        this.unique = unique
+        this.foreignKey = foreignKey
+    }
+
+    /** @return {@code @JoinColumn} "name" or <code>null</code>. */
+    def getName() { name }
+
+    /** @return {@code @JoinColumn} "referencedColumnName" or <code>null</code>. */
+    def getReferencedColumnName() { referencedColumnName }
+
+    /** @return {@code @JoinColumn} "nullable" or <code>null</code>. */
+    def getNullable() { nullable }
+
+    /** @return {@code @JoinColumn} "unique" or <code>null</code>. */
+    def getUnique() { unique }
+
+    /**
+     * @return The foreign-key constraint: the literal {@code "NO_CONSTRAINT"} disables it
+     *         ({@code @ForeignKey(value = ConstraintMode.NO_CONSTRAINT)}); any other value is used as
+     *         the constraint name ({@code @ForeignKey(name = ...)}); <code>null</code> when not set.
+     */
+    def getForeignKey() { foreignKey }
+
+}
+
+/** A {@code @OneToMany} association: the inverse (collection) side of a relationship. */
+class JpaOneToMany {
+
+    val String fieldName
+    val String targetClassName
+    val String mappedBy
+    val String fetch
+    val Boolean orphanRemoval
+    val List<String> cascade
+
+    new(String fieldName, String targetClassName, String mappedBy, String fetch, Boolean orphanRemoval,
+        List<String> cascade) {
+        this.fieldName = fieldName
+        this.targetClassName = targetClassName
+        this.mappedBy = mappedBy
+        this.fetch = fetch
+        this.orphanRemoval = orphanRemoval
+        this.cascade = cascade
+    }
+
+    /** @return Java field name of the collection (value of the "fieldName" key) or <code>null</code>. */
+    def getFieldName() { fieldName }
+
+    /** @return "className" of the element entity (used as the {@code List} element type) or <code>null</code>. */
+    def getTargetClassName() { targetClassName }
+
+    /** @return {@code @OneToMany} "mappedBy" (the owning field on the target) or <code>null</code>. */
+    def getMappedBy() { mappedBy }
+
+    /** @return {@code @OneToMany} "fetch" (a {@code FetchType} name) or <code>null</code>. */
+    def getFetch() { fetch }
+
+    /** @return {@code @OneToMany} "orphanRemoval" or <code>null</code>. */
+    def getOrphanRemoval() { orphanRemoval }
+
+    /** @return {@code @OneToMany} "cascade" ({@code CascadeType} names) - Never <code>null</code>, but may be empty. */
+    def getCascade() { cascade }
 
 }

@@ -33,6 +33,14 @@
 				"columns": {
 					"type": "array",
 					"items": { "$ref": "#/$defs/column" }
+				},
+				"manyToOnes": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/manyToOne" }
+				},
+				"oneToManys": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/oneToMany" }
 				}
 			}
 		},
@@ -56,6 +64,49 @@
 				"name": { "type": "string", "description": "@Index 'name'." },
 				"columnList": { "type": "string", "description": "@Index 'columnList'." },
 				"unique": { "type": "boolean", "description": "@Index 'unique'." }
+			}
+		},
+		"manyToOne": {
+			"type": "object",
+			"additionalProperties": false,
+			"description": "A @ManyToOne association: the owning side of a relationship, backed by a foreign-key @JoinColumn. The generated field's type is 'targetClassName' (another table's className, in the same package).",
+			"required": [ "fieldName", "targetClassName" ],
+			"properties": {
+				"fieldName": { "type": "string", "minLength": 1, "description": "Java field name of the association." },
+				"targetClassName": { "type": "string", "minLength": 1, "description": "className of the referenced entity (its simple name is used as the field type)." },
+				"fetch": { "type": "string", "enum": [ "LAZY", "EAGER" ], "description": "@ManyToOne 'fetch' (jakarta.persistence.FetchType)." },
+				"optional": { "type": "boolean", "description": "@ManyToOne 'optional'." },
+				"joinColumn": { "$ref": "#/$defs/joinColumn" }
+			}
+		},
+		"joinColumn": {
+			"type": "object",
+			"additionalProperties": false,
+			"description": "The @JoinColumn of a @ManyToOne (the foreign-key column).",
+			"properties": {
+				"name": { "type": "string", "description": "@JoinColumn 'name' (the foreign-key column)." },
+				"referencedColumnName": { "type": "string", "description": "@JoinColumn 'referencedColumnName' (the target primary-key column)." },
+				"nullable": { "type": "boolean", "description": "@JoinColumn 'nullable'." },
+				"unique": { "type": "boolean", "description": "@JoinColumn 'unique'." },
+				"foreignKey": { "type": "string", "minLength": 1, "description": "The DB foreign-key constraint: the literal 'NO_CONSTRAINT' renders @ForeignKey(value = ConstraintMode.NO_CONSTRAINT) (typical for a projection-maintained read model); any other value renders @ForeignKey(name = <value>)." }
+			}
+		},
+		"oneToMany": {
+			"type": "object",
+			"additionalProperties": false,
+			"description": "A @OneToMany association: the inverse (collection) side of a relationship. Generates a 'List<targetClassName>' field, initialized to an empty list; 'mappedBy' is the field name of the owning @ManyToOne on the target.",
+			"required": [ "fieldName", "targetClassName", "mappedBy" ],
+			"properties": {
+				"fieldName": { "type": "string", "minLength": 1, "description": "Java field name of the collection." },
+				"targetClassName": { "type": "string", "minLength": 1, "description": "className of the element entity (its simple name is used as the List element type)." },
+				"mappedBy": { "type": "string", "minLength": 1, "description": "@OneToMany 'mappedBy' - the owning @ManyToOne field name on the target entity." },
+				"fetch": { "type": "string", "enum": [ "LAZY", "EAGER" ], "description": "@OneToMany 'fetch' (jakarta.persistence.FetchType)." },
+				"orphanRemoval": { "type": "boolean", "description": "@OneToMany 'orphanRemoval'." },
+				"cascade": {
+					"type": "array",
+					"items": { "type": "string", "enum": [ "ALL", "PERSIST", "MERGE", "REMOVE", "REFRESH", "DETACH" ] },
+					"description": "@OneToMany 'cascade' (jakarta.persistence.CascadeType values)."
+				}
 			}
 		},
 		"column": {

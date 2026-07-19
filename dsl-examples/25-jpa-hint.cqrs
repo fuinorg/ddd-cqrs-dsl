@@ -64,6 +64,52 @@ project p_25_jpa_hint {
 
 			}
 
+			// A view's JpaHint may also declare associations between its tables (same package). Here an
+			// "order" read model is split into a header table and a child line-item table, wired with
+			// @OneToMany on the parent and @ManyToOne + @JoinColumn on the child. "foreignKey":
+			// "NO_CONSTRAINT" keeps the projection - not a DB foreign key - in charge of integrity, as
+			// is common for a read model.
+			view OrderListView uses UserList {
+
+				hint JpaHint {
+					"tables": [
+						{
+							"className": "OrderReadModel",
+							"name": "ORDER_READ_MODEL",
+							"columns": [
+								{ "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
+							],
+							// The inverse (collection) side; "mappedBy" is the @ManyToOne field on the child.
+							"oneToManys": [
+								{
+									"fieldName": "lines", "targetClassName": "OrderLineReadModel", "mappedBy": "order",
+									"fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
+								}
+							]
+						},
+						{
+							"className": "OrderLineReadModel",
+							"name": "ORDER_LINE_READ_MODEL",
+							"columns": [
+								{ "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
+							],
+							// The owning side: a foreign-key @JoinColumn to the parent's primary key.
+							"manyToOnes": [
+								{
+									"fieldName": "order", "targetClassName": "OrderReadModel",
+									"fetch": "LAZY", "optional": false,
+									"joinColumn": {
+										"name": "ORDER_ID", "referencedColumnName": "ID",
+										"nullable": false, "foreignKey": "NO_CONSTRAINT"
+									}
+								}
+							]
+						}
+					]
+				}
+
+			}
+
 		}
 
 	}

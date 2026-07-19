@@ -48,6 +48,54 @@ project p {
                 rest-path "/persons"
             }
 
+            view OrderListView uses UserList {
+                hint JpaHint {
+                    "tables": [
+                        {
+                            "className": "Order",
+                            "name": "ORDERS",
+                            "columns": [
+                                {
+                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                    "name": "ID", "nullable": false
+                                }
+                            ],
+                            "oneToManys": [
+                                {
+                                    "fieldName": "lines", "targetClassName": "OrderLine", "mappedBy": "order",
+                                    "fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
+                                }
+                            ]
+                        },
+                        {
+                            "className": "OrderLine",
+                            "name": "ORDER_LINES",
+                            "columns": [
+                                {
+                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                    "name": "ID", "nullable": false
+                                },
+                                {
+                                    "fieldName": "amount", "javaType": "java.math.BigDecimal",
+                                    "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2
+                                }
+                            ],
+                            "manyToOnes": [
+                                {
+                                    "fieldName": "order", "targetClassName": "Order",
+                                    "fetch": "LAZY", "optional": false,
+                                    "joinColumn": {
+                                        "name": "ORDER_ID", "referencedColumnName": "ID",
+                                        "nullable": false, "foreignKey": "NO_CONSTRAINT"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+                rest-path "/orders"
+            }
+
         }
 
     }

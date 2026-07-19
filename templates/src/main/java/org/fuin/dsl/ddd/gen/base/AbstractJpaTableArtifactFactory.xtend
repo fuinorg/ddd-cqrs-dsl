@@ -79,6 +79,12 @@ abstract class AbstractJpaTableArtifactFactory<T extends EObject> extends Abstra
             «FOR col : table.columns»
             «field(col)»
             «ENDFOR»
+            «FOR rel : table.manyToOnes»
+            «manyToOneField(rel)»
+            «ENDFOR»
+            «FOR rel : table.oneToManys»
+            «oneToManyField(rel)»
+            «ENDFOR»
             /**
              * Protected default constructor only required for JPA.
              */
@@ -89,6 +95,12 @@ abstract class AbstractJpaTableArtifactFactory<T extends EObject> extends Abstra
 
             «FOR col : table.columns»
             «accessors(col)»
+            «ENDFOR»
+            «FOR rel : table.manyToOnes»
+            «manyToOneAccessors(rel)»
+            «ENDFOR»
+            «FOR rel : table.oneToManys»
+            «oneToManyAccessors(rel)»
             «ENDFOR»
         }
     '''
@@ -120,6 +132,73 @@ abstract class AbstractJpaTableArtifactFactory<T extends EObject> extends Abstra
         }
 
     '''
+
+    def private CharSequence manyToOneField(JpaManyToOne rel) '''
+        @ManyToOne«IF !manyToOneParts(rel).empty»(«manyToOneParts(rel).join(", ")»)«ENDIF»
+        «IF rel.joinColumn !== null»
+        @JoinColumn(«joinColumnParts(rel.joinColumn).join(", ")»)
+        «ENDIF»
+        private «rel.targetClassName.simpleType» «rel.fieldName»;
+
+    '''
+
+    def private CharSequence manyToOneAccessors(JpaManyToOne rel) '''
+        public «rel.targetClassName.simpleType» get«rel.fieldName.toFirstUpper»() {
+            return «rel.fieldName»;
+        }
+
+        public void set«rel.fieldName.toFirstUpper»(final «rel.targetClassName.simpleType» «rel.fieldName») {
+            this.«rel.fieldName» = «rel.fieldName»;
+        }
+
+    '''
+
+    def private CharSequence oneToManyField(JpaOneToMany rel) '''
+        @OneToMany(«oneToManyParts(rel).join(", ")»)
+        private List<«rel.targetClassName.simpleType»> «rel.fieldName» = new ArrayList<>();
+
+    '''
+
+    def private CharSequence oneToManyAccessors(JpaOneToMany rel) '''
+        public List<«rel.targetClassName.simpleType»> get«rel.fieldName.toFirstUpper»() {
+            return «rel.fieldName»;
+        }
+
+    '''
+
+    def private List<String> manyToOneParts(JpaManyToOne rel) {
+        val List<String> parts = new ArrayList<String>()
+        if (!rel.fetch.nullOrEmpty) parts.add("fetch = FetchType." + rel.fetch)
+        if (rel.optional !== null) parts.add("optional = " + rel.optional)
+        return parts
+    }
+
+    def private List<String> joinColumnParts(JpaJoinColumn jc) {
+        val List<String> parts = new ArrayList<String>()
+        if (!jc.name.nullOrEmpty) parts.add('name = "' + jc.name + '"')
+        if (!jc.referencedColumnName.nullOrEmpty) parts.add('referencedColumnName = "' + jc.referencedColumnName + '"')
+        if (jc.nullable !== null) parts.add("nullable = " + jc.nullable)
+        if (jc.unique !== null) parts.add("unique = " + jc.unique)
+        if (!jc.foreignKey.nullOrEmpty) parts.add("foreignKey = " + foreignKeyAnnotation(jc.foreignKey))
+        return parts
+    }
+
+    def private String foreignKeyAnnotation(String fk) {
+        if ("NO_CONSTRAINT" == fk) {
+            "@ForeignKey(value = ConstraintMode.NO_CONSTRAINT)"
+        } else {
+            '@ForeignKey(name = "' + fk + '")'
+        }
+    }
+
+    def private List<String> oneToManyParts(JpaOneToMany rel) {
+        val List<String> parts = new ArrayList<String>()
+        if (!rel.mappedBy.nullOrEmpty) parts.add('mappedBy = "' + rel.mappedBy + '"')
+        if (!rel.fetch.nullOrEmpty) parts.add("fetch = FetchType." + rel.fetch)
+        if (rel.orphanRemoval !== null) parts.add("orphanRemoval = " + rel.orphanRemoval)
+        if (!rel.cascade.empty) parts.add("cascade = { " + rel.cascade.map["CascadeType." + it].join(", ") + " }")
+        return parts
+    }
 
     def private List<String> tableAnnotationParts(JpaTable table) {
         val List<String> parts = new ArrayList<String>()
@@ -211,6 +290,40 @@ abstract class AbstractJpaTableArtifactFactory<T extends EObject> extends Abstra
             }
             if (col.javaType !== null && col.javaType.contains(".")) {
                 ctx.requiresImport(col.javaType)
+            }
+        }
+        for (rel : table.manyToOnes) {
+            ctx.requiresImport("jakarta.persistence.ManyToOne")
+            if (!rel.fetch.nullOrEmpty) {
+                ctx.requiresImport("jakarta.persistence.FetchType")
+            }
+            if (rel.joinColumn !== null) {
+                ctx.requiresImport("jakarta.persistence.JoinColumn")
+                if (!rel.joinColumn.foreignKey.nullOrEmpty) {
+                    ctx.requiresImport("jakarta.persistence.ForeignKey")
+                    if ("NO_CONSTRAINT" == rel.joinColumn.foreignKey) {
+                        ctx.requiresImport("jakarta.persistence.ConstraintMode")
+                    }
+                }
+            }
+            if (rel.targetClassName !== null && rel.targetClassName.contains(".")) {
+                ctx.requiresImport(rel.targetClassName)
+            }
+        }
+        if (!table.oneToManys.empty) {
+            ctx.requiresImport("jakarta.persistence.OneToMany")
+            ctx.requiresImport("java.util.List")
+            ctx.requiresImport("java.util.ArrayList")
+        }
+        for (rel : table.oneToManys) {
+            if (!rel.fetch.nullOrEmpty) {
+                ctx.requiresImport("jakarta.persistence.FetchType")
+            }
+            if (!rel.cascade.empty) {
+                ctx.requiresImport("jakarta.persistence.CascadeType")
+            }
+            if (rel.targetClassName !== null && rel.targetClassName.contains(".")) {
+                ctx.requiresImport(rel.targetClassName)
             }
         }
     }
