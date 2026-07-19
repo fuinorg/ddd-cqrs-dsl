@@ -71,8 +71,10 @@ public final class EntityC extends AbstractEntityC {
      */
     public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityCId, EntityC, Builder> {
     
+        @SuppressWarnings("NullAway.Init")
         private String a;
         
+        @SuppressWarnings("NullAway.Init")
         private Integer b;
         
         private Builder() {
@@ -109,6 +111,7 @@ public final class EntityC extends AbstractEntityC {
          * @return New instance.
          */
         @Override
+        @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
         public EntityC build() throws AnyConstraintViolatedException {
             ensureBuildableAbstractEntity();
             ensureNotNull("a", a);

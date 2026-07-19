@@ -93,8 +93,8 @@ class AggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                     «IF (id.attributes.nullSafe.size == 1)»
                         return "" + get«id.attributes.first.name.toFirstUpper»();
                     «ELSE»
-                        // TODO Implement!
-                        return null;
+                        // Default: the id parts joined by "-". Override if a different string form is required.
+                        return «FOR a : id.attributes SEPARATOR ' + "-" + '»get«a.name.toFirstUpper»()«ENDFOR»;
                     «ENDIF»
                 }
 

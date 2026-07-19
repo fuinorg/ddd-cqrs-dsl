@@ -16,6 +16,7 @@
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AbstractAggregateIdArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdArtifactFactory", "folder": "mainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.CombinedAggregateIdArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.AggregateIdStreamFactoryArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.FinalAggregateIdArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.aggregateid.SimpleAggregateIdArtifactFactory", "folder": "genMainJava" }
@@ -25,6 +26,7 @@
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.EntityId", "module": "shared", "group": "domain",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.AbstractEntityIdArtifactFactory", "folder": "genMainJava" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.CombinedEntityIdArtifactFactory", "folder": "genMainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.EntityIdArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.FinalEntityIdArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.entityid.SimpleEntityIdArtifactFactory", "folder": "genMainJava" }

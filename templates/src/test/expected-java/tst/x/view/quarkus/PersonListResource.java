@@ -21,13 +21,12 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
 import p.query.api.view.x.m.PersonListResourceApi;
 
 /**
  * REST resource providing the PersonList read model. Implements {@link PersonListResourceApi}; the
  * class-level {@code @Path} is re-declared because JAX-RS does not inherit it from the
- * interface. TODO Adjust the queries / response mapping to your read model.
+ * interface. This is a generate-once stub - TODO implement the queries against your read model.
  */
 @Path("/persons")
 public class PersonListResource implements PersonListResourceApi {
@@ -37,17 +36,14 @@ public class PersonListResource implements PersonListResourceApi {
 
     @Override
     public Response getAll() {
-        final List<PersonListEntry> list = em.createNamedQuery(PersonListEntry.FIND_ALL, PersonListEntry.class).getResultList();
-        return Response.ok(list).build();
+        // TODO Implement: query the read model and return the results.
+        throw new UnsupportedOperationException("TODO: implement getAll()");
     }
 
     @Override
     public Response getById(final String id) {
-        final PersonListEntry entry = em.find(PersonListEntry.class, id);
-        if (entry == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.ok(entry).build();
+        // TODO Implement: look up the entry by id and return it (404 if absent).
+        throw new UnsupportedOperationException("TODO: implement getById(id)");
     }
 
 }

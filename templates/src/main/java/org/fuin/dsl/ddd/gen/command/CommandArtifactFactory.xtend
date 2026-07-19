@@ -86,7 +86,11 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 	        if (options.jackson) {
 	            ctx.requiresImport("org.fuin.cqrs4j.jackson.AbstractCommand")        
 	        }
-            if (command.attributes.nullSafe.size > 0) {
+            // toString() renders KeyValueEL.replace(...) over the same variables the constructor uses:
+            // the command's own attributes, or - for a command derived from a method/constructor - the
+            // target's parameters. Guard the imports on that same set, not on command.attributes alone.
+            val variables = if (command.target === null) command.attributes else command.target.parameters
+            if (variables.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValueEL")
                 ctx.requiresImport("java.util.Objects")

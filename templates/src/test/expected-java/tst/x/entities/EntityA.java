@@ -63,6 +63,7 @@ public final class EntityA extends AbstractEntityA {
          * @return New instance.
          */
         @Override
+        @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
         public EntityA build() {
             ensureBuildableAbstractEntity();
     

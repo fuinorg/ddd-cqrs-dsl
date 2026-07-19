@@ -17,18 +17,15 @@
  */
 package p.shared.domain.x.entityid;
 
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
 import p.x.entityid.AbstractMyEntityId;
-import p.x.entityid.MyEntityIdConverter;
 
 /**
  * Entity ID single attribute and base.
  */
 @Immutable
-@XmlJavaTypeAdapter(MyEntityIdConverter.class)
 public final class MyEntityId extends AbstractMyEntityId {
 
     @Serial

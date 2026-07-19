@@ -18,7 +18,9 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractVOExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
 import java.util.List
 
 class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
@@ -61,6 +63,26 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         // Not needed
     }
 
+    /**
+     * Returns the "ValueObjectWithBaseType<Base>, " interface prefix for a base-typed value object
+     * that has NO dedicated AbstractXValueObject base class (only String/UUID/Integer/Long have one -
+     * see SrcVoBaseOptionalExtends). Those base classes already declare asBaseType(); for any other
+     * base type (e.g. BigDecimal) the interface must be implemented so the final class's
+     * @Override asBaseType() overrides a declared method. Returns "" when a base class covers it or
+     * the value object has no base.
+     */
+    def String baseTypeInterface(CodeSnippetContext ctx, ValueObject vo) {
+        if (vo.base === null) {
+            return ""
+        }
+        val bn = vo.base.name
+        if (bn == "String" || bn == "UUID" || bn == "Integer" || bn == "Long") {
+            return ""
+        }
+        ctx.requiresImport("org.fuin.objects4j.common.ValueObjectWithBaseType")
+        return "ValueObjectWithBaseType<" + vo.baseType.simpleName(ctx) + ">, "
+    }
+
     def create(SimpleCodeSnippetContext ctx, ValueObject vo, String pkg, String className) {
         val GenerateOptions localOptions = new GenerateOptions.Builder()
             .withJaxb(vo.base === null && options.jaxb)
@@ -70,7 +92,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
             .create();
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            public abstract class «className» «new SrcVoBaseOptionalExtends(ctx, vo.base)»implements ValueObject, Serializable {
+            public abstract class «className» «new SrcVoBaseOptionalExtends(ctx, vo.base)»implements «baseTypeInterface(ctx, vo)»ValueObject, Serializable {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;

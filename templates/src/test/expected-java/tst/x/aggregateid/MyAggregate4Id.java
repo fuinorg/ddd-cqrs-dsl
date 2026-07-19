@@ -50,8 +50,8 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
     
     @Override
     public final String asString() {
-        // TODO Implement!
-        return null;
+        // Default: the id parts joined by "-". Override if a different string form is required.
+        return getA() + "-" + getB();
     }
 
 }

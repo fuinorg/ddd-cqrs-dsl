@@ -79,7 +79,7 @@ public class PersonListView implements View {
 
     @Override
     public Set<EventType> getEventTypes() {
-        return Set.of(UserCreatedEvent.TYPE);
+        return Set.of(UserCreatedEvent.EVENT_TYPE);
     }
 
     @Override

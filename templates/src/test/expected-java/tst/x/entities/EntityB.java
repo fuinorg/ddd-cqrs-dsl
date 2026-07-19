@@ -54,8 +54,10 @@ public final class EntityB extends AbstractEntityB {
      */
     public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityBId, EntityB, Builder> {
     
+        @SuppressWarnings("NullAway.Init")
         private String a;
         
+        @SuppressWarnings("NullAway.Init")
         private Integer b;
         
         private Builder() {
@@ -92,6 +94,7 @@ public final class EntityB extends AbstractEntityB {
          * @return New instance.
          */
         @Override
+        @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
         public EntityB build() {
             ensureBuildableAbstractEntity();
             ensureNotNull("a", a);

@@ -29,7 +29,7 @@ public class UserCreatedEventHandler implements EventHandler<UserCreatedEvent> {
 
     @Override
     public EventType getEventType() {
-        return UserCreatedEvent.TYPE;
+        return UserCreatedEvent.EVENT_TYPE;
     }
 
     @Override

@@ -26,8 +26,8 @@ import p.query.api.view.x.m.PersonListControllerApi;
 
 /**
  * REST controller providing the PersonList read model. Implements {@link PersonListControllerApi} and adds
- * {@code @RestController} (required - not inherited from the interface). TODO Adjust the
- * queries / response mapping to your read model.
+ * {@code @RestController} (required - not inherited from the interface). This is a generate-once
+ * stub - TODO implement the queries against your read model.
  */
 @RestController
 @Transactional(readOnly = true)
@@ -38,16 +38,14 @@ public class PersonListController implements PersonListControllerApi {
 
     @Override
     public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(em.createNamedQuery(PersonListEntry.FIND_ALL, PersonListEntry.class).getResultList());
+        // TODO Implement: query the read model and return the results.
+        throw new UnsupportedOperationException("TODO: implement getAll()");
     }
 
     @Override
     public ResponseEntity<?> getById(final String id) {
-        final PersonListEntry entry = em.find(PersonListEntry.class, id);
-        if (entry == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(entry);
+        // TODO Implement: look up the entry by id and return it (404 if absent).
+        throw new UnsupportedOperationException("TODO: implement getById(id)");
     }
 
 }

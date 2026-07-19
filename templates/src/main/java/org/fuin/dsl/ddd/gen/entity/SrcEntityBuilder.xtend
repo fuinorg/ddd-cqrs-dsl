@@ -60,7 +60,7 @@ class SrcEntityBuilder implements CodeSnippet {
          */
         public static final class Builder extends AbstractEntity.Builder<«entity.rootNullsafe.idTypeNullsafe.name», «entity.rootNullsafe.name», «entity.idTypeNullsafe.name», «entity.name», Builder> {
 
-            «new SrcVarsDecl(ctx, "private", options, variables)»
+            «new SrcVarsDecl(ctx, "private", options, variables, true)»
             private Builder() {
                 super();
             }
@@ -87,6 +87,7 @@ class SrcEntityBuilder implements CodeSnippet {
              * @return New instance.
              */
             @Override
+            @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
             public «entity.name» build()«new SrcThrowsExceptions(ctx, exceptions)» {
                 ensureBuildableAbstractEntity();
                 «FOR variable : variables»

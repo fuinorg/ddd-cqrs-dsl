@@ -111,7 +111,7 @@ class AbstractAggregateIdArtifactFactoryTest {
 
     @Test
     def void testCreateMyAggregate6Id() {
-        
+
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
@@ -125,8 +125,8 @@ class AbstractAggregateIdArtifactFactoryTest {
 
         // VERIFY
         assertThat(result).isEqualTo("x/aggregateid/AbstractMyAggregate6Id.java".loadAbstractExample)
-        
-    }    
+
+    }
 
     private def createTestee() {
         val factory = new AbstractAggregateIdArtifactFactory() {}

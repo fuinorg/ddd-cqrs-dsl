@@ -48,8 +48,14 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
 
     def addImports(CodeSnippetContext ctx) {
         ctx.requiresImport("org.fuin.esc.api.EventStore")
-        ctx.requiresImport("jakarta.enterprise.context.Dependent")
-        ctx.requiresImport("jakarta.enterprise.inject.Produces")
+        // Runtime-specific bean wiring: CDI for Quarkus, Spring's @Configuration/@Bean otherwise.
+        if (getVar("runtime", "spring") == "quarkus") {
+            ctx.requiresImport("jakarta.enterprise.context.Dependent")
+            ctx.requiresImport("jakarta.enterprise.inject.Produces")
+        } else {
+            ctx.requiresImport("org.springframework.context.annotation.Configuration")
+            ctx.requiresImport("org.springframework.context.annotation.Bean")
+        }
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
@@ -57,25 +63,30 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
     }
 
     def create(SimpleCodeSnippetContext ctx, Aggregate aggregate, String pkg, String className, String repositoryName) {
-        val String src = ''' 
+        val quarkus = getVar("runtime", "spring") == "quarkus"
+        val classAnnotation = if (quarkus) "@Dependent" else "@Configuration"
+        val methodAnnotation = if (quarkus) "@Produces" else "@Bean"
+        // Unique factory-method name so Spring @Bean names don't collide across the per-aggregate factories.
+        val methodName = repositoryName.toFirstLower
+        val String src = '''
             /**
              * Creates a «repositoryName».
              */
-            @Dependent
+            «classAnnotation»
             public class «className» {
-            
+
                 /**
                  * Produces a «repositoryName».
-                 * 
+                 *
                  * @param eventStore The event store to use for construction.
                  *
                  * @return The new repository instance.
                  */
-                @Produces
-                public «repositoryName» create(final EventStore eventStore) {
+                «methodAnnotation»
+                public «repositoryName» «methodName»(final EventStore eventStore) {
                     return new «repositoryName»(eventStore);
                 }
-            
+
             }
         '''
 

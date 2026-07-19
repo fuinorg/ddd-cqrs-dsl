@@ -31,8 +31,10 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
 
     private EntityBId id;
 
+    @SuppressWarnings("NullAway.Init")
     private String a;
     
+    @SuppressWarnings("NullAway.Init")
     private Integer b;
     
     /**

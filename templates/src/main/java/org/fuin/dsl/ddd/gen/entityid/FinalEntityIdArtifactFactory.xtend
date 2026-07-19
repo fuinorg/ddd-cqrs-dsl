@@ -52,15 +52,15 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     def addImports(CodeSnippetContext ctx, EntityId entityId) {
         ctx.requiresImport("java.io.Serial")
-        if (entityId.base !== null) {
-            ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")            
+        if (entityId.base !== null && options.jaxb) {
+            ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")
         }
         ctx.requiresImport("javax.annotation.concurrent.Immutable")
     }
 
     def addReferences(CodeSnippetContext ctx, EntityId entityId) {
-        if (entityId.base !== null) {
-            ctx.requiresReference(entityId.uniqueName + "Converter")            
+        if (entityId.base !== null && options.jaxb) {
+            ctx.requiresReference(entityId.uniqueName + "Converter")
         }
         ctx.requiresReference(entityId.uniqueAbstractName)
     }
@@ -69,7 +69,7 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
         val String src = ''' 
             «new SrcJavaDocType(id)»
             @Immutable
-            «IF id.base !== null»
+            «IF id.base !== null && options.jaxb»
             @XmlJavaTypeAdapter(«id.name»Converter.class)
             «ENDIF»
             public final class «className» extends «abstractClassName» {

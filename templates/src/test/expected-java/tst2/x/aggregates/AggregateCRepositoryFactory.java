@@ -17,26 +17,26 @@
  */
 package p.command.core.domain.x.aggregates;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Produces;
 import org.fuin.esc.api.EventStore;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import p.x.aggregates.AggregateCRepository;
 
 /**
  * Creates a AggregateCRepository.
  */
-@Dependent
+@Configuration
 public class AggregateCRepositoryFactory {
 
     /**
      * Produces a AggregateCRepository.
-     * 
+     *
      * @param eventStore The event store to use for construction.
      *
      * @return The new repository instance.
      */
-    @Produces
-    public AggregateCRepository create(final EventStore eventStore) {
+    @Bean
+    public AggregateCRepository aggregateCRepository(final EventStore eventStore) {
         return new AggregateCRepository(eventStore);
     }
 

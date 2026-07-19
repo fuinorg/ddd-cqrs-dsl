@@ -35,7 +35,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import org.fuin.dsl.ddd.gen.base.SrcMethods
 
-abstract class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
+class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
 
     override getModelType() {
         typeof(Entity)
@@ -86,7 +86,7 @@ abstract class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
             
                 «new SrcVarDecl(ctx, "private", GenerateOptions.empty(), idVar)»
             
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), entity)»
+                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), entity.attributes, true)»
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
                 @Override
                 public final EntityType getType() {

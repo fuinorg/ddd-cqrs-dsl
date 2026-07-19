@@ -72,7 +72,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
                 @Override
                 public EventType getEventType() {
-                    return «event.name».TYPE;
+                    return «event.name».EVENT_TYPE;
                 }
 
                 @Override
@@ -87,7 +87,6 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
     private def String createController(CodeReferenceRegistry refReg, View view, String pkg, String baseName, String ctrlName, String runtime) {
         val restPath = if (view.restPath === null) "/" + baseName.toLowerCase else view.restPath
-        val entryName = baseName + "Entry"
         val ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("jakarta.persistence.EntityManager")
         // The REST contract interface lives in its own module/package - import it.
@@ -97,12 +96,11 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
             ctx.requiresImport("jakarta.inject.Inject")
             ctx.requiresImport("jakarta.ws.rs.Path")
             ctx.requiresImport("jakarta.ws.rs.core.Response")
-            ctx.requiresImport("java.util.List")
             val src = '''
                 /**
                  * REST resource providing the «baseName» read model. Implements {@link «apiName»}; the
                  * class-level {@code @Path} is re-declared because JAX-RS does not inherit it from the
-                 * interface. TODO Adjust the queries / response mapping to your read model.
+                 * interface. This is a generate-once stub - TODO implement the queries against your read model.
                  */
                 @Path("«restPath»")
                 public class «ctrlName» implements «apiName» {
@@ -112,17 +110,14 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
                     @Override
                     public Response getAll() {
-                        final List<«entryName»> list = em.createNamedQuery(«entryName».FIND_ALL, «entryName».class).getResultList();
-                        return Response.ok(list).build();
+                        // TODO Implement: query the read model and return the results.
+                        throw new UnsupportedOperationException("TODO: implement getAll()");
                     }
 
                     @Override
                     public Response getById(final String id) {
-                        final «entryName» entry = em.find(«entryName».class, id);
-                        if (entry == null) {
-                            return Response.status(Response.Status.NOT_FOUND).build();
-                        }
-                        return Response.ok(entry).build();
+                        // TODO Implement: look up the entry by id and return it (404 if absent).
+                        throw new UnsupportedOperationException("TODO: implement getById(id)");
                     }
 
                 }
@@ -139,8 +134,8 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         val src = '''
             /**
              * REST controller providing the «baseName» read model. Implements {@link «apiName»} and adds
-             * {@code @RestController} (required - not inherited from the interface). TODO Adjust the
-             * queries / response mapping to your read model.
+             * {@code @RestController} (required - not inherited from the interface). This is a generate-once
+             * stub - TODO implement the queries against your read model.
              */
             @RestController
             @Transactional(readOnly = true)
@@ -151,16 +146,14 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
                 @Override
                 public ResponseEntity<?> getAll() {
-                    return ResponseEntity.ok(em.createNamedQuery(«entryName».FIND_ALL, «entryName».class).getResultList());
+                    // TODO Implement: query the read model and return the results.
+                    throw new UnsupportedOperationException("TODO: implement getAll()");
                 }
 
                 @Override
                 public ResponseEntity<?> getById(final String id) {
-                    final «entryName» entry = em.find(«entryName».class, id);
-                    if (entry == null) {
-                        return ResponseEntity.notFound().build();
-                    }
-                    return ResponseEntity.ok(entry);
+                    // TODO Implement: look up the entry by id and return it (404 if absent).
+                    throw new UnsupportedOperationException("TODO: implement getById(id)");
                 }
 
             }

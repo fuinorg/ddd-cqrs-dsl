@@ -86,7 +86,7 @@ public abstract class AbstractOrderPaymentProcessManagerView implements ProcessM
 
     @Override
     public Set<EventType> getEventTypes() {
-        return Set.of(UserCreatedEvent.TYPE);
+        return Set.of(UserCreatedEvent.EVENT_TYPE);
     }
 
     @Override

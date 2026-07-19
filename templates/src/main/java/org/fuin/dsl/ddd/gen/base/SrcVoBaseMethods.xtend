@@ -54,6 +54,31 @@ class SrcVoBaseMethods implements CodeSnippet {
             «new SrcVoBaseMethodsUUID(ctx, vo)»
         «ELSEIF "Integer".equals(baseName) || "Long".equals(baseName)»
             «new SrcVoBaseMethodsNumber(ctx, vo)»
+        «ELSEIF vo.baseType !== null»
+            @Override
+            public final Class<«vo.baseType.simpleName(ctx)»> getBaseType() {
+                return «vo.baseType.simpleName(ctx)».class;
+            }
+
+            @Override
+            public final int hashCode() {
+                return asBaseType().hashCode();
+            }
+
+            @Override
+            public final boolean equals(final Object obj) {
+                if (this == obj) {
+                    return true;
+                }
+                if (obj == null) {
+                    return false;
+                }
+                if (getClass() != obj.getClass()) {
+                    return false;
+                }
+                final «vo.name» other = («vo.name») obj;
+                return asBaseType().equals(other.asBaseType());
+            }
         «ENDIF»
         '''
     }

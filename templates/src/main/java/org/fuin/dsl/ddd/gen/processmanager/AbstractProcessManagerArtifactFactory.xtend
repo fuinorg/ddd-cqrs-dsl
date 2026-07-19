@@ -149,7 +149,7 @@ class AbstractProcessManagerArtifactFactory extends AbstractSource<ProcessManage
 
                 @Override
                 public Set<EventType> getEventTypes() {
-                    return Set.of(«FOR event : events SEPARATOR ', '»«event.name».TYPE«ENDFOR»);
+                    return Set.of(«FOR event : events SEPARATOR ', '»«event.name».EVENT_TYPE«ENDFOR»);
                 }
 
                 @Override

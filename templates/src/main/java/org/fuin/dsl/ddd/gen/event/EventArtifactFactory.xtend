@@ -107,7 +107,11 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	        if (options.jackson) {
 	            ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractEvent")        
 	        }
-            if (event.attributes.nullSafe.size > 0) {
+            // toString() renders KeyValueEL.replace(...) over the same variables the constructor uses:
+            // the event's own attributes, or - for a "copies-attributes-of" event - the origin's
+            // parameters. Guard the imports on that same set, not on event.attributes alone.
+            val variables = if (event.origin === null) event.attributes else event.origin.parameters
+            if (variables.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValueEL")
                 ctx.requiresImport("java.util.Objects")

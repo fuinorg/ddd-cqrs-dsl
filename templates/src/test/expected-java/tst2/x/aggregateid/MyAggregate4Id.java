@@ -94,8 +94,8 @@ private static final long serialVersionUID = 1000L;
     
     @Override
     public final String asString() {
-        // TODO Implement!
-        return null;
+        // Default: the id parts joined by "-". Override if a different string form is required.
+        return getA() + "-" + getB();
     }
 
 }
