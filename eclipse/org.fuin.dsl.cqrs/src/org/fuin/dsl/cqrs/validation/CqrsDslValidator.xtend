@@ -46,6 +46,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.fuin.dsl.cqrs.cqrsDsl.Command
+import org.fuin.dsl.cqrs.cqrsDsl.Hint
 import org.fuin.dsl.cqrs.cqrsDsl.View
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState
@@ -142,6 +143,10 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods"
 
 	public static val INVALID_CRON_EXPRESSION = "invalidCronExpression"
+
+	public static val HINT_JSON_SCHEMA_VIOLATION = "hintJsonSchemaViolation"
+
+	public static val JPA_HINT_OUTSIDE_VIEW = "jpaHintOutsideView"
 
 	@Inject
 	IContainer.Manager containerManager
@@ -322,6 +327,34 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				INVALID_CRON_EXPRESSION
 			)
 		}
+	}
+
+	@Check
+	def checkHintJsonSchema(Hint hint) {
+		// (a) Validate the JSON of a known hint (e.g. "JpaHint" / "SrcGen4J") against its JSON schema.
+		val schema = CqrsHintJson.schemaForHintName(hint.name)
+		if (schema !== null && hint.json !== null) {
+			for (String msg : CqrsHintJson.validate(hint.json, schema)) {
+				error(msg, hint, CqrsDslPackage.Literals::HINT__JSON, HINT_JSON_SCHEMA_VIOLATION)
+			}
+		}
+		// (b) A "JpaHint" only generates code when it is declared inside a view.
+		if ("JpaHint" == simpleHintName(hint.name) && !(hint.eContainer instanceof View)) {
+			warning(
+				"JpaHint only generates code inside a view",
+				hint,
+				CqrsDslPackage.Literals::HINT__NAME,
+				JPA_HINT_OUTSIDE_VIEW
+			)
+		}
+	}
+
+	private def String simpleHintName(String name) {
+		if (name === null) {
+			return null
+		}
+		val p = name.lastIndexOf('.')
+		if (p < 0) name else name.substring(p + 1)
 	}
 
 	@Check

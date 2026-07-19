@@ -1,0 +1,103 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://www.fuin.org/dsl/cqrs/schema/jpa-hint.schema.json",
+	"title": "JpaHint",
+	"description": "Describes one or more JPA tables generated for the enclosing view. The generated classes end up in the view's package, so there is no 'package' key.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [ "tables" ],
+	"properties": {
+		"tables": {
+			"type": "array",
+			"items": { "$ref": "#/$defs/table" }
+		}
+	},
+	"$defs": {
+		"table": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [ "className", "columns" ],
+			"properties": {
+				"className": { "type": "string", "minLength": 1, "description": "Name of the generated Java class." },
+				"name": { "type": "string", "description": "@Table 'name'." },
+				"catalog": { "type": "string", "description": "@Table 'catalog'." },
+				"schema": { "type": "string", "description": "@Table 'schema'." },
+				"uniqueConstraints": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/uniqueConstraint" }
+				},
+				"indexes": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/index" }
+				},
+				"columns": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/column" }
+				}
+			}
+		},
+		"uniqueConstraint": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [ "columnNames" ],
+			"properties": {
+				"name": { "type": "string", "description": "@UniqueConstraint 'name'." },
+				"columnNames": {
+					"type": "array",
+					"items": { "type": "string" },
+					"description": "@UniqueConstraint 'columnNames'."
+				}
+			}
+		},
+		"index": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"name": { "type": "string", "description": "@Index 'name'." },
+				"columnList": { "type": "string", "description": "@Index 'columnList'." },
+				"unique": { "type": "boolean", "description": "@Index 'unique'." }
+			}
+		},
+		"column": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [ "fieldName", "javaType" ],
+			"properties": {
+				"fieldName": { "type": "string", "minLength": 1, "description": "Java field name." },
+				"javaType": { "type": "string", "minLength": 1, "description": "Java type of the field (simple name or fully qualified)." },
+				"id": { "type": "boolean", "description": "Whether the field is annotated with @Id." },
+				"name": { "type": "string", "description": "@Column 'name'." },
+				"unique": { "type": "boolean", "description": "@Column 'unique'." },
+				"nullable": { "type": "boolean", "description": "@Column 'nullable'." },
+				"insertable": { "type": "boolean", "description": "@Column 'insertable'." },
+				"updatable": { "type": "boolean", "description": "@Column 'updatable'." },
+				"columnDefinition": { "type": "string", "description": "@Column 'columnDefinition'." },
+				"table": { "type": "string", "description": "@Column 'table'." },
+				"length": { "type": "integer", "minimum": 0, "description": "@Column 'length'." },
+				"precision": { "type": "integer", "minimum": 0, "description": "@Column 'precision'." },
+				"scale": { "type": "integer", "minimum": 0, "description": "@Column 'scale'." },
+				"digits": { "$ref": "#/$defs/digits" },
+				"decimalMin": { "$ref": "#/$defs/decimalMin" }
+			}
+		},
+		"digits": {
+			"type": "object",
+			"additionalProperties": false,
+			"description": "@Digits bean-validation constraint.",
+			"properties": {
+				"integer": { "type": "integer", "minimum": 0, "description": "@Digits 'integer'." },
+				"fraction": { "type": "integer", "minimum": 0, "description": "@Digits 'fraction'." }
+			}
+		},
+		"decimalMin": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [ "value" ],
+			"description": "@DecimalMin bean-validation constraint (the value is a string, as in JPA).",
+			"properties": {
+				"value": { "type": "string", "minLength": 1, "description": "@DecimalMin 'value'." },
+				"inclusive": { "type": "boolean", "description": "@DecimalMin 'inclusive'." }
+			}
+		}
+	}
+}

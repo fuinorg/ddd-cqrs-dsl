@@ -22,7 +22,9 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExternalType;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsGenericArgs;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsHintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsInvariants;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsJson;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessManager;
@@ -109,6 +111,31 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkProcessReaction((CqrsProcessReaction) element, holder);
         } else if (element instanceof CqrsViewDef) {
             checkViewCronSchedule((CqrsViewDef) element, holder);
+        } else if (element instanceof CqrsHintDef) {
+            checkHintJson((CqrsHintDef) element, holder);
+        }
+    }
+
+    // --- hint JSON ------------------------------------------------------------------------------
+
+    /**
+     * Validates a hint's JSON against the schema that matches its name (a schema violation is an error)
+     * and warns when a 'JpaHint' is declared outside a view (it generates nothing there).
+     */
+    private void checkHintJson(@NotNull CqrsHintDef hint, @NotNull AnnotationHolder holder) {
+        String name = hint.getName();
+        String schema = CqrsHintJson.schemaForHintName(name);
+        CqrsJson json = hint.getJson();
+        if (schema != null && json != null) {
+            for (String message : CqrsHintJson.validate(json, schema)) {
+                error(holder, json, message);
+            }
+        }
+        if ("JpaHint".equals(CqrsHintJson.simpleName(name))
+                && PsiTreeUtil.getParentOfType(hint, CqrsViewDef.class) == null) {
+            holder.newAnnotation(HighlightSeverity.WARNING, "JpaHint only generates code inside a view")
+                    .range(nameRange(hint))
+                    .create();
         }
     }
 

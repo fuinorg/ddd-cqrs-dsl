@@ -3,7 +3,7 @@
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
 ## 1.16.0
-- A `view` body may now declare generator `hint`s (JSON-structured, like a `project`), placed right after the opening `{`. The `hint` keyword is syntax-highlighted and offered in context-aware completion inside a view body.
+- A `view` body may now declare generator `hint`s (JSON-structured, like a `project`), placed right after the opening `{`. The `hint` keyword is syntax-highlighted and offered in context-aware completion inside a view body. A hint's JSON is now validated live against a JSON schema (`JpaHint` and `SrcGen4J`), and a `JpaHint` declared outside a `view` is flagged with a warning.
 
 ## 1.15.0
 - A `view` body may now declare an optional `rest-path` and `cron-schedule`: `rest-path` sets the base path of the generated REST controller (otherwise derived from the aggregate name) and `cron-schedule` sets the projection schedule (otherwise the default `* * * * * *`). Both keywords are syntax-highlighted and offered in context-aware completion inside a `view` body, and `cron-schedule` is validated as a Spring Boot cron expression (on a `view` and a `process-manager`). Grammar-only for now; code generation follows.

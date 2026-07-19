@@ -1,0 +1,55 @@
+project p {
+
+    context x {
+
+        namespace m {
+
+            type String
+
+            aggregate-id UserId identifies User {}
+
+            aggregate User identifier UserId {
+                constructor create fires UserCreatedEvent {
+                    String name
+                    event UserCreatedEvent { message "created" }
+                }
+            }
+
+            projection UserList input User.create.UserCreatedEvent
+
+            view PersonListView uses UserList {
+                hint JpaHint {
+                    "tables": [
+                        {
+                            "className": "Customer",
+                            "name": "CUSTOMER",
+                            "schema": "SALES",
+                            "uniqueConstraints": [ { "name": "UQ_EMAIL", "columnNames": ["EMAIL"] } ],
+                            "indexes": [ { "name": "IX_NAME", "columnList": "LAST_NAME", "unique": false } ],
+                            "columns": [
+                                {
+                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                    "name": "ID", "nullable": false
+                                },
+                                {
+                                    "fieldName": "amount", "javaType": "java.math.BigDecimal",
+                                    "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2,
+                                    "digits": { "integer": 10, "fraction": 2 },
+                                    "decimalMin": { "value": "0.0", "inclusive": true }
+                                },
+                                {
+                                    "fieldName": "name", "javaType": "String",
+                                    "name": "LAST_NAME", "length": 100
+                                }
+                            ]
+                        }
+                    ]
+                }
+                rest-path "/persons"
+            }
+
+        }
+
+    }
+
+}

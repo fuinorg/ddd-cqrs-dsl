@@ -12,6 +12,7 @@ group = providers.gradleProperty('pluginGroup').get()
 version = providers.gradleProperty('pluginVersion').get()
 
 repositories {
+    mavenLocal()
     mavenCentral()
     // Grammar-Kit generator tool + its IntelliJ-core (223) dependencies, including the
     // transitive ai.grazie.* artifacts pulled in by the 223 platform used for code generation.
@@ -31,6 +32,12 @@ dependencies {
     }
     // Gson is bundled with the IntelliJ Platform, so it is provided at runtime; compile against it only.
     compileOnly 'com.google.code.gson:gson:2.11.0'
+    // Validates a hint's JSON against the shared JSON schemas. The IntelliJ platform already provides
+    // the Kotlin stdlib, so exclude it (and rely on the platform's) rather than bundle a second copy;
+    // jmail + snakeyaml are small and bundled with the plugin.
+    implementation('com.github.erosb:json-sKema:0.31.0') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.google.code.gson:gson:2.11.0'
 }
@@ -86,16 +93,35 @@ def generateCqrsLexer = tasks.register('generateCqrsLexer', GenerateLexerTask) {
     dependsOn generateCqrsParser
 }
 
+// The JSON schemas live in the Eclipse core bundle (single source of truth); copy them into the
+// plugin's resources at build time so they are on the classpath as /org/fuin/dsl/cqrs/schema/*.
+def schemaSource = file('../eclipse/org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/schema')
+def schemaGeneratedRoot = layout.buildDirectory.dir('generated/schema')
+
+def copyHintSchemas = tasks.register('copyHintSchemas', Copy) {
+    from(schemaSource) {
+        include '*.schema.json'
+    }
+    into schemaGeneratedRoot.map { it.dir('org/fuin/dsl/cqrs/schema') }
+}
+
 sourceSets {
     main {
         java {
             srcDir generatedRoot
+        }
+        resources {
+            srcDir schemaGeneratedRoot
         }
     }
 }
 
 tasks.named('compileJava') {
     dependsOn generateCqrsLexer, generateCqrsParser
+}
+
+tasks.named('processResources') {
+    dependsOn copyHintSchemas
 }
 
 // Single source of truth for the marketplace texts. These feed both the patched plugin.xml
@@ -121,7 +147,9 @@ ext.pluginChangeNotes = '''\
     <li><b>1.16.0</b> &ndash; A <code>view</code> body may now declare generator
         <code>hint</code>s (JSON-structured, like a <code>project</code>), placed right after the
         opening <code>{</code>. The <code>hint</code> keyword is syntax-highlighted and offered in
-        context-aware completion inside a view body.</li>
+        context-aware completion inside a view body. A hint's JSON is now validated live against a
+        JSON schema (<code>JpaHint</code> and <code>SrcGen4J</code>), and a <code>JpaHint</code>
+        declared outside a <code>view</code> is flagged with a warning.</li>
     <li><b>1.15.0</b> &ndash; A <code>view</code> body may now declare an optional
         <code>rest-path</code> and <code>cron-schedule</code>: <code>rest-path</code> sets the base path
         of the generated REST controller (otherwise derived from the aggregate name) and

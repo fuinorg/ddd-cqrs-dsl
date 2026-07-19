@@ -42,6 +42,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
@@ -152,6 +153,10 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods";
 
   public static final String INVALID_CRON_EXPRESSION = "invalidCronExpression";
+
+  public static final String HINT_JSON_SCHEMA_VIOLATION = "hintJsonSchemaViolation";
+
+  public static final String JPA_HINT_OUTSIDE_VIEW = "jpaHintOutsideView";
 
   @Inject
   private IContainer.Manager containerManager;
@@ -315,6 +320,41 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         CqrsDslPackage.Literals.PROCESS_MANAGER__CRON, 
         CqrsDslValidator.INVALID_CRON_EXPRESSION);
     }
+  }
+
+  @Check
+  public void checkHintJsonSchema(final Hint hint) {
+    final String schema = CqrsHintJson.schemaForHintName(hint.getName());
+    if (((schema != null) && (hint.getJson() != null))) {
+      List<String> _validate = CqrsHintJson.validate(hint.getJson(), schema);
+      for (final String msg : _validate) {
+        this.error(msg, hint, CqrsDslPackage.Literals.HINT__JSON, CqrsDslValidator.HINT_JSON_SCHEMA_VIOLATION);
+      }
+    }
+    if ((Objects.equals("JpaHint", this.simpleHintName(hint.getName())) && (!(hint.eContainer() instanceof View)))) {
+      this.warning(
+        "JpaHint only generates code inside a view", hint, 
+        CqrsDslPackage.Literals.HINT__NAME, 
+        CqrsDslValidator.JPA_HINT_OUTSIDE_VIEW);
+    }
+  }
+
+  private String simpleHintName(final String name) {
+    String _xblockexpression = null;
+    {
+      if ((name == null)) {
+        return null;
+      }
+      final int p = name.lastIndexOf(".");
+      String _xifexpression = null;
+      if ((p < 0)) {
+        _xifexpression = name;
+      } else {
+        _xifexpression = name.substring((p + 1));
+      }
+      _xblockexpression = _xifexpression;
+    }
+    return _xblockexpression;
   }
 
   @Check

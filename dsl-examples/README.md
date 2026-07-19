@@ -29,7 +29,10 @@ comment explaining what it shows. They follow the grammar in
 | [19-projection-and-view](19-projection-and-view.cqrs) | `projection` consuming events and a `view` using it |
 | [20-literals-and-comments](20-literals-and-comments.cqrs) | Comment styles (`//`, `/* */`, `/** */`) and literal values (string, number, boolean, `null`) |
 | [21-data-protection](21-data-protection.cqrs) | GDPR `data-protection` policies (`protection` level, `category`, `subject`, `purpose`, `lawful-basis`, `retention ... then ...`) applied via `protected-by` |
+| [22-hint](22-hint.cqrs) | `hint` — a named, JSON-structured generator hint (the `SrcGen4J` code-generation config: `package`, `types`, `artifacts`) |
 | [23-message-el-expressions](23-message-el-expressions.cqrs) | `message` with simple `${var}` placeholders and Jakarta EL expressions (method calls, arithmetic) |
+| [24-process-manager](24-process-manager.cqrs) | `process-manager` (saga): `process-states` and `reacts-to <Event> in-state <State>` reactions with `correlate-by`, `issues-commands`, `transition-to` and `arm-timeout`/`cancel-timeout` |
+| [25-jpa-hint](25-jpa-hint.cqrs) | `JpaHint` inside a `view` describing JPA tables (`@Table`/`@Column` plus `@Digits`/`@DecimalMin`), generated into the view's package |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

@@ -4,6 +4,7 @@ Reflects only changes made in the Eclipse plugin.
 
 ## 1.14.0
 - A `view` body may now carry generator `hint`s, the same JSON-structured hints a `project` declares, placed right after the opening `{`. Grammar-only for now, like the rest of the `view` element.
+- A `JpaHint` declared inside a `view` now generates JPA `@Entity` classes into the view's package (all `@Table`/`@Column` attributes plus `@Digits`/`@DecimalMin`). A hint's JSON is validated live against a JSON schema (`JpaHint` and `SrcGen4J`), and a `JpaHint` outside a view is flagged as a warning.
 
 ## 1.13.0
 - A `view` may now declare an optional `rest-path` and `cron-schedule` in its body. `rest-path` sets the base path of the generated REST controller (otherwise derived from the aggregate name); `cron-schedule` sets the projection schedule (otherwise the default `* * * * * *`) and is validated as a Spring Boot cron expression (the same check now also applies to a `process-manager`'s `cron-schedule`). Both are optional. Like the rest of the `view` element it is grammar-only for now; code generation follows.

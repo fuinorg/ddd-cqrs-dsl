@@ -1,0 +1,71 @@
+project p_25_jpa_hint {
+
+	context readmodel {
+
+		namespace m {
+
+			type String
+
+			aggregate-id UserId identifies User {}
+
+			aggregate User identifier UserId {
+				constructor create fires UserCreatedEvent {
+					String name
+					event UserCreatedEvent { message "created" }
+				}
+			}
+
+			projection UserList input User.create.UserCreatedEvent
+
+			// A "JpaHint" placed inside a view describes one or more JPA tables. The generated
+			// @Entity classes are written into the same package as the view's other artifacts.
+			// Its JSON is validated against a JSON schema (jpa-hint.schema.json); placing the
+			// same hint outside a view would be flagged with a warning (it generates nothing there).
+			view UserListView uses UserList {
+
+				hint JpaHint {
+					"tables": [
+						{
+							// "className" is the generated Java class; the remaining keys are the
+							// attributes of the JPA "@Table" annotation.
+							"className": "UserReadModel",
+							"name": "USER_READ_MODEL",
+							"schema": "READMODEL",
+							"uniqueConstraints": [
+								{ "name": "UQ_USER_EMAIL", "columnNames": [ "EMAIL" ] }
+							],
+							"indexes": [
+								{ "name": "IX_USER_NAME", "columnList": "LAST_NAME,FIRST_NAME", "unique": false }
+							],
+							"columns": [
+								{
+									// "id": true adds "@Id"; "javaType" may be a simple or fully qualified name.
+									"fieldName": "id", "javaType": "java.util.UUID", "id": true,
+									"name": "ID", "nullable": false
+								},
+								{
+									// The remaining keys are the attributes of "@Column".
+									"fieldName": "email", "javaType": "String",
+									"name": "EMAIL", "nullable": false, "unique": true, "length": 255
+								},
+								{
+									// "digits" -> "@Digits", "decimalMin" -> "@DecimalMin" (its value is a
+									// string, as in JPA). Numbers cannot be negative in the DSL's JSON, so a
+									// lower bound like "0.00" is expressed as a string.
+									"fieldName": "creditLimit", "javaType": "java.math.BigDecimal",
+									"name": "CREDIT_LIMIT", "nullable": false, "precision": 12, "scale": 2,
+									"digits": { "integer": 10, "fraction": 2 },
+									"decimalMin": { "value": "0.00", "inclusive": true }
+								}
+							]
+						}
+					]
+				}
+
+			}
+
+		}
+
+	}
+
+}
