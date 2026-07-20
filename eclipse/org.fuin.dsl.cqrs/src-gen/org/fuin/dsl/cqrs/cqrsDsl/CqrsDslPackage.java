@@ -152,22 +152,22 @@ public interface CqrsDslPackage extends EPackage
   int CONTEXT__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Namespaces</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int CONTEXT__NAMESPACES = 1;
-
-  /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CONTEXT__IMPORTS = 2;
+  int CONTEXT__IMPORTS = 1;
+
+  /**
+   * The feature id for the '<em><b>Namespaces</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTEXT__NAMESPACES = 2;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -4171,17 +4171,6 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getContext_Name();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces <em>Namespaces</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Namespaces</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces()
-   * @see #getContext()
-   * @generated
-   */
-  EReference getContext_Namespaces();
-
-  /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getImports <em>Imports</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4191,6 +4180,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EReference getContext_Imports();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces <em>Namespaces</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Namespaces</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces()
+   * @see #getContext()
+   * @generated
+   */
+  EReference getContext_Namespaces();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getElements <em>Elements</em>}'.
@@ -6700,20 +6700,20 @@ public interface CqrsDslPackage extends EPackage
     EAttribute CONTEXT__NAME = eINSTANCE.getContext_Name();
 
     /**
-     * The meta object literal for the '<em><b>Namespaces</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference CONTEXT__NAMESPACES = eINSTANCE.getContext_Namespaces();
-
-    /**
      * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EReference CONTEXT__IMPORTS = eINSTANCE.getContext_Imports();
+
+    /**
+     * The meta object literal for the '<em><b>Namespaces</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTEXT__NAMESPACES = eINSTANCE.getContext_Namespaces();
 
     /**
      * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.

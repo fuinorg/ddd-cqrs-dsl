@@ -74,8 +74,8 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Context">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Context/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/namespaces"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/namespaces"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/elements"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Namespace">

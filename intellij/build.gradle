@@ -144,6 +144,9 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.19.0</b> &ndash; A <code>context</code> body may now mix <code>namespace</code> blocks
+        and type/elements as siblings; previously it was an either/or (all namespaces, or imports and
+        elements directly). Existing models are unaffected.</li>
     <li><b>1.18.0</b> &ndash; The process-manager <code>correlation-id</code> element was renamed to
         <code>instance-key</code> (it clashed with the unrelated event/command correlation id).
         <code>instance-key</code> names the value that identifies which running process instance an

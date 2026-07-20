@@ -84,4 +84,82 @@ public class CqrsDslParsingTest {
       throw Exceptions.sneakyThrow(_e);
     }
   }
+
+  @Test
+  public void contextMixesNamespacesAndElements() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("project p {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("context foo {");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("import p.foo.inner.*");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("type String");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object DirectVo base String {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("String value");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("namespace inner {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("type Integer");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("value-object NamespacedVo {");
+      _builder.newLine();
+      _builder.append("\t\t\t\t");
+      _builder.append("Integer id");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object AnotherDirectVo base String {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("String value");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      final DomainModel result = this.parseHelper.parse(_builder);
+      Assertions.assertNotNull(result);
+      final EList<Resource.Diagnostic> errors = result.eResource().getErrors();
+      boolean _isEmpty = errors.isEmpty();
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("Unexpected errors: ");
+      String _join = IterableExtensions.join(errors, ", ");
+      _builder_1.append(_join);
+      Assertions.assertTrue(_isEmpty, _builder_1.toString());
+      this.validationHelper.assertNoErrors(result);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
 }

@@ -49,6 +49,42 @@ class CqrsDslParsingTest {
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		
 		validationHelper.assertNoErrors(result);
-		
+
+	}
+
+	@Test
+	def void contextMixesNamespacesAndElements() {
+		val result = parseHelper.parse('''
+			project p {
+				context foo {
+
+					import p.foo.inner.*
+
+					type String
+
+					value-object DirectVo base String {
+						String value
+					}
+
+					namespace inner {
+						type Integer
+
+						value-object NamespacedVo {
+							Integer id
+						}
+					}
+
+					value-object AnotherDirectVo base String {
+						String value
+					}
+
+				}
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+
+		validationHelper.assertNoErrors(result);
 	}
 }

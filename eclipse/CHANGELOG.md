@@ -2,6 +2,9 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.17.0
+- A `context` body may now mix `namespace` blocks and type/elements as siblings; previously it was an either/or (all namespaces, or imports and elements directly). Existing models are unaffected.
+
 ## 1.16.0
 - The `process-manager` `correlation-id` element was renamed to `instance-key` (it clashed with the unrelated event/command correlation id). `instance-key` names the value that identifies which running process instance an incoming event belongs to; it references any type, exactly as before, and `correlate-by` is unchanged.
 

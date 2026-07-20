@@ -565,7 +565,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Context returns Context
 	 *
 	 * Constraint:
-	 *     (name=FQN (namespaces+=Namespace+ | (imports+=Import* elements+=AbstractElement*))?)
+	 *     (name=FQN imports+=Import* (namespaces+=Namespace | elements+=AbstractElement)*)
 	 * </pre>
 	 */
 	protected void sequence_Context(ISerializationContext context, Context semanticObject) {

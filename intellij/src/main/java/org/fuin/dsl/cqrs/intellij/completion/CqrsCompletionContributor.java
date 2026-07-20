@@ -211,7 +211,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        if (PsiTreeUtil.getParentOfType(position, CqrsNamespaceDef.class) != null) {
+        if (enclosingNamespace(position) != null) {
             keywords.add("import");
             keywords.addAll(ELEMENT_KEYWORDS);
             keywords.addAll(META_KEYWORDS);
@@ -224,9 +224,9 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        // inside a context (but not a namespace): the namespace is optional, so a context accepts
-        // either a 'namespace' block or imports/elements directly (the same content a namespace holds).
-        if (PsiTreeUtil.getParentOfType(position, CqrsContextDef.class) != null) {
+        // inside a context (but not a namespace): a context accepts a 'namespace' block and/or
+        // imports/elements directly, mixed as siblings (the same content a namespace holds).
+        if (enclosingContext(position) != null) {
             keywords.add("namespace");
             keywords.add("import");
             keywords.addAll(ELEMENT_KEYWORDS);
@@ -317,6 +317,36 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return null;
         }
         return PsiTreeUtil.getParentOfType(prev, CqrsViewDef.class);
+    }
+
+    /**
+     * The {@code context} block surrounding the caret, or {@code null} (same error recovery as above).
+     * A context is a pinned block, so a caret in an otherwise-empty context lands just outside the
+     * pinned node; we retry from the previous visible leaf, excluding a closing {@code &#125;}.
+     */
+    private static CqrsContextDef enclosingContext(PsiElement position) {
+        CqrsContextDef ctx = PsiTreeUtil.getParentOfType(position, CqrsContextDef.class);
+        if (ctx != null) {
+            return ctx;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsContextDef.class);
+    }
+
+    /** The {@code namespace} block surrounding the caret, or {@code null} (same recovery as above). */
+    private static CqrsNamespaceDef enclosingNamespace(PsiElement position) {
+        CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(position, CqrsNamespaceDef.class);
+        if (ns != null) {
+            return ns;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsNamespaceDef.class);
     }
 
     /** The {@code reacts-to} reaction surrounding the caret, or {@code null} (same recovery as above). */

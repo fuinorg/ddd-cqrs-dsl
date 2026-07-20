@@ -105,6 +105,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("context_without_namespace");
     }
 
+    /** A context may mix namespaces and type/elements as siblings. */
+    public void testContextMixedNamespacesAndElements() {
+        assertNoErrors("context_mixed_namespaces_and_elements");
+    }
+
     private void assertNoErrors(String name) {
         String text;
         try {

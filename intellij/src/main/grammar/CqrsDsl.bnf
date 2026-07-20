@@ -189,12 +189,11 @@ project_def ::= KW_PROJECT qualified_name LBRACE hint_def* context_def* RBRACE {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-// The namespace is optional: a context contains either namespace blocks or - when the namespace is
-// omitted - imports and elements directly (the same content a namespace holds).
-// The first alternative uses '+' (not '*') on purpose: this is a PEG parser, so a '*' first branch
-// would always succeed by matching zero namespaces and never fall through to imports/elements. With
-// '+', a namespace-less context (or an empty one) correctly falls through to the second branch.
-context_def ::= KW_CONTEXT qualified_name LBRACE (namespace_def+ | (import_decl* element*)) RBRACE {
+// A context holds imports first, then any mix of namespace blocks and type/elements as siblings.
+// namespace_def starts with KW_NAMESPACE and element with the element_start keywords (disjoint sets),
+// so the '(namespace_def | element)*' loop is unambiguous for this PEG parser. A namespace-less
+// context (imports + elements directly) and an all-namespace context are both still valid.
+context_def ::= KW_CONTEXT qualified_name LBRACE import_decl* (namespace_def | element)* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -248,6 +247,7 @@ private element_recover ::= !(RBRACE | element_start)
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
           | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
           | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
+          | KW_NAMESPACE
 
 external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
   pin=1
