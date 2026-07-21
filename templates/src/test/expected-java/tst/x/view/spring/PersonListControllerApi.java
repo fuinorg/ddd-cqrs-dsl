@@ -62,7 +62,7 @@ public interface PersonListControllerApi {
      *
      * @return 
      */
-    @GetExchange("/countpersons")
+    @GetExchange("/count-persons")
     ResponseEntity<Integer> countPersons();
 
 }

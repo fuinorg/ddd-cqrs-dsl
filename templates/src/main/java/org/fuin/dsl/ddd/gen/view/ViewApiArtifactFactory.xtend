@@ -50,7 +50,7 @@ class ViewApiArtifactFactory extends AbstractSource<View> {
 
     private def String createControllerApi(CodeReferenceRegistry refReg, View view, String pkg, String baseName,
         String apiName, String runtime) {
-        val restPath = if (view.restPath === null) "/" + baseName.toLowerCase else view.restPath
+        val restPath = if (view.restPath === null) "/" + ViewRestSupport.kebabCase(baseName) else view.restPath
         val ctx = new SimpleCodeSnippetContext(refReg)
         if (runtime == "quarkus") {
             ctx.requiresImport("jakarta.ws.rs.GET")

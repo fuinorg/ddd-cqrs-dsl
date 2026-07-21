@@ -18,9 +18,9 @@ import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
 class ViewRestSupport {
 
     /**
-     * Returns the REST sub path of a view method. Defaults to the lower case method name if the
-     * model declares no explicit 'rest-path' - the same convention the view level uses for its
-     * base path.
+     * Returns the REST sub path of a view method. Defaults to the dash-separated method name if the
+     * model declares no explicit 'rest-path' - the same convention the view level uses for its base
+     * path.
      *
      * @param method Method to determine the path for.
      *
@@ -28,9 +28,39 @@ class ViewRestSupport {
      */
     def static String restPath(Method method) {
         if (method.restPath === null) {
-            return "/" + method.name.toLowerCase
+            return "/" + kebabCase(method.name)
         }
         method.restPath
+    }
+
+    /**
+     * Converts a camel case name into its lower case dash-separated form, which reads far better in
+     * a URL ("listReceipts" becomes "list-receipts"). A run of capitals is kept together, so an
+     * acronym does not become one dashed letter per character ("readPDFFile" becomes
+     * "read-pdf-file").
+     *
+     * @param name Name to convert.
+     *
+     * @return Dash-separated lower case name.
+     */
+    def static String kebabCase(String name) {
+        val StringBuilder sb = new StringBuilder()
+        for (var int i = 0; i < name.length; i++) {
+            val char ch = name.charAt(i)
+            if (Character.isUpperCase(ch)) {
+                // A dash is only needed when a new word starts: either after a lower case character
+                // or at the end of a run of capitals (the last capital belongs to the next word).
+                val boolean prevIsLower = i > 0 && !Character.isUpperCase(name.charAt(i - 1))
+                val boolean nextIsLower = i + 1 < name.length && !Character.isUpperCase(name.charAt(i + 1))
+                if (i > 0 && (prevIsLower || nextIsLower)) {
+                    sb.append("-")
+                }
+                sb.append(Character.toLowerCase(ch))
+            } else {
+                sb.append(ch)
+            }
+        }
+        sb.toString
     }
 
     /**

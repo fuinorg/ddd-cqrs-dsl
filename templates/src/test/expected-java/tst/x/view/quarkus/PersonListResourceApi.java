@@ -70,7 +70,7 @@ public interface PersonListResourceApi {
      * @return 
      */
     @GET
-    @Path("/countpersons")
+    @Path("/count-persons")
     @Produces(MediaType.APPLICATION_JSON)
     Integer countPersons();
 

@@ -86,7 +86,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
     }
 
     private def String createController(CodeReferenceRegistry refReg, View view, String pkg, String baseName, String ctrlName, String runtime) {
-        val restPath = if (view.restPath === null) "/" + baseName.toLowerCase else view.restPath
+        val restPath = if (view.restPath === null) "/" + ViewRestSupport.kebabCase(baseName) else view.restPath
         val ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("jakarta.persistence.EntityManager")
         // The REST contract interface lives in its own module/package - import it.
