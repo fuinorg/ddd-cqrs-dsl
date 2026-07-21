@@ -396,7 +396,7 @@ constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES t
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE parameter* type_ref? return_type? service_def* event_def* RBRACE {
+method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE (KW_REST_PATH STRING)? parameter* type_ref? return_type? service_def* event_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

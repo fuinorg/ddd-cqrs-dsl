@@ -20,8 +20,14 @@ package p.query.core.view.x.m;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import p.query.api.view.x.m.PersonListResourceApi;
+import p.x.m.Integer;
+import p.x.m.List;
+import p.x.m.PersonListItem;
+import p.x.m.String;
+import p.x.m.UserId;
 
 /**
  * REST resource providing the PersonList read model. Implements {@link PersonListResourceApi}; the
@@ -35,15 +41,21 @@ public class PersonListResource implements PersonListResourceApi {
     EntityManager em;
 
     @Override
-    public Response getAll() {
-        // TODO Implement: query the read model and return the results.
-        throw new UnsupportedOperationException("TODO: implement getAll()");
+    public List<PersonListItem> listPersons(@QueryParam("search") final String search) {
+        // TODO Implement: query the read model and return the result.
+        throw new UnsupportedOperationException("TODO: implement listPersons()");
     }
 
     @Override
-    public Response getById(final String id) {
-        // TODO Implement: look up the entry by id and return it (404 if absent).
-        throw new UnsupportedOperationException("TODO: implement getById(id)");
+    public PersonListItem findPerson(@PathParam("id") final UserId id) {
+        // TODO Implement: query the read model and return the result.
+        throw new UnsupportedOperationException("TODO: implement findPerson()");
+    }
+
+    @Override
+    public Integer countPersons() {
+        // TODO Implement: query the read model and return the result.
+        throw new UnsupportedOperationException("TODO: implement countPersons()");
     }
 
 }

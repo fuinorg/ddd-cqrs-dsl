@@ -14,6 +14,7 @@ package org.fuin.dsl.cqrs.cqrsDsl;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRefMethod <em>Ref Method</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath <em>Rest Path</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -44,6 +45,28 @@ public interface Method extends AbstractMethod
    * @generated
    */
   void setRefMethod(Method value);
+
+  /**
+   * Returns the value of the '<em><b>Rest Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rest Path</em>' attribute.
+   * @see #setRestPath(String)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getMethod_RestPath()
+   * @model
+   * @generated
+   */
+  String getRestPath();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Rest Path</em>' attribute.
+   * @see #getRestPath()
+   * @generated
+   */
+  void setRestPath(String value);
 
   /**
    * Returns the value of the '<em><b>Return Type</b></em>' containment reference.

@@ -144,6 +144,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.20.0</b> &ndash; A view <code>method</code> may now declare an optional
+        <code>rest-path</code>, the same way a <code>view</code> already could: it sets the sub path
+        of the generated REST operation, and without it the method name is used. A
+        <code>{name}</code> placeholder in the path binds to the parameter of that name. The keyword
+        is syntax-highlighted and offered in context-aware completion inside a method body.</li>
     <li><b>1.19.0</b> &ndash; A <code>context</code> body may now mix <code>namespace</code> blocks
         and type/elements as siblings; previously it was an either/or (all namespaces, or imports and
         elements directly). Existing models are unaffected.</li>

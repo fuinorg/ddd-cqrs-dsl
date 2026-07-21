@@ -290,4 +290,45 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
         assertFalse("must not offer namespace element keywords inside the view body: " + lookups,
                 lookups.contains("value-object"));
     }
+
+    public void testViewMethodBodyOffersRestPath() {
+        // A view method is exposed as a REST operation, so it may set its own sub path.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      method find {
+                        <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected 'rest-path' inside a view method, got: " + lookups,
+                lookups.contains("rest-path"));
+        assertTrue("expected 'returns' inside a method, got: " + lookups, lookups.contains("returns"));
+    }
+
+    public void testServiceMethodBodyDoesNotOfferRestPath() {
+        // Only a view method is a REST operation - on any other method 'rest-path' is an error.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    service S {
+                      method doIt {
+                        <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertFalse("'rest-path' must not be offered outside a view method: " + lookups,
+                lookups.contains("rest-path"));
+        assertTrue("expected 'returns' inside a method, got: " + lookups, lookups.contains("returns"));
+    }
 }

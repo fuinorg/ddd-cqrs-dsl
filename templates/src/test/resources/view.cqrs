@@ -6,6 +6,14 @@ project p {
 
             type String
 
+            type Integer
+
+            type List generics 1
+
+            value-object PersonListItem {
+                String name
+            }
+
             aggregate-id UserId identifies User {}
 
             aggregate User identifier UserId {
@@ -21,6 +29,25 @@ project p {
             view PersonListView uses UserList {
                 rest-path "/persons"
                 cron-schedule "* * * * * *"
+
+                /** Returns the persons matching the optional filter. */
+                method listPersons {
+                    rest-path ""
+                    optional String search
+                    returns List<PersonListItem>
+                }
+
+                /** Returns a single person. */
+                method findPerson {
+                    rest-path "/{id}"
+                    UserId id
+                    returns optional PersonListItem
+                }
+
+                /** Returns the number of persons - no explicit path, so the method name is used. */
+                method countPersons {
+                    returns Integer
+                }
             }
 
         }

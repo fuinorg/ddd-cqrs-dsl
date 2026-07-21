@@ -55,10 +55,8 @@ class ViewApiArtifactFactory extends AbstractSource<View> {
         if (runtime == "quarkus") {
             ctx.requiresImport("jakarta.ws.rs.GET")
             ctx.requiresImport("jakarta.ws.rs.Path")
-            ctx.requiresImport("jakarta.ws.rs.PathParam")
             ctx.requiresImport("jakarta.ws.rs.Produces")
             ctx.requiresImport("jakarta.ws.rs.core.MediaType")
-            ctx.requiresImport("jakarta.ws.rs.core.Response")
             val src = '''
                 /**
                  * REST contract for the "«baseName»" view: usable as a MicroProfile REST client and
@@ -71,26 +69,10 @@ class ViewApiArtifactFactory extends AbstractSource<View> {
                 @Path("«restPath»")
                 public interface «apiName» {
 
-                    /**
-                     * Returns all entries of the read model.
-                     *
-                     * @return JSON response with the list of entries.
-                     */
-                    @GET
-                    @Produces(MediaType.APPLICATION_JSON)
-                    Response getAll();
+                    «FOR method : view.methods»
+                        «new SrcRestMethod(ctx, method, runtime, true).toString»
 
-                    /**
-                     * Returns a single entry by its id.
-                     *
-                     * @param id Read-model id.
-                     *
-                     * @return JSON response with the entry, or 404 if unknown.
-                     */
-                    @GET
-                    @Path("{id}")
-                    @Produces(MediaType.APPLICATION_JSON)
-                    Response getById(@PathParam("id") String id);
+                    «ENDFOR»
                 }
             '''
             return new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
@@ -98,7 +80,6 @@ class ViewApiArtifactFactory extends AbstractSource<View> {
         // Spring: an @HttpExchange interface is a client/server-neutral contract (Spring 6.1+). It is
         // usable by an HTTP-interface client and implemented by the @RestController server class.
         ctx.requiresImport("org.springframework.http.ResponseEntity")
-        ctx.requiresImport("org.springframework.web.bind.annotation.PathVariable")
         ctx.requiresImport("org.springframework.web.service.annotation.GetExchange")
         ctx.requiresImport("org.springframework.web.service.annotation.HttpExchange")
         val src = '''
@@ -111,23 +92,10 @@ class ViewApiArtifactFactory extends AbstractSource<View> {
             @HttpExchange("«restPath»")
             public interface «apiName» {
 
-                /**
-                 * Returns all entries of the read model.
-                 *
-                 * @return response with the list of entries.
-                 */
-                @GetExchange
-                ResponseEntity<?> getAll();
+                «FOR method : view.methods»
+                    «new SrcRestMethod(ctx, method, runtime, true).toString»
 
-                /**
-                 * Returns a single entry by its id.
-                 *
-                 * @param id Read-model id.
-                 *
-                 * @return response with the entry, or 404 if unknown.
-                 */
-                @GetExchange("/{id}")
-                ResponseEntity<?> getById(@PathVariable("id") String id);
+                «ENDFOR»
             }
         '''
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString

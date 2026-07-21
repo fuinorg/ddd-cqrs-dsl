@@ -2541,13 +2541,22 @@ public interface CqrsDslPackage extends EPackage
   int METHOD__REF_METHOD = ABSTRACT_METHOD_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Rest Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int METHOD__REST_PATH = ABSTRACT_METHOD_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Return Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int METHOD__RETURN_TYPE = ABSTRACT_METHOD_FEATURE_COUNT + 1;
+  int METHOD__RETURN_TYPE = ABSTRACT_METHOD_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Method</em>' class.
@@ -2556,7 +2565,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int METHOD_FEATURE_COUNT = ABSTRACT_METHOD_FEATURE_COUNT + 2;
+  int METHOD_FEATURE_COUNT = ABSTRACT_METHOD_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.TypeMetaInfoImpl <em>Type Meta Info</em>}' class.
@@ -5493,6 +5502,17 @@ public interface CqrsDslPackage extends EPackage
   EReference getMethod_RefMethod();
 
   /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath <em>Rest Path</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Rest Path</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath()
+   * @see #getMethod()
+   * @generated
+   */
+  EAttribute getMethod_RestPath();
+
+  /**
    * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getReturnType <em>Return Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7744,6 +7764,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference METHOD__REF_METHOD = eINSTANCE.getMethod_RefMethod();
+
+    /**
+     * The meta object literal for the '<em><b>Rest Path</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute METHOD__REST_PATH = eINSTANCE.getMethod_RestPath();
 
     /**
      * The meta object literal for the '<em><b>Return Type</b></em>' containment reference feature.

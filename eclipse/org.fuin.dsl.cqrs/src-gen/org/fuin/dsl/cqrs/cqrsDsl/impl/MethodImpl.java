@@ -24,6 +24,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRefMethod <em>Ref Method</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRestPath <em>Rest Path</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -40,6 +41,26 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @ordered
    */
   protected Method refMethod;
+
+  /**
+   * The default value of the '{@link #getRestPath() <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRestPath()
+   * @generated
+   * @ordered
+   */
+  protected static final String REST_PATH_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRestPath() <em>Rest Path</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRestPath()
+   * @generated
+   * @ordered
+   */
+  protected String restPath = REST_PATH_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -123,6 +144,31 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @generated
    */
   @Override
+  public String getRestPath()
+  {
+    return restPath;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setRestPath(String newRestPath)
+  {
+    String oldRestPath = restPath;
+    restPath = newRestPath;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.METHOD__REST_PATH, oldRestPath, restPath));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public ReturnType getReturnType()
   {
     return returnType;
@@ -196,6 +242,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
       case CqrsDslPackage.METHOD__REF_METHOD:
         if (resolve) return getRefMethod();
         return basicGetRefMethod();
+      case CqrsDslPackage.METHOD__REST_PATH:
+        return getRestPath();
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return getReturnType();
     }
@@ -214,6 +262,9 @@ public class MethodImpl extends AbstractMethodImpl implements Method
     {
       case CqrsDslPackage.METHOD__REF_METHOD:
         setRefMethod((Method)newValue);
+        return;
+      case CqrsDslPackage.METHOD__REST_PATH:
+        setRestPath((String)newValue);
         return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)newValue);
@@ -235,6 +286,9 @@ public class MethodImpl extends AbstractMethodImpl implements Method
       case CqrsDslPackage.METHOD__REF_METHOD:
         setRefMethod((Method)null);
         return;
+      case CqrsDslPackage.METHOD__REST_PATH:
+        setRestPath(REST_PATH_EDEFAULT);
+        return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)null);
         return;
@@ -254,10 +308,29 @@ public class MethodImpl extends AbstractMethodImpl implements Method
     {
       case CqrsDslPackage.METHOD__REF_METHOD:
         return refMethod != null;
+      case CqrsDslPackage.METHOD__REST_PATH:
+        return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return returnType != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (restPath: ");
+    result.append(restPath);
+    result.append(')');
+    return result.toString();
   }
 
 } //MethodImpl

@@ -1004,6 +1004,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         preconditions=Preconditions? 
 	 *         businessRules=BusinessRules? 
 	 *         (firedEvents+=[Event|FQN] firedEvents+=[Event|FQN]*)? 
+	 *         restPath=STRING? 
 	 *         parameters+=Parameter* 
 	 *         service=[Service|FQN]? 
 	 *         returnType=ReturnType? 

@@ -37,6 +37,9 @@ project p_19_projection_and_view {
 
 				/** Returns the name of a single user. */
 				method findName business-rules UserKnown {
+					// Optional: REST sub path for this operation. A "{name}" placeholder binds to the
+					// parameter of that name; without the clause the method name is used.
+					rest-path "/{id}/name"
 					UserId id
 					returns String
 				}

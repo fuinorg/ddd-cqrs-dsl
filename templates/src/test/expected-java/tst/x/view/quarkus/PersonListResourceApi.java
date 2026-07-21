@@ -21,8 +21,13 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import p.x.m.Integer;
+import p.x.m.List;
+import p.x.m.PersonListItem;
+import p.x.m.String;
+import p.x.m.UserId;
 
 /**
  * REST contract for the "PersonList" view: usable as a MicroProfile REST client and
@@ -36,23 +41,37 @@ import jakarta.ws.rs.core.Response;
 public interface PersonListResourceApi {
 
     /**
-     * Returns all entries of the read model.
+     * Returns the persons matching the optional filter.
      *
-     * @return JSON response with the list of entries.
+     * @param search 
+     *
+     * @return 
      */
     @GET
+    @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    Response getAll();
+    List<PersonListItem> listPersons(@QueryParam("search") final String search);
 
     /**
-     * Returns a single entry by its id.
+     * Returns a single person.
      *
-     * @param id Read-model id.
+     * @param id 
      *
-     * @return JSON response with the entry, or 404 if unknown.
+     * @return 
      */
     @GET
-    @Path("{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    Response getById(@PathParam("id") String id);
+    PersonListItem findPerson(@PathParam("id") final UserId id);
+
+    /**
+     * Returns the number of persons - no explicit path, so the method name is used.
+     *
+     * @return 
+     */
+    @GET
+    @Path("/countpersons")
+    @Produces(MediaType.APPLICATION_JSON)
+    Integer countPersons();
+
 }

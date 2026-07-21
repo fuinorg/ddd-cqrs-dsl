@@ -102,6 +102,10 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   public static final String SERVICE_METHOD_CANNOT_DECLARE_EVENTS = "serviceMethodCannotDeclareEvents";
 
+  public static final String REST_PATH_ONLY_ON_VIEW_METHODS = "restPathOnlyOnViewMethods";
+
+  public static final String REST_PATH_UNKNOWN_VAR = "restPathUnknownVar";
+
   public static final String BUSINESS_RULE_REQUIRES_EXCEPTION = "businessRuleRequiresException";
 
   public static final String BUSINESS_RULE_REQUIRES_CONSISTENCY = "businessRuleRequiresConsistency";
@@ -273,6 +277,32 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           CqrsDslPackage.Literals.ABSTRACT_METHOD__EVENTS, 
           CqrsDslValidator.SERVICE_METHOD_CANNOT_DECLARE_EVENTS);
       }
+    }
+  }
+
+  @Check
+  public void checkMethodRestPath(final Method method) {
+    String _restPath = method.getRestPath();
+    boolean _tripleEquals = (_restPath == null);
+    if (_tripleEquals) {
+      return;
+    }
+    EObject _eContainer = method.eContainer();
+    boolean _not = (!(_eContainer instanceof View));
+    if (_not) {
+      this.error(
+        "A \'rest-path\' is only allowed for a view method", method, 
+        CqrsDslPackage.Literals.METHOD__REST_PATH, 
+        CqrsDslValidator.REST_PATH_ONLY_ON_VIEW_METHODS);
+      return;
+    }
+    final List<String> names = CqrsParameterExtensions.asNames(method.getParameters());
+    final String name = CqrsDslValidator.findUnknownPathVar(names, method.getRestPath());
+    if ((name != null)) {
+      this.error(
+        (("A parameter with the name \'" + name) + "\' is unknown"), method, 
+        CqrsDslPackage.Literals.METHOD__REST_PATH, 
+        CqrsDslValidator.REST_PATH_UNKNOWN_VAR);
     }
   }
 
@@ -800,6 +830,32 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         } else {
           String name = msg.substring((start + 2), end);
           if (((CqrsDslValidator.isSimpleVariableName(name) && (!vars.contains(name))) && (!name.equals("entityIdPath")))) {
+            return name;
+          }
+          from = (end + 1);
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns the first "{name}" placeholder of a REST path that is not backed by one of the given
+   * parameter names, or NULL if all of them are known. Unlike a message variable a path variable
+   * has no "$" prefix and is always a plain identifier.
+   */
+  private static String findUnknownPathVar(final List<String> vars, final String path) {
+    int end = (-1);
+    int from = 0;
+    int start = (-1);
+    while (((start = path.indexOf("{", from)) > (-1))) {
+      {
+        end = path.indexOf("}", (start + 1));
+        if ((end == (-1))) {
+          from = path.length();
+        } else {
+          String name = path.substring((start + 1), end);
+          if ((CqrsDslValidator.isSimpleVariableName(name) && (!vars.contains(name)))) {
             return name;
           }
           from = (end + 1);

@@ -92,6 +92,10 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	public static val SERVICE_METHOD_CANNOT_DECLARE_EVENTS = "serviceMethodCannotDeclareEvents"
 
+	public static val REST_PATH_ONLY_ON_VIEW_METHODS = "restPathOnlyOnViewMethods"
+
+	public static val REST_PATH_UNKNOWN_VAR = "restPathUnknownVar"
+
 	public static val BUSINESS_RULE_REQUIRES_EXCEPTION = "businessRuleRequiresException"
 
 	public static val BUSINESS_RULE_REQUIRES_CONSISTENCY = "businessRuleRequiresConsistency"
@@ -281,6 +285,38 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				)
 			}
 
+		}
+
+	}
+
+	@Check
+	def checkMethodRestPath(Method method) {
+
+		if (method.restPath === null) {
+			return
+		}
+
+		// Only views are exposed as HTTP endpoints, so a REST path is meaningless anywhere else
+		if (!(method.eContainer instanceof View)) {
+			error(
+				"A 'rest-path' is only allowed for a view method",
+				method,
+				CqrsDslPackage.Literals::METHOD__REST_PATH,
+				REST_PATH_ONLY_ON_VIEW_METHODS
+			)
+			return
+		}
+
+		// Every "{name}" placeholder becomes a path variable bound to a parameter of that name
+		val names = method.parameters.asNames
+		val name = findUnknownPathVar(names, method.restPath);
+		if (name !== null) {
+			error(
+				"A parameter with the name '" + name + "' is unknown",
+				method,
+				CqrsDslPackage.Literals::METHOD__REST_PATH,
+				REST_PATH_UNKNOWN_VAR
+			)
 		}
 
 	}
@@ -817,6 +853,32 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				// "name.toUpperCase()", "quantity * price") are left to the EL engine. The implicit
 				// "entityIdPath" variable is always available and therefore never flagged.
 				if (isSimpleVariableName(name) && !vars.contains(name) && !name.equals("entityIdPath")) {
+					return name
+				}
+				from = end + 1;
+			}
+		}
+		return null
+	}
+
+	/**
+	 * Returns the first "{name}" placeholder of a REST path that is not backed by one of the given
+	 * parameter names, or NULL if all of them are known. Unlike a message variable a path variable
+	 * has no "$" prefix and is always a plain identifier.
+	 */
+	private static def String findUnknownPathVar(List<String> vars, String path) {
+		var int end = -1;
+		var int from = 0;
+		var int start = -1;
+		while ((start = path.indexOf("{", from)) > -1) {
+			end = path.indexOf('}', start + 1);
+			if (end == -1) {
+
+				// No closing bracket found...
+				from = path.length();
+			} else {
+				var String name = path.substring(start + 1, end);
+				if (isSimpleVariableName(name) && !vars.contains(name)) {
 					return name
 				}
 				from = end + 1;

@@ -2536,23 +2536,28 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final CrossReference cFiredEventsEventCrossReference_6_2_1_0 = (CrossReference)cFiredEventsAssignment_6_2_1.eContents().get(0);
 		private final RuleCall cFiredEventsEventFQNParserRuleCall_6_2_1_0_1 = (RuleCall)cFiredEventsEventCrossReference_6_2_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
-		private final Assignment cParametersAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final RuleCall cParametersParameterParserRuleCall_8_0 = (RuleCall)cParametersAssignment_8.eContents().get(0);
-		private final Assignment cServiceAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final CrossReference cServiceServiceCrossReference_9_0 = (CrossReference)cServiceAssignment_9.eContents().get(0);
-		private final RuleCall cServiceServiceFQNParserRuleCall_9_0_1 = (RuleCall)cServiceServiceCrossReference_9_0.eContents().get(1);
-		private final Assignment cReturnTypeAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cReturnTypeReturnTypeParserRuleCall_10_0 = (RuleCall)cReturnTypeAssignment_10.eContents().get(0);
-		private final Assignment cServicesAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cServicesServiceParserRuleCall_11_0 = (RuleCall)cServicesAssignment_11.eContents().get(0);
-		private final Assignment cEventsAssignment_12 = (Assignment)cGroup.eContents().get(12);
-		private final RuleCall cEventsEventParserRuleCall_12_0 = (RuleCall)cEventsAssignment_12.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cRestPathKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cRestPathAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cRestPathSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cRestPathAssignment_8_1.eContents().get(0);
+		private final Assignment cParametersAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cParametersParameterParserRuleCall_9_0 = (RuleCall)cParametersAssignment_9.eContents().get(0);
+		private final Assignment cServiceAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final CrossReference cServiceServiceCrossReference_10_0 = (CrossReference)cServiceAssignment_10.eContents().get(0);
+		private final RuleCall cServiceServiceFQNParserRuleCall_10_0_1 = (RuleCall)cServiceServiceCrossReference_10_0.eContents().get(1);
+		private final Assignment cReturnTypeAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cReturnTypeReturnTypeParserRuleCall_11_0 = (RuleCall)cReturnTypeAssignment_11.eContents().get(0);
+		private final Assignment cServicesAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cServicesServiceParserRuleCall_12_0 = (RuleCall)cServicesAssignment_12.eContents().get(0);
+		private final Assignment cEventsAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cEventsEventParserRuleCall_13_0 = (RuleCall)cEventsAssignment_13.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
 		
 		///** Defines a function of an object. */
 		//Method:
 		//    doc=DOC?
 		//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+		//        ('rest-path' restPath=STRING)?
 		//        parameters+=Parameter*
 		//        service=[Service|FQN]?
 		//        returnType=ReturnType?
@@ -2563,6 +2568,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC?
 		//'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+		//    ('rest-path' restPath=STRING)?
 		//    parameters+=Parameter*
 		//    service=[Service|FQN]?
 		//    returnType=ReturnType?
@@ -2646,41 +2652,53 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
 		
+		//('rest-path' restPath=STRING)?
+		public Group getGroup_8() { return cGroup_8; }
+		
+		//'rest-path'
+		public Keyword getRestPathKeyword_8_0() { return cRestPathKeyword_8_0; }
+		
+		//restPath=STRING
+		public Assignment getRestPathAssignment_8_1() { return cRestPathAssignment_8_1; }
+		
+		//STRING
+		public RuleCall getRestPathSTRINGTerminalRuleCall_8_1_0() { return cRestPathSTRINGTerminalRuleCall_8_1_0; }
+		
 		//parameters+=Parameter*
-		public Assignment getParametersAssignment_8() { return cParametersAssignment_8; }
+		public Assignment getParametersAssignment_9() { return cParametersAssignment_9; }
 		
 		//Parameter
-		public RuleCall getParametersParameterParserRuleCall_8_0() { return cParametersParameterParserRuleCall_8_0; }
+		public RuleCall getParametersParameterParserRuleCall_9_0() { return cParametersParameterParserRuleCall_9_0; }
 		
 		//service=[Service|FQN]?
-		public Assignment getServiceAssignment_9() { return cServiceAssignment_9; }
+		public Assignment getServiceAssignment_10() { return cServiceAssignment_10; }
 		
 		//[Service|FQN]
-		public CrossReference getServiceServiceCrossReference_9_0() { return cServiceServiceCrossReference_9_0; }
+		public CrossReference getServiceServiceCrossReference_10_0() { return cServiceServiceCrossReference_10_0; }
 		
 		//FQN
-		public RuleCall getServiceServiceFQNParserRuleCall_9_0_1() { return cServiceServiceFQNParserRuleCall_9_0_1; }
+		public RuleCall getServiceServiceFQNParserRuleCall_10_0_1() { return cServiceServiceFQNParserRuleCall_10_0_1; }
 		
 		//returnType=ReturnType?
-		public Assignment getReturnTypeAssignment_10() { return cReturnTypeAssignment_10; }
+		public Assignment getReturnTypeAssignment_11() { return cReturnTypeAssignment_11; }
 		
 		//ReturnType
-		public RuleCall getReturnTypeReturnTypeParserRuleCall_10_0() { return cReturnTypeReturnTypeParserRuleCall_10_0; }
+		public RuleCall getReturnTypeReturnTypeParserRuleCall_11_0() { return cReturnTypeReturnTypeParserRuleCall_11_0; }
 		
 		//services+=Service*
-		public Assignment getServicesAssignment_11() { return cServicesAssignment_11; }
+		public Assignment getServicesAssignment_12() { return cServicesAssignment_12; }
 		
 		//Service
-		public RuleCall getServicesServiceParserRuleCall_11_0() { return cServicesServiceParserRuleCall_11_0; }
+		public RuleCall getServicesServiceParserRuleCall_12_0() { return cServicesServiceParserRuleCall_12_0; }
 		
 		//events+=Event*
-		public Assignment getEventsAssignment_12() { return cEventsAssignment_12; }
+		public Assignment getEventsAssignment_13() { return cEventsAssignment_13; }
 		
 		//Event
-		public RuleCall getEventsEventParserRuleCall_12_0() { return cEventsEventParserRuleCall_12_0; }
+		public RuleCall getEventsEventParserRuleCall_13_0() { return cEventsEventParserRuleCall_13_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
+		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
 	}
 	public class TypeMetaInfoElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.TypeMetaInfo");
@@ -5992,6 +6010,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//Method:
 	//    doc=DOC?
 	//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+	//        ('rest-path' restPath=STRING)?
 	//        parameters+=Parameter*
 	//        service=[Service|FQN]?
 	//        returnType=ReturnType?

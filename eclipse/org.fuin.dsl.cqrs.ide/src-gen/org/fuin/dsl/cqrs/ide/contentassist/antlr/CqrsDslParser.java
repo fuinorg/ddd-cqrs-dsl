@@ -114,6 +114,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getMethodAccess().getGroup_3(), "rule__Method__Group_3__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_6(), "rule__Method__Group_6__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_6_2(), "rule__Method__Group_6_2__0");
+			builder.put(grammarAccess.getMethodAccess().getGroup_8(), "rule__Method__Group_8__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup(), "rule__TypeMetaInfo__Group__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup_1(), "rule__TypeMetaInfo__Group_1__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup_2(), "rule__TypeMetaInfo__Group_2__0");
@@ -343,11 +344,12 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getMethodAccess().getBusinessRulesAssignment_5(), "rule__Method__BusinessRulesAssignment_5");
 			builder.put(grammarAccess.getMethodAccess().getFiredEventsAssignment_6_1(), "rule__Method__FiredEventsAssignment_6_1");
 			builder.put(grammarAccess.getMethodAccess().getFiredEventsAssignment_6_2_1(), "rule__Method__FiredEventsAssignment_6_2_1");
-			builder.put(grammarAccess.getMethodAccess().getParametersAssignment_8(), "rule__Method__ParametersAssignment_8");
-			builder.put(grammarAccess.getMethodAccess().getServiceAssignment_9(), "rule__Method__ServiceAssignment_9");
-			builder.put(grammarAccess.getMethodAccess().getReturnTypeAssignment_10(), "rule__Method__ReturnTypeAssignment_10");
-			builder.put(grammarAccess.getMethodAccess().getServicesAssignment_11(), "rule__Method__ServicesAssignment_11");
-			builder.put(grammarAccess.getMethodAccess().getEventsAssignment_12(), "rule__Method__EventsAssignment_12");
+			builder.put(grammarAccess.getMethodAccess().getRestPathAssignment_8_1(), "rule__Method__RestPathAssignment_8_1");
+			builder.put(grammarAccess.getMethodAccess().getParametersAssignment_9(), "rule__Method__ParametersAssignment_9");
+			builder.put(grammarAccess.getMethodAccess().getServiceAssignment_10(), "rule__Method__ServiceAssignment_10");
+			builder.put(grammarAccess.getMethodAccess().getReturnTypeAssignment_11(), "rule__Method__ReturnTypeAssignment_11");
+			builder.put(grammarAccess.getMethodAccess().getServicesAssignment_12(), "rule__Method__ServicesAssignment_12");
+			builder.put(grammarAccess.getMethodAccess().getEventsAssignment_13(), "rule__Method__EventsAssignment_13");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getSlabelAssignment_1_1(), "rule__TypeMetaInfo__SlabelAssignment_1_1");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getLabelAssignment_2_1(), "rule__TypeMetaInfo__LabelAssignment_2_1");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getTooltipAssignment_3_1(), "rule__TypeMetaInfo__TooltipAssignment_3_1");

@@ -324,6 +324,7 @@ ReturnType:
 Method:
 	doc=DOC? 
 	'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
+		('rest-path' restPath=STRING)?
 		parameters+=Parameter*
 		service=[Service|FQN]?
 		returnType=ReturnType?

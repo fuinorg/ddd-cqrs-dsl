@@ -170,6 +170,11 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             keywords.add("event");
             if (method != null) {
                 keywords.add("returns");
+                // Only a view method is exposed as a REST operation, so 'rest-path' is offered there
+                // alone - it is an error on any other method.
+                if (enclosingView(position) != null) {
+                    keywords.add("rest-path");
+                }
             }
             return keywords;
         }

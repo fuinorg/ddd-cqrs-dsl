@@ -4254,11 +4254,35 @@ ruleMethod returns [EObject current=null]
 			newLeafNode(otherlv_11, grammarAccess.getMethodAccess().getLeftCurlyBracketKeyword_7());
 		}
 		(
+			otherlv_12='rest-path'
+			{
+				newLeafNode(otherlv_12, grammarAccess.getMethodAccess().getRestPathKeyword_8_0());
+			}
+			(
+				(
+					lv_restPath_13_0=RULE_STRING
+					{
+						newLeafNode(lv_restPath_13_0, grammarAccess.getMethodAccess().getRestPathSTRINGTerminalRuleCall_8_1_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getMethodRule());
+						}
+						setWithLastConsumed(
+							$current,
+							"restPath",
+							lv_restPath_13_0,
+							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
+					}
+				)
+			)
+		)?
+		(
 			(
 				{
-					newCompositeNode(grammarAccess.getMethodAccess().getParametersParameterParserRuleCall_8_0());
+					newCompositeNode(grammarAccess.getMethodAccess().getParametersParameterParserRuleCall_9_0());
 				}
-				lv_parameters_12_0=ruleParameter
+				lv_parameters_14_0=ruleParameter
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4266,7 +4290,7 @@ ruleMethod returns [EObject current=null]
 					add(
 						$current,
 						"parameters",
-						lv_parameters_12_0,
+						lv_parameters_14_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Parameter");
 					afterParserOrEnumRuleCall();
 				}
@@ -4280,7 +4304,7 @@ ruleMethod returns [EObject current=null]
 					}
 				}
 				{
-					newCompositeNode(grammarAccess.getMethodAccess().getServiceServiceCrossReference_9_0());
+					newCompositeNode(grammarAccess.getMethodAccess().getServiceServiceCrossReference_10_0());
 				}
 				ruleFQN
 				{
@@ -4291,9 +4315,9 @@ ruleMethod returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getMethodAccess().getReturnTypeReturnTypeParserRuleCall_10_0());
+					newCompositeNode(grammarAccess.getMethodAccess().getReturnTypeReturnTypeParserRuleCall_11_0());
 				}
-				lv_returnType_14_0=ruleReturnType
+				lv_returnType_16_0=ruleReturnType
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4301,7 +4325,7 @@ ruleMethod returns [EObject current=null]
 					set(
 						$current,
 						"returnType",
-						lv_returnType_14_0,
+						lv_returnType_16_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.ReturnType");
 					afterParserOrEnumRuleCall();
 				}
@@ -4310,9 +4334,9 @@ ruleMethod returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getMethodAccess().getServicesServiceParserRuleCall_11_0());
+					newCompositeNode(grammarAccess.getMethodAccess().getServicesServiceParserRuleCall_12_0());
 				}
-				lv_services_15_0=ruleService
+				lv_services_17_0=ruleService
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4320,7 +4344,7 @@ ruleMethod returns [EObject current=null]
 					add(
 						$current,
 						"services",
-						lv_services_15_0,
+						lv_services_17_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Service");
 					afterParserOrEnumRuleCall();
 				}
@@ -4329,9 +4353,9 @@ ruleMethod returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getMethodAccess().getEventsEventParserRuleCall_12_0());
+					newCompositeNode(grammarAccess.getMethodAccess().getEventsEventParserRuleCall_13_0());
 				}
-				lv_events_16_0=ruleEvent
+				lv_events_18_0=ruleEvent
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4339,15 +4363,15 @@ ruleMethod returns [EObject current=null]
 					add(
 						$current,
 						"events",
-						lv_events_16_0,
+						lv_events_18_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Event");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_17='}'
+		otherlv_19='}'
 		{
-			newLeafNode(otherlv_17, grammarAccess.getMethodAccess().getRightCurlyBracketKeyword_13());
+			newLeafNode(otherlv_19, grammarAccess.getMethodAccess().getRightCurlyBracketKeyword_14());
 		}
 	)
 ;

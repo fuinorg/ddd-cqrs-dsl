@@ -225,6 +225,7 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Method">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Method/refMethod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Method/restPath"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Method/returnType"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//TypeMetaInfo">

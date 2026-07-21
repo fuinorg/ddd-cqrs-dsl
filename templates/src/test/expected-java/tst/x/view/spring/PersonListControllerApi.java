@@ -19,8 +19,14 @@ package p.query.api.view.x.m;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import p.x.m.Integer;
+import p.x.m.List;
+import p.x.m.PersonListItem;
+import p.x.m.String;
+import p.x.m.UserId;
 
 /**
  * REST contract for the "PersonList" view: an {@code @HttpExchange} interface usable by an
@@ -32,20 +38,31 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface PersonListControllerApi {
 
     /**
-     * Returns all entries of the read model.
+     * Returns the persons matching the optional filter.
      *
-     * @return response with the list of entries.
+     * @param search 
+     *
+     * @return 
      */
-    @GetExchange
-    ResponseEntity<?> getAll();
+    @GetExchange("")
+    ResponseEntity<List<PersonListItem>> listPersons(@RequestParam(value = "search", required = false) final String search);
 
     /**
-     * Returns a single entry by its id.
+     * Returns a single person.
      *
-     * @param id Read-model id.
+     * @param id 
      *
-     * @return response with the entry, or 404 if unknown.
+     * @return 
      */
     @GetExchange("/{id}")
-    ResponseEntity<?> getById(@PathVariable("id") String id);
+    ResponseEntity<PersonListItem> findPerson(@PathVariable("id") final UserId id);
+
+    /**
+     * Returns the number of persons - no explicit path, so the method name is used.
+     *
+     * @return 
+     */
+    @GetExchange("/countpersons")
+    ResponseEntity<Integer> countPersons();
+
 }

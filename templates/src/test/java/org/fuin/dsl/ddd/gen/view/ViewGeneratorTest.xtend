@@ -96,15 +96,24 @@ class ViewGeneratorTest {
      * {@code src/test/expected-java/tst/x/<category>/<runtime>/<ClassName>.java}.
      */
     private def void assertGolden(String category, String runtime, List<GeneratedArtifact> artifacts) {
+        // Mirror everything that was produced to target/ first, so a failing golden can be diffed
+        // and updated from a complete set - the assertion below aborts on the first mismatch.
         for (GeneratedArtifact a : artifacts) {
-            val className = a.pathAndName.substring(a.pathAndName.lastIndexOf('/') + 1)
-            val actual = new String(a.data, "UTF-8")
+            val actualFile = new File("target/actual-java/" + category + "/" + runtime + "/" + fileName(a))
+            actualFile.parentFile.mkdirs
+            Files.write(actualFile.toPath, a.data)
+        }
+        for (GeneratedArtifact a : artifacts) {
             val file = new File("src/test/expected-java/" + TestExtensions.EXAMPLES_ABSTRACT
-                + "/x/" + category + "/" + runtime + "/" + className)
-            assertThat(actual)
-                .describedAs(className)
+                + "/x/" + category + "/" + runtime + "/" + fileName(a))
+            assertThat(new String(a.data, "UTF-8"))
+                .describedAs(fileName(a))
                 .isEqualTo(new String(Files.readAllBytes(file.toPath), "UTF-8"))
         }
+    }
+
+    private def String fileName(GeneratedArtifact a) {
+        a.pathAndName.substring(a.pathAndName.lastIndexOf('/') + 1)
     }
 
     private def model() {

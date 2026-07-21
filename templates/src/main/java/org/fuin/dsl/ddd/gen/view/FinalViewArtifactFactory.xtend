@@ -95,7 +95,6 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
             val apiName = baseName + "ResourceApi"
             ctx.requiresImport("jakarta.inject.Inject")
             ctx.requiresImport("jakarta.ws.rs.Path")
-            ctx.requiresImport("jakarta.ws.rs.core.Response")
             val src = '''
                 /**
                  * REST resource providing the «baseName» read model. Implements {@link «apiName»}; the
@@ -108,18 +107,10 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
                     @Inject
                     EntityManager em;
 
-                    @Override
-                    public Response getAll() {
-                        // TODO Implement: query the read model and return the results.
-                        throw new UnsupportedOperationException("TODO: implement getAll()");
-                    }
+                    «FOR method : view.methods»
+                        «new SrcRestMethod(ctx, method, runtime, false).toString»
 
-                    @Override
-                    public Response getById(final String id) {
-                        // TODO Implement: look up the entry by id and return it (404 if absent).
-                        throw new UnsupportedOperationException("TODO: implement getById(id)");
-                    }
-
+                    «ENDFOR»
                 }
             '''
             return new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
@@ -144,18 +135,10 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
                 @Autowired
                 private EntityManager em;
 
-                @Override
-                public ResponseEntity<?> getAll() {
-                    // TODO Implement: query the read model and return the results.
-                    throw new UnsupportedOperationException("TODO: implement getAll()");
-                }
+                «FOR method : view.methods»
+                    «new SrcRestMethod(ctx, method, runtime, false).toString»
 
-                @Override
-                public ResponseEntity<?> getById(final String id) {
-                    // TODO Implement: look up the entry by id and return it (404 if absent).
-                    throw new UnsupportedOperationException("TODO: implement getById(id)");
-                }
-
+                «ENDFOR»
             }
         '''
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
