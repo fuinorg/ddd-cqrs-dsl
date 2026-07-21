@@ -3404,22 +3404,22 @@ public interface CqrsDslPackage extends EPackage
   int VIEW__PROJECTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Hints</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VIEW__HINTS = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Rest Path</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VIEW__REST_PATH = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+  int VIEW__REST_PATH = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Hints</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIEW__HINTS = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Cron</b></em>' attribute.
@@ -6090,17 +6090,6 @@ public interface CqrsDslPackage extends EPackage
   EReference getView_Projection();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Hints</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getHints()
-   * @see #getView()
-   * @generated
-   */
-  EReference getView_Hints();
-
-  /**
    * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6110,6 +6099,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EAttribute getView_RestPath();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Hints</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getHints()
+   * @see #getView()
+   * @generated
+   */
+  EReference getView_Hints();
 
   /**
    * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getCron <em>Cron</em>}'.
@@ -8240,20 +8240,20 @@ public interface CqrsDslPackage extends EPackage
     EReference VIEW__PROJECTION = eINSTANCE.getView_Projection();
 
     /**
-     * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference VIEW__HINTS = eINSTANCE.getView_Hints();
-
-    /**
      * The meta object literal for the '<em><b>Rest Path</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EAttribute VIEW__REST_PATH = eINSTANCE.getView_RestPath();
+
+    /**
+     * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VIEW__HINTS = eINSTANCE.getView_Hints();
 
     /**
      * The meta object literal for the '<em><b>Cron</b></em>' attribute feature.

@@ -36,12 +36,11 @@ project p_projection_and_view {
 
 			// A view may declare business rules and methods, like a service.
 			// It may also set an optional REST base path and projection cron.
-			view UserListView uses UserList {
+			view UserListView uses UserList rest-path "/users" {
 
 				// A view may carry generator hints, like a project.
 				hint SrcGen4J { "folder": "genMainJava" }
 
-				rest-path "/users"
 				cron-schedule "* * * * * *"
 
 				business-rule UserKnown exception UnknownUserException {
@@ -49,8 +48,7 @@ project p_projection_and_view {
 				}
 
 				// A method may set its own REST sub path; without it the method name is used.
-				method findName business-rules UserKnown {
-					rest-path "/{id}/name"
+				method findName business-rules UserKnown rest-path "/{id}/name" {
 					UserId id
 					returns String
 				}

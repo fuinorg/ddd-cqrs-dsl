@@ -3,7 +3,7 @@
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
 ## 1.20.0
-- A view `method` may now declare an optional `rest-path`, the same way a `view` already could: it sets the sub path of the generated REST operation, and without it the method name is used. A `{name}` placeholder in the path binds to the parameter of that name. The keyword is syntax-highlighted and offered in context-aware completion inside a method body.
+- A view `method` may now declare an optional `rest-path` setting the sub path of its REST operation; without it the method name is used. **Breaking:** `rest-path` moved from the body into the header of `view` and `method`: `view X uses Y rest-path "/x" { ... }`. The keyword is syntax-highlighted and offered in completion at those header positions.
 
 ## 1.19.0
 - A `context` body may now mix `namespace` blocks and type/elements as siblings; previously it was an either/or (all namespaces, or imports and elements directly). Existing models are unaffected.

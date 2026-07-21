@@ -4249,20 +4249,16 @@ ruleMethod returns [EObject current=null]
 				)
 			)*
 		)?
-		otherlv_11='{'
-		{
-			newLeafNode(otherlv_11, grammarAccess.getMethodAccess().getLeftCurlyBracketKeyword_7());
-		}
 		(
-			otherlv_12='rest-path'
+			otherlv_11='rest-path'
 			{
-				newLeafNode(otherlv_12, grammarAccess.getMethodAccess().getRestPathKeyword_8_0());
+				newLeafNode(otherlv_11, grammarAccess.getMethodAccess().getRestPathKeyword_7_0());
 			}
 			(
 				(
-					lv_restPath_13_0=RULE_STRING
+					lv_restPath_12_0=RULE_STRING
 					{
-						newLeafNode(lv_restPath_13_0, grammarAccess.getMethodAccess().getRestPathSTRINGTerminalRuleCall_8_1_0());
+						newLeafNode(lv_restPath_12_0, grammarAccess.getMethodAccess().getRestPathSTRINGTerminalRuleCall_7_1_0());
 					}
 					{
 						if ($current==null) {
@@ -4271,12 +4267,16 @@ ruleMethod returns [EObject current=null]
 						setWithLastConsumed(
 							$current,
 							"restPath",
-							lv_restPath_13_0,
+							lv_restPath_12_0,
 							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
 					}
 				)
 			)
 		)?
+		otherlv_13='{'
+		{
+			newLeafNode(otherlv_13, grammarAccess.getMethodAccess().getLeftCurlyBracketKeyword_8());
+		}
 		(
 			(
 				{
@@ -6016,39 +6016,16 @@ ruleView returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_5='{'
-		{
-			newLeafNode(otherlv_5, grammarAccess.getViewAccess().getLeftCurlyBracketKeyword_5());
-		}
 		(
-			(
-				{
-					newCompositeNode(grammarAccess.getViewAccess().getHintsHintParserRuleCall_6_0());
-				}
-				lv_hints_6_0=ruleHint
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getViewRule());
-					}
-					add(
-						$current,
-						"hints",
-						lv_hints_6_0,
-						"org.fuin.dsl.cqrs.CqrsDsl.Hint");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)*
-		(
-			otherlv_7='rest-path'
+			otherlv_5='rest-path'
 			{
-				newLeafNode(otherlv_7, grammarAccess.getViewAccess().getRestPathKeyword_7_0());
+				newLeafNode(otherlv_5, grammarAccess.getViewAccess().getRestPathKeyword_5_0());
 			}
 			(
 				(
-					lv_restPath_8_0=RULE_STRING
+					lv_restPath_6_0=RULE_STRING
 					{
-						newLeafNode(lv_restPath_8_0, grammarAccess.getViewAccess().getRestPathSTRINGTerminalRuleCall_7_1_0());
+						newLeafNode(lv_restPath_6_0, grammarAccess.getViewAccess().getRestPathSTRINGTerminalRuleCall_5_1_0());
 					}
 					{
 						if ($current==null) {
@@ -6057,12 +6034,35 @@ ruleView returns [EObject current=null]
 						setWithLastConsumed(
 							$current,
 							"restPath",
-							lv_restPath_8_0,
+							lv_restPath_6_0,
 							"org.fuin.dsl.cqrs.CqrsDsl.STRING");
 					}
 				)
 			)
 		)?
+		otherlv_7='{'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getViewAccess().getLeftCurlyBracketKeyword_6());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getViewAccess().getHintsHintParserRuleCall_7_0());
+				}
+				lv_hints_8_0=ruleHint
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getViewRule());
+					}
+					add(
+						$current,
+						"hints",
+						lv_hints_8_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.Hint");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
 		(
 			otherlv_9='cron-schedule'
 			{

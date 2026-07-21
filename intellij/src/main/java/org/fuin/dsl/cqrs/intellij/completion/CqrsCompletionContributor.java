@@ -170,9 +170,9 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             keywords.add("event");
             if (method != null) {
                 keywords.add("returns");
-                // Only a view method is exposed as a REST operation, so 'rest-path' is offered there
-                // alone - it is an error on any other method.
-                if (enclosingView(position) != null) {
+                // 'rest-path' is a header clause of a *view* method (before the '{'): it is an error
+                // on any other method, and inside the body it would be invalid syntax.
+                if (enclosingView(position) != null && beforeBody(method, position)) {
                     keywords.add("rest-path");
                 }
             }
@@ -207,9 +207,14 @@ public final class CqrsCompletionContributor extends CompletionContributor {
 
         // A 'view ... { ... }' body holds business rules and methods (a caret inside a view method is
         // already handled by the constructor/method branch above).
-        if (enclosingView(position) != null) {
+        CqrsViewDef view = enclosingView(position);
+        if (view != null) {
+            // 'rest-path' sits in the view header (before the '{'), everything else in the body.
+            if (beforeBody(view, position)) {
+                keywords.add("rest-path");
+                return keywords;
+            }
             keywords.add("hint");
-            keywords.add("rest-path");
             keywords.add("cron-schedule");
             keywords.add("business-rule");
             keywords.add("method");
@@ -309,6 +314,22 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return null;
         }
         return PsiTreeUtil.getParentOfType(prev, CqrsProcessManager.class);
+    }
+
+    /**
+     * Determines whether the caret sits in the header of the given element - that is, before its
+     * opening <code>&#123;</code>. Header clauses such as {@code rest-path} are only legal there.
+     * An element whose body brace is missing (still being typed) counts as "header".
+     */
+    private static boolean beforeBody(PsiElement element, PsiElement position) {
+        PsiElement brace = null;
+        for (PsiElement child = element.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child.getNode() != null && child.getNode().getElementType() == CqrsTypes.LBRACE) {
+                brace = child;
+                break;
+            }
+        }
+        return brace == null || position.getTextOffset() <= brace.getTextOffset();
     }
 
     /** The {@code view} block surrounding the caret, or {@code null} (same error recovery as above). */

@@ -2535,11 +2535,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cFiredEventsAssignment_6_2_1 = (Assignment)cGroup_6_2.eContents().get(1);
 		private final CrossReference cFiredEventsEventCrossReference_6_2_1_0 = (CrossReference)cFiredEventsAssignment_6_2_1.eContents().get(0);
 		private final RuleCall cFiredEventsEventFQNParserRuleCall_6_2_1_0_1 = (RuleCall)cFiredEventsEventCrossReference_6_2_1_0.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
-		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
-		private final Keyword cRestPathKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
-		private final Assignment cRestPathAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
-		private final RuleCall cRestPathSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cRestPathAssignment_8_1.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cRestPathKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cRestPathAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cRestPathSTRINGTerminalRuleCall_7_1_0 = (RuleCall)cRestPathAssignment_7_1.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		private final Assignment cParametersAssignment_9 = (Assignment)cGroup.eContents().get(9);
 		private final RuleCall cParametersParameterParserRuleCall_9_0 = (RuleCall)cParametersAssignment_9.eContents().get(0);
 		private final Assignment cServiceAssignment_10 = (Assignment)cGroup.eContents().get(10);
@@ -2556,8 +2556,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		///** Defines a function of an object. */
 		//Method:
 		//    doc=DOC?
-		//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
-		//        ('rest-path' restPath=STRING)?
+		//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 		//        parameters+=Parameter*
 		//        service=[Service|FQN]?
 		//        returnType=ReturnType?
@@ -2567,8 +2566,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
-		//    ('rest-path' restPath=STRING)?
+		//'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 		//    parameters+=Parameter*
 		//    service=[Service|FQN]?
 		//    returnType=ReturnType?
@@ -2649,20 +2647,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//FQN
 		public RuleCall getFiredEventsEventFQNParserRuleCall_6_2_1_0_1() { return cFiredEventsEventFQNParserRuleCall_6_2_1_0_1; }
 		
-		//'{'
-		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
-		
 		//('rest-path' restPath=STRING)?
-		public Group getGroup_8() { return cGroup_8; }
+		public Group getGroup_7() { return cGroup_7; }
 		
 		//'rest-path'
-		public Keyword getRestPathKeyword_8_0() { return cRestPathKeyword_8_0; }
+		public Keyword getRestPathKeyword_7_0() { return cRestPathKeyword_7_0; }
 		
 		//restPath=STRING
-		public Assignment getRestPathAssignment_8_1() { return cRestPathAssignment_8_1; }
+		public Assignment getRestPathAssignment_7_1() { return cRestPathAssignment_7_1; }
 		
 		//STRING
-		public RuleCall getRestPathSTRINGTerminalRuleCall_8_1_0() { return cRestPathSTRINGTerminalRuleCall_8_1_0; }
+		public RuleCall getRestPathSTRINGTerminalRuleCall_7_1_0() { return cRestPathSTRINGTerminalRuleCall_7_1_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_8() { return cLeftCurlyBracketKeyword_8; }
 		
 		//parameters+=Parameter*
 		public Assignment getParametersAssignment_9() { return cParametersAssignment_9; }
@@ -3770,13 +3768,13 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cProjectionAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final CrossReference cProjectionProjectionCrossReference_4_0 = (CrossReference)cProjectionAssignment_4.eContents().get(0);
 		private final RuleCall cProjectionProjectionFQNParserRuleCall_4_0_1 = (RuleCall)cProjectionProjectionCrossReference_4_0.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cHintsAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cHintsHintParserRuleCall_6_0 = (RuleCall)cHintsAssignment_6.eContents().get(0);
-		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
-		private final Keyword cRestPathKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
-		private final Assignment cRestPathAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
-		private final RuleCall cRestPathSTRINGTerminalRuleCall_7_1_0 = (RuleCall)cRestPathAssignment_7_1.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cRestPathKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cRestPathAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cRestPathSTRINGTerminalRuleCall_5_1_0 = (RuleCall)cRestPathAssignment_5_1.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cHintsAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cHintsHintParserRuleCall_7_0 = (RuleCall)cHintsAssignment_7.eContents().get(0);
 		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
 		private final Keyword cCronScheduleKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
 		private final Assignment cCronAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
@@ -3790,9 +3788,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		///** Result of a projection. Like a service it may offer methods to query it. */
 		//View:
 		//    doc=DOC?
-		//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//    'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
 		//        hints+=Hint*
-		//        ('rest-path' restPath=STRING)?
 		//        ('cron-schedule' cron=STRING)?
 		//        businessRules+=BusinessRule*
 		//        methods+=Method*
@@ -3800,9 +3797,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'view' name=ID 'uses' projection=[Projection|FQN] '{'
+		//'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
 		//    hints+=Hint*
-		//    ('rest-path' restPath=STRING)?
 		//    ('cron-schedule' cron=STRING)?
 		//    businessRules+=BusinessRule*
 		//    methods+=Method*
@@ -3836,26 +3832,26 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//FQN
 		public RuleCall getProjectionProjectionFQNParserRuleCall_4_0_1() { return cProjectionProjectionFQNParserRuleCall_4_0_1; }
 		
-		//'{'
-		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
-		
-		//hints+=Hint*
-		public Assignment getHintsAssignment_6() { return cHintsAssignment_6; }
-		
-		//Hint
-		public RuleCall getHintsHintParserRuleCall_6_0() { return cHintsHintParserRuleCall_6_0; }
-		
 		//('rest-path' restPath=STRING)?
-		public Group getGroup_7() { return cGroup_7; }
+		public Group getGroup_5() { return cGroup_5; }
 		
 		//'rest-path'
-		public Keyword getRestPathKeyword_7_0() { return cRestPathKeyword_7_0; }
+		public Keyword getRestPathKeyword_5_0() { return cRestPathKeyword_5_0; }
 		
 		//restPath=STRING
-		public Assignment getRestPathAssignment_7_1() { return cRestPathAssignment_7_1; }
+		public Assignment getRestPathAssignment_5_1() { return cRestPathAssignment_5_1; }
 		
 		//STRING
-		public RuleCall getRestPathSTRINGTerminalRuleCall_7_1_0() { return cRestPathSTRINGTerminalRuleCall_7_1_0; }
+		public RuleCall getRestPathSTRINGTerminalRuleCall_5_1_0() { return cRestPathSTRINGTerminalRuleCall_5_1_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		
+		//hints+=Hint*
+		public Assignment getHintsAssignment_7() { return cHintsAssignment_7; }
+		
+		//Hint
+		public RuleCall getHintsHintParserRuleCall_7_0() { return cHintsHintParserRuleCall_7_0; }
 		
 		//('cron-schedule' cron=STRING)?
 		public Group getGroup_8() { return cGroup_8; }
@@ -6009,8 +6005,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Defines a function of an object. */
 	//Method:
 	//    doc=DOC?
-	//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
-	//        ('rest-path' restPath=STRING)?
+	//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 	//        parameters+=Parameter*
 	//        service=[Service|FQN]?
 	//        returnType=ReturnType?
@@ -6245,9 +6240,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Result of a projection. Like a service it may offer methods to query it. */
 	//View:
 	//    doc=DOC?
-	//    'view' name=ID 'uses' projection=[Projection|FQN] '{'
+	//    'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
 	//        hints+=Hint*
-	//        ('rest-path' restPath=STRING)?
 	//        ('cron-schedule' cron=STRING)?
 	//        businessRules+=BusinessRule*
 	//        methods+=Method*

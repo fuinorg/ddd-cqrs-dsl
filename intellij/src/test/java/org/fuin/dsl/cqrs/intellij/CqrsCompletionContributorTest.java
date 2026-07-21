@@ -286,13 +286,51 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 }
                 """);
         assertTrue("expected view-body keywords, got: " + lookups,
-                lookups.containsAll(List.of("hint", "rest-path", "cron-schedule", "business-rule", "method")));
+                lookups.containsAll(List.of("hint", "cron-schedule", "business-rule", "method")));
+        assertFalse("'rest-path' is a header clause and must not be offered in the view body: " + lookups,
+                lookups.contains("rest-path"));
         assertFalse("must not offer namespace element keywords inside the view body: " + lookups,
                 lookups.contains("value-object"));
     }
 
-    public void testViewMethodBodyOffersRestPath() {
-        // A view method is exposed as a REST operation, so it may set its own sub path.
+    public void testViewHeaderOffersRestPath() {
+        // 'rest-path' sits between the projection reference and the opening brace.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj <caret> {
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected 'rest-path' in the view header, got: " + lookups,
+                lookups.contains("rest-path"));
+    }
+
+    public void testViewMethodHeaderOffersRestPath() {
+        // A view method is exposed as a REST operation, so its header may set its own sub path.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    projection Pj
+                    view V uses Pj {
+                      method find <caret> {
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected 'rest-path' in the view method header, got: " + lookups,
+                lookups.contains("rest-path"));
+    }
+
+    public void testViewMethodBodyDoesNotOfferRestPath() {
+        // Inside the body it would be invalid syntax - only 'returns' and friends belong there.
         List<String> lookups = lookups("""
                 project p {
                 context c {
@@ -307,20 +345,19 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 }
                 }
                 """);
-        assertTrue("expected 'rest-path' inside a view method, got: " + lookups,
+        assertFalse("'rest-path' is a header clause and must not be offered in a method body: " + lookups,
                 lookups.contains("rest-path"));
         assertTrue("expected 'returns' inside a method, got: " + lookups, lookups.contains("returns"));
     }
 
-    public void testServiceMethodBodyDoesNotOfferRestPath() {
+    public void testServiceMethodDoesNotOfferRestPath() {
         // Only a view method is a REST operation - on any other method 'rest-path' is an error.
         List<String> lookups = lookups("""
                 project p {
                 context c {
                   namespace n {
                     service S {
-                      method doIt {
-                        <caret>
+                      method doIt <caret> {
                       }
                     }
                   }

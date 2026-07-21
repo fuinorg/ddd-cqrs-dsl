@@ -23,11 +23,10 @@ project p_19_projection_and_view {
 
 			// A view is the result produced by a projection. Like a service it may declare
 			// business rules and methods to query it - the body may also be left empty.
-			view UserListView uses UserList {
+			view UserListView uses UserList rest-path "/users" {
 
 				// Optional: REST base path for the generated controller (else derived
 				// from the aggregate name) and the projection cron (else "* * * * * *").
-				rest-path "/users"
 				cron-schedule "* * * * * *"
 
 				/** The requested user must exist in the read model. */
@@ -36,10 +35,9 @@ project p_19_projection_and_view {
 				}
 
 				/** Returns the name of a single user. */
-				method findName business-rules UserKnown {
-					// Optional: REST sub path for this operation. A "{name}" placeholder binds to the
-					// parameter of that name; without the clause the method name is used.
-					rest-path "/{id}/name"
+				// Optional: REST sub path for this operation. A "{name}" placeholder binds to the
+				// parameter of that name; without the clause the method name is used.
+				method findName business-rules UserKnown rest-path "/{id}/name" {
 					UserId id
 					returns String
 				}

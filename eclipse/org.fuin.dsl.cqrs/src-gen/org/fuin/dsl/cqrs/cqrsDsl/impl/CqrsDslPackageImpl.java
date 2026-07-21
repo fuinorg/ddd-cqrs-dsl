@@ -2734,9 +2734,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getView_Hints()
+  public EAttribute getView_RestPath()
   {
-    return (EReference)viewEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)viewEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2745,9 +2745,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EAttribute getView_RestPath()
+  public EReference getView_Hints()
   {
-    return (EAttribute)viewEClass.getEStructuralFeatures().get(2);
+    return (EReference)viewEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -3556,8 +3556,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     viewEClass = createEClass(VIEW);
     createEReference(viewEClass, VIEW__PROJECTION);
-    createEReference(viewEClass, VIEW__HINTS);
     createEAttribute(viewEClass, VIEW__REST_PATH);
+    createEReference(viewEClass, VIEW__HINTS);
     createEAttribute(viewEClass, VIEW__CRON);
     createEReference(viewEClass, VIEW__BUSINESS_RULES);
     createEReference(viewEClass, VIEW__METHODS);
@@ -3931,8 +3931,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(viewEClass, View.class, "View", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getView_Projection(), this.getProjection(), null, "projection", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getView_Hints(), this.getHint(), null, "hints", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getView_RestPath(), ecorePackage.getEString(), "restPath", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getView_Hints(), this.getHint(), null, "hints", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getView_Cron(), ecorePackage.getEString(), "cron", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getView_BusinessRules(), this.getBusinessRule(), null, "businessRules", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getView_Methods(), this.getMethod(), null, "methods", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

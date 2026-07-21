@@ -53,8 +53,7 @@ class CqrsDslRestPathTest {
 	def void restPathIsOptionalAndParsedWhenPresent() {
 
 		val m = parseHelper.parse(model('''
-			method findItem {
-				rest-path "/{id}"
+			method findItem rest-path "/{id}" {
 				ItemId id
 				returns optional ItemId
 			}
@@ -77,8 +76,7 @@ class CqrsDslRestPathTest {
 	def void unknownPathVariableIsRejected() {
 
 		val m = parseHelper.parse(model('''
-			method findItem {
-				rest-path "/{unknown}"
+			method findItem rest-path "/{unknown}" {
 				ItemId id
 				returns optional ItemId
 			}
@@ -99,8 +97,7 @@ class CqrsDslRestPathTest {
 					namespace n {
 						type String
 						service ItemService {
-							method doSomething {
-								rest-path "/nope"
+							method doSomething rest-path "/nope" {
 							}
 						}
 					}

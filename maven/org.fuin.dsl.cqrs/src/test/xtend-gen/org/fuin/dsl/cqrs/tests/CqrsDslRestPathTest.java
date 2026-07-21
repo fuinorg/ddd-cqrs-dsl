@@ -91,10 +91,7 @@ public class CqrsDslRestPathTest {
   public void restPathIsOptionalAndParsedWhenPresent() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("method findItem {");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("rest-path \"/{id}\"");
+      _builder.append("method findItem rest-path \"/{id}\" {");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("ItemId id");
@@ -132,10 +129,7 @@ public class CqrsDslRestPathTest {
   public void unknownPathVariableIsRejected() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("method findItem {");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("rest-path \"/{unknown}\"");
+      _builder.append("method findItem rest-path \"/{unknown}\" {");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("ItemId id");
@@ -173,10 +167,7 @@ public class CqrsDslRestPathTest {
       _builder.append("service ItemService {");
       _builder.newLine();
       _builder.append("\t\t\t\t");
-      _builder.append("method doSomething {");
-      _builder.newLine();
-      _builder.append("\t\t\t\t\t");
-      _builder.append("rest-path \"/nope\"");
+      _builder.append("method doSomething rest-path \"/nope\" {");
       _builder.newLine();
       _builder.append("\t\t\t\t");
       _builder.append("}");

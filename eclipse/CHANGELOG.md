@@ -3,7 +3,8 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.18.0
-- A view `method` may now declare an optional `rest-path`, the same way a `view` already could: it sets the sub path of the generated REST operation, and without it the method name is used. A `{name}` placeholder in the path binds to the parameter of that name and is validated against the declared parameters; a `rest-path` on a method that is not a view method is flagged.
+- A view `method` may now declare an optional `rest-path` setting the sub path of its REST operation; without it the method name is used. A `{name}` placeholder binds to the parameter of that name, and a `rest-path` outside a view method is flagged.
+- **Breaking:** `rest-path` moved from the body into the header of `view` and `method`: `view X uses Y rest-path "/x" { ... }`. The view's `cron-schedule` stays in the body.
 
 ## 1.17.0
 - A `context` body may now mix `namespace` blocks and type/elements as siblings; previously it was an either/or (all namespaces, or imports and elements directly). Existing models are unaffected.

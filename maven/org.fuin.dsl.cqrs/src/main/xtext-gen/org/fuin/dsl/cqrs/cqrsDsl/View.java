@@ -15,8 +15,8 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getProjection <em>Projection</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMethods <em>Methods</em>}</li>
@@ -51,18 +51,6 @@ public interface View extends AbstractElement
   void setProjection(Projection value);
 
   /**
-   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Hints</em>' containment reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_Hints()
-   * @model containment="true"
-   * @generated
-   */
-  EList<Hint> getHints();
-
-  /**
    * Returns the value of the '<em><b>Rest Path</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -83,6 +71,18 @@ public interface View extends AbstractElement
    * @generated
    */
   void setRestPath(String value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
   /**
    * Returns the value of the '<em><b>Cron</b></em>' attribute.
