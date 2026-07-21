@@ -112,6 +112,6 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
      *
      * @param event Event to handle.
      */
-    protected abstract void handle(final EntityCCreatedEvent event);
+    protected abstract void handleEntityCCreatedEvent(final EntityCCreatedEvent event);
     
 }

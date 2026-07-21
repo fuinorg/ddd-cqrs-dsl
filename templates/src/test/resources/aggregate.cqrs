@@ -34,6 +34,31 @@ project p {
 
 			}
 
+			/** The aggregate D was changed - declared here, not inside the method that fires it. */
+			event AggregateDChangedEvent {
+
+				/** Variable A. */
+				String a
+
+				message "Aggregate D was changed: ${a} [${entityIdPath}]"
+
+			}
+
+			aggregate-id AggregateDId identifies AggregateD {}
+
+			/** Aggregate D - Fires an event declared outside the method. */
+			aggregate AggregateD identifier AggregateDId {
+
+				/** Changes something. */
+				method change fires AggregateDChangedEvent {
+
+					/** Variable A. */
+					String a
+
+				}
+
+			}
+
 			aggregate-id AggregateCId identifies AggregateC {}
 
 			/** Aggregate C - With constructor, constraint and event. */

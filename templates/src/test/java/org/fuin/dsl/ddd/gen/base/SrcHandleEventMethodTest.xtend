@@ -50,7 +50,7 @@ class SrcHandleEventMethodTest {
                  */
                 @Override
                 @ApplyEvent
-                protected final void handle(final DidSomethingEvent event) {
+                protected final void handleDidSomethingEvent(final DidSomethingEvent event) {
                     // TODO Handle event!
                 }
             '''.toString)

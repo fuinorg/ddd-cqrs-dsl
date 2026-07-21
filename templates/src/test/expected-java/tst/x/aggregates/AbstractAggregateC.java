@@ -100,6 +100,6 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
      *
      * @param event Event to handle.
      */
-    protected abstract void handle(final AggregateCCreatedEvent event);
+    protected abstract void handleAggregateCCreatedEvent(final AggregateCCreatedEvent event);
     
 }

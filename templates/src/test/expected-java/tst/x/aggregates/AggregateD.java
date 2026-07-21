@@ -18,43 +18,38 @@
 package p.command.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.ApplyEvent;
-import p.x.aggregates.AbstractAggregateC;
-import p.x.aggregates.AggregateCCreatedEvent;
-import p.x.aggregates.AnyConstraintViolatedException;
+import p.x.aggregates.AbstractAggregateD;
+import p.x.aggregates.AggregateDChangedEvent;
 
 /**
- * Aggregate C - With constructor, constraint and event.
+ * Aggregate D - Fires an event declared outside the method.
  */
-public final class AggregateC extends AbstractAggregateC {
+public final class AggregateD extends AbstractAggregateD {
 
     /**
      * Default constructor for loading the aggregate root from history. 
      */
-    public AggregateC() {
+    public AggregateD() {
         super();
     }
 
     /**
-     * Creates the entity.
+     * Changes something.
      *
      * @param a Variable A.
-     * @param b Variable B.
-     *
-     * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateC(final String a, final Integer b) throws AnyConstraintViolatedException {
-        super();
+    public final void change(final String a) {
         // TODO Implement!
     }
     
     /**
-     * Handles: AggregateCCreatedEvent.
+     * Handles: AggregateDChangedEvent.
      *
      * @param event Event to handle.
      */
     @Override
     @ApplyEvent
-    protected final void handleAggregateCCreatedEvent(final AggregateCCreatedEvent event) {
+    protected final void handleAggregateDChangedEvent(final AggregateDChangedEvent event) {
         // TODO Handle event!
     }
     

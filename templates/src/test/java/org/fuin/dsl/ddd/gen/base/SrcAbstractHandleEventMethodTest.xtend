@@ -48,7 +48,7 @@ class SrcAbstractHandleEventMethodTest {
              *
              * @param event Event to handle.
              */
-            protected abstract void handle(final DidSomethingEvent event);
+            protected abstract void handleDidSomethingEvent(final DidSomethingEvent event);
             '''.toString)
         assertThat(ctx.imports).containsOnly("a.b.c.DidSomethingEvent")
 

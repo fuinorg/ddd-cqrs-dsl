@@ -52,7 +52,7 @@ public final class EntityC extends AbstractEntityC {
      */
     @Override
     @ApplyEvent
-    protected final void handle(final EntityCCreatedEvent event) {
+    protected final void handleEntityCCreatedEvent(final EntityCCreatedEvent event) {
         // TODO Handle event!
     }
     

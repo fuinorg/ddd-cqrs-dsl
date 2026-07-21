@@ -2,6 +2,7 @@ package org.fuin.dsl.cqrs.extensions
 
 import java.util.ArrayList
 import java.util.HashSet
+import java.util.LinkedHashSet
 import java.util.List
 import java.util.Set
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
@@ -71,19 +72,23 @@ class CqrsAbstractEntityExtensions {
 	 * 
 	 * @param entity Entity to return the events for.
 	 * 
-	 * @return List of events declared in the entity or in one of it's methods.
+	 * @return List of events declared in the entity or in one of it's methods, plus the events its
+	 *         constructors and methods declare with 'fires'.
 	 */
 	def static List<Event> allEvents(AbstractEntity entity) {
-		var List<Event> events = new ArrayList<Event>();
+		// An event may be both declared inline in a method and referenced by that method's 'fires'
+		// clause, so the result is de-duplicated while keeping the declaration order stable.
+		var Set<Event> events = new LinkedHashSet<Event>();
 		for (m : entity.constructorsAndMethods) {
 			events.addAll(m.events.nullSafe);
+			events.addAll(m.firedEvents.nullSafe);
 		}
 		for (element : entity.elements.nullSafe) {
 			if (element instanceof Event) {
 				events.add(element);
 			}
 		}
-		return events;
+		return new ArrayList<Event>(events);
 	}
 
 	/**

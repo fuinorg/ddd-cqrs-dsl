@@ -3,6 +3,7 @@ package org.fuin.dsl.cqrs.extensions;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
@@ -78,13 +79,17 @@ public class CqrsAbstractEntityExtensions {
    * 
    * @param entity Entity to return the events for.
    * 
-   * @return List of events declared in the entity or in one of it's methods.
+   * @return List of events declared in the entity or in one of it's methods, plus the events its
+   *         constructors and methods declare with 'fires'.
    */
   public static List<Event> allEvents(final AbstractEntity entity) {
-    List<Event> events = new ArrayList<Event>();
+    Set<Event> events = new LinkedHashSet<Event>();
     List<AbstractMethod> _constructorsAndMethods = CqrsAbstractEntityExtensions.constructorsAndMethods(entity);
     for (final AbstractMethod m : _constructorsAndMethods) {
-      events.addAll(CqrsCollectionExtensions.<Event>nullSafe(m.getEvents()));
+      {
+        events.addAll(CqrsCollectionExtensions.<Event>nullSafe(m.getEvents()));
+        events.addAll(CqrsCollectionExtensions.<Event>nullSafe(m.getFiredEvents()));
+      }
     }
     List<AbstractElement> _nullSafe = CqrsCollectionExtensions.<AbstractElement>nullSafe(entity.getElements());
     for (final AbstractElement element : _nullSafe) {
@@ -92,7 +97,7 @@ public class CqrsAbstractEntityExtensions {
         events.add(((Event)element));
       }
     }
-    return events;
+    return new ArrayList<Event>(events);
   }
 
   /**

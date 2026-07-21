@@ -31,7 +31,7 @@ class SrcAbstractHandleEventMethod implements CodeSnippet {
              *
              * @param event Event to handle.
              */
-            protected abstract void handle(final «name» event);
+            protected abstract void handle«name»(final «name» event);
         '''
     }
 

@@ -34,7 +34,7 @@ class SrcHandleEventMethod implements CodeSnippet {
              */
             @Override
             @ApplyEvent
-            protected final void handle(final «name» event) {
+            protected final void handle«name»(final «name» event) {
                 // TODO Handle event!
             }
         '''

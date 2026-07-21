@@ -52,7 +52,7 @@ class SrcHandleEventMethodsTest {
                  */
                 @Override
                 @ApplyEvent
-                protected final void handle(final DidSomethingEvent event) {
+                protected final void handleDidSomethingEvent(final DidSomethingEvent event) {
                     // TODO Handle event!
                 }
                 
@@ -63,7 +63,7 @@ class SrcHandleEventMethodsTest {
                  */
                 @Override
                 @ApplyEvent
-                protected final void handle(final SomethingHappenedEvent event) {
+                protected final void handleSomethingHappenedEvent(final SomethingHappenedEvent event) {
                     // TODO Handle event!
                 }
                 

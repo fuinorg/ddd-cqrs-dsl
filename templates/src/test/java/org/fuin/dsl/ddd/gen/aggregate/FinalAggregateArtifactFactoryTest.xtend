@@ -48,6 +48,11 @@ class FinalAggregateArtifactFactoryTest {
         testAggregate("AggregateC")
     }
 
+    @Test
+    def void testAggregateD() {
+        testAggregate("AggregateD")
+    }
+
     private def testAggregate(String aggregateName) {
 
         // PREPARE
@@ -59,6 +64,7 @@ class FinalAggregateArtifactFactoryTest {
         refReg.putReference("p.x.aggregates." + abstractName, "p.x.aggregates." + abstractName)
         refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
         refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
+        refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
         refReg.putReference("p.x.aggregates.AnyConstraintViolatedException", "p.x.aggregates.AnyConstraintViolatedException")
 
         val FinalAggregateArtifactFactory testee = createTestee()
@@ -68,6 +74,11 @@ class FinalAggregateArtifactFactoryTest {
         val result = new String(testee.create(aggregate, context, false).iterator().next().data)
 
         // VERIFY
+        // Mirror what was produced to target/ so a golden can be created/diffed without relying
+        // on the (truncated) assertion message.
+        val actualFile = new java.io.File("target/actual-java/aggregates/" + aggregateName + ".java")
+        actualFile.parentFile.mkdirs
+        java.nio.file.Files.write(actualFile.toPath, result.getBytes("UTF-8"))
         assertThat(result).isEqualTo(("x/aggregates/" + aggregateName + ".java").loadAbstractExample)
 
     }
