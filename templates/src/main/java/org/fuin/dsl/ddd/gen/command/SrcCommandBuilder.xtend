@@ -1,12 +1,14 @@
 package org.fuin.dsl.ddd.gen.command
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
+import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.ddd.gen.base.SrcBuilderSetters
 
 /**
@@ -32,15 +34,23 @@ class SrcCommandBuilder implements CodeSnippet {
             ctx.requiresImport("org.fuin.cqrs4j.jackson.AbstractAggregateCommand")        
         }
         
+        ctx.requiresReference(command.aggregateIdType.uniqueName)
         ctx.requiresReference(command.entityIdType.uniqueName)
-        
+
     }
 
-    def AbstractEntityId getEntityIdType(Command command) {
+    def AggregateId getAggregateIdType(Command command) {
         if (command.aggregate === null) {
             return null
         }
         return command.aggregate.idType
+    }
+
+    def AbstractEntityId getEntityIdType(Command command) {
+        if (command.entity === null) {
+            return null
+        }
+        return command.entity.idType
     }
 
     override toString() {
@@ -49,7 +59,7 @@ class SrcCommandBuilder implements CodeSnippet {
         /**
          * Builds an instance of the outer class.
          */
-        public static final class Builder extends AbstractAggregateCommand.Builder<«command.entityIdType.name», «command.entityIdType.name», «command.name», Builder> {
+        public static final class Builder extends AbstractAggregateCommand.Builder<«command.aggregateIdType.name», «command.entityIdType.name», «command.name», Builder> {
 
             private «command.name» delegate;
 

@@ -2,6 +2,7 @@ package org.fuin.dsl.cqrs.extensions
 
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
+import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace
@@ -118,6 +119,30 @@ class CqrsEObjectExtensions {
 		return getAggregate(obj.eContainer)
 	}
 
+	/**
+	 * Returns the aggregate a command belongs to. A command nested inside an aggregate is found by
+	 * walking its containers, exactly like any other object. A command declared beside the aggregate
+	 * (directly in the context) has no such container, so the aggregate is taken from the method the
+	 * command targets - the target is a cross reference, which the container walk cannot follow.
+	 *
+	 * @param command Command to return the aggregate for.
+	 *
+	 * @return Aggregate or null if the command neither sits inside one nor targets one.
+	 */
+	def static Aggregate getAggregate(Command command) {
+		if (command === null) {
+			return null
+		}
+		val aggregate = getAggregate(command.eContainer)
+		if (aggregate !== null) {
+			return aggregate
+		}
+		if (command.target === null) {
+			return null
+		}
+		return getAggregate(command.target)
+	}
+
 
 	/**
 	 * Returns the parent entity for an object.
@@ -137,6 +162,30 @@ class CqrsEObjectExtensions {
 			return obj
 		}
 		return getEntity(obj.eContainer)
+	}
+
+	/**
+	 * Returns the entity a command belongs to, following the same two step resolution as
+	 * {@link #getAggregate(Command)}: the containers first, then the targeted method. This is the
+	 * aggregate root for a command addressing the root itself, and the child entity for a command
+	 * addressing one.
+	 *
+	 * @param command Command to return the entity for.
+	 *
+	 * @return Entity or null if the command neither sits inside one nor targets one.
+	 */
+	def static AbstractEntity getEntity(Command command) {
+		if (command === null) {
+			return null
+		}
+		val entity = getEntity(command.eContainer)
+		if (entity !== null) {
+			return entity
+		}
+		if (command.target === null) {
+			return null
+		}
+		return getEntity(command.target)
 	}
 
 	/**

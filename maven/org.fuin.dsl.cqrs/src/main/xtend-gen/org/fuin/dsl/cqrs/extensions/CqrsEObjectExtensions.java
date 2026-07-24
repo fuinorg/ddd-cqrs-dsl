@@ -5,7 +5,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
+import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
@@ -122,6 +124,32 @@ public class CqrsEObjectExtensions {
   }
 
   /**
+   * Returns the aggregate a command belongs to. A command nested inside an aggregate is found by
+   * walking its containers, exactly like any other object. A command declared beside the aggregate
+   * (directly in the context) has no such container, so the aggregate is taken from the method the
+   * command targets - the target is a cross reference, which the container walk cannot follow.
+   * 
+   * @param command Command to return the aggregate for.
+   * 
+   * @return Aggregate or null if the command neither sits inside one nor targets one.
+   */
+  public static Aggregate getAggregate(final Command command) {
+    if ((command == null)) {
+      return null;
+    }
+    final Aggregate aggregate = CqrsEObjectExtensions.getAggregate(command.eContainer());
+    if ((aggregate != null)) {
+      return aggregate;
+    }
+    AbstractMethod _target = command.getTarget();
+    boolean _tripleEquals = (_target == null);
+    if (_tripleEquals) {
+      return null;
+    }
+    return CqrsEObjectExtensions.getAggregate(command.getTarget());
+  }
+
+  /**
    * Returns the parent entity for an object.
    * 
    * @param obj Object to return the parent entity for.
@@ -139,6 +167,32 @@ public class CqrsEObjectExtensions {
       return ((AbstractEntity)obj);
     }
     return CqrsEObjectExtensions.getEntity(obj.eContainer());
+  }
+
+  /**
+   * Returns the entity a command belongs to, following the same two step resolution as
+   * {@link #getAggregate(Command)}: the containers first, then the targeted method. This is the
+   * aggregate root for a command addressing the root itself, and the child entity for a command
+   * addressing one.
+   * 
+   * @param command Command to return the entity for.
+   * 
+   * @return Entity or null if the command neither sits inside one nor targets one.
+   */
+  public static AbstractEntity getEntity(final Command command) {
+    if ((command == null)) {
+      return null;
+    }
+    final AbstractEntity entity = CqrsEObjectExtensions.getEntity(command.eContainer());
+    if ((entity != null)) {
+      return entity;
+    }
+    AbstractMethod _target = command.getTarget();
+    boolean _tripleEquals = (_target == null);
+    if (_tripleEquals) {
+      return null;
+    }
+    return CqrsEObjectExtensions.getEntity(command.getTarget());
   }
 
   /**
