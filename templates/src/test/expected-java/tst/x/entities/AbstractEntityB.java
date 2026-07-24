@@ -31,12 +31,6 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
 
     private EntityBId id;
 
-    @SuppressWarnings("NullAway.Init")
-    private String a;
-    
-    @SuppressWarnings("NullAway.Init")
-    private Integer b;
-    
     /**
      * Constructor with mandatory data.
      *
@@ -60,42 +54,4 @@ public abstract class AbstractEntityB extends AbstractEntity<AggregateXId, Aggre
         return id;
     }
 
-    /**
-     * Returns: Variable A.
-     *
-     * @return Current value.
-     */
-    protected final String getA() {
-        return a;
-    }
-    
-    /**
-     * Returns: Variable B.
-     *
-     * @return Current value.
-     */
-    protected final Integer getB() {
-        return b;
-    }
-    
-    /**
-     * Sets: Variable A.
-     *
-     * @param a Value to set.
-     */
-    protected final void setA(final String a) {
-        Contract.requireArgNotNull("a", a);
-        this.a = a;
-    }
-    
-    /**
-     * Sets: Variable B.
-     *
-     * @param b Value to set.
-     */
-    protected final void setB(final Integer b) {
-        Contract.requireArgNotNull("b", b);
-        this.b = b;
-    }
-    
 }

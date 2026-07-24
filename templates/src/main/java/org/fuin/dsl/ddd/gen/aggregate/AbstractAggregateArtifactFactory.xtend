@@ -61,7 +61,6 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
     def addImports(CodeSnippetContext ctx) {
         ctx.requiresImport("org.fuin.ddd4j.core.AbstractAggregateRoot")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityType")
-        ctx.requiresImport("org.fuin.objects4j.common.Contract")
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
@@ -78,30 +77,28 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
 
                 @SuppressWarnings("NullAway.Init")
                 private «aggregate.idTypeNullsafe.name» id;
-            
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate.attributes, true)»
+
                 @Override
                 public final EntityType getType() {
                     return «aggregate.idTypeNullsafe.name».TYPE;
                 }
-            
+
                 @Override
                 public final «aggregate.idTypeNullsafe.name» getId() {
                     return id;
                 }
-            
+
                 /**
-                 * Sets the aggregate identifier.
-                 * 
+                 * Sets the aggregate identifier. Called from the event handler that brings the
+                 * aggregate into existence, which also runs when it is replayed from past events,
+                 * so this must never throw.
+                 *
                  * @param id Unique aggregate identifier.
                  */
                 protected final void setId(final «aggregate.idTypeNullsafe.name» id) {
-                    Contract.requireArgNotNull("id", id);
                     this.id = id;
                 }
-                
-                «new SrcGetters(ctx, GenerateOptions.empty(), "protected final", aggregate.attributes)»
-                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", aggregate.attributes)»
+
                 «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), aggregate)»
                 «new SrcAbstractHandleEventMethods(ctx, aggregate.allEvents)»
                 «new SrcServices(ctx, aggregate.services)»

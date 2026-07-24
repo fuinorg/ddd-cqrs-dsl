@@ -18,6 +18,7 @@
 package p.command.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.ApplyEvent;
+import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateC;
 import p.x.aggregates.AggregateCCreatedEvent;
 import p.x.aggregates.AnyConstraintViolatedException;
@@ -44,9 +45,20 @@ public final class AggregateC extends AbstractAggregateC {
      */
     public AggregateC(final String a, final Integer b) throws AnyConstraintViolatedException {
         super();
-        // TODO Implement!
+
+        // Check preconditions
+        Contract.requireArgNotNull("a", a);
+        Contract.requireArgNotNull("b", b);
+        
+        // Verify business constraints
+        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
+        
+        // Apply events
+        // TODO apply(AggregateCCreatedEvent.builder()
+        //     ... set the event's attributes ...
+        //     .build());
     }
-    
+
     /**
      * Handles: AggregateCCreatedEvent.
      *

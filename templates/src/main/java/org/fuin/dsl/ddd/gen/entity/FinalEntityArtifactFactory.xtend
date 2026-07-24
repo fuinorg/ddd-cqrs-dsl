@@ -10,6 +10,7 @@ import org.fuin.dsl.ddd.gen.base.ConstructorParameter
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcChildEntityLocatorMethods
+import org.fuin.dsl.ddd.gen.base.SrcConstructorWithDomainBody
 import org.fuin.dsl.ddd.gen.base.SrcConstructorsWithParamsAssignment
 import org.fuin.dsl.ddd.gen.base.SrcHandleEventMethods
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
@@ -24,6 +25,7 @@ import static org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory.eINSTANCE
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
@@ -70,21 +72,17 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
             «new SrcJavaDocType(entity)»
             public final class «entity.name» extends Abstract«entity.name» {
             
-                «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
+                «IF entity.constructors.nullSafe.size == 0»
+                    «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
+                «ELSE»
+                    «FOR cd : constructorData(entity, className).indexed»
+                        «new SrcConstructorWithDomainBody(ctx, GenerateOptions.empty(), cd.value, entity.constructors.get(cd.key))»
+
+                    «ENDFOR»
+                «ENDIF»
                 «new SrcChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
                 «new SrcMethods(ctx, GenerateOptions.empty(), entity, false)»
                 «new SrcHandleEventMethods(ctx, entity.allEvents)»
-
-                /**
-                 * Creates a new builder instance.
-                 *
-                 * @return New builder instance.
-                 */
-                public static Builder builder() {
-                    return new Builder();
-                }
-
-                «new SrcEntityBuilder(ctx, GenerateOptions.empty(), entity)»
             }
         '''
 
@@ -104,11 +102,13 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
             constructors.add(cd)
         } else {
             for (constructor : entity.constructors) {
-                val ConstructorData cd = new ConstructorData("public", className, constructor, true)
+                // Only the root aggregate and the id go to the abstract super class - it holds the
+                // identity and nothing else. The modelled parameters stay with the final class.
+                val ConstructorData cd = new ConstructorData("public", className, constructor, false)
                 cd.prepend(idParam)
                 cd.prepend(rootParam)
                 constructors.add(cd)
-            }            
+            }
         }
         return constructors
     }

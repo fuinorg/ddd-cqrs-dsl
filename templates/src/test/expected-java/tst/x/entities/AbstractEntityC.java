@@ -22,7 +22,6 @@ import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
 import p.x.entities.AggregateX;
 import p.x.entities.AggregateXId;
-import p.x.entities.AnyConstraintViolatedException;
 import p.x.entities.EntityCId;
 
 /**
@@ -32,31 +31,17 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
 
     private EntityCId id;
 
-    @SuppressWarnings("NullAway.Init")
-    private String a;
-    
-    @SuppressWarnings("NullAway.Init")
-    private Integer b;
-    
     /**
-     * Creates the entity.
+     * Constructor with mandatory data.
      *
      * @param rootAggregate The root aggregate of this entity.
      * @param id Unique entity identifier.
-     * @param a Variable A.
-     * @param b Variable B.
-     *
-     * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AbstractEntityC(final AggregateX rootAggregate, final EntityCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
+    protected AbstractEntityC(final AggregateX rootAggregate, final EntityCId id) {
         super(rootAggregate);
         Contract.requireArgNotNull("id", id);
-        Contract.requireArgNotNull("a", a);
-        Contract.requireArgNotNull("b", b);
         
         this.id = id;
-        this.a = a;
-        this.b = b;
     }
     
     @Override
@@ -69,44 +54,6 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
         return id;
     }
 
-    /**
-     * Returns: Variable A.
-     *
-     * @return Current value.
-     */
-    protected final String getA() {
-        return a;
-    }
-    
-    /**
-     * Returns: Variable B.
-     *
-     * @return Current value.
-     */
-    protected final Integer getB() {
-        return b;
-    }
-    
-    /**
-     * Sets: Variable A.
-     *
-     * @param a Value to set.
-     */
-    protected final void setA(final String a) {
-        Contract.requireArgNotNull("a", a);
-        this.a = a;
-    }
-    
-    /**
-     * Sets: Variable B.
-     *
-     * @param b Value to set.
-     */
-    protected final void setB(final Integer b) {
-        Contract.requireArgNotNull("b", b);
-        this.b = b;
-    }
-    
     /**
      * Handles: EntityCCreatedEvent.
      *

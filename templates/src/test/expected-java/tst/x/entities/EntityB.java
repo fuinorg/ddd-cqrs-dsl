@@ -17,11 +17,8 @@
  */
 package p.command.core.domain.x.entities;
 
-import org.fuin.ddd4j.core.AbstractEntity;
-import org.fuin.objects4j.common.Contract;
 import p.x.entities.AbstractEntityB;
 import p.x.entities.AggregateX;
-import p.x.entities.AggregateXId;
 import p.x.entities.EntityBId;
 
 /**
@@ -39,76 +36,4 @@ public final class EntityB extends AbstractEntityB {
         super(rootAggregate, id);
     }
     
-
-    /**
-     * Creates a new builder instance.
-     *
-     * @return New builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * Builds an instance of the outer class.
-     */
-    public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityBId, EntityB, Builder> {
-    
-        @SuppressWarnings("NullAway.Init")
-        private String a;
-        
-        @SuppressWarnings("NullAway.Init")
-        private Integer b;
-        
-        private Builder() {
-            super();
-        }
-    
-        /**
-         * Sets: Variable A.
-         *
-         * @param a Value to set.
-         * @return This builder.
-         */
-        public Builder a(final String a) {
-            Contract.requireArgNotNull("a", a);
-            this.a = a;
-            return this;
-        }
-    
-        /**
-         * Sets: Variable B.
-         *
-         * @param b Value to set.
-         * @return This builder.
-         */
-        public Builder b(final Integer b) {
-            Contract.requireArgNotNull("b", b);
-            this.b = b;
-            return this;
-        }
-    
-        /**
-         * Creates the entity and clears the builder.
-         *
-         * @return New instance.
-         */
-        @Override
-        @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
-        public EntityB build() {
-            ensureBuildableAbstractEntity();
-            ensureNotNull("a", a);
-            ensureNotNull("b", b);
-    
-            final EntityB result = new EntityB(getRootAggregate(), getEntityId());
-            result.setA(a);
-            result.setB(b);
-    
-            resetAbstractEntity();
-            this.a = null;
-            this.b = null;
-            return result;
-        }
-    
-    }
 }

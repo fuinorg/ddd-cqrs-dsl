@@ -22,8 +22,15 @@ class MethodData extends AbstractMethodData {
     val ReturnType returnType
 
     /**
+     * The model element the data was created from, or <code>null</code> when the data was assembled
+     * from single values. Kept so a body generator can still reach what the flattened data drops -
+     * the business rules and the events the method fires (see {@link SrcDomainMethodBody}).
+     */
+    var Method method
+
+    /**
      * Constructor with method.
-     * 
+     *
      * @param modifiers Modifiers (Don't include "abstract" - Use next argument instead).
      * @param makeAbstract Abstract method?
      * @param method Method.
@@ -33,7 +40,17 @@ class MethodData extends AbstractMethodData {
         this.parameters = new ArrayList<Parameter>()
         this.parameters.addAll(method.parameters)
         this.makeAbstract = makeAbstract
-        this.returnType = method.returnType 
+        this.returnType = method.returnType
+        this.method = method
+    }
+
+    /**
+     * Returns the model element the data was created from.
+     *
+     * @return Method or <code>null</code> if the data was not created from one.
+     */
+    def getMethod() {
+        method
     }
 
     /**

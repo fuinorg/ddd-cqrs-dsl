@@ -69,6 +69,11 @@ class FinalEntityArtifactFactoryTest {
         val result = new String(testee.create(entity, context, false).iterator().next().data)
 
         // VERIFY
+        // Mirror what was produced to target/ so a golden can be created/diffed without relying
+        // on the (truncated) assertion message.
+        val actualFile = new java.io.File("target/actual-java/entities/" + entityName + ".java")
+        actualFile.parentFile.mkdirs
+        java.nio.file.Files.write(actualFile.toPath, result.getBytes("UTF-8"))
         assertThat(result).isEqualTo(("x/entities/" + entityName + ".java").loadAbstractExample)
 
     }

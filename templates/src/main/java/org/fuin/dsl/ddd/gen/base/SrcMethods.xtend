@@ -17,10 +17,12 @@ class SrcMethods implements CodeSnippet {
     val CodeSnippetContext ctx;
     val GenerateOptions options
     val List<MethodData> methods
+    val boolean domainBody
 
     /**
-     * Constructor with entity.
-     * 
+     * Constructor with entity. A non-abstract method of an aggregate or entity gets the domain body
+     * skeleton (see {@link SrcDomainMethodBody}) rather than a plain "TODO Implement!".
+     *
      * @param ctx Context.
      * @param options Options to use.
      * @param entity Entity.
@@ -29,12 +31,13 @@ class SrcMethods implements CodeSnippet {
     new(CodeSnippetContext ctx, GenerateOptions options, AbstractEntity entity, boolean makeAbstract) {
         this.ctx = ctx
         this.options = options
+        this.domainBody = !makeAbstract
         this.methods = new ArrayList<MethodData>()
         for (method : entity.methods.nullSafe) {
         	if (makeAbstract) {
         		this.methods.add(new MethodData("public", true, method))
         	} else {
-            	this.methods.add(new MethodData("public final", false, method))            
+            	this.methods.add(new MethodData("public final", false, method))
             }
         }
     }
@@ -50,6 +53,7 @@ class SrcMethods implements CodeSnippet {
     new(CodeSnippetContext ctx, GenerateOptions options, AbstractVO vo, boolean makeAbstract) {
         this.ctx = ctx
         this.options = options
+        this.domainBody = false
         this.methods = new ArrayList<MethodData>()
         for (method : vo.methods.nullSafe) {
         	if (makeAbstract) {
@@ -71,6 +75,7 @@ class SrcMethods implements CodeSnippet {
     new(CodeSnippetContext ctx, String typeName, GenerateOptions options, List<MethodData> methods) {
         this.ctx = ctx
         this.options = options
+        this.domainBody = false
         this.methods = methods
     }
 
@@ -80,8 +85,8 @@ class SrcMethods implements CodeSnippet {
         }
         '''    
             «FOR method : methods.nullSafe»
-                «new SrcMethod(ctx, options, method)»
-                
+                «new SrcMethod(ctx, options, method, domainBody)»
+
             «ENDFOR»
         '''
     }

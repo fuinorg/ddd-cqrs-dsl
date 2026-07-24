@@ -85,21 +85,18 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
                 idTypeNullsafe.name»> {
             
                 «new SrcVarDecl(ctx, "private", GenerateOptions.empty(), idVar)»
-            
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), entity.attributes, true)»
+
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
                 @Override
                 public final EntityType getType() {
                     return «entity.idTypeNullsafe.name».TYPE;
                 }
-            
+
                 @Override
                 public final «entity.idTypeNullsafe.name» getId() {
                     return id;
                 }
-            
-                «new SrcGetters(ctx, GenerateOptions.empty(), "protected final", entity.attributes)»
-                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", entity.attributes)»
+
                 «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
                 «new SrcAbstractHandleEventMethods(ctx, entity.allEvents)»
                 «new SrcServices(ctx, entity.services)»
@@ -111,24 +108,19 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
 
     }
 
+    /**
+     * The abstract entity holds the identity only, so it needs exactly one constructor taking the
+     * root aggregate and the entity id - regardless of what the model declares. The modelled
+     * constructors are generated on the final class, which owns whatever state it decides to keep.
+     */
     def constructorData(Entity entity, String className) {
         val List<ConstructorData> constructors = new ArrayList<ConstructorData>()
         val rootParam = new ConstructorParameter(eINSTANCE.createParameter("The root aggregate of this entity.", entity.rootNullsafe, "rootAggregate", false), true)
         val idParam = new ConstructorParameter(eINSTANCE.createParameter("Unique entity identifier.", entity.idTypeNullsafe, "id", false))
-        if (entity.constructors === null || entity.constructors.size == 0) {
-            val List<ConstructorParameter> parameters = new ArrayList<ConstructorParameter>()
-            parameters.add(rootParam)
-            parameters.add(idParam)
-            val ConstructorData cd = new ConstructorData("/** Constructor with mandatory data. */", null, "protected", className, parameters, null)
-            constructors.add(cd)
-        } else {
-            for (constructor : entity.constructors) {
-                val ConstructorData cd = new ConstructorData("public", className, constructor)
-                cd.prepend(idParam)
-                cd.prepend(rootParam)
-                constructors.add(cd)
-            }            
-        }
+        val List<ConstructorParameter> parameters = new ArrayList<ConstructorParameter>()
+        parameters.add(rootParam)
+        parameters.add(idParam)
+        constructors.add(new ConstructorData("/** Constructor with mandatory data. */", null, "protected", className, parameters, null))
         return constructors
     }
 

@@ -18,6 +18,7 @@
 package p.command.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.ApplyEvent;
+import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateD;
 import p.x.aggregates.AggregateDChangedEvent;
 
@@ -39,7 +40,16 @@ public final class AggregateD extends AbstractAggregateD {
      * @param a Variable A.
      */
     public final void change(final String a) {
-        // TODO Implement!
+        // Check preconditions
+        Contract.requireArgNotNull("a", a);
+        
+        // Verify business constraints
+        // None declared for this operation.
+        
+        // Apply events
+        // TODO apply(AggregateDChangedEvent.builder()
+        //     ... set the event's attributes ...
+        //     .build());
     }
     
     /**

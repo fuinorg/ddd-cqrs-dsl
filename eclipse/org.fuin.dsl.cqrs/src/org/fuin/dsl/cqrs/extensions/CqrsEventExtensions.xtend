@@ -37,14 +37,78 @@ class CqrsEventExtensions {
 
 
 	/**
-	 * Returns the aggregate or entity for an event if it is a domain event.
-	 * 
+	 * Returns the aggregate or entity an event belongs to, which is what makes it a domain event
+	 * rather than a plain one. Resolved in three steps, the first hit winning:
+	 * <ol>
+	 * <li>the containers, for an event declared inside an aggregate or entity;</li>
+	 * <li>the "copies-attributes-of" origin, whose container is the owner (a cross reference, which
+	 * the container walk cannot follow);</li>
+	 * <li>the constructor or method declaring "fires &lt;event&gt;", for an event declared beside
+	 * the aggregate rather than inside it.</li>
+	 * </ol>
+	 *
 	 * @param event Event to return the parent entity for.
-	 * 
-	 * @return Aggregate or Entity or null if the event is not inside one.
+	 *
+	 * @return Aggregate or Entity or null if the event belongs to none.
 	 */
-	def static AbstractEntity getEntity(Event event) {		
-		return getAbstractEntity(event)
+	def static AbstractEntity getEntity(Event event) {
+		if (event === null) {
+			return null
+		}
+		val fromContainer = getAbstractEntity(event)
+		if (fromContainer !== null) {
+			return fromContainer
+		}
+		if (event.origin !== null) {
+			val fromOrigin = getAbstractEntity(event.origin)
+			if (fromOrigin !== null) {
+				return fromOrigin
+			}
+		}
+		return getFiringEntity(event)
+	}
+
+	/**
+	 * Returns the single aggregate or entity that declares "fires &lt;event&gt;" for the given event.
+	 * When more than one does, null is returned: binding the event to either of them would be a
+	 * guess, so it stays a plain event instead of silently belonging to the wrong aggregate.
+	 *
+	 * @param event Event to find the firing aggregate or entity for.
+	 *
+	 * @return Aggregate or Entity, or null if none or more than one fires the event.
+	 */
+	private def static AbstractEntity getFiringEntity(Event event) {
+		var AbstractEntity found = null
+		// Only the model the event itself lives in is searched - an aggregate firing an event that is
+		// declared in another file is not resolved this way.
+		val iter = event.root.eAllContents
+		while (iter.hasNext) {
+			val obj = iter.next
+			if (obj instanceof AbstractEntity) {
+				if (obj.fires(event)) {
+					if (found !== null && found !== obj) {
+						return null
+					}
+					found = obj
+				}
+			}
+		}
+		return found
+	}
+
+	/** Returns TRUE if any of the entity's constructors or methods declares "fires &lt;event&gt;". */
+	private def static boolean fires(AbstractEntity entity, Event event) {
+		for (constructor : entity.constructors) {
+			if (constructor.firedEvents.contains(event)) {
+				return true
+			}
+		}
+		for (method : entity.methods) {
+			if (method.firedEvents.contains(event)) {
+				return true
+			}
+		}
+		return false
 	}
 
 	private def static AbstractEntity getAbstractEntity(EObject obj) {

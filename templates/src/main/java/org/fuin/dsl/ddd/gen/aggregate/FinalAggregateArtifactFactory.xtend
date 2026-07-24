@@ -7,6 +7,7 @@ import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcChildEntityLocatorMethods
 import org.fuin.dsl.ddd.gen.base.SrcConstructorSignature
+import org.fuin.dsl.ddd.gen.base.SrcDomainMethodBody
 import org.fuin.dsl.ddd.gen.base.SrcHandleEventMethods
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
@@ -76,9 +77,10 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
                     «new SrcJavaDocMethod(ctx, constructor)»
                     «new SrcConstructorSignature(ctx, "public", className, GenerateOptions.empty(), constructor)» {
                         super();
-                        // TODO Implement!
+
+                        «new SrcDomainMethodBody(ctx, constructor)»
                     }
-                    
+
                 «ENDFOR»
                 «new SrcChildEntityLocatorMethods(ctx, GenerateOptions.empty(), aggregate)»
                 «new SrcMethods(ctx, GenerateOptions.empty(), aggregate, false)»

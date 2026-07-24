@@ -19,7 +19,6 @@ package p.command.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
-import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AggregateCCreatedEvent;
 import p.x.aggregates.AggregateCId;
 
@@ -31,12 +30,6 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
     @SuppressWarnings("NullAway.Init")
     private AggregateCId id;
 
-    @SuppressWarnings("NullAway.Init")
-    private String a;
-    
-    @SuppressWarnings("NullAway.Init")
-    private Integer b;
-    
     @Override
     public final EntityType getType() {
         return AggregateCId.TYPE;
@@ -48,53 +41,16 @@ public abstract class AbstractAggregateC extends AbstractAggregateRoot<Aggregate
     }
 
     /**
-     * Sets the aggregate identifier.
-     * 
+     * Sets the aggregate identifier. Called from the event handler that brings the
+     * aggregate into existence, which also runs when it is replayed from past events,
+     * so this must never throw.
+     *
      * @param id Unique aggregate identifier.
      */
     protected final void setId(final AggregateCId id) {
-        Contract.requireArgNotNull("id", id);
         this.id = id;
     }
-    
-    /**
-     * Returns: Variable A.
-     *
-     * @return Current value.
-     */
-    protected final String getA() {
-        return a;
-    }
-    
-    /**
-     * Returns: Variable B.
-     *
-     * @return Current value.
-     */
-    protected final Integer getB() {
-        return b;
-    }
-    
-    /**
-     * Sets: Variable A.
-     *
-     * @param a Value to set.
-     */
-    protected final void setA(final String a) {
-        Contract.requireArgNotNull("a", a);
-        this.a = a;
-    }
-    
-    /**
-     * Sets: Variable B.
-     *
-     * @param b Value to set.
-     */
-    protected final void setB(final Integer b) {
-        Contract.requireArgNotNull("b", b);
-        this.b = b;
-    }
-    
+
     /**
      * Handles: AggregateCCreatedEvent.
      *

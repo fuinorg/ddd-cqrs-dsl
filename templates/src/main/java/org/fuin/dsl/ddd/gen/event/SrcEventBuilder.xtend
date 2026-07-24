@@ -1,7 +1,9 @@
 package org.fuin.dsl.ddd.gen.event
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEventExtensions.*
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -36,11 +38,16 @@ class SrcEventBuilder implements CodeSnippet {
         
     }
 
+    /**
+     * Returns the id type the builder is parameterized with. This must be the type the event class
+     * itself extends "AbstractDomainEvent" with, so it is the id of the owning <em>entity</em> - for
+     * an event fired by a child entity that is not the aggregate root's id.
+     */
     def AbstractEntityId getEntityIdType(Event event) {
-        if (event.aggregate === null) {
+        if (event.entity === null) {
             return null
         }
-        return event.aggregate.idType
+        return event.entity.idType
     }
 
     override toString() {

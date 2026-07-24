@@ -19,7 +19,6 @@ package p.command.core.domain.x.aggregates;
 
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
-import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AggregateDChangedEvent;
 import p.x.aggregates.AggregateDId;
 
@@ -42,15 +41,16 @@ public abstract class AbstractAggregateD extends AbstractAggregateRoot<Aggregate
     }
 
     /**
-     * Sets the aggregate identifier.
-     * 
+     * Sets the aggregate identifier. Called from the event handler that brings the
+     * aggregate into existence, which also runs when it is replayed from past events,
+     * so this must never throw.
+     *
      * @param id Unique aggregate identifier.
      */
     protected final void setId(final AggregateDId id) {
-        Contract.requireArgNotNull("id", id);
         this.id = id;
     }
-    
+
     /**
      * Handles: AggregateDChangedEvent.
      *

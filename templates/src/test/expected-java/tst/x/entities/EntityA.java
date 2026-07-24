@@ -17,10 +17,8 @@
  */
 package p.command.core.domain.x.entities;
 
-import org.fuin.ddd4j.core.AbstractEntity;
 import p.x.entities.AbstractEntityA;
 import p.x.entities.AggregateX;
-import p.x.entities.AggregateXId;
 import p.x.entities.EntityAId;
 
 /**
@@ -38,40 +36,4 @@ public final class EntityA extends AbstractEntityA {
         super(rootAggregate, id);
     }
     
-
-    /**
-     * Creates a new builder instance.
-     *
-     * @return New builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * Builds an instance of the outer class.
-     */
-    public static final class Builder extends AbstractEntity.Builder<AggregateXId, AggregateX, EntityAId, EntityA, Builder> {
-    
-        private Builder() {
-            super();
-        }
-    
-        /**
-         * Creates the entity and clears the builder.
-         *
-         * @return New instance.
-         */
-        @Override
-        @SuppressWarnings("NullAway") // build() ensures non-null via ensureNotNull(...) and clears the builder fields
-        public EntityA build() {
-            ensureBuildableAbstractEntity();
-    
-            final EntityA result = new EntityA(getRootAggregate(), getEntityId());
-    
-            resetAbstractEntity();
-            return result;
-        }
-    
-    }
 }
