@@ -144,6 +144,16 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.21.0</b> &ndash; Code completion inside a <code>business-rule</code> now offers the
+        <code>consistency</code> clause and its values: <code>weak</code>/<code>strong</code>, the
+        time units after <code>acceptable</code>, and the <code>detection</code>/
+        <code>resolution</code> value sets. Previously it offered every visible type declaration
+        there instead, and never the keywords. A half-typed <code>weak</code> details block also
+        keeps its tokens, so completion still works while it is being written - a block missing
+        <code>acceptable</code>, <code>detection</code> or <code>resolution</code> is now reported as
+        a semantic error rather than a parse error. Separately, <code>null</code>/<code>true</code>/
+        <code>false</code> are offered after <code>examples</code> and in an instance argument list,
+        and <code>element</code> after <code>type</code>.</li>
     <li><b>1.20.0</b> &ndash; A view <code>method</code> may now declare an optional
         <code>rest-path</code> setting the sub path of its REST operation; without it the method name
         is used. <b>Breaking:</b> <code>rest-path</code> moved from the body into the header of

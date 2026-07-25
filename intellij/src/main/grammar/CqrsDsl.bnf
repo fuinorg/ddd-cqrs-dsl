@@ -437,11 +437,22 @@ annotation_instance ::= AT type_ref (LPAREN literal (COMMA literal)* RPAREN)? { 
 // Consistency
 // =========================================================================
 
-consistency ::= KW_CONSISTENCY consistency_level (LBRACE weak_consistency RBRACE)? { pin=1 }
+consistency ::= KW_CONSISTENCY consistency_level weak_consistency? { pin=1 }
 
 consistency_level ::= KW_WEAK | KW_STRONG
 
-weak_consistency ::= KW_ACCEPTABLE duration KW_DETECTION inconsistency_detection KW_RESOLUTION inconsistency_resolution { pin=1 }
+// The details block owns its braces and is pinned on the opening one, and each clause inside is
+// pinned on its own keyword - so a half-typed block keeps its tokens consumed instead of rolling the
+// whole group back, which is what keeps the caret inside the business_rule node for code completion
+// (same technique as the data protection clauses below). All three clauses are therefore optional
+// here and required by CqrsValidationAnnotator instead.
+weak_consistency ::= LBRACE wc_acceptable? wc_detection? wc_resolution? RBRACE { pin=1 }
+
+wc_acceptable ::= KW_ACCEPTABLE duration { pin=1 }
+
+wc_detection ::= KW_DETECTION inconsistency_detection { pin=1 }
+
+wc_resolution ::= KW_RESOLUTION inconsistency_resolution { pin=1 }
 
 inconsistency_detection ::= KW_NEVER | KW_MANUALLY | KW_AUTOMATIC
 

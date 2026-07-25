@@ -17,6 +17,7 @@ import org.fuin.dsl.cqrs.intellij.CqrsLanguage;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsBusinessRule;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
@@ -66,6 +67,16 @@ public final class CqrsCompletionContributor extends CompletionContributor {
     private static final List<String> META_KEYWORDS = List.of(
             "slabel", "label", "tooltip", "prompt", "examples");
 
+    /** The {@code literal} rule's keyword alternatives; the others (NUMBER, STRING) are typed out. */
+    private static final List<String> LITERAL_KEYWORDS = List.of("null", "true", "false");
+
+    // ---- business-rule block: the consistency clause and its enum values ----------------
+    private static final List<String> CONSISTENCY_LEVELS = List.of("weak", "strong");
+    private static final List<String> INCONSISTENCY_DETECTIONS = List.of(
+            "never", "manually", "automatic");
+    private static final List<String> INCONSISTENCY_RESOLUTIONS = List.of(
+            "never", "manually", "automatic", "workflow");
+
     // ---- data-protection block: clause keywords and their enum values --------------------
     private static final List<String> DP_CLAUSE_KEYWORDS = List.of(
             "protection", "category", "subject", "purpose", "lawful-basis", "retention");
@@ -78,6 +89,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             "philosophical", "trade_union", "sex_life", "sexual_orientation");
     private static final List<String> ERASURE_STRATEGIES = List.of(
             "delete", "anonymize", "pseudonymize", "archive", "review");
+    // A duration appears in three places: 'retention', 'arm-timeout' and 'acceptable'.
     private static final List<String> TIME_UNITS = List.of(
             "millis", "seconds", "minutes", "hours", "days", "weeks", "months", "years");
     private static final Set<IElementType> TIME_UNIT_TOKENS = Set.of(
@@ -106,8 +118,26 @@ public final class CqrsCompletionContributor extends CompletionContributor {
                 });
     }
 
+    /** Element type of the token before the caret, or {@code null} if there is none. */
+    private static IElementType prevType(PsiElement position) {
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        return prev == null ? null : prev.getNode().getElementType();
+    }
+
     /** Whether a {@code type_ref} (attribute/parameter type) may legally begin at the caret. */
     private static boolean allowsTypeRef(PsiElement position) {
+        IElementType prevType = prevType(position);
+        if (prevType == CqrsTypes.KW_EXAMPLES || prevType == CqrsTypes.LPAREN
+                || prevType == CqrsTypes.KW_TYPE) {
+            return false; // a literal or a new declaration's name - never a type reference
+        }
+        // A business rule is nested in an aggregate/entity/view/service, so the container lookup below
+        // finds that enclosing block and would offer every visible type inside the rule - where the
+        // only type position is the one right after 'exception'.
+        if (enclosingBusinessRule(position) != null) {
+            PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+            return prev != null && prev.getNode().getElementType() == CqrsTypes.KW_EXCEPTION;
+        }
         return typeMemberContainer(position) != null;
     }
 
@@ -156,11 +186,34 @@ public final class CqrsCompletionContributor extends CompletionContributor {
     private static Set<String> keywordsFor(PsiElement position) {
         Set<String> keywords = new LinkedHashSet<>();
 
+        // Positions the previous token alone identifies unambiguously, whatever block they sit in.
+        IElementType prevType = prevType(position);
+        if (prevType == CqrsTypes.KW_EXAMPLES || prevType == CqrsTypes.LPAREN) {
+            // 'examples <literal>*' and the '(<literal>, ...)' argument list of a constraint,
+            // business-rule, annotation or enum instance - the only places a literal is legal, and
+            // '(' starts nothing else in the grammar.
+            keywords.addAll(LITERAL_KEYWORDS);
+            return keywords;
+        }
+        if (prevType == CqrsTypes.KW_TYPE) {
+            // 'type [element] <Name> [generics <n>]' - an external type declaration.
+            keywords.add("element");
+            return keywords;
+        }
+
         // A 'data-protection { ... }' block is nested inside a namespace (or an entity/aggregate),
         // so it must be checked first; inside it we offer the clause keywords and, right after a
         // clause keyword, its enum values.
         if (enclosingDataProtection(position) != null) {
             return dataProtectionKeywords(position);
+        }
+
+        // A 'business-rule ... { consistency ... }' block holds nothing but the consistency clause.
+        // It is checked before the constructor/method and aggregate/entity branches because it is
+        // nested inside them (an aggregate, an entity, a view, or an inline service of a method), and
+        // those branches would otherwise claim the caret and offer their own - here invalid - keywords.
+        if (enclosingBusinessRule(position) != null) {
+            return businessRuleKeywords(position);
         }
 
         CqrsConstructorDef ctor = PsiTreeUtil.getParentOfType(position, CqrsConstructorDef.class);
@@ -386,6 +439,82 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return null;
         }
         return PsiTreeUtil.getParentOfType(prev, CqrsProcessReaction.class);
+    }
+
+    /**
+     * The {@code business-rule} block surrounding the caret, or {@code null} (same error recovery as
+     * above). While the consistency clause is being typed its value is often a parse error, so the
+     * caret token can land just outside the pinned {@code business_rule} node.
+     */
+    private static CqrsBusinessRule enclosingBusinessRule(PsiElement position) {
+        CqrsBusinessRule rule = PsiTreeUtil.getParentOfType(position, CqrsBusinessRule.class);
+        if (rule != null) {
+            return rule;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsBusinessRule.class);
+    }
+
+    /**
+     * Completion inside a {@code business-rule ... { consistency ... }} block. A business rule holds
+     * exactly one consistency clause, so the token immediately before the caret determines the whole
+     * answer: the clause keyword that comes next, or the value set of the clause just named. The
+     * value sets are the grammar's {@code consistency_level}, {@code inconsistency_detection} and
+     * {@code inconsistency_resolution} enums - nothing else is legal in those positions.
+     */
+    private static Set<String> businessRuleKeywords(PsiElement position) {
+        Set<String> keywords = new LinkedHashSet<>();
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        IElementType type = prev == null ? null : prev.getNode().getElementType();
+
+        if (type == CqrsTypes.KW_BUSINESS_RULE || type == CqrsTypes.KW_EXCEPTION) {
+            // Still typing the rule's name, or the exception type - the latter is a type reference
+            // resolved by allowsTypeRef()/getVariants(), not a keyword position.
+            return keywords;
+        }
+        if (type == CqrsTypes.KW_CONSISTENCY) {
+            keywords.addAll(CONSISTENCY_LEVELS);
+        } else if (type == CqrsTypes.KW_WEAK) {
+            // 'consistency weak' must be followed by the details block, so the only thing that can
+            // come next is its opening brace - and inside it, 'acceptable'.
+            keywords.add("acceptable");
+        } else if (type == CqrsTypes.KW_ACCEPTABLE) {
+            return keywords; // 'acceptable <number> <unit>' - the number has no completion
+        } else if (type == CqrsTypes.NUMBER) {
+            keywords.addAll(TIME_UNITS); // 'acceptable 1 days'
+        } else if (TIME_UNIT_TOKENS.contains(type)) {
+            keywords.add("detection");
+        } else if (type == CqrsTypes.KW_DETECTION) {
+            keywords.addAll(INCONSISTENCY_DETECTIONS);
+        } else if (type == CqrsTypes.KW_RESOLUTION) {
+            keywords.addAll(INCONSISTENCY_RESOLUTIONS);
+        } else if (type == CqrsTypes.KW_NEVER || type == CqrsTypes.KW_MANUALLY
+                || type == CqrsTypes.KW_AUTOMATIC) {
+            // A detection value is followed by the resolution clause; a resolution value ends the
+            // block, but 'workflow' is the only value exclusive to it, so offering 'resolution' after
+            // the shared three is the best guess available from the previous token alone.
+            keywords.add("resolution");
+        } else if (type == CqrsTypes.LBRACE) {
+            // Either the rule's own body or the weak-consistency block: which one decides whether
+            // 'consistency' or 'acceptable' comes next.
+            keywords.add(insideWeakConsistencyBlock(prev) ? "acceptable" : "consistency");
+        } else {
+            keywords.add("consistency");
+        }
+        return keywords;
+    }
+
+    /**
+     * Whether the given <code>&#123;</code> opens the weak-consistency details block rather than the
+     * business rule's own body. The details brace is preceded by {@code weak}, the rule's body brace
+     * by the exception's type reference.
+     */
+    private static boolean insideWeakConsistencyBlock(PsiElement lbrace) {
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(lbrace);
+        return prev != null && prev.getNode().getElementType() == CqrsTypes.KW_WEAK;
     }
 
     private static CqrsDataProtectionDef enclosingDataProtection(PsiElement position) {

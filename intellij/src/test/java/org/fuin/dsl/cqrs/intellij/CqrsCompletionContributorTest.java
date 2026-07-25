@@ -368,4 +368,198 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 lookups.contains("rest-path"));
         assertTrue("expected 'returns' inside a method, got: " + lookups, lookups.contains("returns"));
     }
+
+    // ---- business-rule consistency completion -------------------------------------------
+    //
+    // A business rule is nested in an aggregate, so without its own branch the caret was claimed by
+    // the aggregate/entity branch: the consistency keywords were never offered, and every visible
+    // type declaration was.
+
+    public void testConsistencyOffersOnlyTheLevels() {
+        assertOffersExactly(aggregateBusinessRule("consistency <caret>"), "weak", "strong");
+    }
+
+    public void testBusinessRuleBodyOffersConsistency() {
+        List<String> lookups = aggregateBusinessRule("<caret>");
+        assertTrue("expected 'consistency' in the rule body, got: " + lookups,
+                lookups.contains("consistency"));
+        assertNoTypesAndNoAggregateKeywords(lookups);
+    }
+
+    public void testWeakOffersAcceptable() {
+        List<String> lookups = aggregateBusinessRule("consistency weak <caret>");
+        assertTrue("expected 'acceptable', got: " + lookups, lookups.contains("acceptable"));
+    }
+
+    public void testWeakBlockStartOffersAcceptable() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          <caret>
+                        }""");
+        assertTrue("expected 'acceptable' at the start of the weak block, got: " + lookups,
+                lookups.contains("acceptable"));
+        assertFalse("'consistency' is already given at that point: " + lookups,
+                lookups.contains("consistency"));
+    }
+
+    public void testAcceptableNumberOffersTimeUnits() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          acceptable 1 <caret>
+                        }""");
+        assertTrue("expected time units after the acceptable number, got: " + lookups,
+                lookups.containsAll(List.of("seconds", "minutes", "days")));
+        assertNoTypesAndNoAggregateKeywords(lookups);
+    }
+
+    public void testTimeUnitOffersDetection() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          acceptable 1 days <caret>
+                        }""");
+        assertTrue("expected 'detection' after the duration, got: " + lookups,
+                lookups.contains("detection"));
+    }
+
+    public void testDetectionOffersItsOwnValues() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          acceptable 1 days
+                          detection <caret>
+                        }""");
+        assertOffersExactly(lookups, "never", "manually", "automatic");
+        assertFalse("'workflow' is a resolution value only: " + lookups, lookups.contains("workflow"));
+    }
+
+    public void testResolutionOffersItsOwnValues() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          acceptable 1 days
+                          detection automatic
+                          resolution <caret>
+                        }""");
+        assertOffersExactly(lookups, "never", "manually", "automatic", "workflow");
+    }
+
+    public void testDetectionValueOffersResolution() {
+        List<String> lookups = aggregateBusinessRule("""
+                consistency weak {
+                          acceptable 1 days
+                          detection automatic <caret>
+                        }""");
+        assertTrue("expected 'resolution' after the detection value, got: " + lookups,
+                lookups.contains("resolution"));
+    }
+
+    public void testBusinessRuleExceptionPositionStillOffersTypes() {
+        // The one type position inside a business rule - suppressing the type dump must not break it.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    exception MyException { message "m" }
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      business-rule Rule exception <caret>
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected the exception type among completions, got: " + lookups,
+                lookups.contains("MyException"));
+    }
+
+    /**
+     * Runs completion on the given business-rule body, placed in a minimal aggregate that also
+     * declares a type and an exception - so a leaking type dump is visible as {@code String} among
+     * the lookups.
+     *
+     * @param ruleBody Content of the rule's braces, containing the {@code <caret>} marker.
+     *
+     * @return Offered lookup strings.
+     */
+    private List<String> aggregateBusinessRule(String ruleBody) {
+        return lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    exception MyException { message "m" }
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      business-rule Rule exception MyException {
+                        %s
+                      }
+                    }
+                  }
+                }
+                }
+                """.formatted(ruleBody));
+    }
+
+    // ---- literal and external-type keyword completion ------------------------------------
+
+    public void testExamplesOffersLiteralKeywords() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    value-object Foo {
+                      String value
+                      examples <caret>
+                    }
+                  }
+                }
+                }
+                """);
+        assertOffersExactly(lookups, "null", "true", "false");
+    }
+
+    public void testConstraintArgumentListOffersLiteralKeywords() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    constraint Length input String { message "m" }
+                    value-object Foo {
+                      String value invariants Length(<caret>)
+                    }
+                  }
+                }
+                }
+                """);
+        assertOffersExactly(lookups, "null", "true", "false");
+    }
+
+    public void testTypeOffersElementKeyword() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type <caret>
+                  }
+                }
+                }
+                """);
+        assertOffersExactly(lookups, "element");
+    }
+
+    /** Asserts the offered lookups are exactly the expected ones - the popup order is not fixed. */
+    private static void assertOffersExactly(List<String> lookups, String... expected) {
+        assertEquals("expected exactly " + List.of(expected) + ", got: " + lookups,
+                new java.util.TreeSet<>(List.of(expected)), new java.util.TreeSet<>(lookups));
+    }
+
+    private static void assertNoTypesAndNoAggregateKeywords(List<String> lookups) {
+        assertFalse("a business rule holds no attributes, so no type may be offered: " + lookups,
+                lookups.contains("String"));
+        assertFalse("must not offer the aggregate body keywords inside a business rule: " + lookups,
+                lookups.contains("business-rule"));
+        assertFalse("must not offer the aggregate body keywords inside a business rule: " + lookups,
+                lookups.contains("method"));
+    }
 }

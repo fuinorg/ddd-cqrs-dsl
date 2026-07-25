@@ -12,6 +12,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAttribute;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConsistency;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConsistencyLevel;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsWeakConsistency;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
@@ -275,10 +276,19 @@ public final class CqrsValidationAnnotator implements Annotator {
             return;
         }
         String value = level.getText();
-        if ("weak".equals(value) && consistency.getWeakConsistency() == null) {
-            error(holder, consistency, "You must define the details for weak consistency");
-        } else if ("strong".equals(value) && consistency.getWeakConsistency() != null) {
-            error(holder, consistency.getWeakConsistency(), "No details required for strong consistency");
+        CqrsWeakConsistency details = consistency.getWeakConsistency();
+        if ("weak".equals(value)) {
+            if (details == null) {
+                error(holder, consistency, "You must define the details for weak consistency");
+            } else if (details.getWcAcceptable() == null || details.getWcDetection() == null
+                    || details.getWcResolution() == null) {
+                // The grammar accepts a partial block so that completion keeps working while it is
+                // being typed; completeness is a semantic rule, checked here.
+                error(holder, details,
+                        "Weak consistency requires 'acceptable', 'detection' and 'resolution'");
+            }
+        } else if ("strong".equals(value) && details != null) {
+            error(holder, details, "No details required for strong consistency");
         }
     }
 

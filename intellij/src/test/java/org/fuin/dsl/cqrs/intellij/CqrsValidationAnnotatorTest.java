@@ -207,4 +207,66 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 }
                 """);
     }
+
+    // --- consistency -----------------------------------------------------------------------------
+    // The grammar deliberately accepts a details block with missing clauses so that code completion
+    // keeps working while it is being typed; completeness is enforced here instead.
+
+    public void testStrongConsistencyWithoutDetailsIsValid() {
+        check(businessRule("consistency strong"));
+    }
+
+    public void testWeakConsistencyWithAllDetailsIsValid() {
+        check(businessRule("""
+                consistency weak {
+                          acceptable 1 days
+                          detection manually
+                          resolution manually
+                        }"""));
+    }
+
+    public void testWeakConsistencyWithoutDetailsIsReported() {
+        check(businessRule("<error>consistency weak</error>"));
+    }
+
+    public void testWeakConsistencyWithIncompleteDetailsIsReported() {
+        check(businessRule("""
+                consistency weak <error>{
+                          acceptable 1 days
+                        }</error>"""));
+    }
+
+    public void testStrongConsistencyWithDetailsIsReported() {
+        check(businessRule("""
+                consistency strong <error>{
+                          acceptable 1 days
+                          detection manually
+                          resolution manually
+                        }</error>"""));
+    }
+
+    /**
+     * Wraps a consistency clause in the smallest aggregate that can hold a business rule.
+     *
+     * @param consistency Consistency clause, with any expected error markup.
+     *
+     * @return Complete model source.
+     */
+    private static String businessRule(String consistency) {
+        return """
+                project p {
+                context c {
+                  namespace n {
+                    exception MyException { message "m" }
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      business-rule Rule exception MyException {
+                        %s
+                      }
+                    }
+                  }
+                }
+                }
+                """.formatted(consistency);
+    }
 }

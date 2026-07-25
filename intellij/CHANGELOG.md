@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.21.0
+- Code completion inside a `business-rule` now offers the `consistency` clause and its values: `weak`/`strong`, the time units after `acceptable`, and the `detection`/ `resolution` value sets. Previously it offered every visible type declaration there instead, and never the keywords. A half-typed `weak` details block also keeps its tokens, so completion still works while it is being written - a block missing `acceptable`, `detection` or `resolution` is now reported as a semantic error rather than a parse error. Separately, `null`/`true`/ `false` are offered after `examples` and in an instance argument list, and `element` after `type`.
+
 ## 1.20.0
 - A view `method` may now declare an optional `rest-path` setting the sub path of its REST operation; without it the method name is used. **Breaking:** `rest-path` moved from the body into the header of `view` and `method`: `view X uses Y rest-path "/x" { ... }`. The keyword is syntax-highlighted and offered in completion at those header positions.
 
