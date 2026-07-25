@@ -57,6 +57,7 @@
     KW_INVARIANTS='invariants'
     KW_PRECONDITIONS='preconditions'
     KW_BUSINESS_RULES='business-rules'
+    KW_OPERATION_CONTEXT='operation-context'
     KW_SERVICE='service'
     KW_COMMAND='command'
     KW_TARGET='target'
@@ -389,17 +390,21 @@ business_rule ::= KW_BUSINESS_RULE ID KW_EXCEPTION type_ref LBRACE consistency R
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE parameter* type_ref? service_def* event_def* RBRACE {
+constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? LBRACE parameter* operation_context? service_def* event_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE parameter* type_ref? return_type? service_def* event_def* RBRACE {
+method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE parameter* operation_context? return_type? service_def* event_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
+
+// The SPI an operation needs to verify a business rule or fetch data it cannot know itself. Pinned on
+// its keyword so the reference stays inside this node while it is still being typed.
+operation_context ::= KW_OPERATION_CONTEXT type_ref { pin=1 }
 
 return_type ::= KW_RETURNS KW_OPTIONAL? type_ref generic_args? { pin=1 }
 

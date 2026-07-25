@@ -109,12 +109,14 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getConstructorAccess().getGroup(), "rule__Constructor__Group__0");
 			builder.put(grammarAccess.getConstructorAccess().getGroup_5(), "rule__Constructor__Group_5__0");
 			builder.put(grammarAccess.getConstructorAccess().getGroup_5_2(), "rule__Constructor__Group_5_2__0");
+			builder.put(grammarAccess.getConstructorAccess().getGroup_8(), "rule__Constructor__Group_8__0");
 			builder.put(grammarAccess.getReturnTypeAccess().getGroup(), "rule__ReturnType__Group__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup(), "rule__Method__Group__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_3(), "rule__Method__Group_3__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_6(), "rule__Method__Group_6__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_6_2(), "rule__Method__Group_6_2__0");
 			builder.put(grammarAccess.getMethodAccess().getGroup_7(), "rule__Method__Group_7__0");
+			builder.put(grammarAccess.getMethodAccess().getGroup_10(), "rule__Method__Group_10__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup(), "rule__TypeMetaInfo__Group__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup_1(), "rule__TypeMetaInfo__Group_1__0");
 			builder.put(grammarAccess.getTypeMetaInfoAccess().getGroup_2(), "rule__TypeMetaInfo__Group_2__0");
@@ -330,7 +332,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getConstructorAccess().getFiredEventsAssignment_5_1(), "rule__Constructor__FiredEventsAssignment_5_1");
 			builder.put(grammarAccess.getConstructorAccess().getFiredEventsAssignment_5_2_1(), "rule__Constructor__FiredEventsAssignment_5_2_1");
 			builder.put(grammarAccess.getConstructorAccess().getParametersAssignment_7(), "rule__Constructor__ParametersAssignment_7");
-			builder.put(grammarAccess.getConstructorAccess().getServiceAssignment_8(), "rule__Constructor__ServiceAssignment_8");
+			builder.put(grammarAccess.getConstructorAccess().getOperationContextAssignment_8_1(), "rule__Constructor__OperationContextAssignment_8_1");
 			builder.put(grammarAccess.getConstructorAccess().getServicesAssignment_9(), "rule__Constructor__ServicesAssignment_9");
 			builder.put(grammarAccess.getConstructorAccess().getEventsAssignment_10(), "rule__Constructor__EventsAssignment_10");
 			builder.put(grammarAccess.getReturnTypeAccess().getDocAssignment_0(), "rule__ReturnType__DocAssignment_0");
@@ -346,7 +348,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getMethodAccess().getFiredEventsAssignment_6_2_1(), "rule__Method__FiredEventsAssignment_6_2_1");
 			builder.put(grammarAccess.getMethodAccess().getRestPathAssignment_7_1(), "rule__Method__RestPathAssignment_7_1");
 			builder.put(grammarAccess.getMethodAccess().getParametersAssignment_9(), "rule__Method__ParametersAssignment_9");
-			builder.put(grammarAccess.getMethodAccess().getServiceAssignment_10(), "rule__Method__ServiceAssignment_10");
+			builder.put(grammarAccess.getMethodAccess().getOperationContextAssignment_10_1(), "rule__Method__OperationContextAssignment_10_1");
 			builder.put(grammarAccess.getMethodAccess().getReturnTypeAssignment_11(), "rule__Method__ReturnTypeAssignment_11");
 			builder.put(grammarAccess.getMethodAccess().getServicesAssignment_12(), "rule__Method__ServicesAssignment_12");
 			builder.put(grammarAccess.getMethodAccess().getEventsAssignment_13(), "rule__Method__EventsAssignment_13");

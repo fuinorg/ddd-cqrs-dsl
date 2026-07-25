@@ -144,6 +144,23 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.22.0</b> &ndash; The service an operation uses is now introduced by the
+        <code>operation-context</code> keyword, instead of being written as a bare type name after the
+        parameters where it looked like a parameter that had lost its name:
+        <code>method rename { CategoryName newName  operation-context RenameService }</code>. The
+        keyword is syntax-highlighted and offered in completion inside a constructor or method body,
+        together with <code>service</code>, which was missing there. <b>Breaking:</b> every existing
+        reference needs the keyword; the inline <code>service</code> declarations themselves are
+        unchanged.<br>
+        A typed cross-reference now also offers - and resolves to - only the kind of declaration the
+        grammar allows there: an <code>operation-context</code> names a service, a view's
+        <code>uses</code> a projection, <code>fires</code> an event, <code>identifier</code> an id,
+        <code>invariants</code> a constraint, <code>target</code> an operation, and so on for every
+        typed reference. Completion used to list every visible type at those positions, and a name of
+        the wrong kind resolved silently while the build rejected it; it is now reported as unresolved,
+        like any unknown name. A position the grammar declares as <code>[Type]</code> -
+        <code>returns</code>, <code>instance-key</code>, an attribute or parameter type, a generic
+        argument, a constraint's <code>input</code> - still takes any type.</li>
     <li><b>1.21.0</b> &ndash; Code completion inside a <code>business-rule</code> now offers the
         <code>consistency</code> clause and its values: <code>weak</code>/<code>strong</code>, the
         time units after <code>acceptable</code>, and the <code>detection</code>/

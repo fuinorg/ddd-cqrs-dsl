@@ -2,6 +2,13 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.19.0
+- The service an operation uses is now introduced by the `operation-context` keyword:
+  `method rename { CategoryName newName  operation-context RenameService }`. It used to be written as
+  a bare type name after the parameters, which was easy to mistake for a parameter that had lost its
+  name. **Breaking:** every existing reference needs the keyword; the inline `service` declarations
+  themselves are unchanged.
+
 ## 1.18.0
 - A view `method` may now declare an optional `rest-path` setting the sub path of its REST operation; without it the method name is used. A `{name}` placeholder binds to the parameter of that name, and a `rest-path` outside a view method is flagged.
 - **Breaking:** `rest-path` moved from the body into the header of `view` and `method`: `view X uses Y rest-path "/x" { ... }`. The view's `cron-schedule` stays in the body.

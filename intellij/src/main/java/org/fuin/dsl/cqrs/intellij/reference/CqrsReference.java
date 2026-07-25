@@ -60,7 +60,7 @@ public final class CqrsReference extends PsiReferenceBase<CqrsReferenceElement>
     public Object @NotNull [] getVariants() {
         List<LookupElement> variants = new ArrayList<>();
         Set<String> seen = new HashSet<>();
-        for (CqrsNamedElement decl : CqrsResolveUtil.visibleDeclarations(getElement())) {
+        for (CqrsNamedElement decl : CqrsResolveUtil.referenceableDeclarations(getElement())) {
             String name = decl.getName();
             if (name == null || !seen.add(name)) {
                 continue;

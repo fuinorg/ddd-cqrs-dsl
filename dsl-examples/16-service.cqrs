@@ -27,6 +27,40 @@ project p_16_service {
 
 			}
 
+			aggregate-id DoorId identifies Door {}
+
+			/** An operation names the service it needs as its 'operation-context'. */
+			aggregate Door identifier DoorId {
+
+				method unlock {
+
+					String code
+
+					// The SPI this operation needs to verify a rule or fetch data it does not hold.
+					// It becomes a trailing parameter of the generated method, handed in by the
+					// command handler - a service is never a modelled parameter or a command field.
+					operation-context AuthService
+
+				}
+
+				/** A service declared inline is nested in the aggregate; the context points at it. */
+				method open {
+
+					operation-context OpenService
+
+					/** Checks whether the door may be opened right now. */
+					service OpenService {
+
+						method mayOpen {
+							returns Boolean
+						}
+
+					}
+
+				}
+
+			}
+
 		}
 
 	}

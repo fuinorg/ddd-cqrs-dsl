@@ -42,7 +42,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Service;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getFiredEvents <em>Fired Events</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getParameters <em>Parameters</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getService <em>Service</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getOperationContext <em>Operation Context</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getServices <em>Services</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl#getEvents <em>Events</em>}</li>
  * </ul>
@@ -132,14 +132,14 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
   protected EList<Parameter> parameters;
 
   /**
-   * The cached value of the '{@link #getService() <em>Service</em>}' reference.
+   * The cached value of the '{@link #getOperationContext() <em>Operation Context</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getService()
+   * @see #getOperationContext()
    * @generated
    * @ordered
    */
-  protected Service service;
+  protected Service operationContext;
 
   /**
    * The cached value of the '{@link #getServices() <em>Services</em>}' containment reference list.
@@ -368,19 +368,19 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
-  public Service getService()
+  public Service getOperationContext()
   {
-    if (service != null && service.eIsProxy())
+    if (operationContext != null && operationContext.eIsProxy())
     {
-      InternalEObject oldService = (InternalEObject)service;
-      service = (Service)eResolveProxy(oldService);
-      if (service != oldService)
+      InternalEObject oldOperationContext = (InternalEObject)operationContext;
+      operationContext = (Service)eResolveProxy(oldOperationContext);
+      if (operationContext != oldOperationContext)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.ABSTRACT_METHOD__SERVICE, oldService, service));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT, oldOperationContext, operationContext));
       }
     }
-    return service;
+    return operationContext;
   }
 
   /**
@@ -388,9 +388,9 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public Service basicGetService()
+  public Service basicGetOperationContext()
   {
-    return service;
+    return operationContext;
   }
 
   /**
@@ -399,12 +399,12 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
-  public void setService(Service newService)
+  public void setOperationContext(Service newOperationContext)
   {
-    Service oldService = service;
-    service = newService;
+    Service oldOperationContext = operationContext;
+    operationContext = newOperationContext;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_METHOD__SERVICE, oldService, service));
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT, oldOperationContext, operationContext));
   }
 
   /**
@@ -483,9 +483,9 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
         return getFiredEvents();
       case CqrsDslPackage.ABSTRACT_METHOD__PARAMETERS:
         return getParameters();
-      case CqrsDslPackage.ABSTRACT_METHOD__SERVICE:
-        if (resolve) return getService();
-        return basicGetService();
+      case CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT:
+        if (resolve) return getOperationContext();
+        return basicGetOperationContext();
       case CqrsDslPackage.ABSTRACT_METHOD__SERVICES:
         return getServices();
       case CqrsDslPackage.ABSTRACT_METHOD__EVENTS:
@@ -525,8 +525,8 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
         getParameters().clear();
         getParameters().addAll((Collection<? extends Parameter>)newValue);
         return;
-      case CqrsDslPackage.ABSTRACT_METHOD__SERVICE:
-        setService((Service)newValue);
+      case CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT:
+        setOperationContext((Service)newValue);
         return;
       case CqrsDslPackage.ABSTRACT_METHOD__SERVICES:
         getServices().clear();
@@ -568,8 +568,8 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
       case CqrsDslPackage.ABSTRACT_METHOD__PARAMETERS:
         getParameters().clear();
         return;
-      case CqrsDslPackage.ABSTRACT_METHOD__SERVICE:
-        setService((Service)null);
+      case CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT:
+        setOperationContext((Service)null);
         return;
       case CqrsDslPackage.ABSTRACT_METHOD__SERVICES:
         getServices().clear();
@@ -603,8 +603,8 @@ public class AbstractMethodImpl extends MinimalEObjectImpl.Container implements 
         return firedEvents != null && !firedEvents.isEmpty();
       case CqrsDslPackage.ABSTRACT_METHOD__PARAMETERS:
         return parameters != null && !parameters.isEmpty();
-      case CqrsDslPackage.ABSTRACT_METHOD__SERVICE:
-        return service != null;
+      case CqrsDslPackage.ABSTRACT_METHOD__OPERATION_CONTEXT:
+        return operationContext != null;
       case CqrsDslPackage.ABSTRACT_METHOD__SERVICES:
         return services != null && !services.isEmpty();
       case CqrsDslPackage.ABSTRACT_METHOD__EVENTS:

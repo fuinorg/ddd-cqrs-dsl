@@ -499,6 +499,81 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 """.formatted(ruleBody));
     }
 
+    // ---- operation context -----------------------------------------------------------------
+
+    public void testMethodBodyOffersOperationContextAndService() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      method doIt {
+                        <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected the operation's own clauses, got: " + lookups,
+                lookups.containsAll(List.of("operation-context", "service", "returns")));
+    }
+
+    public void testOperationContextOffersTheVisibleServices() {
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    service DoItService { }
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      method doIt {
+                        operation-context <caret>
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected the declared service as the operation context, got: " + lookups,
+                lookups.contains("DoItService"));
+        // The grammar types the reference as [Service|FQN], so nothing else may be offered there.
+        assertFalse("an operation context is a service, not a type: " + lookups, lookups.contains("String"));
+        assertFalse("an operation context is a service, not an aggregate: " + lookups, lookups.contains("Foo"));
+        assertFalse("an operation context is a service, not an id: " + lookups, lookups.contains("FooId"));
+    }
+
+    public void testOperationContextOffersAnInlineServiceOnly() {
+        // A service declared inside the operation itself is the usual case.
+        List<String> lookups = lookups("""
+                project p {
+                context c {
+                  namespace n {
+                    type String
+                    type Boolean
+                    aggregate-id FooId identifies Foo {}
+                    aggregate Foo identifier FooId {
+                      method doIt {
+                        operation-context <caret>
+                        service DoItService {
+                          method check {
+                            returns Boolean
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                }
+                """);
+        assertTrue("expected the inline service, got: " + lookups, lookups.contains("DoItService"));
+        assertFalse("must not offer plain types: " + lookups, lookups.contains("String"));
+        assertFalse("must not offer the enclosing aggregate: " + lookups, lookups.contains("Foo"));
+    }
+
     // ---- literal and external-type keyword completion ------------------------------------
 
     public void testExamplesOffersLiteralKeywords() {

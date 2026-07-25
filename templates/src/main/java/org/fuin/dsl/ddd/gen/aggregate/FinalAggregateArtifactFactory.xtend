@@ -24,7 +24,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
-import static extension org.fuin.dsl.ddd.gen.extensions.ServiceExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.OperationContextExtensions.*
 import java.util.ArrayList
 import java.util.List
 
@@ -96,9 +96,9 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
     }
 
     /**
-     * Creates the data for every modelled constructor, with the service the constructor references
+     * Creates the data for every modelled constructor, with the constructor's operation context
      * appended to its parameters - the collaborator the body needs to verify a business rule or fetch
-     * data (see {@link ServiceExtensions}).
+     * data (see {@link OperationContextExtensions}).
      *
      * @param aggregate Aggregate to create the constructor data for.
      * @param className Name of the final class.
@@ -109,7 +109,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
         val List<ConstructorData> constructors = new ArrayList<ConstructorData>()
         for (constructor : aggregate.constructors.nullSafe) {
             val ConstructorData cd = new ConstructorData("public", className, constructor)
-            for (param : constructor.serviceParameters) {
+            for (param : constructor.operationContextParameters) {
                 cd.append(new ConstructorParameter(param))
             }
             constructors.add(cd)

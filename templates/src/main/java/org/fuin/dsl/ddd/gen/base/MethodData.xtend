@@ -9,7 +9,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsMethodExtensions.*
-import static extension org.fuin.dsl.ddd.gen.extensions.ServiceExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.OperationContextExtensions.*
 
 /**
  * Data required to create a method. 
@@ -30,9 +30,9 @@ class MethodData extends AbstractMethodData {
     var Method method
 
     /**
-     * Constructor with method. The service the method references is appended to the parameters, after
+     * Constructor with method. The method's operation context is appended to the parameters, after
      * the modelled ones, so the generated operation can be handed the collaborator it needs to verify
-     * a business rule or fetch data (see {@link ServiceExtensions}).
+     * a business rule or fetch data (see {@link OperationContextExtensions}).
      *
      * @param modifiers Modifiers (Don't include "abstract" - Use next argument instead).
      * @param makeAbstract Abstract method?
@@ -42,7 +42,7 @@ class MethodData extends AbstractMethodData {
         super(method.doc, modifiers, method.name, method.allExceptions)
         this.parameters = new ArrayList<Parameter>()
         this.parameters.addAll(method.parameters)
-        this.parameters.addAll(method.serviceParameters)
+        this.parameters.addAll(method.operationContextParameters)
         this.makeAbstract = makeAbstract
         this.returnType = method.returnType
         this.method = method

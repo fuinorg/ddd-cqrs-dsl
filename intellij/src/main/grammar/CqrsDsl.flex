@@ -108,6 +108,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "examples"                { return KW_EXAMPLES; }
   "invariants"              { return KW_INVARIANTS; }
   "preconditions"           { return KW_PRECONDITIONS; }
+  "operation-context"       { return KW_OPERATION_CONTEXT; }
   "service"                 { return KW_SERVICE; }
   "command"                 { return KW_COMMAND; }
   "target"                  { return KW_TARGET; }

@@ -170,7 +170,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
     /** Adds every visible named declaration as a type candidate (mirrors {@code CqrsReference.getVariants}). */
     private static void addTypeVariants(PsiElement position, @NotNull CompletionResultSet result) {
         Set<String> seen = new HashSet<>();
-        for (CqrsNamedElement decl : CqrsResolveUtil.visibleDeclarations(position)) {
+        for (CqrsNamedElement decl : CqrsResolveUtil.referenceableDeclarations(position)) {
             String name = decl.getName();
             if (name == null || !seen.add(name)) {
                 continue;
@@ -216,11 +216,14 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return businessRuleKeywords(position);
         }
 
-        CqrsConstructorDef ctor = PsiTreeUtil.getParentOfType(position, CqrsConstructorDef.class);
-        CqrsMethodDef method = PsiTreeUtil.getParentOfType(position, CqrsMethodDef.class);
+        CqrsConstructorDef ctor = enclosingConstructor(position);
+        CqrsMethodDef method = enclosingMethod(position);
         if (ctor != null || method != null) {
             keywords.add("optional");
             keywords.add("event");
+            // The SPI the operation needs, and the inline declaration of the interface it points at.
+            keywords.add("operation-context");
+            keywords.add("service");
             if (method != null) {
                 keywords.add("returns");
                 // 'rest-path' is a header clause of a *view* method (before the '{'): it is an error
@@ -383,6 +386,36 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             }
         }
         return brace == null || position.getTextOffset() <= brace.getTextOffset();
+    }
+
+    /**
+     * The {@code constructor} block surrounding the caret, or {@code null} (same error recovery as
+     * above). A body clause is introduced by its keyword, so a half-typed word is not yet part of any
+     * of them and error recovery can push the caret token just outside the pinned node.
+     */
+    private static CqrsConstructorDef enclosingConstructor(PsiElement position) {
+        CqrsConstructorDef ctor = PsiTreeUtil.getParentOfType(position, CqrsConstructorDef.class);
+        if (ctor != null) {
+            return ctor;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsConstructorDef.class);
+    }
+
+    /** The {@code method} block surrounding the caret, or {@code null} (same recovery as above). */
+    private static CqrsMethodDef enclosingMethod(PsiElement position) {
+        CqrsMethodDef method = PsiTreeUtil.getParentOfType(position, CqrsMethodDef.class);
+        if (method != null) {
+            return method;
+        }
+        PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
+            return null;
+        }
+        return PsiTreeUtil.getParentOfType(prev, CqrsMethodDef.class);
     }
 
     /** The {@code view} block surrounding the caret, or {@code null} (same error recovery as above). */

@@ -2008,7 +2008,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractMethod_Service()
+  public EReference getAbstractMethod_OperationContext()
   {
     return (EReference)abstractMethodEClass.getEStructuralFeatures().get(6);
   }
@@ -3470,7 +3470,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEReference(abstractMethodEClass, ABSTRACT_METHOD__BUSINESS_RULES);
     createEReference(abstractMethodEClass, ABSTRACT_METHOD__FIRED_EVENTS);
     createEReference(abstractMethodEClass, ABSTRACT_METHOD__PARAMETERS);
-    createEReference(abstractMethodEClass, ABSTRACT_METHOD__SERVICE);
+    createEReference(abstractMethodEClass, ABSTRACT_METHOD__OPERATION_CONTEXT);
     createEReference(abstractMethodEClass, ABSTRACT_METHOD__SERVICES);
     createEReference(abstractMethodEClass, ABSTRACT_METHOD__EVENTS);
 
@@ -3845,7 +3845,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getAbstractMethod_BusinessRules(), this.getBusinessRules(), null, "businessRules", null, 0, 1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractMethod_FiredEvents(), this.getEvent(), null, "firedEvents", null, 0, -1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractMethod_Parameters(), this.getParameter(), null, "parameters", null, 0, -1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getAbstractMethod_Service(), this.getService(), null, "service", null, 0, 1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAbstractMethod_OperationContext(), this.getService(), null, "operationContext", null, 0, 1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractMethod_Services(), this.getService(), null, "services", null, 0, -1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractMethod_Events(), this.getEvent(), null, "events", null, 0, -1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

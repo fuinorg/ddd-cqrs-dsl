@@ -29,7 +29,7 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_CONSTRUCTOR, CqrsTypes.KW_FIRES, CqrsTypes.KW_RETURNS, CqrsTypes.KW_METHOD,
             CqrsTypes.KW_REF, CqrsTypes.KW_SLABEL, CqrsTypes.KW_LABEL, CqrsTypes.KW_TOOLTIP,
             CqrsTypes.KW_PROMPT, CqrsTypes.KW_EXAMPLES, CqrsTypes.KW_INVARIANTS, CqrsTypes.KW_PRECONDITIONS,
-            CqrsTypes.KW_BUSINESS_RULES, CqrsTypes.KW_SERVICE, CqrsTypes.KW_COMMAND, CqrsTypes.KW_TARGET,
+            CqrsTypes.KW_BUSINESS_RULES, CqrsTypes.KW_OPERATION_CONTEXT, CqrsTypes.KW_SERVICE, CqrsTypes.KW_COMMAND, CqrsTypes.KW_TARGET,
             CqrsTypes.KW_SLA, CqrsTypes.KW_COMMAND_HANDLER, CqrsTypes.KW_HANDLES, CqrsTypes.KW_USES,
             CqrsTypes.KW_PROJECTION, CqrsTypes.KW_VIEW, CqrsTypes.KW_REST_PATH,
             CqrsTypes.KW_PROCESS_MANAGER, CqrsTypes.KW_CRON_SCHEDULE, CqrsTypes.KW_INSTANCE_KEY,

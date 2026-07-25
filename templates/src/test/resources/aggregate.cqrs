@@ -122,7 +122,7 @@ project p {
 					/** Variable A. */
 					String a
 
-					CreateService
+					operation-context CreateService
 
 					/** Verifies the value is still free. */
 					service CreateService {
@@ -158,7 +158,7 @@ project p {
 					/** Variable A. */
 					String a
 
-					ChangeService
+					operation-context ChangeService
 
 					/** Verifies the new value is still free. */
 					service ChangeService {
@@ -215,7 +215,7 @@ project p {
 					/** Variable A. */
 					String a
 
-					SharedService
+					operation-context SharedService
 
 					/** The aggregate F was created. */
 					event AggregateFCreatedEvent {
@@ -235,7 +235,7 @@ project p {
 					/** Variable A. */
 					String a
 
-					SharedService
+					operation-context SharedService
 
 					/** The aggregate F was changed. */
 					event AggregateFChangedEvent {

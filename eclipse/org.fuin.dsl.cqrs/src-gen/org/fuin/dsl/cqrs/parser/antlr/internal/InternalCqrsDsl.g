@@ -3939,19 +3939,25 @@ ruleConstructor returns [EObject current=null]
 			)
 		)*
 		(
+			otherlv_11='operation-context'
+			{
+				newLeafNode(otherlv_11, grammarAccess.getConstructorAccess().getOperationContextKeyword_8_0());
+			}
 			(
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getConstructorRule());
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getConstructorRule());
+						}
 					}
-				}
-				{
-					newCompositeNode(grammarAccess.getConstructorAccess().getServiceServiceCrossReference_8_0());
-				}
-				ruleFQN
-				{
-					afterParserOrEnumRuleCall();
-				}
+					{
+						newCompositeNode(grammarAccess.getConstructorAccess().getOperationContextServiceCrossReference_8_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
 			)
 		)?
 		(
@@ -3959,7 +3965,7 @@ ruleConstructor returns [EObject current=null]
 				{
 					newCompositeNode(grammarAccess.getConstructorAccess().getServicesServiceParserRuleCall_9_0());
 				}
-				lv_services_12_0=ruleService
+				lv_services_13_0=ruleService
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getConstructorRule());
@@ -3967,7 +3973,7 @@ ruleConstructor returns [EObject current=null]
 					add(
 						$current,
 						"services",
-						lv_services_12_0,
+						lv_services_13_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Service");
 					afterParserOrEnumRuleCall();
 				}
@@ -3978,7 +3984,7 @@ ruleConstructor returns [EObject current=null]
 				{
 					newCompositeNode(grammarAccess.getConstructorAccess().getEventsEventParserRuleCall_10_0());
 				}
-				lv_events_13_0=ruleEvent
+				lv_events_14_0=ruleEvent
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getConstructorRule());
@@ -3986,15 +3992,15 @@ ruleConstructor returns [EObject current=null]
 					add(
 						$current,
 						"events",
-						lv_events_13_0,
+						lv_events_14_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Event");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_14='}'
+		otherlv_15='}'
 		{
-			newLeafNode(otherlv_14, grammarAccess.getConstructorAccess().getRightCurlyBracketKeyword_11());
+			newLeafNode(otherlv_15, grammarAccess.getConstructorAccess().getRightCurlyBracketKeyword_11());
 		}
 	)
 ;
@@ -4297,19 +4303,25 @@ ruleMethod returns [EObject current=null]
 			)
 		)*
 		(
+			otherlv_15='operation-context'
+			{
+				newLeafNode(otherlv_15, grammarAccess.getMethodAccess().getOperationContextKeyword_10_0());
+			}
 			(
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getMethodRule());
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getMethodRule());
+						}
 					}
-				}
-				{
-					newCompositeNode(grammarAccess.getMethodAccess().getServiceServiceCrossReference_10_0());
-				}
-				ruleFQN
-				{
-					afterParserOrEnumRuleCall();
-				}
+					{
+						newCompositeNode(grammarAccess.getMethodAccess().getOperationContextServiceCrossReference_10_1_0());
+					}
+					ruleFQN
+					{
+						afterParserOrEnumRuleCall();
+					}
+				)
 			)
 		)?
 		(
@@ -4317,7 +4329,7 @@ ruleMethod returns [EObject current=null]
 				{
 					newCompositeNode(grammarAccess.getMethodAccess().getReturnTypeReturnTypeParserRuleCall_11_0());
 				}
-				lv_returnType_16_0=ruleReturnType
+				lv_returnType_17_0=ruleReturnType
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4325,7 +4337,7 @@ ruleMethod returns [EObject current=null]
 					set(
 						$current,
 						"returnType",
-						lv_returnType_16_0,
+						lv_returnType_17_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.ReturnType");
 					afterParserOrEnumRuleCall();
 				}
@@ -4336,7 +4348,7 @@ ruleMethod returns [EObject current=null]
 				{
 					newCompositeNode(grammarAccess.getMethodAccess().getServicesServiceParserRuleCall_12_0());
 				}
-				lv_services_17_0=ruleService
+				lv_services_18_0=ruleService
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4344,7 +4356,7 @@ ruleMethod returns [EObject current=null]
 					add(
 						$current,
 						"services",
-						lv_services_17_0,
+						lv_services_18_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Service");
 					afterParserOrEnumRuleCall();
 				}
@@ -4355,7 +4367,7 @@ ruleMethod returns [EObject current=null]
 				{
 					newCompositeNode(grammarAccess.getMethodAccess().getEventsEventParserRuleCall_13_0());
 				}
-				lv_events_18_0=ruleEvent
+				lv_events_19_0=ruleEvent
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getMethodRule());
@@ -4363,15 +4375,15 @@ ruleMethod returns [EObject current=null]
 					add(
 						$current,
 						"events",
-						lv_events_18_0,
+						lv_events_19_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Event");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_19='}'
+		otherlv_20='}'
 		{
-			newLeafNode(otherlv_19, grammarAccess.getMethodAccess().getRightCurlyBracketKeyword_14());
+			newLeafNode(otherlv_20, grammarAccess.getMethodAccess().getRightCurlyBracketKeyword_14());
 		}
 	)
 ;

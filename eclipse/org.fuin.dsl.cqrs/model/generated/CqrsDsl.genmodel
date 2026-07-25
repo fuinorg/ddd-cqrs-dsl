@@ -212,7 +212,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/businessRules"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/firedEvents"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/parameters"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/service"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/operationContext"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/services"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractMethod/events"/>
     </genClasses>

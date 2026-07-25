@@ -2250,13 +2250,13 @@ public interface CqrsDslPackage extends EPackage
   int ABSTRACT_METHOD__PARAMETERS = 5;
 
   /**
-   * The feature id for the '<em><b>Service</b></em>' reference.
+   * The feature id for the '<em><b>Operation Context</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ABSTRACT_METHOD__SERVICE = 6;
+  int ABSTRACT_METHOD__OPERATION_CONTEXT = 6;
 
   /**
    * The feature id for the '<em><b>Services</b></em>' containment reference list.
@@ -2350,13 +2350,13 @@ public interface CqrsDslPackage extends EPackage
   int CONSTRUCTOR__PARAMETERS = ABSTRACT_METHOD__PARAMETERS;
 
   /**
-   * The feature id for the '<em><b>Service</b></em>' reference.
+   * The feature id for the '<em><b>Operation Context</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CONSTRUCTOR__SERVICE = ABSTRACT_METHOD__SERVICE;
+  int CONSTRUCTOR__OPERATION_CONTEXT = ABSTRACT_METHOD__OPERATION_CONTEXT;
 
   /**
    * The feature id for the '<em><b>Services</b></em>' containment reference list.
@@ -2505,13 +2505,13 @@ public interface CqrsDslPackage extends EPackage
   int METHOD__PARAMETERS = ABSTRACT_METHOD__PARAMETERS;
 
   /**
-   * The feature id for the '<em><b>Service</b></em>' reference.
+   * The feature id for the '<em><b>Operation Context</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int METHOD__SERVICE = ABSTRACT_METHOD__SERVICE;
+  int METHOD__OPERATION_CONTEXT = ABSTRACT_METHOD__OPERATION_CONTEXT;
 
   /**
    * The feature id for the '<em><b>Services</b></em>' containment reference list.
@@ -5384,15 +5384,15 @@ public interface CqrsDslPackage extends EPackage
   EReference getAbstractMethod_Parameters();
 
   /**
-   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getService <em>Service</em>}'.
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getOperationContext <em>Operation Context</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Service</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getService()
+   * @return the meta object for the reference '<em>Operation Context</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getOperationContext()
    * @see #getAbstractMethod()
    * @generated
    */
-  EReference getAbstractMethod_Service();
+  EReference getAbstractMethod_OperationContext();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getServices <em>Services</em>}'.
@@ -7672,12 +7672,12 @@ public interface CqrsDslPackage extends EPackage
     EReference ABSTRACT_METHOD__PARAMETERS = eINSTANCE.getAbstractMethod_Parameters();
 
     /**
-     * The meta object literal for the '<em><b>Service</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Operation Context</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ABSTRACT_METHOD__SERVICE = eINSTANCE.getAbstractMethod_Service();
+    EReference ABSTRACT_METHOD__OPERATION_CONTEXT = eINSTANCE.getAbstractMethod_OperationContext();
 
     /**
      * The meta object literal for the '<em><b>Services</b></em>' containment reference list feature.
