@@ -76,6 +76,7 @@ class AbstractAggregateArtifactFactoryTest {
         refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
         refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
         refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
+        refReg.putReference("p.x.aggregates." + aggregateName + "RenamedEvent", "p.x.aggregates." + aggregateName + "RenamedEvent")
         // A service declared outside the operation is a top-level interface, registered by
         // ServiceArtifactFactory and imported like any other type. The inline ones need no entry here:
         // the factory under test registers those itself, unqualified, because they end up nested in the

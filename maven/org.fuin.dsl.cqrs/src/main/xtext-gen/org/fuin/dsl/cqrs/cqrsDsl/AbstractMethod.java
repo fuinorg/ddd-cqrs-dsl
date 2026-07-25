@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getFiredEvents <em>Fired Events</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getParameters <em>Parameters</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getService <em>Service</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getOperationContext <em>Operation Context</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getServices <em>Services</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getEvents <em>Events</em>}</li>
  * </ul>
@@ -146,26 +146,26 @@ public interface AbstractMethod extends EObject
   EList<Parameter> getParameters();
 
   /**
-   * Returns the value of the '<em><b>Service</b></em>' reference.
+   * Returns the value of the '<em><b>Operation Context</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Service</em>' reference.
-   * @see #setService(Service)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getAbstractMethod_Service()
+   * @return the value of the '<em>Operation Context</em>' reference.
+   * @see #setOperationContext(Service)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getAbstractMethod_OperationContext()
    * @model
    * @generated
    */
-  Service getService();
+  Service getOperationContext();
 
   /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getService <em>Service</em>}' reference.
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod#getOperationContext <em>Operation Context</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Service</em>' reference.
-   * @see #getService()
+   * @param value the new value of the '<em>Operation Context</em>' reference.
+   * @see #getOperationContext()
    * @generated
    */
-  void setService(Service value);
+  void setOperationContext(Service value);
 
   /**
    * Returns the value of the '<em><b>Services</b></em>' containment reference list.

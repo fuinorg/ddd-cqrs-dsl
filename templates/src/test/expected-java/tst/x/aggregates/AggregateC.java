@@ -55,7 +55,10 @@ public final class AggregateC extends AbstractAggregateC {
         
         // Apply events
         // TODO apply(AggregateCCreatedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(...)
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
+        //     .b(b)
         //     .build());
     }
 

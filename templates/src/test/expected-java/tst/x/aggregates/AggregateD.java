@@ -21,6 +21,7 @@ import org.fuin.ddd4j.core.ApplyEvent;
 import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateD;
 import p.x.aggregates.AggregateDChangedEvent;
+import p.x.aggregates.AggregateDRenamedEvent;
 
 /**
  * Aggregate D - Fires an event declared outside the method.
@@ -48,7 +49,29 @@ public final class AggregateD extends AbstractAggregateD {
         
         // Apply events
         // TODO apply(AggregateDChangedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(getId())
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
+        //     .build());
+    }
+    
+    /**
+     * Renames something.
+     *
+     * @param newName The new name.
+     */
+    public final void rename(final String newName) {
+        // Check preconditions
+        Contract.requireArgNotNull("newName", newName);
+        
+        // Verify business constraints
+        // None declared for this operation.
+        
+        // Apply events
+        // TODO apply(AggregateDRenamedEvent.builder()
+        //     .entityIdPath(getId())
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .newName(newName)
         //     .build());
     }
     
@@ -60,6 +83,17 @@ public final class AggregateD extends AbstractAggregateD {
     @Override
     @ApplyEvent
     protected final void handleAggregateDChangedEvent(final AggregateDChangedEvent event) {
+        // TODO Handle event!
+    }
+    
+    /**
+     * Handles: AggregateDRenamedEvent.
+     *
+     * @param event Event to handle.
+     */
+    @Override
+    @ApplyEvent
+    protected final void handleAggregateDRenamedEvent(final AggregateDRenamedEvent event) {
         // TODO Handle event!
     }
     

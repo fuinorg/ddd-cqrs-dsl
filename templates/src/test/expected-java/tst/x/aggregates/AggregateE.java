@@ -55,7 +55,9 @@ public final class AggregateE extends AbstractAggregateE {
         
         // Apply events
         // TODO apply(AggregateECreatedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(...)
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
         //     .build());
     }
 
@@ -76,7 +78,9 @@ public final class AggregateE extends AbstractAggregateE {
         
         // Apply events
         // TODO apply(AggregateEChangedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(getId())
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
         //     .build());
     }
     

@@ -56,7 +56,9 @@ public final class AggregateF extends AbstractAggregateF {
         
         // Apply events
         // TODO apply(AggregateFCreatedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(...)
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
         //     .build());
     }
 
@@ -77,7 +79,9 @@ public final class AggregateF extends AbstractAggregateF {
         
         // Apply events
         // TODO apply(AggregateFChangedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(getId())
+        //     .aggregateVersion(getNextApplyVersion())
+        //     .a(a)
         //     .build());
     }
     

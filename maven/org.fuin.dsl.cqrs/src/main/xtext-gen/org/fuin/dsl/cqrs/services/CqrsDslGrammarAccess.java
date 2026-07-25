@@ -2335,9 +2335,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		private final Assignment cParametersAssignment_7 = (Assignment)cGroup.eContents().get(7);
 		private final RuleCall cParametersParameterParserRuleCall_7_0 = (RuleCall)cParametersAssignment_7.eContents().get(0);
-		private final Assignment cServiceAssignment_8 = (Assignment)cGroup.eContents().get(8);
-		private final CrossReference cServiceServiceCrossReference_8_0 = (CrossReference)cServiceAssignment_8.eContents().get(0);
-		private final RuleCall cServiceServiceFQNParserRuleCall_8_0_1 = (RuleCall)cServiceServiceCrossReference_8_0.eContents().get(1);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cOperationContextKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cOperationContextAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final CrossReference cOperationContextServiceCrossReference_8_1_0 = (CrossReference)cOperationContextAssignment_8_1.eContents().get(0);
+		private final RuleCall cOperationContextServiceFQNParserRuleCall_8_1_0_1 = (RuleCall)cOperationContextServiceCrossReference_8_1_0.eContents().get(1);
 		private final Assignment cServicesAssignment_9 = (Assignment)cGroup.eContents().get(9);
 		private final RuleCall cServicesServiceParserRuleCall_9_0 = (RuleCall)cServicesAssignment_9.eContents().get(0);
 		private final Assignment cEventsAssignment_10 = (Assignment)cGroup.eContents().get(10);
@@ -2349,7 +2351,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//    doc=DOC?
 		//    'constructor' name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
 		//        parameters+=Parameter*
-		//        service=[Service|FQN]?
+		//        ('operation-context' operationContext=[Service|FQN])?
 		//        services+=Service*
 		//        events+=Event*
 		//    '}';
@@ -2358,7 +2360,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//doc=DOC?
 		//'constructor' name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
 		//    parameters+=Parameter*
-		//    service=[Service|FQN]?
+		//    ('operation-context' operationContext=[Service|FQN])?
 		//    services+=Service*
 		//    events+=Event*
 		//'}'
@@ -2430,14 +2432,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Parameter
 		public RuleCall getParametersParameterParserRuleCall_7_0() { return cParametersParameterParserRuleCall_7_0; }
 		
-		//service=[Service|FQN]?
-		public Assignment getServiceAssignment_8() { return cServiceAssignment_8; }
+		//('operation-context' operationContext=[Service|FQN])?
+		public Group getGroup_8() { return cGroup_8; }
+		
+		//'operation-context'
+		public Keyword getOperationContextKeyword_8_0() { return cOperationContextKeyword_8_0; }
+		
+		//operationContext=[Service|FQN]
+		public Assignment getOperationContextAssignment_8_1() { return cOperationContextAssignment_8_1; }
 		
 		//[Service|FQN]
-		public CrossReference getServiceServiceCrossReference_8_0() { return cServiceServiceCrossReference_8_0; }
+		public CrossReference getOperationContextServiceCrossReference_8_1_0() { return cOperationContextServiceCrossReference_8_1_0; }
 		
 		//FQN
-		public RuleCall getServiceServiceFQNParserRuleCall_8_0_1() { return cServiceServiceFQNParserRuleCall_8_0_1; }
+		public RuleCall getOperationContextServiceFQNParserRuleCall_8_1_0_1() { return cOperationContextServiceFQNParserRuleCall_8_1_0_1; }
 		
 		//services+=Service*
 		public Assignment getServicesAssignment_9() { return cServicesAssignment_9; }
@@ -2542,9 +2550,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cLeftCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		private final Assignment cParametersAssignment_9 = (Assignment)cGroup.eContents().get(9);
 		private final RuleCall cParametersParameterParserRuleCall_9_0 = (RuleCall)cParametersAssignment_9.eContents().get(0);
-		private final Assignment cServiceAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final CrossReference cServiceServiceCrossReference_10_0 = (CrossReference)cServiceAssignment_10.eContents().get(0);
-		private final RuleCall cServiceServiceFQNParserRuleCall_10_0_1 = (RuleCall)cServiceServiceCrossReference_10_0.eContents().get(1);
+		private final Group cGroup_10 = (Group)cGroup.eContents().get(10);
+		private final Keyword cOperationContextKeyword_10_0 = (Keyword)cGroup_10.eContents().get(0);
+		private final Assignment cOperationContextAssignment_10_1 = (Assignment)cGroup_10.eContents().get(1);
+		private final CrossReference cOperationContextServiceCrossReference_10_1_0 = (CrossReference)cOperationContextAssignment_10_1.eContents().get(0);
+		private final RuleCall cOperationContextServiceFQNParserRuleCall_10_1_0_1 = (RuleCall)cOperationContextServiceCrossReference_10_1_0.eContents().get(1);
 		private final Assignment cReturnTypeAssignment_11 = (Assignment)cGroup.eContents().get(11);
 		private final RuleCall cReturnTypeReturnTypeParserRuleCall_11_0 = (RuleCall)cReturnTypeAssignment_11.eContents().get(0);
 		private final Assignment cServicesAssignment_12 = (Assignment)cGroup.eContents().get(12);
@@ -2558,7 +2568,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//    doc=DOC?
 		//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 		//        parameters+=Parameter*
-		//        service=[Service|FQN]?
+		//        ('operation-context' operationContext=[Service|FQN])?
 		//        returnType=ReturnType?
 		//        services+=Service*
 		//        events+=Event*
@@ -2568,7 +2578,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//doc=DOC?
 		//'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 		//    parameters+=Parameter*
-		//    service=[Service|FQN]?
+		//    ('operation-context' operationContext=[Service|FQN])?
 		//    returnType=ReturnType?
 		//    services+=Service*
 		//    events+=Event*
@@ -2668,14 +2678,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Parameter
 		public RuleCall getParametersParameterParserRuleCall_9_0() { return cParametersParameterParserRuleCall_9_0; }
 		
-		//service=[Service|FQN]?
-		public Assignment getServiceAssignment_10() { return cServiceAssignment_10; }
+		//('operation-context' operationContext=[Service|FQN])?
+		public Group getGroup_10() { return cGroup_10; }
+		
+		//'operation-context'
+		public Keyword getOperationContextKeyword_10_0() { return cOperationContextKeyword_10_0; }
+		
+		//operationContext=[Service|FQN]
+		public Assignment getOperationContextAssignment_10_1() { return cOperationContextAssignment_10_1; }
 		
 		//[Service|FQN]
-		public CrossReference getServiceServiceCrossReference_10_0() { return cServiceServiceCrossReference_10_0; }
+		public CrossReference getOperationContextServiceCrossReference_10_1_0() { return cOperationContextServiceCrossReference_10_1_0; }
 		
 		//FQN
-		public RuleCall getServiceServiceFQNParserRuleCall_10_0_1() { return cServiceServiceFQNParserRuleCall_10_0_1; }
+		public RuleCall getOperationContextServiceFQNParserRuleCall_10_1_0_1() { return cOperationContextServiceFQNParserRuleCall_10_1_0_1; }
 		
 		//returnType=ReturnType?
 		public Assignment getReturnTypeAssignment_11() { return cReturnTypeAssignment_11; }
@@ -5978,7 +5994,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//    doc=DOC?
 	//    'constructor' name=ID (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? '{'
 	//        parameters+=Parameter*
-	//        service=[Service|FQN]?
+	//        ('operation-context' operationContext=[Service|FQN])?
 	//        services+=Service*
 	//        events+=Event*
 	//    '}';
@@ -6007,7 +6023,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//    doc=DOC?
 	//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 	//        parameters+=Parameter*
-	//        service=[Service|FQN]?
+	//        ('operation-context' operationContext=[Service|FQN])?
 	//        returnType=ReturnType?
 	//        services+=Service*
 	//        events+=Event*

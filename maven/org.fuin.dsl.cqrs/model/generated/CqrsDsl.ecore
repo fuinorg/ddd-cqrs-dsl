@@ -243,7 +243,7 @@
         upperBound="-1" eType="#//Event"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
         eType="#//Parameter" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="service" eType="#//Service"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operationContext" eType="#//Service"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="services" upperBound="-1"
         eType="#//Service" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="events" upperBound="-1"

@@ -21,6 +21,7 @@ import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import p.x.aggregates.AggregateDChangedEvent;
 import p.x.aggregates.AggregateDId;
+import p.x.aggregates.AggregateDRenamedEvent;
 
 /**
  * Aggregate D - Fires an event declared outside the method.
@@ -59,10 +60,24 @@ public abstract class AbstractAggregateD extends AbstractAggregateRoot<Aggregate
     protected abstract void handleAggregateDChangedEvent(final AggregateDChangedEvent event);
     
     /**
+     * Handles: AggregateDRenamedEvent.
+     *
+     * @param event Event to handle.
+     */
+    protected abstract void handleAggregateDRenamedEvent(final AggregateDRenamedEvent event);
+    
+    /**
      * Changes something.
      *
      * @param a Variable A.
      */
     public abstract void change(final String a);
+    
+    /**
+     * Renames something.
+     *
+     * @param newName The new name.
+     */
+    public abstract void rename(final String newName);
     
 }

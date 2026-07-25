@@ -25,6 +25,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEventExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 import java.io.Serial
@@ -107,10 +108,10 @@ class EventArtifactFactory extends AbstractSource<Event> {
 	        if (options.jackson) {
 	            ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractEvent")        
 	        }
-            // toString() renders KeyValueEL.replace(...) over the same variables the constructor uses:
-            // the event's own attributes, or - for a "copies-attributes-of" event - the origin's
-            // parameters. Guard the imports on that same set, not on event.attributes alone.
-            val variables = if (event.origin === null) event.attributes else event.origin.parameters
+            // toString() renders KeyValueEL.replace(...) over the same variables the constructor
+            // uses (see EventExtensions.eventVariables). Guard the imports on that same set, not on
+            // event.attributes alone.
+            val variables = event.eventVariables
             if (variables.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValueEL")
@@ -148,7 +149,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
     }
 
     def createDomainEvent(SimpleCodeSnippetContext ctx, Event event, String pkg, String className) {
-    	var variables = event.origin === null ? event.attributes : event.origin.parameters
+    	var variables = event.eventVariables
         val String src = ''' 
             «new SrcJavaDocType(event)»
             «IF options.jaxb»
@@ -210,7 +211,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
     }
 
     def createStandardEvent(SimpleCodeSnippetContext ctx, Event event, String pkg, String className) {
-    	var variables = event.origin === null ? event.attributes : event.origin.parameters
+    	var variables = event.eventVariables
         val String src = ''' 
             «new SrcJavaDocType(event)»
             «IF options.jaxb»

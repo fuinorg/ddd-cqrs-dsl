@@ -44,6 +44,16 @@ project p {
 
 			}
 
+			/**
+			 * The aggregate D was renamed - carries whatever the operation was given, rather than
+			 * declaring its own attributes.
+			 */
+			event AggregateDRenamedEvent copies-attributes-of AggregateD.rename {
+
+				message "Aggregate D was renamed to ${newName} [${entityIdPath}]"
+
+			}
+
 			aggregate-id AggregateDId identifies AggregateD {}
 
 			/** Aggregate D - Fires an event declared outside the method. */
@@ -54,6 +64,14 @@ project p {
 
 					/** Variable A. */
 					String a
+
+				}
+
+				/** Renames something. */
+				method rename fires AggregateDRenamedEvent {
+
+					/** The new name. */
+					String newName
 
 				}
 

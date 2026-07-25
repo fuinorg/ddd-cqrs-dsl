@@ -51,7 +51,10 @@ public final class EntityC extends AbstractEntityC {
         
         // Apply events
         // TODO apply(EntityCCreatedEvent.builder()
-        //     ... set the event's attributes ...
+        //     .entityIdPath(...)
+        //     .aggregateVersion(getRoot().getNextApplyVersion())
+        //     .a(a)
+        //     .b(b)
         //     .build());
     }
 

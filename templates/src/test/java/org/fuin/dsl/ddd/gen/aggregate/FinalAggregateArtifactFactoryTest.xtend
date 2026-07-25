@@ -77,6 +77,7 @@ class FinalAggregateArtifactFactoryTest {
         refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
         refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
         refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
+        refReg.putReference("p.x.aggregates." + aggregateName + "RenamedEvent", "p.x.aggregates." + aggregateName + "RenamedEvent")
         refReg.putReference("p.x.aggregates.AnyConstraintViolatedException", "p.x.aggregates.AnyConstraintViolatedException")
         // The two kinds of service a constructor or method can reference, registered here the way the
         // preparation run would (it does not happen in this isolated test):
