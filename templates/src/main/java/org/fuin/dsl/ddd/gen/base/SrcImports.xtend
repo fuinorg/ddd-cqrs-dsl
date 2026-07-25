@@ -16,14 +16,29 @@ class SrcImports implements CodeSnippet {
 
     val List<String> imports
 
-    new(CodeSnippetContext ctx, String currentPkg, Set<String> importSet) {    	
+    new(CodeSnippetContext ctx, String currentPkg, Set<String> importSet) {
         imports = new ArrayList<String>()
         for (imp : importSet) {
-            if (!javaLang(imp) && (imp.trim.length > 0) && !currentPkg.equals(imp.onlyPackage)) {
+            if (!javaLang(imp) && (imp.trim.length > 0) && !currentPkg.equals(imp.onlyPackage)
+                && !simpleName(imp)) {
                 imports.add(imp)
             }
         }
         Collections.sort(imports)
+    }
+
+    /**
+     * Determines whether the reference is a bare simple name rather than a qualified one. Java has no
+     * import for such a name - it is already in scope where it is used - so it must not be emitted.
+     * A nested type that the generated class declares or inherits is registered this way (see the
+     * inline services in AbstractAggregateArtifactFactory).
+     *
+     * @param imp Reference to check.
+     *
+     * @return TRUE if the reference carries no package.
+     */
+    def boolean simpleName(String imp) {
+        return imp.indexOf(".") == -1
     }
     
     def boolean javaLang(String imp) {

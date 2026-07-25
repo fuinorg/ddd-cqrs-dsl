@@ -53,6 +53,18 @@ class FinalAggregateArtifactFactoryTest {
         testAggregate("AggregateD")
     }
 
+    /** An operation referencing a service declared inline: nested interface, so no import. */
+    @Test
+    def void testAggregateE() {
+        testAggregate("AggregateE")
+    }
+
+    /** An operation referencing a service declared outside it: top-level interface, so imported. */
+    @Test
+    def void testAggregateF() {
+        testAggregate("AggregateF")
+    }
+
     private def testAggregate(String aggregateName) {
 
         // PREPARE
@@ -66,6 +78,16 @@ class FinalAggregateArtifactFactoryTest {
         refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
         refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
         refReg.putReference("p.x.aggregates.AnyConstraintViolatedException", "p.x.aggregates.AnyConstraintViolatedException")
+        // The two kinds of service a constructor or method can reference, registered here the way the
+        // preparation run would (it does not happen in this isolated test):
+        // - declared inline: a nested interface of the abstract aggregate, in scope by its simple name,
+        //   so it is registered unqualified and must NOT be imported
+        //   (see AbstractAggregateArtifactFactory).
+        refReg.putReference("p.x.aggregates.CreateService", "CreateService")
+        refReg.putReference("p.x.aggregates.ChangeService", "ChangeService")
+        // - declared outside the operation: a top-level interface of its own, so it is imported like
+        //   any other type (see ServiceArtifactFactory).
+        refReg.putReference("p.x.aggregates.SharedService", "p.x.aggregates.SharedService")
 
         val FinalAggregateArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)

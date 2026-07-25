@@ -29,6 +29,7 @@ import static org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory.eINSTANCE
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
@@ -50,6 +51,15 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
         refReg.putReference(entity.uniqueAbstractName, fqn)
+        // A service declared inline in a constructor or method is generated as a nested interface of
+        // this class (see SrcServices below), and ServiceArtifactFactory deliberately creates no
+        // top-level file for it. An operation referencing such a service takes it as a parameter, and
+        // the only classes that do so are this one and the final subclass - both have the nested type
+        // in scope by its simple name. It is therefore registered unqualified: no import is possible
+        // (nor needed), and SrcImports drops a reference without a package.
+        for (service : entity.services.nullSafe) {
+            refReg.putReference(service.uniqueName, service.name)
+        }
 
         if (preparationRun) {
 

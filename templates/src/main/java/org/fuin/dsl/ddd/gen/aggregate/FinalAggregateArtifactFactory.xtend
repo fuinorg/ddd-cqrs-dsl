@@ -3,6 +3,8 @@ package org.fuin.dsl.ddd.gen.aggregate
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.ddd.gen.base.AbstractSource
+import org.fuin.dsl.ddd.gen.base.ConstructorData
+import org.fuin.dsl.ddd.gen.base.ConstructorParameter
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcChildEntityLocatorMethods
@@ -22,6 +24,8 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.ServiceExtensions.*
+import java.util.ArrayList
 import java.util.List
 
 class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
@@ -73,12 +77,12 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
                     super();
                 }
             
-                «FOR constructor : aggregate.constructors.nullSafe»
-                    «new SrcJavaDocMethod(ctx, constructor)»
-                    «new SrcConstructorSignature(ctx, "public", className, GenerateOptions.empty(), constructor)» {
+                «FOR cd : constructorData(aggregate, className).indexed»
+                    «new SrcJavaDocMethod(ctx, cd.value)»
+                    «new SrcConstructorSignature(ctx, GenerateOptions.empty(), cd.value)» {
                         super();
 
-                        «new SrcDomainMethodBody(ctx, constructor)»
+                        «new SrcDomainMethodBody(ctx, aggregate.constructors.get(cd.key))»
                     }
 
                 «ENDFOR»
@@ -89,6 +93,28 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
         '''
 
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
+    }
+
+    /**
+     * Creates the data for every modelled constructor, with the service the constructor references
+     * appended to its parameters - the collaborator the body needs to verify a business rule or fetch
+     * data (see {@link ServiceExtensions}).
+     *
+     * @param aggregate Aggregate to create the constructor data for.
+     * @param className Name of the final class.
+     *
+     * @return One entry per modelled constructor, in declaration order.
+     */
+    def constructorData(Aggregate aggregate, String className) {
+        val List<ConstructorData> constructors = new ArrayList<ConstructorData>()
+        for (constructor : aggregate.constructors.nullSafe) {
+            val ConstructorData cd = new ConstructorData("public", className, constructor)
+            for (param : constructor.serviceParameters) {
+                cd.append(new ConstructorParameter(param))
+            }
+            constructors.add(cd)
+        }
+        return constructors
     }
 
     def _constructors(CodeSnippetContext ctx, Aggregate aggregate, String className) {

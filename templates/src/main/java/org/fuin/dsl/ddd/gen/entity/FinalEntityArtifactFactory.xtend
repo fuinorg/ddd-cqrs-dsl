@@ -29,6 +29,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.ServiceExtensions.*
 
 class FinalEntityArtifactFactory extends AbstractSource<Entity> {
 
@@ -107,6 +108,11 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
                 val ConstructorData cd = new ConstructorData("public", className, constructor, false)
                 cd.prepend(idParam)
                 cd.prepend(rootParam)
+                // The service the constructor references is the collaborator its body needs to verify
+                // a business rule or fetch data, and goes last (see ServiceExtensions).
+                for (param : constructor.serviceParameters) {
+                    cd.append(new ConstructorParameter(param))
+                }
                 constructors.add(cd)
             }
         }
