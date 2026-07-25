@@ -52,13 +52,19 @@ class FinalValueObjectArtifactFactoryTest {
     def void testCreateFullName() {
         testCreate("FullName")
     }
-    
+
+    @Test
+    def void testCreateMyDecimalValueObject() {
+        testCreate("MyDecimalValueObject")
+    }
+
     private def testCreate(String name) {
-        
+
         // PREPARE
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.types.BigDecimal", "java.math.BigDecimal")
         refReg.putReference("p.x.valueobject." + name + "Converter", "p.x.valueobject." + name + "Converter")
         refReg.putReference("p.x.valueobject.Abstract" + name, "p.x.valueobject.Abstract" + name)
 

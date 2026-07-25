@@ -79,6 +79,10 @@ class SrcVoBaseMethods implements CodeSnippet {
                 final «vo.name» other = («vo.name») obj;
                 return asBaseType().equals(other.asBaseType());
             }
+
+            «IF "BigDecimal".equals(baseName)»
+            «new SrcVoBaseMethodsBigDecimal(ctx, vo)»
+            «ENDIF»
         «ENDIF»
         '''
     }

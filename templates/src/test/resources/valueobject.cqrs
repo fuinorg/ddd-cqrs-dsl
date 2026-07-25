@@ -5,6 +5,7 @@ project p {
 		namespace types {
 			type String
 			type Integer
+			type BigDecimal
 		}
 
 		namespace constr {
@@ -93,6 +94,14 @@ project p {
 
 				/** Persistent value. */
 				String value
+
+			}
+
+			/** Value object with a decimal base, which has no abstract base class in objects4j. */
+			value-object MyDecimalValueObject base BigDecimal {
+
+				/** Persistent value. */
+				BigDecimal value
 
 			}
 
