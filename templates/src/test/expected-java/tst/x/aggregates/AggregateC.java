@@ -21,6 +21,7 @@ import org.fuin.ddd4j.core.ApplyEvent;
 import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateC;
 import p.x.aggregates.AggregateCCreatedEvent;
+import p.x.aggregates.AggregateCId;
 import p.x.aggregates.AnyConstraintViolatedException;
 
 /**
@@ -38,13 +39,14 @@ public final class AggregateC extends AbstractAggregateC {
     /**
      * Creates the entity.
      *
+     * @param id Unique aggregate identifier, as sent by the command.
      * @param a Variable A.
      * @param b Variable B.
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateC(final String a, final Integer b) throws AnyConstraintViolatedException {
-        super();
+    public AggregateC(final AggregateCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
+        super(id);
 
         // Check preconditions
         Contract.requireArgNotNull("a", a);
@@ -55,7 +57,7 @@ public final class AggregateC extends AbstractAggregateC {
         
         // Apply events
         // TODO apply(AggregateCCreatedEvent.builder()
-        //     .entityIdPath(...)
+        //     .entityIdPath(getId())
         //     .aggregateVersion(getNextApplyVersion())
         //     .a(a)
         //     .b(b)

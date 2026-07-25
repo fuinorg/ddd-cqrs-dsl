@@ -22,6 +22,7 @@ import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateF;
 import p.x.aggregates.AggregateFChangedEvent;
 import p.x.aggregates.AggregateFCreatedEvent;
+import p.x.aggregates.AggregateFId;
 import p.x.aggregates.AnyConstraintViolatedException;
 import p.x.aggregates.SharedService;
 
@@ -40,13 +41,14 @@ public final class AggregateF extends AbstractAggregateF {
     /**
      * Creates the entity.
      *
+     * @param id Unique aggregate identifier, as sent by the command.
      * @param a Variable A.
      * @param sharedService A service declared outside any operation, so it becomes a top-level interface of its own - unlike an inline one, which is nested in the aggregate that declares it.
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateF(final String a, final SharedService sharedService) throws AnyConstraintViolatedException {
-        super();
+    public AggregateF(final AggregateFId id, final String a, final SharedService sharedService) throws AnyConstraintViolatedException {
+        super(id);
 
         // Check preconditions
         Contract.requireArgNotNull("a", a);
@@ -56,7 +58,7 @@ public final class AggregateF extends AbstractAggregateF {
         
         // Apply events
         // TODO apply(AggregateFCreatedEvent.builder()
-        //     .entityIdPath(...)
+        //     .entityIdPath(getId())
         //     .aggregateVersion(getNextApplyVersion())
         //     .a(a)
         //     .build());

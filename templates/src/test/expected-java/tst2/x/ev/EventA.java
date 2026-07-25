@@ -23,6 +23,8 @@ import java.util.Objects;
 import org.fuin.ddd4j.core.EventId;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractDomainEvent;
+import org.fuin.esc.api.HasSerializedDataTypeConstant;
+import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 import p.x.ev.CustomerId;
@@ -30,6 +32,7 @@ import p.x.ev.CustomerId;
 /**
  * Aggregate event A.
  */
+@HasSerializedDataTypeConstant
 public final class EventA extends AbstractDomainEvent<CustomerId> {
 
     @Serial
@@ -37,6 +40,13 @@ public final class EventA extends AbstractDomainEvent<CustomerId> {
 
     /** Unique name used to store the event. */
     public static final EventType EVENT_TYPE = new EventType("EventA");
+    
+    /**
+     * Type used to look up the serializer and deserializer. The event store registry is built
+     * by scanning for the annotation above, so without this constant the type is unknown at
+     * runtime and neither storing nor reading it back works.
+     */
+    public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
     
 
     @Override

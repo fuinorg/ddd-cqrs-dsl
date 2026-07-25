@@ -22,6 +22,8 @@ import java.io.Serial;
 import java.util.Objects;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
+import org.fuin.esc.api.HasSerializedDataTypeConstant;
+import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
@@ -31,6 +33,7 @@ import x.ev.MyString;
 /**
  * Event E - Independent of an aggregate with value object reference.
  */
+@HasSerializedDataTypeConstant
 public final class EventE extends AbstractEvent {
 
     @Serial
@@ -38,6 +41,13 @@ public final class EventE extends AbstractEvent {
 
     /** Unique name used to store the event. */
     public static final EventType EVENT_TYPE = new EventType("EventE");
+    
+    /**
+     * Type used to look up the serializer and deserializer. The event store registry is built
+     * by scanning for the annotation above, so without this constant the type is unknown at
+     * runtime and neither storing nor reading it back works.
+     */
+    public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
     
     @JsonbProperty("a")
     private MyString a;

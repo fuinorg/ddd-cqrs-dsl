@@ -74,6 +74,8 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Command command) {
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
+        ctx.requiresImport("org.fuin.esc.api.HasSerializedDataTypeConstant")
+        ctx.requiresImport("org.fuin.esc.api.SerializedDataType")
         ctx.requiresImport(Serial.name)
         
         if (entity === null) {
@@ -140,6 +142,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, command.name)»
             «ENDIF»
+            @HasSerializedDataTypeConstant
             public final class «className» extends AbstractAggregateCommand<«command.aggregateIdType.name», «command.entityIdType.name»> {
             
             	@Serial
@@ -147,6 +150,13 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             
                 /** Unique name used to store the command. */
                 public static final EventType EVENT_TYPE = new EventType("«command.name»");
+                
+                /**
+                 * Type used to look up the serializer and deserializer. The registry is built by scanning
+                 * for the annotation above, so without this constant the command cannot be deserialized
+                 * when it arrives at the command endpoint.
+                 */
+                public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
                 
                 «new SrcVarsDecl(ctx, "private", options, command, true)»
             
@@ -201,6 +211,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, command.name)»
             «ENDIF»
+            @HasSerializedDataTypeConstant
             public final class «className» extends AbstractCommand {
             
                 @Serial
@@ -208,6 +219,13 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             
                 /** Unique name used to store the command. */
                 public static final EventType EVENT_TYPE = new EventType("«command.name»");
+                
+                /**
+                 * Type used to look up the serializer and deserializer. The registry is built by scanning
+                 * for the annotation above, so without this constant the command cannot be deserialized
+                 * when it arrives at the command endpoint.
+                 */
+                public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
                 
                 «new SrcVarsDecl(ctx, "private", options, command)»
             

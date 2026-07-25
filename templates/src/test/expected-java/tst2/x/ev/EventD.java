@@ -20,10 +20,13 @@ package p.shared.domain.x.ev;
 import java.io.Serial;
 import org.fuin.ddd4j.core.EventType;
 import org.fuin.ddd4j.jsonb.AbstractEvent;
+import org.fuin.esc.api.HasSerializedDataTypeConstant;
+import org.fuin.esc.api.SerializedDataType;
 
 /**
  * Event D - Independent of an aggregate.
  */
+@HasSerializedDataTypeConstant
 public final class EventD extends AbstractEvent {
 
     @Serial
@@ -31,6 +34,13 @@ public final class EventD extends AbstractEvent {
 
     /** Unique name used to store the event. */
     public static final EventType EVENT_TYPE = new EventType("EventD");
+    
+    /**
+     * Type used to look up the serializer and deserializer. The event store registry is built
+     * by scanning for the annotation above, so without this constant the type is unknown at
+     * runtime and neither storing nor reading it back works.
+     */
+    public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
     
 
     /**

@@ -22,6 +22,7 @@ import org.fuin.objects4j.common.Contract;
 import p.x.aggregates.AbstractAggregateE;
 import p.x.aggregates.AggregateEChangedEvent;
 import p.x.aggregates.AggregateECreatedEvent;
+import p.x.aggregates.AggregateEId;
 import p.x.aggregates.AnyConstraintViolatedException;
 
 /**
@@ -39,13 +40,14 @@ public final class AggregateE extends AbstractAggregateE {
     /**
      * Creates the entity.
      *
+     * @param id Unique aggregate identifier, as sent by the command.
      * @param a Variable A.
      * @param createService Verifies the value is still free.
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateE(final String a, final CreateService createService) throws AnyConstraintViolatedException {
-        super();
+    public AggregateE(final AggregateEId id, final String a, final CreateService createService) throws AnyConstraintViolatedException {
+        super(id);
 
         // Check preconditions
         Contract.requireArgNotNull("a", a);
@@ -55,7 +57,7 @@ public final class AggregateE extends AbstractAggregateE {
         
         // Apply events
         // TODO apply(AggregateECreatedEvent.builder()
-        //     .entityIdPath(...)
+        //     .entityIdPath(getId())
         //     .aggregateVersion(getNextApplyVersion())
         //     .a(a)
         //     .build());

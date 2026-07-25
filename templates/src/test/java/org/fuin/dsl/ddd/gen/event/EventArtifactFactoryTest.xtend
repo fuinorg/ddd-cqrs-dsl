@@ -132,6 +132,11 @@ class EventArtifactFactoryTest {
         val result = new String(testee.create(event, context, false).iterator().next().data)
 
         // VERIFY
+        // Mirror what was produced to target/ so a golden can be created/diffed without relying
+        // on the (truncated) assertion message.
+        val actualFile = new java.io.File("target/actual-java/ev/" + eventName + ".java")
+        actualFile.parentFile.mkdirs
+        java.nio.file.Files.write(actualFile.toPath, result.getBytes("UTF-8"))
         assertThat(result).isEqualTo(("x/ev/" + eventName + ".java").loadConcreteExample)
         
     }

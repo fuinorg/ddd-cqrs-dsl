@@ -110,10 +110,9 @@ class SrcDomainMethodBody implements CodeSnippet {
 
     /**
      * Returns what to pass for the event's mandatory entity id path. An aggregate method can use the
-     * aggregate's own identifier, for which the builder has a convenience overload. A constructor
-     * cannot: the identifier does not exist yet, and the event that creates it is what carries it. A
-     * child entity needs the path from the root down to itself, which the generator does not build to
-     * avoid an import in commented-out code.
+     * aggregate's own identifier and a constructor the one it was handed. A child entity needs the
+     * path from the root down to itself, which the generator does not build to avoid an import in
+     * commented-out code.
      *
      * @param owner Element declaring the operation - an aggregate, an entity or a service.
      * @param constructor TRUE for a constructor, FALSE for a method.
@@ -121,7 +120,9 @@ class SrcDomainMethodBody implements CodeSnippet {
      * @return Argument expression, or a placeholder.
      */
     private def static String entityIdPathArgument(EObject owner, boolean constructor) {
-        if (owner instanceof Aggregate && !constructor) {
+        if (owner instanceof Aggregate) {
+            // The identity is known before the first event is applied - a creating constructor hands it
+            // to the abstract super class - so every operation can read it the same way.
             return "getId()"
         }
         return PLACEHOLDER

@@ -14,15 +14,20 @@ import org.fuin.dsl.ddd.gen.base.SrcHandleEventMethods
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcMethods
+import org.fuin.dsl.ddd.gen.base.SrcParamsSuperCall
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
+import static org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory.eINSTANCE
+
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.OperationContextExtensions.*
 import java.util.ArrayList
@@ -80,7 +85,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
                 «FOR cd : constructorData(aggregate, className).indexed»
                     «new SrcJavaDocMethod(ctx, cd.value)»
                     «new SrcConstructorSignature(ctx, GenerateOptions.empty(), cd.value)» {
-                        super();
+                        «new SrcParamsSuperCall(ctx, cd.value.superCallParameters)»
 
                         «new SrcDomainMethodBody(ctx, aggregate.constructors.get(cd.key))»
                     }
@@ -112,6 +117,13 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
             for (param : constructor.operationContextParameters) {
                 cd.append(new ConstructorParameter(param))
             }
+            // The aggregate's identifier comes first, exactly as a child entity's constructor takes the
+            // root and its own id. It is not modelled as a parameter because it is not domain data the
+            // operation decides on: every aggregate command carries the identifier of the aggregate it
+            // addresses, and for a creating command that is the identifier of the aggregate to create.
+            // Inventing one here instead would silently discard what the caller sent.
+            cd.prepend(new ConstructorParameter(eINSTANCE.createParameter(
+                "Unique aggregate identifier, as sent by the command.", aggregate.idTypeNullsafe, "id", false), true))
             constructors.add(cd)
         }
         return constructors

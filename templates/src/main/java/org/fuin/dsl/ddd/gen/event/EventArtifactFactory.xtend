@@ -93,6 +93,8 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
     def addImports(CodeSnippetContext ctx, AbstractEntity entity, Event event) {
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
+        ctx.requiresImport("org.fuin.esc.api.HasSerializedDataTypeConstant")
+        ctx.requiresImport("org.fuin.esc.api.SerializedDataType")
         ctx.requiresImport(Serial.name)
         for (category : event.eventCategories) {
             ctx.requiresImport("org.fuin.ddd4j.core." + category)
@@ -155,6 +157,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, event.name)»
             «ENDIF»
+            @HasSerializedDataTypeConstant
             public final class «className» extends AbstractDomainEvent<«event.entityIdType.name»>«event.implementsClause» {
             
                 @Serial
@@ -162,6 +165,13 @@ class EventArtifactFactory extends AbstractSource<Event> {
             
                 /** Unique name used to store the event. */
                 public static final EventType EVENT_TYPE = new EventType("«event.name»");
+                
+                /**
+                 * Type used to look up the serializer and deserializer. The event store registry is built
+                 * by scanning for the annotation above, so without this constant the type is unknown at
+                 * runtime and neither storing nor reading it back works.
+                 */
+                public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
                 
                 «new SrcVarsDecl(ctx, "private", options, event, true)»
             
@@ -217,6 +227,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
             «IF options.jaxb»
             «new SrcXmlRootElement(ctx, event.name)»
             «ENDIF»
+            @HasSerializedDataTypeConstant
             public final class «className» extends AbstractEvent«event.implementsClause» {
             
                 @Serial
@@ -224,6 +235,13 @@ class EventArtifactFactory extends AbstractSource<Event> {
             
                 /** Unique name used to store the event. */
                 public static final EventType EVENT_TYPE = new EventType("«event.name»");
+                
+                /**
+                 * Type used to look up the serializer and deserializer. The event store registry is built
+                 * by scanning for the annotation above, so without this constant the type is unknown at
+                 * runtime and neither storing nor reading it back works.
+                 */
+                public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
                 
                 «new SrcVarsDecl(ctx, "private", options, event)»
             
