@@ -43,7 +43,7 @@ class FinalAggregateIdArtifactFactoryTest {
         refReg.putReference("p.x.aggregateid.MyAggregateIdConverter", "p.x.aggregateid.MyAggregateIdConverter")
         refReg.putReference("p.x.aggregateid.AbstractMyAggregateId", "p.x.aggregateid.AbstractMyAggregateId")
 
-        val FinalAggregateIdArtifactFactory testee = createTestee()
+        val FinalAggregateIdArtifactFactory testee = createJaxbTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregateId")
 
         // TEST
@@ -83,7 +83,7 @@ class FinalAggregateIdArtifactFactoryTest {
         refReg.putReference("p.x.aggregateid.MyAggregate3IdConverter", "p.x.aggregateid.MyAggregate3IdConverter")
         refReg.putReference("p.x.aggregateid.AbstractMyAggregate3Id", "p.x.aggregateid.AbstractMyAggregate3Id")
 
-        val FinalAggregateIdArtifactFactory testee = createTestee()
+        val FinalAggregateIdArtifactFactory testee = createJaxbTestee()
         val AggregateId aggregateId = model.find(typeof(AggregateId), "MyAggregate3Id")
 
         // TEST
@@ -113,6 +113,22 @@ class FinalAggregateIdArtifactFactoryTest {
         
     }
         
+    /**
+     * Same factory with JAXB switched on. The @XmlJavaTypeAdapter is only generated when the model asked
+     * for JAXB, so both paths need a test - without this one, nothing would notice the annotation
+     * disappearing altogether.
+     */
+    private def createJaxbTestee() {
+        val factory = new FinalAggregateIdArtifactFactory()
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name, "module", "folder")
+        config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
+        config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
+        config.addVariable(new Variable(GenerateOptions.KEY_JAXB, "true"))
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+        return factory
+    }
+
     private def createTestee() {
         val factory = new FinalAggregateIdArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("aggregateId", FinalAggregateIdArtifactFactory.name, "module", "folder")

@@ -53,7 +53,9 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     def addImports(CodeSnippetContext ctx, AggregateId aggregateId) {
         ctx.requiresImport("java.io.Serial")
-        if (aggregateId.base !== null) {
+        if (aggregateId.base !== null && options.jaxb) {
+            // Only when JAXB was actually asked for - the annotation would otherwise drag
+            // jakarta.xml.bind onto the classpath of a project that never enabled it.
             ctx.requiresImport("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter")
         }
         ctx.requiresImport("javax.annotation.concurrent.Immutable")
@@ -68,11 +70,11 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     def create(SimpleCodeSnippetContext ctx, AggregateId id, String pkg, String className, String abstractClassName) {
         val String src = ''' 
-            «val idStrings = new SrcIdStringMethods(ctx, className, id.attributes)»
+            «val idStrings = new SrcIdStringMethods(ctx, className, abstractClassName, id.attributes)»
             «new SrcJavaDocType(id)»
             @Immutable«IF id.base === null && idStrings.supported»
             «idStrings.annotations»«ENDIF»
-            «IF id.base !== null»
+            «IF id.base !== null && options.jaxb»
                 @XmlJavaTypeAdapter(«id.name»Converter.class)
             «ENDIF»
             public final class «className» extends «abstractClassName» {

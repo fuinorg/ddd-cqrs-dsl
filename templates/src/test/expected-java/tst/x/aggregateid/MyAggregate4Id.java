@@ -18,7 +18,6 @@
 package p.shared.domain.x.aggregateid;
 
 import java.io.Serial;
-import java.util.regex.Pattern;
 import javax.annotation.concurrent.Immutable;
 import org.fuin.ddd4j.core.HasEntityTypeConstant;
 import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
@@ -72,21 +71,11 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
      *
      * @return Converted value.
      *
-     * @throws IllegalArgumentException The value is no valid MyAggregate4Id. Refusing loudly is the point:
-     *                                  a converter that answered null would turn a bad string into a
-     *                                  {@code NullPointerException} somewhere else entirely.
+     * @throws IllegalArgumentException The value is no valid MyAggregate4Id.
      */
     @Nullable
     public static MyAggregate4Id valueOf(@Nullable final String value) {
-        if (value == null) {
-            return null;
-        }
-        final String[] parts = value.split(Pattern.quote(SEPARATOR), 2);
-        if (!validParts(parts)) {
-            throw new IllegalArgumentException("Not a valid MyAggregate4Id: " + value);
-        }
-        // Every part was checked above, so none of these conversions can fail.
-        return new MyAggregate4Id(parts[0], parts[1]);
+        return AbstractMyAggregate4Id.valueOf(value, SEPARATOR, MyAggregate4Id::new);
     }
     
     /**
@@ -97,25 +86,6 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
      * @return Returns {@literal true} if it's a valid type else {@literal false}.
      */
     public static boolean isValid(@Nullable final String value) {
-        if (value == null) {
-            return true;
-        }
-        return validParts(value.split(Pattern.quote(SEPARATOR), 2));
-    }
-    
-    /**
-     * Says whether the parts of a string form can all be converted. Every check is non-throwing, which
-     * is what lets {@link #isValid(String)} answer without catching anything.
-     *
-     * @param parts Parts to check.
-     *
-     * @return TRUE if the parts make up a valid MyAggregate4Id.
-     */
-    private static boolean validParts(final String[] parts) {
-        if (parts.length != 2) {
-            return false;
-        }
-        return parts[0] != null
-            && parts[1] != null;
+        return AbstractMyAggregate4Id.isValid(value, SEPARATOR);
     }
 }

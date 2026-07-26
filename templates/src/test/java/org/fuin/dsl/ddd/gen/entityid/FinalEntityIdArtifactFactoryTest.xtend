@@ -113,6 +113,22 @@ class FinalEntityIdArtifactFactoryTest {
         
     }
         
+    /**
+     * Same factory with JAXB switched on. The @XmlJavaTypeAdapter is only generated when the model asked
+     * for JAXB, so both paths need a test - without this one, nothing would notice the annotation
+     * disappearing altogether.
+     */
+    private def createJaxbTestee() {
+        val factory = new FinalEntityIdArtifactFactory()
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", FinalEntityIdArtifactFactory.name, "module", "folder")
+        config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_ABSTRACT))
+        config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
+        config.addVariable(new Variable(GenerateOptions.KEY_JAXB, "true"))
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+        return factory
+    }
+
     private def createTestee() {
         val factory = new FinalEntityIdArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", FinalEntityIdArtifactFactory.name, "module", "folder")

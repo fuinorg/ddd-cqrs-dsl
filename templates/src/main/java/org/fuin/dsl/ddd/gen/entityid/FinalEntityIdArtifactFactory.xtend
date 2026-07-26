@@ -68,7 +68,7 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     def create(SimpleCodeSnippetContext ctx, EntityId id, String pkg, String className, String abstractClassName) {
         val String src = ''' 
-            «val idStrings = new SrcIdStringMethods(ctx, className, id.attributes)»
+            «val idStrings = new SrcIdStringMethods(ctx, className, abstractClassName, id.attributes)»
             «new SrcJavaDocType(id)»
             @Immutable«IF id.base === null && idStrings.supported»
             «idStrings.annotations»«ENDIF»
