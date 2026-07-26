@@ -18,17 +18,27 @@
 package p.shared.domain.x.aggregateid;
 
 import java.io.Serial;
+import java.util.regex.Pattern;
 import javax.annotation.concurrent.Immutable;
+import org.fuin.ddd4j.core.HasEntityTypeConstant;
+import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
+import org.fuin.objects4j.common.HasPublicStaticValueOfMethod;
+import org.jspecify.annotations.Nullable;
 import p.x.aggregateid.AbstractMy4AggregateId;
 
 /**
  * Aggregate ID multiple attribute and without base.
  */
 @Immutable
+@HasEntityTypeConstant
+@HasPublicStaticIsValidMethod
+@HasPublicStaticValueOfMethod
 public final class MyAggregate4Id extends AbstractMyAggregate4Id {
 
     @Serial
     private static final long serialVersionUID = 1000L;
+    /** Separates the parts in the string form of this identifier. */
+    public static final String SEPARATOR = "-";
     
     /**
      * Default constructor.
@@ -50,8 +60,62 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
     
     @Override
     public final String asString() {
-        // Default: the id parts joined by "-". Override if a different string form is required.
-        return getA() + "-" + getB();
+        // Default: the id parts joined by SEPARATOR. Override - together with valueOf
+        // below - if a different string form is required.
+        return getA() + SEPARATOR + getB();
     }
 
+    /**
+     * Converts the string form produced by {@link #asString()} back into an identifier.
+     *
+     * @param value String to convert. A {@literal null} value returns {@literal null}.
+     *
+     * @return Converted value.
+     *
+     * @throws IllegalArgumentException The value is no valid MyAggregate4Id. Refusing loudly is the point:
+     *                                  a converter that answered null would turn a bad string into a
+     *                                  {@code NullPointerException} somewhere else entirely.
+     */
+    @Nullable
+    public static MyAggregate4Id valueOf(@Nullable final String value) {
+        if (value == null) {
+            return null;
+        }
+        final String[] parts = value.split(Pattern.quote(SEPARATOR), 2);
+        if (!validParts(parts)) {
+            throw new IllegalArgumentException("Not a valid MyAggregate4Id: " + value);
+        }
+        // Every part was checked above, so none of these conversions can fail.
+        return new MyAggregate4Id(parts[0], parts[1]);
+    }
+    
+    /**
+     * Verifies that a given string can be converted into the type.
+     *
+     * @param value Value to validate.
+     *
+     * @return Returns {@literal true} if it's a valid type else {@literal false}.
+     */
+    public static boolean isValid(@Nullable final String value) {
+        if (value == null) {
+            return true;
+        }
+        return validParts(value.split(Pattern.quote(SEPARATOR), 2));
+    }
+    
+    /**
+     * Says whether the parts of a string form can all be converted. Every check is non-throwing, which
+     * is what lets {@link #isValid(String)} answer without catching anything.
+     *
+     * @param parts Parts to check.
+     *
+     * @return TRUE if the parts make up a valid MyAggregate4Id.
+     */
+    private static boolean validParts(final String[] parts) {
+        if (parts.length != 2) {
+            return false;
+        }
+        return parts[0] != null
+            && parts[1] != null;
+    }
 }

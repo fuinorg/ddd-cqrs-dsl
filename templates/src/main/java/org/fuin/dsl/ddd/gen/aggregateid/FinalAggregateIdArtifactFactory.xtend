@@ -6,6 +6,7 @@ import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcConstructorsWithParamsAssignment
+import org.fuin.dsl.ddd.gen.base.SrcIdStringMethods
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcVoBaseMethods
 import org.fuin.srcgen4j.commons.GenerateException
@@ -67,8 +68,10 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     def create(SimpleCodeSnippetContext ctx, AggregateId id, String pkg, String className, String abstractClassName) {
         val String src = ''' 
+            «val idStrings = new SrcIdStringMethods(ctx, className, id.attributes)»
             «new SrcJavaDocType(id)»
-            @Immutable
+            @Immutable«IF id.base === null && idStrings.supported»
+            «idStrings.annotations»«ENDIF»
             «IF id.base !== null»
                 @XmlJavaTypeAdapter(«id.name»Converter.class)
             «ENDIF»
@@ -76,6 +79,9 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
+                «IF id.base === null»
+                    «idStrings.separatorConstant»
+                «ENDIF»
                 
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, false, true)»
                 «IF id.base === null»
@@ -84,13 +90,17 @@ class FinalAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
                     «IF (id.attributes.nullSafe.size == 1)»
                         return "" + get«id.attributes.first.name.toFirstUpper»();
                     «ELSE»
-                        // Default: the id parts joined by "-". Override if a different string form is required.
-                        return «FOR a : id.attributes SEPARATOR ' + "-" + '»get«a.name.toFirstUpper»()«ENDFOR»;
+                        // Default: the id parts joined by SEPARATOR. Override - together with valueOf
+                        // below - if a different string form is required.
+                        return «FOR a : id.attributes SEPARATOR ' + SEPARATOR + '»get«a.name.toFirstUpper»()«ENDFOR»;
                     «ENDIF»
                 }
 
                 «ENDIF»
                 «new SrcVoBaseMethods(ctx, id)»
+                «IF id.base === null»
+                    «idStrings»
+                «ENDIF»
             }
         '''
 
