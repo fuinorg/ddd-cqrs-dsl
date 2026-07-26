@@ -7,6 +7,7 @@ import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcConstructorsWithParamsAssignment
+import org.fuin.dsl.ddd.gen.base.SrcEqualsHashCode
 import org.fuin.dsl.ddd.gen.base.SrcGetters
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcVarsDecl
@@ -100,6 +101,9 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
                 «new SrcVarsDecl(ctx, "private", localOptions, vo)»
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), vo, true)»
                 «new SrcGetters(ctx, GenerateOptions.empty(), "public final", vo.attributes)»
+                «IF vo.base === null»
+                    «new SrcEqualsHashCode(ctx, className, vo.attributes)»
+                «ENDIF»
             }
         '''
 

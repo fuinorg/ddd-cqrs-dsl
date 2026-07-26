@@ -7,6 +7,7 @@ import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcConstructorsWithParamsAssignment
 import org.fuin.dsl.ddd.gen.base.SrcEntityIdTypeMethods
+import org.fuin.dsl.ddd.gen.base.SrcEqualsHashCode
 import org.fuin.dsl.ddd.gen.base.SrcGetters
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcVarsDecl
@@ -75,6 +76,9 @@ class AbstractEntityIdArtifactFactory extends AbstractSource<EntityId> {
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), id)»
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, true)»
                 «new SrcGetters(ctx, GenerateOptions.empty(), "public final", id.attributes)»
+                «IF id.base === null»
+                    «new SrcEqualsHashCode(ctx, className, id.attributes)»
+                «ENDIF»
                 «new SrcEntityIdTypeMethods(ctx, id.entityNullsafe.name, id.base)»
             }
         '''

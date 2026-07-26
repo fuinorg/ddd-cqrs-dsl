@@ -19,6 +19,7 @@ package p.shared.domain.x.valueobject;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 
@@ -75,4 +76,24 @@ public abstract class AbstractMyValueObject4 implements ValueObject, Serializabl
         return b;
     }
     
+    @Override
+    public final int hashCode() {
+        return Objects.hash(a, b);
+    }
+    
+    @Override
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractMyValueObject4 other = (AbstractMyValueObject4) obj;
+        return Objects.equals(a, other.a)
+            && Objects.equals(b, other.b);
+    }
 }

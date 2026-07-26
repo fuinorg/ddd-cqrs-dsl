@@ -18,6 +18,7 @@
 package p.shared.domain.x.aggregateid;
 
 import java.io.Serial;
+import java.util.Objects;
 import org.fuin.ddd4j.core.AggregateRootId;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.core.StringBasedEntityType;
@@ -63,6 +64,25 @@ public abstract class AbstractMyAggregate2Id implements AggregateRootId, ValueOb
         return id;
     }
     
+    @Override
+    public final int hashCode() {
+        return Objects.hash(id);
+    }
+    
+    @Override
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractMyAggregate2Id other = (AbstractMyAggregate2Id) obj;
+        return Objects.equals(id, other.id);
+    }
     /** Name that identifies the entity uniquely within the context. */    
     public static final EntityType TYPE = new StringBasedEntityType("MyAggregate2");
     

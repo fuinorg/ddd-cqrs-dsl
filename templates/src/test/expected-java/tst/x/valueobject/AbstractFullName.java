@@ -19,6 +19,7 @@ package p.shared.domain.x.valueobject;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.ui.Examples;
@@ -90,4 +91,24 @@ public abstract class AbstractFullName implements ValueObject, Serializable {
         return lastName;
     }
     
+    @Override
+    public final int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
+    
+    @Override
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractFullName other = (AbstractFullName) obj;
+        return Objects.equals(firstName, other.firstName)
+            && Objects.equals(lastName, other.lastName);
+    }
 }

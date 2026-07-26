@@ -18,6 +18,7 @@
 package p.shared.domain.x.entityid;
 
 import java.io.Serial;
+import java.util.Objects;
 import org.fuin.ddd4j.core.EntityId;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.core.StringBasedEntityType;
@@ -77,6 +78,26 @@ public abstract class AbstractMyEntity4Id implements EntityId, ValueObject {
         return b;
     }
     
+    @Override
+    public final int hashCode() {
+        return Objects.hash(a, b);
+    }
+    
+    @Override
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractMyEntity4Id other = (AbstractMyEntity4Id) obj;
+        return Objects.equals(a, other.a)
+            && Objects.equals(b, other.b);
+    }
     /** Name that identifies the entity uniquely within the context. */    
     public static final EntityType TYPE = new StringBasedEntityType("MyEntity4");
     
