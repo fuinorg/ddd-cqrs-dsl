@@ -17,7 +17,8 @@ to the factory's source file.
 | Aggregate | [FinalAggregate](src/main/java/org/fuin/dsl/ddd/gen/aggregate/FinalAggregateArtifactFactory.xtend) | Generates the final (concrete) aggregate Java class. |  |
 | AggregateId | [AbstractAggregateId](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/AbstractAggregateIdArtifactFactory.xtend) | Generates an abstract base aggregate identifier Java class. |  |
 | AggregateId | [AggregateId](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/AggregateIdArtifactFactory.xtend) | Generates an aggregate identifier Java class. |  |
-| AggregateId | [AggregateIdStreamFactory](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/AggregateIdStreamFactoryArtifactFactory.xtend) | Generates the aggregate-id stream factory Java class. |  |
+| AggregateId | [AggregateIdStreamFactory](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/AggregateIdStreamFactoryArtifactFactory.xtend) | Generates the aggregate-id stream factory Java class. | Outdated - `IdStreamFactory` is gone from ddd-4-java |
+| AggregateId | [CombinedAggregateId³](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/CombinedAggregateIdArtifactFactory.xtend) | Delegates to `SimpleAggregateId` for a "base UUID" id, otherwise to `AbstractAggregateId` **and** `FinalAggregateId`. |  |
 | AggregateId | [FinalAggregateId](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/FinalAggregateIdArtifactFactory.xtend) | Generates the final (concrete) aggregate identifier Java class. |  |
 | AggregateId | [SimpleAggregateId](src/main/java/org/fuin/dsl/ddd/gen/aggregateid/SimpleAggregateIdArtifactFactory.xtend) | Generates a simple aggregate identifier Java class. |  |
 | Command | [Command](src/main/java/org/fuin/dsl/ddd/gen/command/CommandArtifactFactory.xtend) | Generates a command Java class. | - |
@@ -27,6 +28,7 @@ to the factory's source file.
 | Entity | [FinalEntity](src/main/java/org/fuin/dsl/ddd/gen/entity/FinalEntityArtifactFactory.xtend) | Generates the final (concrete) entity Java class. |  |
 | EntityId | [AbstractEntityId](src/main/java/org/fuin/dsl/ddd/gen/entityid/AbstractEntityIdArtifactFactory.xtend) | Generates an abstract base entity identifier Java class. |  |
 | EntityId | [EntityId](src/main/java/org/fuin/dsl/ddd/gen/entityid/EntityIdArtifactFactory.xtend) | Generates an entity identifier Java class. |  |
+| EntityId | [CombinedEntityId³](src/main/java/org/fuin/dsl/ddd/gen/entityid/CombinedEntityIdArtifactFactory.xtend) | Delegates to `SimpleEntityId` for a "base Integer" id, otherwise to `AbstractEntityId` **and** `FinalEntityId`. |  |
 | EntityId | [FinalEntityId](src/main/java/org/fuin/dsl/ddd/gen/entityid/FinalEntityIdArtifactFactory.xtend) | Generates the final (concrete) entity identifier Java class. |  |
 | EntityId | [SimpleEntityId](src/main/java/org/fuin/dsl/ddd/gen/entityid/SimpleEntityIdArtifactFactory.xtend) | Generates a simple entity identifier Java class. |  |
 | EnumObject | [AbstractEnum](src/main/java/org/fuin/dsl/ddd/gen/enumobject/AbstractEnumArtifactFactory.xtend) | Generates an abstract base enum Java class. |  |
@@ -35,16 +37,24 @@ to the factory's source file.
 | Event | [Event](src/main/java/org/fuin/dsl/ddd/gen/event/EventArtifactFactory.xtend) | Generates a domain event Java class. |  |
 | Event | [EventTest](src/main/java/org/fuin/dsl/ddd/gen/event/EventTestArtifactFactory.xtend) | Generates a JUnit test class for a domain event. |  |
 | Exception | [Exception](src/main/java/org/fuin/dsl/ddd/gen/except/ExceptionArtifactFactory.xtend) | Generates an exception Java class. |  |
+| ProcessManager | [AbstractProcessManager](src/main/java/org/fuin/dsl/ddd/gen/processmanager/AbstractProcessManagerArtifactFactory.xtend) | Generates the abstract process-manager view plus the state enum. Runtime-neutral (uses the `CommandOutbox` SPI). |  |
+| ProcessManager | [ProcessManager](src/main/java/org/fuin/dsl/ddd/gen/processmanager/ProcessManagerArtifactFactory.xtend) | Generates the write-once concrete process-manager view with one reaction stub per input event, annotated for the selected `runtime`. |  |
 | ResourceSet | [CtxExternalTypes¹](src/main/java/org/fuin/dsl/ddd/gen/resourceset/CtxExternalTypes.xtend) | Registers a set of external types (Byte, String, Date, UUID, …); does NOT create any source code. |  |
 | ResourceSet | [PackageInfo](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PackageInfoArtifactFactory.xtend) | Creates a `package-info.java` annotated with JSpecify's `@NullMarked` once for every generated package. |  |
+| ResourceSet | [SpringBeans](src/main/java/org/fuin/dsl/ddd/gen/resourceset/SpringBeansArtifactFactory.xtend) | Creates one Spring `@Configuration` per side registering every generated bean explicitly, so nothing has to component-scan the generated packages. |  |
 | Service | [Service](src/main/java/org/fuin/dsl/ddd/gen/service/ServiceArtifactFactory.xtend) | Generates the service interface Java class. | Rename to ServiceInterfaceArtifactFactory |
 | ValueObject | [AbstractValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/AbstractValueObjectArtifactFactory.xtend) | Generates an abstract base value object Java class. |  |
 | ValueObject | [CombinedValueObject²](src/main/java/org/fuin/dsl/ddd/gen/valueobject/CombinedValueObjectArtifactFactory.xtend) | Delegates to `SimpleStringValueObject` when possible, otherwise to `AbstractValueObject` **and** `FinalValueObject`. |  |
 | ValueObject | [FinalValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/FinalValueObjectArtifactFactory.xtend) | Generates the final (concrete) value object Java class. |  |
 | ValueObject | [SimpleStringValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/SimpleStringValueObjectArtifactFactory.xtend) | Generates a simple String-based value object Java class. |  |
 | ValueObject | [SimpleStringValueObjectTest](src/main/java/org/fuin/dsl/ddd/gen/valueobject/SimpleStringValueObjectTestArtifactFactory.xtend) | Generates a JUnit test class for a simple String-based value object. |  |
+| View | [View](src/main/java/org/fuin/dsl/ddd/gen/view/ViewArtifactFactory.xtend) | Generates the fully generated `<Base>View` (event set, dispatcher wiring, cron), annotated for the selected `runtime`. |  |
+| View | [ViewSpringApi⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewSpringApiArtifactFactory.xtend) | Generates the Spring `@HttpExchange` REST contract interface `<Base>ControllerApi`. |  |
+| View | [ViewQuarkusApi⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewQuarkusApiArtifactFactory.xtend) | Generates the JAX-RS + MicroProfile `@RegisterRestClient` REST contract interface `<Base>ResourceApi`. |  |
+| View | [FinalView⁵](src/main/java/org/fuin/dsl/ddd/gen/view/FinalViewArtifactFactory.xtend) | Generates the write-once `<Base>Controller`/`<Base>Resource` implementing the contract of the selected runtime, plus one event handler stub per projection event. |  |
+| View | [JpaViewTable⁶](src/main/java/org/fuin/dsl/ddd/gen/view/JpaViewTableArtifactFactory.xtend) | Generates the read-model JPA `@Entity` classes from the "JpaHint" hints in the view body. |  |
 
-**37 types total.**
+**47 types total.**
 
 ## Notes
 
@@ -58,6 +68,14 @@ to the factory's source file.
   regenerated folder while the final class goes to the non-generated sources. Do not
   configure it together with `AbstractValueObject`/`FinalValueObject`, or those
   artifacts are generated twice.
+- ³ `CombinedAggregateId` / `CombinedEntityId` work exactly like `CombinedValueObject`: they delegate
+  rather than emit, and must not be configured together with their delegates.
+- ⁴ The two view API factories ignore the `runtime` option - **both** contract interfaces are generated
+  for every view, normally into a separate api module whose framework dependencies are `<optional>`.
+- ⁵ `FinalView` emits **1 + n** artifacts: the controller/resource plus one handler per projection event.
+- ⁶ `JpaViewTable` emits **one artifact per declared table** and only binds the `View` model type; the
+  rendering lives in `base/AbstractJpaTableArtifactFactory` (a base class, not configurable on its own,
+  and therefore not listed above).
 - All other factories return a single-element list (`List.of(newArtifact(...))`),
   i.e. **1** artifact each (or `null`/0 during the preparation run or when
   preconditions aren't met).

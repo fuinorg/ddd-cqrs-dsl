@@ -59,16 +59,18 @@ public final class ArtifactNames {
     }
 
     /**
-     * Code-reference-registry key under which a view's generated REST contract interface
-     * ({@code <Base>ControllerApi} / {@code <Base>ResourceApi}) is registered, so that the concrete
-     * controller/resource (a different module/package) can import it. Runtime-independent so the
-     * interface factory and the implementing-class factory agree on the same key.
+     * Code-reference-registry key under which a view's generated REST contract interface is registered,
+     * so that the concrete controller/resource (a different module/package) can import it. Both flavours
+     * are always generated ({@code <Base>ControllerApi} for Spring, {@code <Base>ResourceApi} for
+     * Quarkus), so the key is qualified by runtime: the interface factory registers under its own
+     * runtime and the implementing-class factory looks up the one its {@code runtime} option selected.
      *
      * @param viewUniqueName Unique name of the view (see CqrsAbstractElementExtensions.uniqueName).
+     * @param runtime        Either {@code "spring"} or {@code "quarkus"}.
      *
      * @return Reference key.
      */
-    public static String restApiRefKey(final String viewUniqueName) {
-        return viewUniqueName + "#RestApi";
+    public static String restApiRefKey(final String viewUniqueName, final String runtime) {
+        return viewUniqueName + "#RestApi." + runtime;
     }
 }

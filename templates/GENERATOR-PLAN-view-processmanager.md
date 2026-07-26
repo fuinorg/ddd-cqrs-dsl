@@ -15,13 +15,15 @@ The generators are implemented; the code, tests and goldens are the source of tr
   (Command), `command.core` (Aggregate/Entity/Service), `query.core` (View), `query.api` (the view's REST
   contract interface, via a per-artifact `module` override), `process.core` (ProcessManager). Set in
   `srcgen4j-default.json`; `group` is left as-is.
-- **View** (`ViewArtifactFactory` + `ViewApiArtifactFactory` → genMainJava, `FinalViewArtifactFactory`
-  → mainJava):
+- **View** (`ViewArtifactFactory` + `ViewSpringApiArtifactFactory` + `ViewQuarkusApiArtifactFactory`
+  → genMainJava, `FinalViewArtifactFactory` → mainJava):
   - `<Base>View` — single fully-generated class (`implements core.View`, event set, dispatcher wiring,
     cron, DI header inlined). No abstract/final split: the view has no hand-written code. → `query.core`.
-  - `<Base>ControllerApi` / `<Base>ResourceApi` — regenerated **REST contract interface** emitted by the
-    dedicated `ViewApiArtifactFactory` into its own module (`query.api`), usable by a REST client and the
-    server: Spring `@HttpExchange`/`@GetExchange`, Quarkus JAX-RS. No JPA.
+  - `<Base>ControllerApi` **and** `<Base>ResourceApi` — regenerated **REST contract interfaces**, one per
+    dedicated factory, both emitted into `query.api` **regardless of the `runtime` option**: Spring
+    `@HttpExchange`/`@GetExchange`, and JAX-RS + MicroProfile `@RegisterRestClient`. No JPA. The api
+    module declares `spring-web`, `jakarta.ws.rs-api` and `microprofile-rest-client-api` as *optional*,
+    so a consumer picks one interface and adds only its dependency.
   - `<Base>Controller` / `<Base>Resource` — write-once server class (`query.core`) implementing the
     contract; imports the interface across modules, adds the **non-inherited** class annotation
     (`@RestController` / re-declared `@Path`) and the starter `EntityManager` queries.
@@ -42,10 +44,15 @@ The generators are implemented; the code, tests and goldens are the source of tr
   Verified against the example's versions (Spring Boot 3.4.4 / Framework 6.2.18, Quarkus 3.21.1).
 - Abstract/final split is used **only** where a class carries hand-written code (handlers, controller
   impl, PM reactions); the fully-derivable `<Base>View` is a single regenerated class.
-- The contract interface lives in its own module (`query.api`) via a **per-artifact `module` override**
-  in the hint, so it sits in a different package than the `query.core` view/impl. `ViewApiArtifactFactory`
-  registers the interface FQN (`ArtifactNames.restApiRefKey`) so the concrete controller imports it across
-  modules — the `*GeneratorTest` runs all factories over one shared two-pass context to reproduce this.
+- The contract interfaces live in their own module (`query.api`) via a **per-artifact `module` override**
+  in the hint, so they sit in a different package than the `query.core` view/impl. Each api factory
+  registers its interface FQN under a runtime-qualified key (`ArtifactNames.restApiRefKey(view, runtime)`)
+  so the concrete controller imports the right one across modules — the `*GeneratorTest` runs all
+  factories over one shared two-pass context to reproduce this.
+- Generating **both** contracts (rather than switching on `runtime`) keeps the api module usable by
+  clients on either stack. It is safe in one jar: classes load lazily and annotations whose type is
+  absent are ignored, and Quarkus raises nothing for an interface that is both `@RegisterRestClient` and
+  implemented by a resource (checked against `quarkus-rest-client-deployment` 3.23.4).
 
 ## Not yet generated (remaining/optional work)
 

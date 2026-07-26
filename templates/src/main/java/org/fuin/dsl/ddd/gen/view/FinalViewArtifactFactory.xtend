@@ -89,8 +89,9 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         val restPath = if (view.restPath === null) "/" + ViewRestSupport.kebabCase(baseName) else view.restPath
         val ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("jakarta.persistence.EntityManager")
-        // The REST contract interface lives in its own module/package - import it.
-        ctx.requiresReference(ArtifactNames.restApiRefKey(view.uniqueName))
+        // Both REST contract interfaces live in their own module/package and are always generated -
+        // import the one belonging to this runtime.
+        ctx.requiresReference(ArtifactNames.restApiRefKey(view.uniqueName, runtime))
         if (runtime == "quarkus") {
             val apiName = baseName + "ResourceApi"
             ctx.requiresImport("jakarta.inject.Inject")

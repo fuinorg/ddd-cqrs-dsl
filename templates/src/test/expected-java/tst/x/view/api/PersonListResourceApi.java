@@ -23,6 +23,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import p.x.m.Integer;
 import p.x.m.List;
 import p.x.m.PersonListItem;
@@ -30,14 +31,24 @@ import p.x.m.String;
 import p.x.m.UserId;
 
 /**
- * REST contract for the "PersonList" view: usable as a MicroProfile REST client and
+ * REST contract for the "PersonList" view: a MicroProfile REST Client interface, also
  * implemented by the PersonListResource server class. Declares the operations that MUST be
  * provided - no implementation and no persistence assumptions. Regenerated on every build.
  *
- * <p>JAX-RS does not inherit class-level annotations, so the server class re-declares
- * {@code @Path}; the method annotations below are inherited by the implementation.
+ * <p>As a client, inject it with {@code @RestClient} and point it at a server with
+ * {@code quarkus.rest-client.person-list.url=...}. JAX-RS does not inherit class-level
+ * annotations, so the server class re-declares {@code @Path}; the method annotations below are
+ * inherited by the implementation.
+ *
+ * <p>Quarkus flavour - requires {@code jakarta.ws.rs:jakarta.ws.rs-api} and
+ * {@code org.eclipse.microprofile.rest.client:microprofile-rest-client-api}, which the module
+ * owning this interface declares as <em>optional</em> dependencies (a Quarkus consumer gets
+ * both from {@code quarkus-rest-client}). Add them to whatever uses this interface. The Spring
+ * flavour {@link PersonListControllerApi} is generated alongside it and declares the same
+ * operations; use one or the other, not both.
  */
 @Path("/persons")
+@RegisterRestClient(configKey = "person-list")
 public interface PersonListResourceApi {
 
     /**

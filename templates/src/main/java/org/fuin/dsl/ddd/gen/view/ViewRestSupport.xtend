@@ -11,9 +11,10 @@ import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
 
 /**
- * Shared logic for turning a view's methods into REST operations. Used by both
- * {@link ViewApiArtifactFactory} (the contract interface) and {@link FinalViewArtifactFactory}
- * (the controller/resource implementing it) so the two can never drift apart.
+ * Shared logic for turning a view's methods into REST operations. Used by the contract interface
+ * factories ({@link ViewSpringApiArtifactFactory} / {@link ViewQuarkusApiArtifactFactory}) and by
+ * {@link FinalViewArtifactFactory} (the controller/resource implementing one of them) so they can never
+ * drift apart.
  */
 class ViewRestSupport {
 

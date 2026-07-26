@@ -33,6 +33,11 @@ import p.x.m.UserId;
  * HTTP-interface client and implemented by the PersonListController server class (which adds
  * {@code @RestController}). Declares the operations that MUST be provided - no implementation
  * and no persistence assumptions. Regenerated on every build.
+ *
+ * <p>Spring flavour - requires {@code org.springframework:spring-web}, which the module owning
+ * this interface declares as an <em>optional</em> dependency. Add that dependency to whatever
+ * uses this interface. The Quarkus flavour {@link PersonListResourceApi} is generated alongside
+ * it and declares the same operations; use one or the other, not both.
  */
 @HttpExchange("/persons")
 public interface PersonListControllerApi {

@@ -104,7 +104,8 @@
 			"name": "org.fuin.dsl.cqrs.cqrsDsl.View", "module": "query.core", "group": "view",
 			"artifacts": [
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewArtifactFactory", "folder": "genMainJava" },
-				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewApiArtifactFactory", "folder": "genMainJava", "module": "query.api" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewSpringApiArtifactFactory", "folder": "genMainJava", "module": "query.api" },
+				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.ViewQuarkusApiArtifactFactory", "folder": "genMainJava", "module": "query.api" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.FinalViewArtifactFactory", "folder": "mainJava" },
 				{ "artifactFactory": "org.fuin.dsl.ddd.gen.view.JpaViewTableArtifactFactory", "folder": "genMainJava" }
 			]

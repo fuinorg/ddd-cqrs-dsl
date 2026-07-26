@@ -17,11 +17,11 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
- * Generates the regenerated (write-every-build) artifacts for a {@code view}: the concrete view
- * implementing {@code org.fuin.cqrs4j.core.View} and the REST contract interface (Spring
- * {@code @HttpExchange} / Quarkus JAX-RS) that both a REST client and the server class can use. The view
- * carries no hand-written code, so it is fully generated (no abstract/final split); the write-once event
- * handlers and the concrete controller/resource implementing the contract come from
+ * Generates the regenerated (write-every-build) artifact for a {@code view}: the concrete view
+ * implementing {@code org.fuin.cqrs4j.core.View}. The view carries no hand-written code, so it is fully
+ * generated (no abstract/final split). The REST contract interfaces come from
+ * {@link ViewSpringApiArtifactFactory} / {@link ViewQuarkusApiArtifactFactory}, the write-once event
+ * handlers and the concrete controller/resource implementing one of them from
  * {@link FinalViewArtifactFactory}. The runtime is selected by the {@code runtime} generator option
  * ({@code spring} default | {@code quarkus}).
  */
@@ -49,7 +49,8 @@ class ViewArtifactFactory extends AbstractSource<View> {
         val List<GeneratedArtifact> artifacts = new ArrayList
 
         // --- View (fully generated, no customization point) --------------------------------------
-        // The REST contract interface is emitted separately by ViewApiArtifactFactory (own module).
+        // The REST contract interfaces are emitted separately by ViewSpringApiArtifactFactory and
+        // ViewQuarkusApiArtifactFactory (own module).
         artifacts.add(artifact(pkg, viewName, createView(refReg, view, pkg, baseName, viewName, events, runtime), view))
 
         return artifacts
