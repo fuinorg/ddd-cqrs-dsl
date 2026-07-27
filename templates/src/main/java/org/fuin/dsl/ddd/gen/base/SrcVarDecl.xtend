@@ -17,6 +17,7 @@ class SrcVarDecl implements CodeSnippet {
     val GenerateOptions options
     val Variable variable
     val boolean builderPopulated
+    val boolean mandatoryAnnotated
 
     /**
      * Constructor with all mandatory data.
@@ -40,14 +41,35 @@ class SrcVarDecl implements CodeSnippet {
      * @param builderPopulated TRUE if a builder assigns the attribute after construction.
      */
     new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, Variable variable, boolean builderPopulated) {
+        this(ctx, modifiers, options, variable, builderPopulated, false)
+    }
+
+    /**
+     * Constructor that additionally allows stating mandatory attributes as a Bean Validation constraint.
+     *
+     * @param ctx Context.
+     * @param modifiers Modifiers for the attribute.
+     * @param options Options to use.
+     * @param variable Attribute or Parameter.
+     * @param builderPopulated TRUE if a builder assigns the attribute after construction.
+     * @param mandatoryAnnotated TRUE to emit {@code @NotNull} on a non-optional attribute, so that
+     *                           "this value has to be there" can be read from the type instead of only
+     *                           being enforced by the builder's imperative check.
+     */
+    new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, Variable variable, boolean builderPopulated,
+        boolean mandatoryAnnotated) {
         this.ctx = ctx
         this.modifiers = modifiers
         this.options = options
         this.variable = variable
         this.builderPopulated = builderPopulated
+        this.mandatoryAnnotated = mandatoryAnnotated
 
         if (variable.optional !== null && !variable.isPrimitive(ctx)) {
             ctx.requiresImport("org.jspecify.annotations.Nullable")
+        }
+        if (mandatoryAnnotated && variable.optional === null && !variable.isPrimitive(ctx)) {
+            ctx.requiresImport("jakarta.validation.constraints.NotNull")
         }
         addRequiredReferences(variable, ctx)
     }
@@ -83,6 +105,9 @@ class SrcVarDecl implements CodeSnippet {
             «ENDFOR»
             «IF variable.optional !== null && !variable.isPrimitive(ctx)»
                 @Nullable
+            «ENDIF»
+            «IF mandatoryAnnotated && variable.optional === null && !variable.isPrimitive(ctx)»
+                @NotNull
             «ENDIF»
         '''
     }

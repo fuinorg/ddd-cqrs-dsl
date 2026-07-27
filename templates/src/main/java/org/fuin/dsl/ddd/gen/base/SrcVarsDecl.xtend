@@ -21,6 +21,7 @@ class SrcVarsDecl implements CodeSnippet {
     val GenerateOptions options
     val List<? extends Variable> attributes
     val boolean builderPopulated
+    val boolean mandatoryAnnotated
 
     /**
      * Constructor with list of attributes.
@@ -45,10 +46,26 @@ class SrcVarsDecl implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, List<? extends Variable> attributes,
         boolean builderPopulated) {
+        this(ctx, modifiers, options, attributes, builderPopulated, false)
+    }
+
+    /**
+     * Constructor that additionally allows stating mandatory attributes as a Bean Validation constraint.
+     *
+     * @param ctx Context.
+     * @param modifiers Modifiers for the attribute.
+     * @param options Options to use.
+     * @param attributes List.
+     * @param builderPopulated TRUE if a builder assigns the attributes after construction.
+     * @param mandatoryAnnotated TRUE to emit {@code @NotNull} on every non-optional attribute.
+     */
+    new(CodeSnippetContext ctx, String modifiers, GenerateOptions options, List<? extends Variable> attributes,
+        boolean builderPopulated, boolean mandatoryAnnotated) {
         this.ctx = ctx
         this.options = options
         this.attributes = new ArrayList<Variable>(attributes)
         this.builderPopulated = builderPopulated
+        this.mandatoryAnnotated = mandatoryAnnotated
     }
 
     /**
@@ -85,7 +102,8 @@ class SrcVarsDecl implements CodeSnippet {
      * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Event event, boolean builderPopulated) {
-        this(ctx, visibility, options, event.origin === null ? event.attributes : event.origin.parameters, builderPopulated);
+        this(ctx, visibility, options, event.origin === null ? event.attributes : event.origin.parameters,
+            builderPopulated, true);
     }
 
     /**
@@ -110,7 +128,8 @@ class SrcVarsDecl implements CodeSnippet {
      * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Command command, boolean builderPopulated) {
-        this(ctx, visibility, options, command.target === null ? command.attributes : command.target.parameters, builderPopulated);
+        this(ctx, visibility, options, command.target === null ? command.attributes : command.target.parameters,
+            builderPopulated, true);
     }
 
     /**
@@ -128,8 +147,8 @@ class SrcVarsDecl implements CodeSnippet {
     override toString() {
         '''
             «FOR attribute : attributes.nullSafe»
-                «new SrcVarDecl(ctx, "private", options, attribute, builderPopulated)»
-                
+                «new SrcVarDecl(ctx, "private", options, attribute, builderPopulated, mandatoryAnnotated)»
+
             «ENDFOR»
         '''
     }

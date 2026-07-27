@@ -15,38 +15,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see http://www.gnu.org/licenses/.
  */
-package p.shared.domain.x.ev;
+package p.command.api.x.cmd;
 
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.util.Objects;
+import org.fuin.cqrs4j.jsonb.AbstractCommand;
 import org.fuin.ddd4j.core.EventType;
-import org.fuin.ddd4j.jsonb.AbstractEvent;
 import org.fuin.esc.api.HasSerializedDataTypeConstant;
 import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 import org.fuin.objects4j.ui.Examples;
-import x.ev.MyString;
+import org.jspecify.annotations.Nullable;
+import x.cmd.MyString;
 
 /**
- * Event E - Independent of an aggregate with value object reference.
+ * Command D - Attributes are value objects rather than plain types.
  */
 @HasSerializedDataTypeConstant
-public final class EventE extends AbstractEvent {
+public final class CommandD extends AbstractCommand {
 
     @Serial
     private static final long serialVersionUID = 1000L;
 
-    /** Unique name used to store the event. */
-    public static final EventType EVENT_TYPE = new EventType("EventE");
+    /** Unique name used to store the command. */
+    public static final EventType EVENT_TYPE = new EventType("CommandD");
     
     /**
-     * Type used to look up the serializer and deserializer. The event store registry is built
-     * by scanning for the annotation above, so without this constant the type is unknown at
-     * runtime and neither storing nor reading it back works.
+     * Type used to look up the serializer and deserializer. The registry is built by scanning
+     * for the annotation above, so without this constant the command cannot be deserialized
+     * when it arrives at the command endpoint.
      */
     public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
     
@@ -54,7 +55,7 @@ public final class EventE extends AbstractEvent {
     @JsonbProperty("a")
     private MyString a;
     
-    @NotNull
+    @Nullable
     @JsonbProperty("b")
     @Examples(value = { "123","456" })
     private MyString b;
@@ -64,27 +65,26 @@ public final class EventE extends AbstractEvent {
      * Protected default constructor for deserialization.
      */
     @SuppressWarnings("NullAway.Init")
-    protected EventE() {
+    protected CommandD() {
         super();
     }
     
     /**
-     * Event E - Independent of an aggregate with value object reference.
+     * Command D - Attributes are value objects rather than plain types.
      *
     * @param a Field A 
     * @param b Field B 
     */
-    public EventE(final MyString a, final MyString b) {
+    public CommandD(final MyString a, @Nullable final MyString b) {
         super();
         Contract.requireArgNotNull("a", a);
-        Contract.requireArgNotNull("b", b);
         
         this.a = a;
         this.b = b;
     }
 
     @Override
-    public EventType getEventType() {
+    public final EventType getEventType() {
         return EVENT_TYPE;
     }
 
@@ -93,7 +93,7 @@ public final class EventE extends AbstractEvent {
      *
      * @return Current value.
      */
-    public MyString getA() {
+    public final MyString getA() {
         return a;
     }
     
@@ -102,14 +102,15 @@ public final class EventE extends AbstractEvent {
      *
      * @return Current value.
      */
-    public MyString getB() {
+    @Nullable
+    public final MyString getB() {
         return b;
     }
     
 
     @Override
-    public String toString() {
-        return Objects.requireNonNull(KeyValueEL.replace("Something interesting happened!"
+    public final String toString() {
+        return Objects.requireNonNull(KeyValueEL.replace("Command D"
         , new KeyValue("a", a)
         , new KeyValue("b", b)
         ));

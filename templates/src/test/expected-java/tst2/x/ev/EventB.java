@@ -18,6 +18,7 @@
 package p.shared.domain.x.ev;
 
 import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -51,6 +52,7 @@ public final class EventB extends AbstractDomainEvent<CustomerId> {
      */
     public static final SerializedDataType SER_TYPE = new SerializedDataType(EVENT_TYPE.asBaseType());
     
+    @NotNull
     @JsonbProperty("a")
     @Examples(value = { "Abc" })
     @SuppressWarnings("NullAway.Init")
