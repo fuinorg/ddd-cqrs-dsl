@@ -100,6 +100,19 @@ class CommandArtifactFactoryTest {
 
     }
 
+    @Test
+    def void testCreateCommandF() {
+
+        // Targets a method AND declares an attribute of its own - both have to be generated.
+        val context = new HashMap<String, Object>()
+        val refReg = context.codeReferenceRegistry
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.cmd.CustomerId", "p.x.cmd.CustomerId")
+
+        testCreate(context, "CommandF")
+
+    }
+
     private def testCreate(Map<String, Object> context, String commandName) {
 
         // PREPARE

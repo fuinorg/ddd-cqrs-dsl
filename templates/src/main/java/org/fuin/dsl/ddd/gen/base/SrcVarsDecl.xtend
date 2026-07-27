@@ -9,6 +9,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 
@@ -102,8 +103,7 @@ class SrcVarsDecl implements CodeSnippet {
      * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Event event, boolean builderPopulated) {
-        this(ctx, visibility, options, event.origin === null ? event.attributes : event.origin.parameters,
-            builderPopulated, true);
+        this(ctx, visibility, options, event.eventVariables, builderPopulated, true);
     }
 
     /**
@@ -128,8 +128,7 @@ class SrcVarsDecl implements CodeSnippet {
      * @param builderPopulated TRUE if a builder assigns the attributes after construction.
      */
     new(CodeSnippetContext ctx, String visibility, GenerateOptions options, Command command, boolean builderPopulated) {
-        this(ctx, visibility, options, command.target === null ? command.attributes : command.target.parameters,
-            builderPopulated, true);
+        this(ctx, visibility, options, command.commandVariables, builderPopulated, true);
     }
 
     /**

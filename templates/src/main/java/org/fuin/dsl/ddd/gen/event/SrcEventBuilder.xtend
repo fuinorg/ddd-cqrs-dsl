@@ -4,6 +4,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEventExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -51,7 +52,7 @@ class SrcEventBuilder implements CodeSnippet {
     }
 
     override toString() {
-        var variables = event.origin === null ? event.attributes : event.origin.parameters
+        var variables = event.eventVariables
         '''
         /**
          * Builds an instance of the outer class.

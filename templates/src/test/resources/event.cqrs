@@ -40,6 +40,14 @@ project p {
 
 				}
 
+				/** Renames the customer. */
+				method rename fires EventH {
+
+					/** The new name. */
+					MyString newName
+
+				}
+
 				/** Aggregate event B. */
 				event EventB {
 					/** A. */
@@ -99,6 +107,21 @@ project p {
 			@ExileEvent
 			event EventG {
 				message "Something interesting happened!"
+			}
+
+			/**
+			 * Event H - Copies the operation's parameters and declares an attribute of its own on top.
+			 * The generated event has to carry both: the parameters first, then the extra attribute.
+			 * Its message renders one of each, so an attribute silently dropped here would leave a
+			 * placeholder nothing supplies.
+			 */
+			event EventH copies-attributes-of Customer.rename {
+
+				/** The name before the change. */
+				MyString oldName
+
+				message "Renamed from ${oldName} to ${newName}"
+
 			}
 
 		}

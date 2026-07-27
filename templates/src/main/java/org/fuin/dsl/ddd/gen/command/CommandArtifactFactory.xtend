@@ -20,6 +20,7 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
@@ -91,7 +92,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
             // toString() renders KeyValueEL.replace(...) over the same variables the constructor uses:
             // the command's own attributes, or - for a command derived from a method/constructor - the
             // target's parameters. Guard the imports on that same set, not on command.attributes alone.
-            val variables = if (command.target === null) command.attributes else command.target.parameters
+            val variables = command.commandVariables
             if (variables.nullSafe.size > 0) {
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValue")
                 ctx.requiresImport("org.fuin.objects4j.core.KeyValueEL")
@@ -136,7 +137,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
     }
 
     def createDomainCommand(SimpleCodeSnippetContext ctx, Command command, String pkg, String className) {
-    	var variables = command.target === null ? command.attributes : command.target.parameters
+    	var variables = command.commandVariables
         val String src = ''' 
             «new SrcJavaDocType(command)»
             «IF options.jaxb»
@@ -205,7 +206,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
     }
 
     def createStandardCommand(SimpleCodeSnippetContext ctx, Command command, String pkg, String className) {
-    	var variables = command.target === null ? command.attributes : command.target.parameters
+    	var variables = command.commandVariables
         val String src = ''' 
             «new SrcJavaDocType(command)»
             «IF options.jaxb»

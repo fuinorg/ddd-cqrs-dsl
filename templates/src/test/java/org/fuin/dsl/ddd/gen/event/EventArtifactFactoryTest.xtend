@@ -120,6 +120,20 @@ class EventArtifactFactoryTest {
 
     }
 
+    @Test
+    def void testCreateEventH() {
+
+        // Copies the operation's parameters AND declares an attribute of its own - both have to be
+        // generated, or the message renders a placeholder nobody supplies.
+        val context = new HashMap<String, Object>()
+        val refReg = context.codeReferenceRegistry
+        refReg.putReference("p.x.types.String", "java.lang.String")
+        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
+
+        testCreate(context, "EventH")
+
+    }
+
     private def testCreate(Map<String, Object> context, String eventName) {
         
         // PREPARE

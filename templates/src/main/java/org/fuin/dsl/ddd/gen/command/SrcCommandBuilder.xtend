@@ -1,4 +1,5 @@
 package org.fuin.dsl.ddd.gen.command
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
@@ -54,7 +55,7 @@ class SrcCommandBuilder implements CodeSnippet {
     }
 
     override toString() {
-        var variables = command.target === null ? command.attributes : command.target.parameters
+        var variables = command.commandVariables
         '''
         /**
          * Builds an instance of the outer class.
