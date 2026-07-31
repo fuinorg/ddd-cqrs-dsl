@@ -31,6 +31,8 @@
 		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<!-- MIMA: Maven Resolver as a library, used to resolve a model 'dependency'. -->
+		<version.mima>2.4.43</version.mima>
 	</properties>
 
 	<modules>

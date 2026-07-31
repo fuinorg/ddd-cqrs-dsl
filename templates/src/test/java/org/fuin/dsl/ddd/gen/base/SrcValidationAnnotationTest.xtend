@@ -36,9 +36,9 @@ class SrcValidationAnnotationTest {
 
         // PREPARE
         val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.y.types.String", "java.lang.String")
-        refReg.putReference("p.y.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        refReg.putReference("org.fuin.types.String", "java.lang.String")
+        refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
+        refReg.putReference("org.fuin.a.NoArgConstraint", "a.b.c.NoArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -62,7 +62,7 @@ class SrcValidationAnnotationTest {
         val refReg = new SimpleCodeReferenceRegistry()
         refReg.putReference("org.fuin.types.String", "java.lang.String")
         refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.y.a.OneArgConstraint", "a.b.c.OneArgConstraint")
+        refReg.putReference("org.fuin.a.OneArgConstraint", "a.b.c.OneArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -86,7 +86,7 @@ class SrcValidationAnnotationTest {
         val refReg = new SimpleCodeReferenceRegistry()
         refReg.putReference("org.fuin.types.String", "java.lang.String")
         refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.y.a.TwoArgsConstraint", "a.b.c.TwoArgsConstraint")
+        refReg.putReference("org.fuin.a.TwoArgsConstraint", "a.b.c.TwoArgsConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")

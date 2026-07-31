@@ -31,7 +31,7 @@ The plugins for IntelliJ IDEA and Eclipse provide several nice features:
 - Go-to-definition
 - Find-usages
 - Rename
-- Resolution of remote references via a `dependencies.json` catalog
+- Resolution of references against the models of a declared `dependency`
 
 > [!NOTE]  
 > Check out these [dsl-examples](https://github.com/fuinorg/ddd-cqrs-dsl/tree/main/dsl-examples) for DSL files.

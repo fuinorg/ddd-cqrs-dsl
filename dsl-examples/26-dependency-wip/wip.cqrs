@@ -1,0 +1,9 @@
+// Stands in for a model that is not published yet - the case the "local" clause exists for. The
+// module level dependency in 26-dependency.cqrs reads this directory.
+context example_wip {
+
+    module draft {
+        type Sku
+    }
+
+}

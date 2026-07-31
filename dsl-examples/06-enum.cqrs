@@ -1,41 +1,34 @@
-project p_06_enum {
+context p_06_enum {
 
-	context enums {
+    module enums.m {
+        type String
+        type Integer
 
-		namespace m {
+        // Simplest form: just names
+        enum Color {
 
-			type String
-			type Integer
+            instances {
+                RED
+                GREEN
+                deprecated BLUE // Marked to be 'deprecated'
+            }
 
-			// Simplest form: just names
-			enum Color {
+        }
 
-				instances {
-					RED
-					GREEN
-					deprecated BLUE // Marked to be 'deprecated' 
-				}
+        // With attributes -> each instance provides values
+        // The 'base' type is possibly used for persisting the
+        // enumeration value (like in a database column).
+        // It's expected to be stable over time (never changing).
+        enum Priority base Integer {
 
-			}
+            Integer code
+            String title
 
-			// With attributes -> each instance provides values
-			// The 'base' type is possibly used for persisting the
-			// enumeration value (like in a database column).
-			// It's expected to be stable over time (never changing). 
-			enum Priority base Integer {
+            instances {
+                LOW(1, "low")
+                HIGH(2, "high")
+            }
 
-				Integer code
-				String title
-
-				instances {
-					LOW(1, "low")
-					HIGH(2, "high")
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

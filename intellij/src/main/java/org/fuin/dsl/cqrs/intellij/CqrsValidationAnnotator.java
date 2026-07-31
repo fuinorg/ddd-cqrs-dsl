@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationInstance;
@@ -18,17 +19,25 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsDependencyDecl;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExternalType;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsGenericArgs;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsHintDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsImportDecl;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsImportFqn;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsInvariants;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsJson;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsModuleDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsContextDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsReferenceElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessManager;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsPsiUtil;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessReaction;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessState;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsParameter;
@@ -38,6 +47,9 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsTypeRef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsViewDef;
+import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
+import org.fuin.dsl.cqrs.intellij.remote.CqrsRemoteScopeResolver;
+import org.fuin.dsl.cqrs.intellij.remote.RemoteScopeEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,6 +120,10 @@ public final class CqrsValidationAnnotator implements Annotator {
             CqrsProcessManager pm = (CqrsProcessManager) element;
             checkProcessManager(pm, holder);
             checkProcessManagerCronSchedule(pm, holder);
+        } else if (element instanceof CqrsDependencyDecl) {
+            checkDependency((CqrsDependencyDecl) element, holder);
+        } else if (element instanceof CqrsImportDecl) {
+            checkImport((CqrsImportDecl) element, holder);
         } else if (element instanceof CqrsProcessReaction) {
             checkProcessReaction((CqrsProcessReaction) element, holder);
         } else if (element instanceof CqrsViewDef) {
@@ -138,6 +154,145 @@ public final class CqrsValidationAnnotator implements Annotator {
                     .range(nameRange(hint))
                     .create();
         }
+    }
+
+    // --- dependency -----------------------------------------------------------------------------
+
+    /**
+     * Reports a coordinate that is not a Maven GAV, and a coordinate declared twice in the same
+     * block. Mirrors {@code CqrsDslValidator.checkDependencyCoordinate/checkDuplicateDependency}.
+     */
+    private void checkDependency(@NotNull CqrsDependencyDecl dependency, @NotNull AnnotationHolder holder) {
+        String coordinate = CqrsPsiUtil.getDependencyCoordinate(dependency);
+        PsiElement range = CqrsValidationUtil.firstTokenAfter(
+                dependency, CqrsTypes.KW_DEPENDENCY, CqrsTypes.STRING);
+        if (range == null) {
+            return;
+        }
+        String local = CqrsPsiUtil.getDependencyLocal(dependency);
+        RemoteScopeEntry entry = RemoteScopeEntry.parse(coordinate, local);
+        if (entry == null) {
+            error(holder, range, "A dependency must be 'groupId:artifactId:version', but was '" + coordinate + "'");
+            return;
+        }
+        PsiElement parent = dependency.getParent();
+        if (parent == null) {
+            return;
+        }
+        for (CqrsDependencyDecl sibling : PsiTreeUtil.getChildrenOfTypeAsList(parent, CqrsDependencyDecl.class)) {
+            if (sibling == dependency) {
+                break; // only the later occurrence is reported
+            }
+            if (coordinate != null && coordinate.equals(CqrsPsiUtil.getDependencyCoordinate(sibling))) {
+                error(holder, range, "Duplicate dependency '" + coordinate + "'");
+                return;
+            }
+        }
+
+        // A well formed coordinate must also resolve to something. Reads only the on-disk cache and
+        // what the background download already reported, so nothing blocks here.
+        PsiFile file = dependency.getContainingFile();
+        if (file != null) {
+            String problem = CqrsRemoteScopeResolver.getInstance(dependency.getProject())
+                    .problem(file, entry);
+            if (problem != null) {
+                error(holder, range, "Cannot resolve dependency '" + coordinate + "': " + problem);
+            }
+        }
+    }
+
+    // --- import ---------------------------------------------------------------------------------
+
+    /**
+     * Reports an import that matches nothing, an import declared twice in the same block, an import
+     * a module repeats from its context, and an import nothing in the block refers to. Mirrors
+     * {@code CqrsDslValidator.checkImportResolves/checkDuplicateImport/checkUnusedImport}.
+     */
+    private void checkImport(@NotNull CqrsImportDecl imp, @NotNull AnnotationHolder holder) {
+        CqrsImportFqn fqnElement = PsiTreeUtil.getChildOfType(imp, CqrsImportFqn.class);
+        if (fqnElement == null) {
+            return;
+        }
+        String imported = CqrsNames.unescapeQualified(fqnElement.getText().replaceAll("\\s+", ""));
+        if (imported == null || imported.isEmpty()) {
+            return;
+        }
+
+        PsiElement parent = imp.getParent();
+        if (parent == null) {
+            return;
+        }
+
+        // Duplicate in the same block - only the later occurrence is reported.
+        for (CqrsImportDecl sibling : PsiTreeUtil.getChildrenOfTypeAsList(parent, CqrsImportDecl.class)) {
+            if (sibling == imp) {
+                break;
+            }
+            if (imported.equals(importedNameOf(sibling))) {
+                error(holder, fqnElement, "Duplicate import '" + imported + "'");
+                return;
+            }
+        }
+
+        List<String> single = List.of(imported);
+        boolean matchesSomething = false;
+        for (CqrsNamedElement decl : CqrsResolveUtil.resolvableDeclarations(imp)) {
+            String fqn = CqrsResolveUtil.getQualifiedName(decl);
+            if (CqrsResolveUtil.coveredByImport(fqn, single) || fqn.equals(imported)) {
+                matchesSomething = true;
+                break;
+            }
+        }
+        if (!matchesSomething) {
+            error(holder, fqnElement, "Import '" + imported + "' does not match any context, module or type");
+            return;
+        }
+
+        // A module repeating an import its context already declares is only a warning.
+        if (parent instanceof CqrsModuleDef) {
+            CqrsContextDef context = PsiTreeUtil.getParentOfType(imp, CqrsContextDef.class);
+            if (context != null) {
+                for (CqrsImportDecl ctxImport : PsiTreeUtil.getChildrenOfTypeAsList(context, CqrsImportDecl.class)) {
+                    if (imported.equals(importedNameOf(ctxImport))) {
+                        holder.newAnnotation(HighlightSeverity.WARNING,
+                                        "Import '" + imported + "' is already declared by context '"
+                                                + context.getName() + "'")
+                                .range(fqnElement)
+                                .create();
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (!isImportUsed(parent, imported)) {
+            holder.newAnnotation(HighlightSeverity.WARNING, "Import '" + imported + "' is not used")
+                    .range(fqnElement)
+                    .create();
+        }
+    }
+
+    /** Whether any reference inside the block resolves to something the import covers. */
+    private boolean isImportUsed(@NotNull PsiElement block, @NotNull String imported) {
+        List<String> single = List.of(imported);
+        for (CqrsReferenceElement ref : PsiTreeUtil.findChildrenOfType(block, CqrsReferenceElement.class)) {
+            String name = ref.getReferencedName();
+            if (name == null || name.isEmpty()) {
+                continue;
+            }
+            for (CqrsNamedElement decl : CqrsResolveUtil.resolve(ref, name)) {
+                if (CqrsResolveUtil.coveredByImport(CqrsResolveUtil.getQualifiedName(decl), single)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    private static String importedNameOf(@NotNull CqrsImportDecl imp) {
+        CqrsImportFqn fqn = PsiTreeUtil.getChildOfType(imp, CqrsImportFqn.class);
+        return fqn == null ? null : CqrsNames.unescapeQualified(fqn.getText().replaceAll("\\s+", ""));
     }
 
     // --- process manager ------------------------------------------------------------------------

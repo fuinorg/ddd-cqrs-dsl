@@ -69,13 +69,13 @@ public interface CqrsDslPackage extends EPackage
   int DOMAIN_MODEL = 0;
 
   /**
-   * The feature id for the '<em><b>Projects</b></em>' containment reference list.
+   * The feature id for the '<em><b>Contexts</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int DOMAIN_MODEL__PROJECTS = 0;
+  int DOMAIN_MODEL__CONTEXTS = 0;
 
   /**
    * The number of structural features of the '<em>Domain Model</em>' class.
@@ -87,52 +87,6 @@ public interface CqrsDslPackage extends EPackage
   int DOMAIN_MODEL_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProjectImpl <em>Project</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProjectImpl
-   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProject()
-   * @generated
-   */
-  int PROJECT = 1;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROJECT__NAME = 0;
-
-  /**
-   * The feature id for the '<em><b>Hints</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROJECT__HINTS = 1;
-
-  /**
-   * The feature id for the '<em><b>Contexts</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROJECT__CONTEXTS = 2;
-
-  /**
-   * The number of structural features of the '<em>Project</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PROJECT_FEATURE_COUNT = 3;
-
-  /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl <em>Context</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -140,7 +94,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getContext()
    * @generated
    */
-  int CONTEXT = 2;
+  int CONTEXT = 1;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -152,31 +106,40 @@ public interface CqrsDslPackage extends EPackage
   int CONTEXT__NAME = 0;
 
   /**
+   * The feature id for the '<em><b>Dependencies</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTEXT__DEPENDENCIES = 1;
+
+  /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CONTEXT__IMPORTS = 1;
+  int CONTEXT__IMPORTS = 2;
 
   /**
-   * The feature id for the '<em><b>Namespaces</b></em>' containment reference list.
+   * The feature id for the '<em><b>Hints</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CONTEXT__NAMESPACES = 2;
+  int CONTEXT__HINTS = 3;
 
   /**
-   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * The feature id for the '<em><b>Modules</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CONTEXT__ELEMENTS = 3;
+  int CONTEXT__MODULES = 4;
 
   /**
    * The number of structural features of the '<em>Context</em>' class.
@@ -185,17 +148,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int CONTEXT_FEATURE_COUNT = 4;
+  int CONTEXT_FEATURE_COUNT = 5;
 
   /**
-   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.NamespaceImpl <em>Namespace</em>}' class.
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl <em>Module</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.NamespaceImpl
-   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNamespace()
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getModule()
    * @generated
    */
-  int NAMESPACE = 3;
+  int MODULE = 2;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -204,7 +167,16 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAMESPACE__NAME = 0;
+  int MODULE__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Dependencies</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODULE__DEPENDENCIES = 1;
 
   /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
@@ -213,7 +185,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAMESPACE__IMPORTS = 1;
+  int MODULE__IMPORTS = 2;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -222,16 +194,53 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAMESPACE__ELEMENTS = 2;
+  int MODULE__ELEMENTS = 3;
 
   /**
-   * The number of structural features of the '<em>Namespace</em>' class.
+   * The number of structural features of the '<em>Module</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int NAMESPACE_FEATURE_COUNT = 3;
+  int MODULE_FEATURE_COUNT = 4;
+
+  /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DependencyImpl <em>Dependency</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DependencyImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDependency()
+   * @generated
+   */
+  int DEPENDENCY = 3;
+
+  /**
+   * The feature id for the '<em><b>Coordinate</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DEPENDENCY__COORDINATE = 0;
+
+  /**
+   * The feature id for the '<em><b>Local</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DEPENDENCY__LOCAL = 1;
+
+  /**
+   * The number of structural features of the '<em>Dependency</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DEPENDENCY_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ImportImpl <em>Import</em>}' class.
@@ -4105,58 +4114,15 @@ public interface CqrsDslPackage extends EPackage
   EClass getDomainModel();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getProjects <em>Projects</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Projects</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getProjects()
-   * @see #getDomainModel()
-   * @generated
-   */
-  EReference getDomainModel_Projects();
-
-  /**
-   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Project <em>Project</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Project</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Project
-   * @generated
-   */
-  EClass getProject();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Project#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Project#getName()
-   * @see #getProject()
-   * @generated
-   */
-  EAttribute getProject_Name();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Project#getHints <em>Hints</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Hints</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Project#getHints()
-   * @see #getProject()
-   * @generated
-   */
-  EReference getProject_Hints();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Project#getContexts <em>Contexts</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getContexts <em>Contexts</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Contexts</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Project#getContexts()
-   * @see #getProject()
+   * @see org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getContexts()
+   * @see #getDomainModel()
    * @generated
    */
-  EReference getProject_Contexts();
+  EReference getDomainModel_Contexts();
 
   /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Context <em>Context</em>}'.
@@ -4180,6 +4146,17 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getContext_Name();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getDependencies <em>Dependencies</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Dependencies</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getDependencies()
+   * @see #getContext()
+   * @generated
+   */
+  EReference getContext_Dependencies();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getImports <em>Imports</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4191,69 +4168,112 @@ public interface CqrsDslPackage extends EPackage
   EReference getContext_Imports();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces <em>Namespaces</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getHints <em>Hints</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Namespaces</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces()
+   * @return the meta object for the containment reference list '<em>Hints</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getHints()
    * @see #getContext()
    * @generated
    */
-  EReference getContext_Namespaces();
+  EReference getContext_Hints();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getElements <em>Elements</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getModules <em>Modules</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Elements</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getElements()
+   * @return the meta object for the containment reference list '<em>Modules</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Context#getModules()
    * @see #getContext()
    * @generated
    */
-  EReference getContext_Elements();
+  EReference getContext_Modules();
 
   /**
-   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Namespace <em>Namespace</em>}'.
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Module <em>Module</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Namespace</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Namespace
+   * @return the meta object for class '<em>Module</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module
    * @generated
    */
-  EClass getNamespace();
+  EClass getModule();
 
   /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Namespace#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Namespace#getName()
-   * @see #getNamespace()
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module#getName()
+   * @see #getModule()
    * @generated
    */
-  EAttribute getNamespace_Name();
+  EAttribute getModule_Name();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Namespace#getImports <em>Imports</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getDependencies <em>Dependencies</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Dependencies</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module#getDependencies()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_Dependencies();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getImports <em>Imports</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Imports</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Namespace#getImports()
-   * @see #getNamespace()
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module#getImports()
+   * @see #getModule()
    * @generated
    */
-  EReference getNamespace_Imports();
+  EReference getModule_Imports();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Namespace#getElements <em>Elements</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getElements <em>Elements</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Elements</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Namespace#getElements()
-   * @see #getNamespace()
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module#getElements()
+   * @see #getModule()
    * @generated
    */
-  EReference getNamespace_Elements();
+  EReference getModule_Elements();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Dependency <em>Dependency</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Dependency</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Dependency
+   * @generated
+   */
+  EClass getDependency();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Dependency#getCoordinate <em>Coordinate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Coordinate</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Dependency#getCoordinate()
+   * @see #getDependency()
+   * @generated
+   */
+  EAttribute getDependency_Coordinate();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Dependency#getLocal <em>Local</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Local</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Dependency#getLocal()
+   * @see #getDependency()
+   * @generated
+   */
+  EAttribute getDependency_Local();
 
   /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Import <em>Import</em>}'.
@@ -6660,46 +6680,12 @@ public interface CqrsDslPackage extends EPackage
     EClass DOMAIN_MODEL = eINSTANCE.getDomainModel();
 
     /**
-     * The meta object literal for the '<em><b>Projects</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference DOMAIN_MODEL__PROJECTS = eINSTANCE.getDomainModel_Projects();
-
-    /**
-     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProjectImpl <em>Project</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ProjectImpl
-     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProject()
-     * @generated
-     */
-    EClass PROJECT = eINSTANCE.getProject();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute PROJECT__NAME = eINSTANCE.getProject_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference PROJECT__HINTS = eINSTANCE.getProject_Hints();
-
-    /**
      * The meta object literal for the '<em><b>Contexts</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PROJECT__CONTEXTS = eINSTANCE.getProject_Contexts();
+    EReference DOMAIN_MODEL__CONTEXTS = eINSTANCE.getDomainModel_Contexts();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl <em>Context</em>}' class.
@@ -6720,6 +6706,14 @@ public interface CqrsDslPackage extends EPackage
     EAttribute CONTEXT__NAME = eINSTANCE.getContext_Name();
 
     /**
+     * The meta object literal for the '<em><b>Dependencies</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTEXT__DEPENDENCIES = eINSTANCE.getContext_Dependencies();
+
+    /**
      * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6728,30 +6722,30 @@ public interface CqrsDslPackage extends EPackage
     EReference CONTEXT__IMPORTS = eINSTANCE.getContext_Imports();
 
     /**
-     * The meta object literal for the '<em><b>Namespaces</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference CONTEXT__NAMESPACES = eINSTANCE.getContext_Namespaces();
+    EReference CONTEXT__HINTS = eINSTANCE.getContext_Hints();
 
     /**
-     * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Modules</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference CONTEXT__ELEMENTS = eINSTANCE.getContext_Elements();
+    EReference CONTEXT__MODULES = eINSTANCE.getContext_Modules();
 
     /**
-     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.NamespaceImpl <em>Namespace</em>}' class.
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl <em>Module</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.NamespaceImpl
-     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNamespace()
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getModule()
      * @generated
      */
-    EClass NAMESPACE = eINSTANCE.getNamespace();
+    EClass MODULE = eINSTANCE.getModule();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -6759,7 +6753,15 @@ public interface CqrsDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute NAMESPACE__NAME = eINSTANCE.getNamespace_Name();
+    EAttribute MODULE__NAME = eINSTANCE.getModule_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Dependencies</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference MODULE__DEPENDENCIES = eINSTANCE.getModule_Dependencies();
 
     /**
      * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
@@ -6767,7 +6769,7 @@ public interface CqrsDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference NAMESPACE__IMPORTS = eINSTANCE.getNamespace_Imports();
+    EReference MODULE__IMPORTS = eINSTANCE.getModule_Imports();
 
     /**
      * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
@@ -6775,7 +6777,33 @@ public interface CqrsDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference NAMESPACE__ELEMENTS = eINSTANCE.getNamespace_Elements();
+    EReference MODULE__ELEMENTS = eINSTANCE.getModule_Elements();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DependencyImpl <em>Dependency</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.DependencyImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getDependency()
+     * @generated
+     */
+    EClass DEPENDENCY = eINSTANCE.getDependency();
+
+    /**
+     * The meta object literal for the '<em><b>Coordinate</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DEPENDENCY__COORDINATE = eINSTANCE.getDependency_Coordinate();
+
+    /**
+     * The meta object literal for the '<em><b>Local</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DEPENDENCY__LOCAL = eINSTANCE.getDependency_Local();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ImportImpl <em>Import</em>}' class.

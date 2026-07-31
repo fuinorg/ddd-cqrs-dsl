@@ -36,6 +36,10 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("aggregate");
     }
 
+    public void testDependency() {
+        assertNoErrors("dependency");
+    }
+
     public void testValueObject() {
         assertNoErrors("valueobject");
     }
@@ -95,19 +99,32 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("common_types");
     }
 
+    /**
+     * A string may span several lines. The lexer takes the longest match, so a closed string still
+     * wins over the rule that ends an unterminated one at the line break.
+     */
+    public void testMultilineString() {
+        assertNoErrors("multiline_string");
+    }
+
     /** Keywords used as identifiers via the '^' escape (e.g. {@code ^event}). */
     public void testEscapedKeywords() {
         assertNoErrors("escaped_keywords");
     }
 
-    /** The namespace is optional: a context may hold imports and elements directly. */
-    public void testContextWithoutNamespace() {
-        assertNoErrors("context_without_namespace");
+    /** The module is optional: a context may hold imports and elements directly. */
+    /** All three import forms, on the context and on a module. */
+    public void testImport() {
+        assertNoErrors("import");
     }
 
-    /** A context may mix namespaces and type/elements as siblings. */
-    public void testContextMixedNamespacesAndElements() {
-        assertNoErrors("context_mixed_namespaces_and_elements");
+    public void testContextWithoutModule() {
+        assertNoErrors("context_without_module");
+    }
+
+    /** A context may mix modules and type/elements as siblings. */
+    public void testContextMixedModulesAndElements() {
+        assertNoErrors("context_mixed_modules_and_elements");
     }
 
     private void assertNoErrors(String name) {

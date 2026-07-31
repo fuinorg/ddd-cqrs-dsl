@@ -2,6 +2,31 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.20.0
+- **Breaking:** the model has two levels instead of three. `project` is gone and the inner block is a
+  `module`: `project P { context C { namespace N { X } } }` becomes `context P { module C.N { X } }`.
+  Module names are qualified names, every element must live in a module, and every element's fully
+  qualified name - and therefore every generated Java package - is unchanged.
+- **Breaking:** a `module` is the unit of visibility. Only what a module declares itself resolves by a
+  simple name, so reaching any other module - a sibling of the same context included - needs an
+  `import` over the `context.module.Type` path, optionally ending in a wildcard (`ctx.*`,
+  `ctx.mod.*`, `ctx.mod.Type`). A fully qualified reference needs none.
+- **Breaking:** where models come from is declared in the model itself with
+  `dependency "groupId:artifactId:version"` (optionally `local "../wip/src/main/cqrs"`), replacing the
+  external `dependencies.json` catalog. A `dependency` makes models resolvable, an `import` decides
+  what of them is visible.
+- **Breaking:** artifacts are resolved through **m2e**, which is now required, so your `settings.xml` -
+  repositories, mirrors, servers, proxies - applies. A model artifact is a plain jar holding the
+  `.cqrs` files under `model/`, read in place, so `F3` navigates into the entry and there is no
+  `.dependencies-cache/` directory. The `cqrs.*` system properties are gone.
+- **Breaking:** the generator hint's package variables are now
+  `${context}.${mvnModule}[.${group}].${module}`, and an unknown variable is rejected instead of being
+  emitted literally.
+- New validation: an unresolvable or duplicate import is an error, an unused one a warning; a
+  malformed, duplicated or unresolvable `dependency` is reported on its coordinate.
+- Content assist offers only what the surrounding module reaches, and the importable paths after
+  `import`.
+
 ## 1.19.0
 - The service an operation uses is now introduced by the `operation-context` keyword:
   `method rename { CategoryName newName  operation-context RenameService }`. It used to be written as

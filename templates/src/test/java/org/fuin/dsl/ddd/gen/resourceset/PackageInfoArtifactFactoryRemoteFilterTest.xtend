@@ -7,7 +7,7 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.Utils
@@ -45,8 +45,8 @@ class PackageInfoArtifactFactoryRemoteFilterTest {
         PrimaryResources.install(resourceSet, Set.of(primaryModel.eResource.URI))
 
         val testee = createTestee()
-        val primaryPackages = primaryModel.eAllContents.filter(typeof(Namespace)).map[testee.asPackage(it)].toSet
-        val remotePackages = remoteModel.eAllContents.filter(typeof(Namespace)).map[testee.asPackage(it)].toSet
+        val primaryPackages = primaryModel.eAllContents.filter(typeof(Module)).map[testee.asPackage(it)].toSet
+        val remotePackages = remoteModel.eAllContents.filter(typeof(Module)).map[testee.asPackage(it)].toSet
 
         // TEST
         val artifacts = testee.create(resourceSet, new HashMap<String, Object>(), false)

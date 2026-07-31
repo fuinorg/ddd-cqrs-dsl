@@ -51,9 +51,13 @@ mirror() {
 }
 
 # 1. Hand-written sources.
+#
+#    MimaArtifactResolver is Maven-only: the Eclipse plugin resolves through m2e instead (from the UI
+#    bundle, which is the only place allowed to see m2e). Excluding it protects it from --delete.
 mirror "src -> src/main/java" \
 	"$ECL/src/org" "$MVN/src/main/java/org" \
-	--exclude="/fuin/dsl/cqrs/GenerateCqrsDsl.mwe2"
+	--exclude="/fuin/dsl/cqrs/GenerateCqrsDsl.mwe2" \
+	--exclude="/fuin/dsl/cqrs/scoping/MimaArtifactResolver.java"
 
 # 2. Xtext-generated sources (EMF model, ANTLR parser, infrastructure).
 mirror "src-gen -> src/main/xtext-gen" \

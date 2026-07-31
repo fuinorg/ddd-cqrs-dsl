@@ -27,73 +27,19 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public class DomainModelElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.DomainModel");
-		private final Assignment cProjectsAssignment = (Assignment)rule.eContents().get(1);
-		private final RuleCall cProjectsProjectParserRuleCall_0 = (RuleCall)cProjectsAssignment.eContents().get(0);
+		private final Assignment cContextsAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cContextsContextParserRuleCall_0 = (RuleCall)cContextsAssignment.eContents().get(0);
 		
 		///** A system of abstractions that describes the selected aspects of the domain. */
 		//DomainModel:
-		//    projects+=Project*;
+		//    contexts+=Context*;
 		@Override public ParserRule getRule() { return rule; }
-		
-		//projects+=Project*
-		public Assignment getProjectsAssignment() { return cProjectsAssignment; }
-		
-		//Project
-		public RuleCall getProjectsProjectParserRuleCall_0() { return cProjectsProjectParserRuleCall_0; }
-	}
-	public class ProjectElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Project");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cProjectKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cHintsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cHintsHintParserRuleCall_3_0 = (RuleCall)cHintsAssignment_3.eContents().get(0);
-		private final Assignment cContextsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cContextsContextParserRuleCall_4_0 = (RuleCall)cContextsAssignment_4.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		
-		///** A deployable unit that groups a number of contexts and carries generator hints. */
-		//Project:
-		//    'project' name=FQN '{'
-		//        hints+=Hint*
-		//        contexts+=Context*
-		//    '}';
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'project' name=FQN '{'
-		//    hints+=Hint*
-		//    contexts+=Context*
-		//'}'
-		public Group getGroup() { return cGroup; }
-		
-		//'project'
-		public Keyword getProjectKeyword_0() { return cProjectKeyword_0; }
-		
-		//name=FQN
-		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
-		
-		//FQN
-		public RuleCall getNameFQNParserRuleCall_1_0() { return cNameFQNParserRuleCall_1_0; }
-		
-		//'{'
-		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
-		
-		//hints+=Hint*
-		public Assignment getHintsAssignment_3() { return cHintsAssignment_3; }
-		
-		//Hint
-		public RuleCall getHintsHintParserRuleCall_3_0() { return cHintsHintParserRuleCall_3_0; }
 		
 		//contexts+=Context*
-		public Assignment getContextsAssignment_4() { return cContextsAssignment_4; }
+		public Assignment getContextsAssignment() { return cContextsAssignment; }
 		
 		//Context
-		public RuleCall getContextsContextParserRuleCall_4_0() { return cContextsContextParserRuleCall_4_0; }
-		
-		//'}'
-		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
+		public RuleCall getContextsContextParserRuleCall_0() { return cContextsContextParserRuleCall_0; }
 	}
 	public class ContextElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Context");
@@ -102,26 +48,34 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cImportsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cImportsImportParserRuleCall_3_0 = (RuleCall)cImportsAssignment_3.eContents().get(0);
-		private final Alternatives cAlternatives_4 = (Alternatives)cGroup.eContents().get(4);
-		private final Assignment cNamespacesAssignment_4_0 = (Assignment)cAlternatives_4.eContents().get(0);
-		private final RuleCall cNamespacesNamespaceParserRuleCall_4_0_0 = (RuleCall)cNamespacesAssignment_4_0.eContents().get(0);
-		private final Assignment cElementsAssignment_4_1 = (Assignment)cAlternatives_4.eContents().get(1);
-		private final RuleCall cElementsAbstractElementParserRuleCall_4_1_0 = (RuleCall)cElementsAssignment_4_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cDependenciesAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cDependenciesDependencyParserRuleCall_3_0 = (RuleCall)cDependenciesAssignment_3.eContents().get(0);
+		private final Assignment cImportsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cImportsImportParserRuleCall_4_0 = (RuleCall)cImportsAssignment_4.eContents().get(0);
+		private final Assignment cHintsAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cHintsHintParserRuleCall_5_0 = (RuleCall)cHintsAssignment_5.eContents().get(0);
+		private final Assignment cModulesAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cModulesModuleParserRuleCall_6_0 = (RuleCall)cModulesAssignment_6.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
-		///** The setting in which a word or statement appears that determines its meaning. */
+		///**
+		// * The setting in which a word or statement appears that determines its meaning. A deployable unit
+		// * that groups a number of modules and carries generator hints.
+		// */
 		//Context:
 		//    'context' name=FQN '{'
+		//        dependencies+=Dependency*
 		//        imports+=Import*
-		//        ( namespaces+=Namespace | elements+=AbstractElement )*
+		//        hints+=Hint*
+		//        modules+=Module*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'context' name=FQN '{'
+		//    dependencies+=Dependency*
 		//    imports+=Import*
-		//    ( namespaces+=Namespace | elements+=AbstractElement )*
+		//    hints+=Hint*
+		//    modules+=Module*
 		//'}'
 		public Group getGroup() { return cGroup; }
 		
@@ -137,59 +91,70 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 		
+		//dependencies+=Dependency*
+		public Assignment getDependenciesAssignment_3() { return cDependenciesAssignment_3; }
+		
+		//Dependency
+		public RuleCall getDependenciesDependencyParserRuleCall_3_0() { return cDependenciesDependencyParserRuleCall_3_0; }
+		
 		//imports+=Import*
-		public Assignment getImportsAssignment_3() { return cImportsAssignment_3; }
+		public Assignment getImportsAssignment_4() { return cImportsAssignment_4; }
 		
 		//Import
-		public RuleCall getImportsImportParserRuleCall_3_0() { return cImportsImportParserRuleCall_3_0; }
+		public RuleCall getImportsImportParserRuleCall_4_0() { return cImportsImportParserRuleCall_4_0; }
 		
-		//( namespaces+=Namespace | elements+=AbstractElement )*
-		public Alternatives getAlternatives_4() { return cAlternatives_4; }
+		//hints+=Hint*
+		public Assignment getHintsAssignment_5() { return cHintsAssignment_5; }
 		
-		//namespaces+=Namespace
-		public Assignment getNamespacesAssignment_4_0() { return cNamespacesAssignment_4_0; }
+		//Hint
+		public RuleCall getHintsHintParserRuleCall_5_0() { return cHintsHintParserRuleCall_5_0; }
 		
-		//Namespace
-		public RuleCall getNamespacesNamespaceParserRuleCall_4_0_0() { return cNamespacesNamespaceParserRuleCall_4_0_0; }
+		//modules+=Module*
+		public Assignment getModulesAssignment_6() { return cModulesAssignment_6; }
 		
-		//elements+=AbstractElement
-		public Assignment getElementsAssignment_4_1() { return cElementsAssignment_4_1; }
-		
-		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_4_1_0() { return cElementsAbstractElementParserRuleCall_4_1_0; }
+		//Module
+		public RuleCall getModulesModuleParserRuleCall_6_0() { return cModulesModuleParserRuleCall_6_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
-	public class NamespaceElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Namespace");
+	public class ModuleElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Module");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cNamespaceKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cModuleKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cImportsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cImportsImportParserRuleCall_3_0 = (RuleCall)cImportsAssignment_3.eContents().get(0);
-		private final Assignment cElementsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cElementsAbstractElementParserRuleCall_4_0 = (RuleCall)cElementsAssignment_4.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cDependenciesAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cDependenciesDependencyParserRuleCall_3_0 = (RuleCall)cDependenciesAssignment_3.eContents().get(0);
+		private final Assignment cImportsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cImportsImportParserRuleCall_4_0 = (RuleCall)cImportsAssignment_4.eContents().get(0);
+		private final Assignment cElementsAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cElementsAbstractElementParserRuleCall_5_0 = (RuleCall)cElementsAssignment_5.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
-		///** Structured hierarchy that allows reuse of names in different sub contexts. */
-		//Namespace:
-		//    'namespace' name=FQN '{'
+		///**
+		// * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
+		// * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
+		// * unit of visibility: only its own elements are reachable without an 'import'.
+		// */
+		//Module:
+		//    'module' name=FQN '{'
+		//        dependencies+=Dependency*
 		//        imports+=Import*
 		//        elements+=AbstractElement*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'namespace' name=FQN '{'
+		//'module' name=FQN '{'
+		//    dependencies+=Dependency*
 		//    imports+=Import*
 		//    elements+=AbstractElement*
 		//'}'
 		public Group getGroup() { return cGroup; }
 		
-		//'namespace'
-		public Keyword getNamespaceKeyword_0() { return cNamespaceKeyword_0; }
+		//'module'
+		public Keyword getModuleKeyword_0() { return cModuleKeyword_0; }
 		
 		//name=FQN
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
@@ -200,20 +165,72 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 		
+		//dependencies+=Dependency*
+		public Assignment getDependenciesAssignment_3() { return cDependenciesAssignment_3; }
+		
+		//Dependency
+		public RuleCall getDependenciesDependencyParserRuleCall_3_0() { return cDependenciesDependencyParserRuleCall_3_0; }
+		
 		//imports+=Import*
-		public Assignment getImportsAssignment_3() { return cImportsAssignment_3; }
+		public Assignment getImportsAssignment_4() { return cImportsAssignment_4; }
 		
 		//Import
-		public RuleCall getImportsImportParserRuleCall_3_0() { return cImportsImportParserRuleCall_3_0; }
+		public RuleCall getImportsImportParserRuleCall_4_0() { return cImportsImportParserRuleCall_4_0; }
 		
 		//elements+=AbstractElement*
-		public Assignment getElementsAssignment_4() { return cElementsAssignment_4; }
+		public Assignment getElementsAssignment_5() { return cElementsAssignment_5; }
 		
 		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_4_0() { return cElementsAbstractElementParserRuleCall_4_0; }
+		public RuleCall getElementsAbstractElementParserRuleCall_5_0() { return cElementsAbstractElementParserRuleCall_5_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
+		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+	}
+	public class DependencyElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Dependency");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cDependencyKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cCoordinateAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cCoordinateSTRINGTerminalRuleCall_1_0 = (RuleCall)cCoordinateAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLocalKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cLocalAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cLocalSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cLocalAssignment_2_1.eContents().get(0);
+		
+		///**
+		// * A Maven artifact (classifier "cqrs", type "tar.gz") that provides further '.cqrs' models. It makes
+		// * those models resolvable; an 'import' still decides which of their types are actually visible. A
+		// * dependency declared on the context applies to all of its modules. The optional 'local' clause
+		// * reads the models straight from a directory instead of resolving the artifact, which is handy for
+		// * a model that is not published yet.
+		// */
+		//Dependency:
+		//    'dependency' coordinate=STRING ('local' local=STRING)?;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'dependency' coordinate=STRING ('local' local=STRING)?
+		public Group getGroup() { return cGroup; }
+		
+		//'dependency'
+		public Keyword getDependencyKeyword_0() { return cDependencyKeyword_0; }
+		
+		//coordinate=STRING
+		public Assignment getCoordinateAssignment_1() { return cCoordinateAssignment_1; }
+		
+		//STRING
+		public RuleCall getCoordinateSTRINGTerminalRuleCall_1_0() { return cCoordinateSTRINGTerminalRuleCall_1_0; }
+		
+		//('local' local=STRING)?
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//'local'
+		public Keyword getLocalKeyword_2_0() { return cLocalKeyword_2_0; }
+		
+		//local=STRING
+		public Assignment getLocalAssignment_2_1() { return cLocalAssignment_2_1; }
+		
+		//STRING
+		public RuleCall getLocalSTRINGTerminalRuleCall_2_1_0() { return cLocalSTRINGTerminalRuleCall_2_1_0; }
 	}
 	public class ImportElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Import");
@@ -224,7 +241,13 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cImportedNamespaceFQNParserRuleCall_1_0_0 = (RuleCall)cImportedNamespaceAlternatives_1_0.eContents().get(0);
 		private final RuleCall cImportedNamespaceFQNWithWildcardParserRuleCall_1_0_1 = (RuleCall)cImportedNamespaceAlternatives_1_0.eContents().get(1);
 		
-		///** Allows using objects from other namespaces. */
+		///**
+		// * Makes types of another module - of the same or of a different context - visible under their simple
+		// * name. The imported name addresses a type as 'context.module.Type' and may end in a wildcard, so
+		// * 'ctx.*' pulls in every module of a context, 'ctx.mod.*' every type of one module and
+		// * 'ctx.mod.Type' a single type. An import declared on the context applies to all of its modules.
+		// * A fully qualified reference always works without an import.
+		// */
 		//Import:
 		//    'import' importedNamespace=(FQN | FQNWithWildcard);
 		@Override public ParserRule getRule() { return rule; }
@@ -4543,12 +4566,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cFullStopKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Keyword cAsteriskKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		
-		///** Unambiguous name that specifies a group of object. */
-		//FQNWithWildcard :
-		//    FQN  '.' '*';
+		///** Unambiguous name that specifies a group of objects. */
+		//FQNWithWildcard:
+		//    FQN '.' '*';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//FQN  '.' '*'
+		//FQN '.' '*'
 		public Group getGroup() { return cGroup; }
 		
 		//FQN
@@ -5218,9 +5241,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	private final DomainModelElements pDomainModel;
-	private final ProjectElements pProject;
 	private final ContextElements pContext;
-	private final NamespaceElements pNamespace;
+	private final ModuleElements pModule;
+	private final DependencyElements pDependency;
 	private final ImportElements pImport;
 	private final HintElements pHint;
 	private final AbstractElementElements pAbstractElement;
@@ -5311,9 +5334,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	public CqrsDslGrammarAccess(GrammarProvider grammarProvider) {
 		this.grammar = internalFindGrammar(grammarProvider);
 		this.pDomainModel = new DomainModelElements();
-		this.pProject = new ProjectElements();
 		this.pContext = new ContextElements();
-		this.pNamespace = new NamespaceElements();
+		this.pModule = new ModuleElements();
+		this.pDependency = new DependencyElements();
 		this.pImport = new ImportElements();
 		this.pHint = new HintElements();
 		this.pAbstractElement = new AbstractElementElements();
@@ -5424,7 +5447,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///** A system of abstractions that describes the selected aspects of the domain. */
 	//DomainModel:
-	//    projects+=Project*;
+	//    contexts+=Context*;
 	public DomainModelElements getDomainModelAccess() {
 		return pDomainModel;
 	}
@@ -5433,25 +5456,16 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getDomainModelAccess().getRule();
 	}
 	
-	///** A deployable unit that groups a number of contexts and carries generator hints. */
-	//Project:
-	//    'project' name=FQN '{'
-	//        hints+=Hint*
-	//        contexts+=Context*
-	//    '}';
-	public ProjectElements getProjectAccess() {
-		return pProject;
-	}
-	
-	public ParserRule getProjectRule() {
-		return getProjectAccess().getRule();
-	}
-	
-	///** The setting in which a word or statement appears that determines its meaning. */
+	///**
+	// * The setting in which a word or statement appears that determines its meaning. A deployable unit
+	// * that groups a number of modules and carries generator hints.
+	// */
 	//Context:
 	//    'context' name=FQN '{'
+	//        dependencies+=Dependency*
 	//        imports+=Import*
-	//        ( namespaces+=Namespace | elements+=AbstractElement )*
+	//        hints+=Hint*
+	//        modules+=Module*
 	//    '}';
 	public ContextElements getContextAccess() {
 		return pContext;
@@ -5461,21 +5475,49 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getContextAccess().getRule();
 	}
 	
-	///** Structured hierarchy that allows reuse of names in different sub contexts. */
-	//Namespace:
-	//    'namespace' name=FQN '{'
+	///**
+	// * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
+	// * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
+	// * unit of visibility: only its own elements are reachable without an 'import'.
+	// */
+	//Module:
+	//    'module' name=FQN '{'
+	//        dependencies+=Dependency*
 	//        imports+=Import*
 	//        elements+=AbstractElement*
 	//    '}';
-	public NamespaceElements getNamespaceAccess() {
-		return pNamespace;
+	public ModuleElements getModuleAccess() {
+		return pModule;
 	}
 	
-	public ParserRule getNamespaceRule() {
-		return getNamespaceAccess().getRule();
+	public ParserRule getModuleRule() {
+		return getModuleAccess().getRule();
 	}
 	
-	///** Allows using objects from other namespaces. */
+	///**
+	// * A Maven artifact (classifier "cqrs", type "tar.gz") that provides further '.cqrs' models. It makes
+	// * those models resolvable; an 'import' still decides which of their types are actually visible. A
+	// * dependency declared on the context applies to all of its modules. The optional 'local' clause
+	// * reads the models straight from a directory instead of resolving the artifact, which is handy for
+	// * a model that is not published yet.
+	// */
+	//Dependency:
+	//    'dependency' coordinate=STRING ('local' local=STRING)?;
+	public DependencyElements getDependencyAccess() {
+		return pDependency;
+	}
+	
+	public ParserRule getDependencyRule() {
+		return getDependencyAccess().getRule();
+	}
+	
+	///**
+	// * Makes types of another module - of the same or of a different context - visible under their simple
+	// * name. The imported name addresses a type as 'context.module.Type' and may end in a wildcard, so
+	// * 'ctx.*' pulls in every module of a context, 'ctx.mod.*' every type of one module and
+	// * 'ctx.mod.Type' a single type. An import declared on the context applies to all of its modules.
+	// * A fully qualified reference always works without an import.
+	// */
 	//Import:
 	//    'import' importedNamespace=(FQN | FQNWithWildcard);
 	public ImportElements getImportAccess() {
@@ -6435,9 +6477,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getFQNAccess().getRule();
 	}
 	
-	///** Unambiguous name that specifies a group of object. */
-	//FQNWithWildcard :
-	//    FQN  '.' '*';
+	///** Unambiguous name that specifies a group of objects. */
+	//FQNWithWildcard:
+	//    FQN '.' '*';
 	public FQNWithWildcardElements getFQNWithWildcardAccess() {
 		return pFQNWithWildcard;
 	}

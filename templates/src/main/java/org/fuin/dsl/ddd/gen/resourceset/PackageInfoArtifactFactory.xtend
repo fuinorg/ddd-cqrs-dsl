@@ -10,17 +10,17 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
 import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 /**
  * Creates a "package-info.java" annotated with JSpecify's {@code @NullMarked} for every package a
- * namespace generates code into. A namespace may feed more than one module - for example its value
+ * module generates code into. A module may feed more than one module - for example its value
  * objects go to a "shared" module while its aggregate goes to a "command" module - and each of those
  * packages needs its own "package-info.java". The target packages are therefore derived from the
- * namespace's own elements and not from this factory's own hint entry: only the elements know which
+ * module's own elements and not from this factory's own hint entry: only the elements know which
  * module and group, and hence which package, they end up in. Whether an already existing file is
  * overwritten is controlled by the target folder's "override" setting, not by this factory.
  */
@@ -43,8 +43,8 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
         }
 
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        // The namespace is optional, so elements may live inside a namespace or directly inside a
-        // context. Both are element containers that need a "package-info.java" per target package.
+        // Every element lives in a module, and a module needs one "package-info.java" per
+        // target package it generates into.
         val Iterator<EObject> it = resourceSet.allContents.filter(typeof(EObject)).filter[isPrimary(it)]
         while (it.hasNext) {
             val EObject container = it.next
@@ -59,7 +59,7 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
     /**
      * Creates one artifact per package the given element container generates code into.
      *
-     * @param container Namespace or (namespace-less) context to create the "package-info.java" file(s) for.
+     * @param container Module to create the "package-info.java" file(s) for.
      *
      * @return At least one artifact.
      */
@@ -85,7 +85,7 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
      * A module appears only once: elements that share a module also share a package, because the package
      * pattern is expanded from that same "module" and "group".
      *
-     * @param container Namespace or context to inspect.
+     * @param container Module to inspect.
      *
      * @return Package per module, in declaration order - Empty if nothing could be resolved from the hint.
      */
@@ -115,7 +115,7 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
      * container that only declares external types (or is empty) produces no Java source and is
      * therefore skipped.
      *
-     * @param container Namespace or context to check.
+     * @param container Module to check.
      *
      * @return TRUE if the container generates at least one source file.
      */
@@ -125,30 +125,25 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
 
     /**
      * Determines whether the given object is an element container that needs "package-info.java"
-     * files: a namespace, or a context that holds elements directly (the namespace being optional).
-     * A context that only holds namespace blocks is not an element container - its namespaces are.
+     * files. Every element lives in a module, so a context never is one - its modules are.
      *
      * @param obj Object to check.
      *
      * @return TRUE if the object directly contains model elements.
      */
     private def boolean isElementContainer(EObject obj) {
-        obj instanceof Namespace || (obj instanceof Context && !(obj as Context).elements.empty)
+        obj instanceof Module
     }
 
     /**
-     * Returns the model elements a container holds directly (a namespace's or a context's own
-     * elements), or an empty list for anything else.
+     * Returns the model elements a module holds directly, or an empty list for anything else.
      *
      * @param container Element container.
      *
      * @return Direct model elements, never <code>null</code>.
      */
     private def List<AbstractElement> elements(EObject container) {
-        if (container instanceof Namespace) {
-            return container.elements
-        }
-        if (container instanceof Context) {
+        if (container instanceof Module) {
             return container.elements
         }
         return emptyList

@@ -3,7 +3,7 @@ Automatic-Module-Name: org.fuin.dsl.cqrs.ui
 Bundle-ManifestVersion: 2
 Bundle-Name: org.fuin.dsl.cqrs.ui
 Bundle-Vendor: My Company
-Bundle-Version: 1.19.0.qualifier
+Bundle-Version: 1.20.0.qualifier
 Bundle-SymbolicName: org.fuin.dsl.cqrs.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.fuin.dsl.cqrs,
@@ -18,7 +18,12 @@ Require-Bundle: org.fuin.dsl.cqrs,
  org.eclipse.xtext.builder,
  org.eclipse.xtend.lib;bundle-version="2.42.0",
  org.eclipse.xtext.xbase.lib;bundle-version="2.42.0"
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.eclipse.m2e.core,
+ org.eclipse.m2e.core.embedder,
+ org.apache.maven.artifact;provider=m2e,
+ org.apache.maven.artifact.repository;provider=m2e,
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.fuin.dsl.cqrs.ui.quickfix,
  org.fuin.dsl.cqrs.ui.contentassist,

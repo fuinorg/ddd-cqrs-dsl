@@ -1,32 +1,27 @@
-project p_03_value_object {
+context p_03_value_object {
 
-	context vo {
+    module vo.m {
+        type String
+        type Integer
 
-		namespace m {
+        // A value-object has no identity;
+        // it is defined only by its attributes.
 
-			type String
-			type Integer
+        // Restricts a single primitive type to some additional rules.
+        // Is only allowed to have a single attribute with the same type as defined for 'base'.
+        // Not allowed to define a constructor or methods.
+        value-object EmailAddress base String {
+            String value
+        }
 
-	        // A value-object has no identity;
-	        // it is defined only by its attributes.
+        // Groups several attributes (has no 'base' type).
+        value-object Money {
 
-			// Restricts a single primitive type to some additional rules.
-			// Is only allowed to have a single attribute with the same type as defined for 'base'.
-			// Not allowed to define a constructor or methods.
-			value-object EmailAddress base String {
-				String value
-			}
+            Integer amount
+            String currency
 
-			// Groups several attributes (has no 'base' type).
-			value-object Money {
+        }
 
-				Integer amount
-				String currency
-
-			}
-
-		}
-
-	}
+    }
 
 }

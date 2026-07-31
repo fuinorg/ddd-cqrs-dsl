@@ -43,7 +43,7 @@ class PackageInfoArtifactFactoryTest {
         val result = testee.create(resourceSet, context, false)
 
         // VERIFY
-        // Only the "resourceset" namespace generates code; the "types" namespace is skipped. It feeds two
+        // Only the "resourceset" module generates code; the "types" module is skipped. It feeds two
         // modules: its aggregates go to "command.core" and its aggregate/entity ids to "shared", so each of
         // those packages gets its own "package-info.java".
         assertThat(result).hasSize(2)
@@ -69,22 +69,23 @@ class PackageInfoArtifactFactoryTest {
         // The aggregate then lands in "command" instead of the preset's "core", and the "package-info.java"
         // has to follow it.
         val DomainModel model = parser.parse('''
-            project p {
+            context p {
                 hint SrcGen4J {
                     "types": [
                         { "name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "command", "group": "core.domain" }
                     ]
                 }
-                context x {
-                    namespace types {
-                        type String
-                    }
-                    namespace resourceset {
-                        import p.x.types.*
-                        aggregate AggregateA identifier AggregateAId {}
-                        aggregate-id AggregateAId identifies AggregateA base String {
-                            String value
-                        }
+
+                module x.types {
+                    type String
+                }
+
+                module x.resourceset {
+                    import p.x.types.*
+
+                    aggregate AggregateA identifier AggregateAId {}
+                    aggregate-id AggregateAId identifies AggregateA base String {
+                        String value
                     }
                 }
             }

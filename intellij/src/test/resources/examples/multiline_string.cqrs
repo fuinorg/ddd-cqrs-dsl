@@ -1,0 +1,20 @@
+context p_multiline_string {
+
+	module m {
+
+		type String
+
+		value-object FullName {
+			// A string may span several lines. The lexer takes the longest match, so this stays one
+			// STRING and is not cut short at the line break by the unterminated-string rule.
+			tooltip "A person's full nomenclature,
+also known as a personal name"
+
+			String firstName {
+				label "First name"
+			}
+		}
+
+	}
+
+}

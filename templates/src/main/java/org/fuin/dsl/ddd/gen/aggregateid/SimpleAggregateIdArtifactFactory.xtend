@@ -2,7 +2,7 @@ package org.fuin.dsl.ddd.gen.aggregateid
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
@@ -33,7 +33,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         }
 
         val className = aggregateId.getName()
-        val Namespace ns = aggregateId.namespace
+        val Module ns = aggregateId.module
         val pkg = aggregateId.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
@@ -91,10 +91,10 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         // Do nothing
     }
 
-    def create(SimpleCodeSnippetContext ctx, Namespace ns, AggregateId id, String pkg, String className) {
+    def create(SimpleCodeSnippetContext ctx, Module ns, AggregateId id, String pkg, String className) {
         val src = '''
             «new SrcJavaDocType(id)»
-            «new SrcMetaAnnotations(ctx, id.metaInfo, (if (ns === null) id.context.name.toFirstUpper else ns.name.toFirstUpper), className)»
+            «new SrcMetaAnnotations(ctx, id.metaInfo, bundleName(ns), className)»
             @Generated("Generated class - Manual changes will be overwritten")
             @Immutable
             @HasEntityTypeConstant

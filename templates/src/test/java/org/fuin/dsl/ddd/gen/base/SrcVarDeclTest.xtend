@@ -164,32 +164,28 @@ private String str3;
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context a {
-                    
-                    namespace b {
-                        
-                        import a.types.*
-                
-                        constraint AnyConstraint input String {
-                            message "message"
-                        }
-                
-                        value-object MyValueObject {
-                            String str invariants AnyConstraint
-                            String str2
-                            optional String str3
-                            String abcDefGhi
-                        }
-                
-                    }
-                
-                    namespace types {
-                        type String
-                    }
-                        
-                }
-            }
+				context p {
+
+				    module a.b {
+				        import p.a.types.*
+
+
+				        constraint AnyConstraint input String {
+				            message "message"
+				        }
+
+				        value-object MyValueObject {
+				            String str invariants AnyConstraint
+				            String str2
+				            optional String str3
+				            String abcDefGhi
+				        }
+				    }
+
+				    module a.types {
+				        type String
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

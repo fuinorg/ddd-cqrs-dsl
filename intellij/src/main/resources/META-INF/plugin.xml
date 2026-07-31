@@ -7,6 +7,8 @@
          (pluginConfiguration) so the same text also feeds the custom repository's updatePlugins.xml. -->
 
     <depends>com.intellij.modules.platform</depends>
+    <!-- Resolves a model 'dependency' through the IDE's Maven. -->
+    <depends>org.jetbrains.idea.maven</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType
@@ -30,6 +32,10 @@
         <lang.braceMatcher
                 language="CqrsDsl"
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsBraceMatcher"/>
+
+        <lang.quoteHandler
+                language="CqrsDsl"
+                implementationClass="org.fuin.dsl.cqrs.intellij.CqrsQuoteHandler"/>
 
         <lang.foldingBuilder
                 language="CqrsDsl"
@@ -60,9 +66,4 @@
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsValidationAnnotator"/>
     </extensions>
 
-    <applicationListeners>
-        <listener
-                class="org.fuin.dsl.cqrs.intellij.remote.CqrsRemoteScopeFileListener"
-                topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-    </applicationListeners>
 </idea-plugin>

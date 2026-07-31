@@ -1,89 +1,82 @@
-project p {
+context p {
 
-	context x {
-
-		namespace types {
-			type String
-			type Integer
-			type List generics 1
-		}
-
-		namespace services {
-
-			import p.x.types.*
-
-			/** The constraint was violated. */
-			exception AnyConstraintViolatedException {
-				message "Any constraint violated"
-			}
-
-
-			/** Service A - No methods. */
-			service ServiceA {
-
-			}
-
-			/** Service B - Single method. */
-			service ServiceB {
-
-				/** Finds something. */
-				method find {
-
-					/** Key. */
-					Integer a
-
-					/** Value. */
-					returns String
-
-				}
-
-			}
-
-			/** Service C - Generic return type. */
-			service ServiceC {
-
-				/** Lists something. */
-				method list {
-
-					/** Key. */
-					Integer a
-
-					/** Values. */
-					returns List<String>
-
-				}
-
-			}
-
-			/** Service D - Optional return type. */
-			service ServiceD {
-
-				/** Finds something that may not exist. */
-				method find {
-
-					/** Key. */
-					Integer a
-
-					/** Value, if there is one. */
-					returns optional String
-
-				}
-
-				/** Lists something that may not exist. */
-				method list {
-
-					/** Key. */
-					Integer a
-
-					/** Values, if there are any. */
-					returns optional List<String>
-
-				}
-
-			}
-
-		}
-
+	module x.types {
+		type String
+		type Integer
+		type List generics 1
 	}
 
+	module x.services {
+		import p.x.types.*
+
+		/** The constraint was violated. */
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
+		}
+
+
+		/** Service A - No methods. */
+		service ServiceA {
+
+		}
+
+		/** Service B - Single method. */
+		service ServiceB {
+
+			/** Finds something. */
+			method find {
+
+				/** Key. */
+				Integer a
+
+				/** Value. */
+				returns String
+
+			}
+
+		}
+
+		/** Service C - Generic return type. */
+		service ServiceC {
+
+			/** Lists something. */
+			method list {
+
+				/** Key. */
+				Integer a
+
+				/** Values. */
+				returns List<String>
+
+			}
+
+		}
+
+		/** Service D - Optional return type. */
+		service ServiceD {
+
+			/** Finds something that may not exist. */
+			method find {
+
+				/** Key. */
+				Integer a
+
+				/** Value, if there is one. */
+				returns optional String
+
+			}
+
+			/** Lists something that may not exist. */
+			method list {
+
+				/** Key. */
+				Integer a
+
+				/** Values, if there are any. */
+				returns optional List<String>
+
+			}
+
+		}
+	}
 }

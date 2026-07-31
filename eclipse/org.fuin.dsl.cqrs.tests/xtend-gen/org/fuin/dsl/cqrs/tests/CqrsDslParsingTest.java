@@ -32,38 +32,32 @@ public class CqrsDslParsingTest {
   public void loadModel() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
-      _builder.newLine();
-      _builder.append("\t");
       _builder.append("context foo {");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module bar {");
+      _builder.newLine();
+      _builder.newLine();
       _builder.append("\t\t");
-      _builder.append("namespace bar {");
-      _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t\t");
       _builder.append("type String");
       _builder.newLine();
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.append("annotation Foo {");
       _builder.newLine();
-      _builder.append("\t\t\t\t");
+      _builder.append("\t\t\t");
       _builder.append("String x");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("}");
-      _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("@Foo(\"x\")");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("value-object Bar {}");
-      _builder.newLine();
       _builder.newLine();
       _builder.append("\t\t");
       _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("@Foo(\"x\")");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object Bar {}");
+      _builder.newLine();
       _builder.newLine();
       _builder.append("\t");
       _builder.append("}");
@@ -85,66 +79,45 @@ public class CqrsDslParsingTest {
     }
   }
 
+  /**
+   * A module reaches a sibling module of the same context through an import.
+   */
   @Test
-  public void contextMixesNamespacesAndElements() {
+  public void moduleImportsSiblingModule() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
-      _builder.newLine();
-      _builder.append("\t");
       _builder.append("context foo {");
       _builder.newLine();
       _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("import p.foo.inner.*");
-      _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("type String");
-      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module inner {");
       _builder.newLine();
       _builder.append("\t\t");
-      _builder.append("value-object DirectVo base String {");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("String value");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("}");
-      _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("namespace inner {");
-      _builder.newLine();
-      _builder.append("\t\t\t");
       _builder.append("type Integer");
       _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("value-object NamespacedVo {");
-      _builder.newLine();
-      _builder.append("\t\t\t\t");
-      _builder.append("Integer id");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("}");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("}");
-      _builder.newLine();
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("value-object AnotherDirectVo base String {");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("String value");
-      _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t");
       _builder.append("}");
       _builder.newLine();
       _builder.newLine();
       _builder.append("\t");
+      _builder.append("module outer {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("import foo.inner.*");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object ImportingVo {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("Integer id");
+      _builder.newLine();
+      _builder.append("\t\t");
       _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();

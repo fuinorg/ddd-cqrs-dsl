@@ -51,9 +51,9 @@ class CqrsHintJsonValidationTest {
 	@Test
 	def void testJpaHintOutsideViewWarns() {
 		val model = parseHelper.parse('''
-			project p {
+			context p {
 				hint JpaHint { "tables": [] }
-				context c { }
+				module c { }
 			}
 		''')
 		model.assertWarning(CqrsDslPackage.Literals.HINT, CqrsDslValidator.JPA_HINT_OUTSIDE_VIEW)
@@ -63,22 +63,20 @@ class CqrsHintJsonValidationTest {
 	def void testInvalidSrcGen4JReportsSchemaError() {
 		// A "types" entry must have a "name".
 		val model = parseHelper.parse('''
-			project p {
+			context p {
 				hint SrcGen4J { "types": [ { "module": "x" } ] }
-				context c { }
+				module c { }
 			}
 		''')
 		model.assertError(CqrsDslPackage.Literals.HINT, CqrsDslValidator.HINT_JSON_SCHEMA_VIOLATION)
 	}
 
 	private def String viewWith(String hint) '''
-		project p {
-			context c {
-				namespace n {
-					projection Pj
-					view V uses Pj {
-						«hint»
-					}
+		context p {
+			module c.n {
+				projection Pj
+				view V uses Pj {
+					«hint»
 				}
 			}
 		}

@@ -4,24 +4,37 @@
 package org.fuin.dsl.cqrs
 
 
+import com.google.inject.Binder
+import com.google.inject.name.Names
 import org.eclipse.xtext.conversion.IValueConverterService
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
+import org.eclipse.xtext.scoping.IScopeProvider
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.fuin.dsl.cqrs.conversion.CqrsDslValueConverterService
 import org.fuin.dsl.cqrs.scoping.CqrsDslGlobalScopeProvider
+import org.fuin.dsl.cqrs.scoping.CqrsDslLocalScopeProvider
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  *
  * <p>Qualified names use the default provider, so they include the whole containment chain
- * <code>project.context.namespace.element</code>. The enclosing {@link org.fuin.dsl.cqrs.cqrsDsl.Project}
- * is part of the reference namespace: imports and cross references address a type by its full
- * <code>project.context.namespace</code> path.</p>
+ * <code>context.module.element</code>. A fully qualified cross reference therefore addresses a type
+ * by that path, and an <code>import</code> is written over the same one.</p>
  */
 class CqrsDslRuntimeModule extends AbstractCqrsDslRuntimeModule {
 
-	/** Resolves cross-references against remote (HTTP-only) models via a local catalog and cache. */
+	/** Resolves cross-references against the models of a declared 'dependency'. */
 	override Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
 		CqrsDslGlobalScopeProvider
+	}
+
+	/**
+	 * Makes a module see its own elements and whatever it - or its context - imports. Everything
+	 * else has to be addressed by its fully qualified name.
+	 */
+	override void configureIScopeProviderDelegate(Binder binder) {
+		binder.bind(IScopeProvider).annotatedWith(Names.named(AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
+			CqrsDslLocalScopeProvider)
 	}
 
 	/** Adds caret ('^') escaping so keywords can be used as identifiers (e.g. '^event'). */

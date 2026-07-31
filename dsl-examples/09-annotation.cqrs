@@ -1,29 +1,22 @@
-project p_09_annotation {
+context p_09_annotation {
 
-	context anno {
+    module anno.m {
+        type String
+        type Integer
 
-		namespace m {
+        annotation Encrypted {
+        }
 
-			type String
-			type Integer
+        // It can be declared with attributes.
+        annotation MaxLength {
+            Integer value
+        }
 
-			annotation Encrypted {
-			}
-
-	        // It can be declared with attributes.
-			annotation MaxLength {
-				Integer value
-			}
-
-	        // It may be applied to a value-object or event
-			@Encrypted
-			@MaxLength(50)
-			value-object Secret base String {
-				String value
-			}
-
-		}
-
-	}
-
+        // It may be applied to a value-object or event
+        @Encrypted
+        @MaxLength(50)
+        value-object Secret base String {
+            String value
+        }
+    }
 }

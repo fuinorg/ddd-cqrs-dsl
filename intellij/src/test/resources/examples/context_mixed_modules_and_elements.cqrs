@@ -1,0 +1,23 @@
+context p_context_mixed {
+
+	module x {
+		type String
+
+		value-object DirectValueObject base String {
+			String value
+		}
+
+
+		value-object AnotherDirectValueObject {
+			String id
+		}
+	}
+
+	module x.inner {
+		type Integer
+
+		value-object NamespacedValueObject {
+			Integer id
+		}
+	}
+}

@@ -45,7 +45,7 @@ class ConstraintMappingsTest {
     def void testMappingWithoutParameters() {
 
         // PREPARE
-        val testee = ConstraintMappings.parse(#["p.y.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty"])
         val ci = constraintInstance("strNoArgConstraint")
 
         // TEST + VERIFY
@@ -59,7 +59,7 @@ class ConstraintMappingsTest {
     def void testMappingRenamesTheParameter() {
 
         // PREPARE - the DSL parameter "expected" becomes the Java parameter "min".
-        val testee = ConstraintMappings.parse(#["p.y.a.OneArgConstraint(expected)=jakarta.validation.constraints.Size(min=expected)"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.OneArgConstraint(expected)=jakarta.validation.constraints.Size(min=expected)"])
         val ci = constraintInstance("strOneArgConstraint")
 
         // TEST + VERIFY
@@ -71,7 +71,7 @@ class ConstraintMappingsTest {
     def void testMappingUsesOneParameterTwice() {
 
         // PREPARE
-        val testee = ConstraintMappings.parse(#["p.y.a.OneArgConstraint(expected)=jakarta.validation.constraints.Size(min=expected,max=expected)"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.OneArgConstraint(expected)=jakarta.validation.constraints.Size(min=expected,max=expected)"])
         val ci = constraintInstance("strOneArgConstraint")
 
         // TEST + VERIFY
@@ -84,7 +84,7 @@ class ConstraintMappingsTest {
 
         // PREPARE - the comma between the two annotations must not be confused with the ones inside a
         // parameter list.
-        val testee = ConstraintMappings.parse(#["p.y.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Min(value=min),jakarta.validation.constraints.Max(value=max)"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Min(value=min),jakarta.validation.constraints.Max(value=max)"])
         val ci = constraintInstance("strTwoArgsConstraint")
 
         // TEST + VERIFY
@@ -98,7 +98,7 @@ class ConstraintMappingsTest {
     def void testMappingWithSeveralParametersIsOneAnnotation() {
 
         // PREPARE - the comma inside the parameter list must not split the annotation.
-        val testee = ConstraintMappings.parse(#["p.y.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=min,max=max)"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=min,max=max)"])
         val ci = constraintInstance("strTwoArgsConstraint")
 
         // TEST + VERIFY
@@ -124,8 +124,8 @@ class ConstraintMappingsTest {
 
         // PREPARE
         val testee = ConstraintMappings.parse(#[
-            "p.y.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty",
-            "p.y.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=min,max=max)"
+            "org.fuin.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty",
+            "org.fuin.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=min,max=max)"
         ])
 
         // TEST + VERIFY
@@ -138,7 +138,7 @@ class ConstraintMappingsTest {
     def void testUnmappedConstraint() {
 
         // PREPARE - only another constraint is mapped.
-        val testee = ConstraintMappings.parse(#["p.y.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.NoArgConstraint=jakarta.validation.constraints.NotEmpty"])
 
         // TEST + VERIFY
         assertThat(testee.mapped(constraintInstance("strTwoArgsConstraint").constraint)).isFalse
@@ -149,7 +149,7 @@ class ConstraintMappingsTest {
     def void testMappingWithoutEqualsSign() {
 
         // TEST + VERIFY
-        assertThatThrownBy[ConstraintMappings.parse(#["p.y.a.NoArgConstraint"])].isInstanceOf(
+        assertThatThrownBy[ConstraintMappings.parse(#["org.fuin.a.NoArgConstraint"])].isInstanceOf(
             IllegalArgumentException).hasMessageContaining("DSL=JAVA")
 
     }
@@ -158,7 +158,7 @@ class ConstraintMappingsTest {
     def void testMappingWithUnknownDslParameter() {
 
         // PREPARE - the Java parameter refers to a DSL parameter that the mapping does not declare.
-        val testee = ConstraintMappings.parse(#["p.y.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=wrong)"])
+        val testee = ConstraintMappings.parse(#["org.fuin.a.TwoArgsConstraint(min,max)=jakarta.validation.constraints.Size(min=wrong)"])
         val ci = constraintInstance("strTwoArgsConstraint")
 
         // TEST + VERIFY

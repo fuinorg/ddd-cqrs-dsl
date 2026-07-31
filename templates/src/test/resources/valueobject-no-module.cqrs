@@ -1,0 +1,14 @@
+context p {
+
+	module x {
+		type String
+
+		/** Value object in a module named after its context (no sub grouping). */
+		value-object MyValueObject base String {
+
+			/** Persistent value. */
+			String value
+
+		}
+	}
+}

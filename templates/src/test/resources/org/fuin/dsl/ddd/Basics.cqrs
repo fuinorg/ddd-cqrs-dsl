@@ -1,5 +1,4 @@
-project org {
-
+context org {
 	/** Publishes how the constraints of this model are mapped to Jakarta Validation annotations. Every
 	    model that uses them (as a dependency) maps them in exactly the same way. */
 	hint SrcGen4J {
@@ -25,31 +24,28 @@ project org {
 		]
 	}
 
-	context fuin {
+	module fuin.types {
+		type Number // BigDecimal, BigInteger, Integer, Long, Double, Float
+		type Integer // Signed 32 bit integer		
+		type Long // Signed 64 bit integer
+		type Float // Floating-point numbers
+		type Double // Floating-point numbers with double precision
+		type BigDecimal // Arbitrary-precision signed decimal numbers
+		type BigInteger // Arbitrary-precision integers
+		type Boolean // Represents two values: true and false.
+		type String // Text
+		type Date // RFC3339 full-date
+		type Time // RFC3339 partial-time
+		type Timestamp // RFC3339 date-time
+		type Password // Secret value
+		type UUID // Universally Unique Identifier
+		type Base64 // Base64 encoded string
+		type Binary // Array of bytes
+		type List generics 1 // List of a given type
+	}
 
-		namespace types {
-			type Number // BigDecimal, BigInteger, Integer, Long, Double, Float
-			type Integer // Signed 32 bit integer		
-			type Long // Signed 64 bit integer
-			type Float // Floating-point numbers
-			type Double // Floating-point numbers with double precision
-			type BigDecimal // Arbitrary-precision signed decimal numbers
-			type BigInteger // Arbitrary-precision integers
-			type Boolean // Represents two values: true and false.
-			type String // Text
-			type Date // RFC3339 full-date
-			type Time // RFC3339 partial-time
-			type Timestamp // RFC3339 date-time
-			type Password // Secret value
-			type UUID // Universally Unique Identifier
-			type Base64 // Base64 encoded string
-			type Binary // Array of bytes
-			type List generics 1 // List of a given type
-		}
-
-		namespace constr {
-
-			import org.fuin.types.*
+	module fuin.constr {
+		import org.fuin.types.*
 
 			/**
 			 * Ensures that the element is null (not set).
@@ -242,9 +238,5 @@ project org {
 				message "Expected the value has pattern '${expression}', but value was: '${input}'"
 
 			}
-
-		}
-
 	}
-
 }

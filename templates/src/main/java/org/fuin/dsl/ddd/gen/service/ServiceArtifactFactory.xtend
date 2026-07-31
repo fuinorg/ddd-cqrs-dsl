@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.service
 
 import java.util.Map
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
@@ -23,7 +23,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
 
     override create(Service service, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
-        if (!(service.eContainer instanceof Namespace)) {
+        if (!(service.eContainer instanceof Module)) {
             // Do not create separate interface file 
             // for services in constructors or methods
             return null

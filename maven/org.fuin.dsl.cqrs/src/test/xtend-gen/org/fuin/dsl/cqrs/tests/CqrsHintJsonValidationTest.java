@@ -75,13 +75,13 @@ public class CqrsHintJsonValidationTest {
   public void testJpaHintOutsideViewWarns() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
+      _builder.append("context p {");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("hint JpaHint { \"tables\": [] }");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("context c { }");
+      _builder.append("module c { }");
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
@@ -96,13 +96,13 @@ public class CqrsHintJsonValidationTest {
   public void testInvalidSrcGen4JReportsSchemaError() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
+      _builder.append("context p {");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("hint SrcGen4J { \"types\": [ { \"module\": \"x\" } ] }");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("context c { }");
+      _builder.append("module c { }");
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
@@ -115,26 +115,20 @@ public class CqrsHintJsonValidationTest {
 
   private String viewWith(final String hint) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("project p {");
+    _builder.append("context p {");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("context c {");
+    _builder.append("module c.n {");
     _builder.newLine();
     _builder.append("\t\t");
-    _builder.append("namespace n {");
-    _builder.newLine();
-    _builder.append("\t\t\t");
     _builder.append("projection Pj");
     _builder.newLine();
-    _builder.append("\t\t\t");
+    _builder.append("\t\t");
     _builder.append("view V uses Pj {");
     _builder.newLine();
-    _builder.append("\t\t\t\t");
-    _builder.append(hint, "\t\t\t\t");
-    _builder.newLineIfNotEmpty();
     _builder.append("\t\t\t");
-    _builder.append("}");
-    _builder.newLine();
+    _builder.append(hint, "\t\t\t");
+    _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
     _builder.append("}");
     _builder.newLine();

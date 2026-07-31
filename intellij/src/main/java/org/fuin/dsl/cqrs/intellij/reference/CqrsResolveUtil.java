@@ -28,9 +28,11 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExternalType;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsImportDecl;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsImportFqn;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
-import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsModuleDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsOperationContext;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessState;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProjectionDef;
@@ -51,12 +53,16 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Name resolution for the CQRS DSL. Mirrors the Xtext scoping: a reference resolves against
- * declarations that are local (same file or same namespace), imported, or provided by a remote model
- * (see {@link CqrsRemoteScopeResolver}) — and against nothing else. A name that exists somewhere in
- * the project but is not imported does <em>not</em> resolve, so the annotator reports it exactly like
- * the Eclipse plugin and the SrcGen4J build do. Resolving it anyway would be more convenient to
- * navigate, but it would hide a model error until the build fails.
+ * Name resolution for the CQRS DSL. Mirrors the Xtext scoping: a {@code module} is the unit of
+ * visibility, so a simple name resolves against the module's own declarations first and then against
+ * whatever the module - or its context - {@code import}s. Only that closest tier is returned, so a
+ * name reused in a sibling module resolves to the local declaration instead of becoming ambiguous.
+ * A name that is neither declared in the module nor imported does <em>not</em> resolve, so the
+ * annotator reports it exactly like the Eclipse plugin and the SrcGen4J build do.
+ * <p>
+ * A {@code dependency} (see {@link CqrsRemoteScopeResolver}) only makes another project's models
+ * resolvable; an import still decides which of their types are visible. A fully qualified reference
+ * bypasses the imports entirely, matching the Xtext global scope.
  */
 public final class CqrsResolveUtil {
 
@@ -78,58 +84,19 @@ public final class CqrsResolveUtil {
     }
 
     /**
-     * Fully qualified name ({@code project.context.namespace}) of the namespace enclosing the given
-     * element. The namespace is optional: when the element lives directly in a context (no
-     * namespace), the enclosing scope is the context itself ({@code project.context}). Returns ""
-     * when there is neither.
-     * <p>
-     * The name includes the project, so that it can be compared with the qualified name of a
-     * declaration and with the imports, which are fully qualified as well.
+     * Fully qualified name ({@code context.module}) of the module enclosing the given element,
+     * or "" when there is none. The name includes the context, so it can be compared with the
+     * qualified name of a declaration.
      */
-    public static String enclosingNamespaceFqn(PsiElement element) {
-        CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(element, CqrsNamespaceDef.class);
-        if (ns != null) {
-            return getQualifiedName(ns);
-        }
+    public static String enclosingModuleFqn(PsiElement element) {
+        CqrsModuleDef ns = PsiTreeUtil.getParentOfType(element, CqrsModuleDef.class);
+        return ns != null ? getQualifiedName(ns) : "";
+    }
+
+    /** Name of the context enclosing the element, or "". */
+    public static String enclosingContextFqn(PsiElement element) {
         CqrsContextDef ctx = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
         return ctx != null ? getQualifiedName(ctx) : "";
-    }
-
-    /** Namespaces imported with a trailing wildcard ({@code import a.b.*}). */
-    public static List<String> wildcardImports(PsiElement element) {
-        List<String> result = new ArrayList<>();
-        for (CqrsImportDecl imp : imports(element)) {
-            String ns = CqrsPsiUtil.getImportedNamespace(imp);
-            if (ns != null && ns.endsWith(".*")) {
-                result.add(ns.substring(0, ns.length() - 2));
-            }
-        }
-        return result;
-    }
-
-    /** Specific imports ({@code import a.b.Name}) — the full names they bring into scope. */
-    public static List<String> specificImports(PsiElement element) {
-        List<String> result = new ArrayList<>();
-        for (CqrsImportDecl imp : imports(element)) {
-            String ns = CqrsPsiUtil.getImportedNamespace(imp);
-            if (ns != null && !ns.endsWith(".*")) {
-                result.add(ns);
-            }
-        }
-        return result;
-    }
-
-    private static List<CqrsImportDecl> imports(PsiElement element) {
-        CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(element, CqrsNamespaceDef.class);
-        if (ns != null) {
-            return new ArrayList<>(PsiTreeUtil.getChildrenOfTypeAsList(ns, CqrsImportDecl.class));
-        }
-        // Namespace omitted: imports are declared directly on the enclosing context.
-        CqrsContextDef ctx = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
-        if (ctx != null) {
-            return new ArrayList<>(PsiTreeUtil.getChildrenOfTypeAsList(ctx, CqrsImportDecl.class));
-        }
-        return List.of();
     }
 
     /** All named declarations across the project's {@code .cqrs} files. */
@@ -151,12 +118,108 @@ public final class CqrsResolveUtil {
         return result;
     }
 
-    /** Declarations visible to {@code element}: project-local plus remote (import-resolved). */
-    public static List<CqrsNamedElement> visibleDeclarations(PsiElement element) {
+    /**
+     * Everything that could possibly be addressed from {@code element}: project-local declarations
+     * plus those of its dependencies. This is the pool a <em>fully qualified</em> reference resolves
+     * against; it is deliberately not narrowed by the imports.
+     */
+    public static List<CqrsNamedElement> resolvableDeclarations(PsiElement element) {
         Project project = element.getProject();
         List<CqrsNamedElement> all = new ArrayList<>(allDeclarations(project));
-        all.addAll(CqrsRemoteScopeResolver.getInstance(project).remoteDeclarations(element.getContainingFile()));
+        all.addAll(dependencyDeclarations(element));
         return dedupByLocation(all);
+    }
+
+    /**
+     * Declarations addressable by their <em>simple</em> name at the given position: the ones of the
+     * enclosing module, plus the ones an {@code import} of that module or of its context covers.
+     * This is what makes completion offer only imported types.
+     */
+    public static List<CqrsNamedElement> visibleDeclarations(PsiElement element) {
+        String currentModule = enclosingModuleFqn(element);
+        List<String> imports = importedNames(element);
+        List<CqrsNamedElement> result = new ArrayList<>();
+        for (CqrsNamedElement decl : resolvableDeclarations(element)) {
+            if (declaredIn(decl, currentModule) || coveredByImport(getQualifiedName(decl), imports)) {
+                result.add(decl);
+            }
+        }
+        return result;
+    }
+
+    /** The names imported by the enclosing module and by the enclosing context, in that order. */
+    public static List<String> importedNames(PsiElement element) {
+        List<String> result = new ArrayList<>();
+        CqrsModuleDef module = PsiTreeUtil.getParentOfType(element, CqrsModuleDef.class);
+        if (module != null) {
+            collectImports(module, result);
+        }
+        CqrsContextDef context = PsiTreeUtil.getParentOfType(element, CqrsContextDef.class);
+        if (context != null) {
+            // Only the context's own imports - not those of the modules nested inside it.
+            for (CqrsImportDecl imp : PsiTreeUtil.getChildrenOfTypeAsList(context, CqrsImportDecl.class)) {
+                String text = importedName(imp);
+                if (text != null) {
+                    result.add(text);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static void collectImports(PsiElement block, List<String> target) {
+        for (CqrsImportDecl imp : PsiTreeUtil.getChildrenOfTypeAsList(block, CqrsImportDecl.class)) {
+            String text = importedName(imp);
+            if (text != null) {
+                target.add(text);
+            }
+        }
+    }
+
+    /** The dotted name an {@code import} declares, without the keyword and without whitespace. */
+    @Nullable
+    private static String importedName(CqrsImportDecl imp) {
+        CqrsImportFqn fqn = PsiTreeUtil.getChildOfType(imp, CqrsImportFqn.class);
+        if (fqn == null) {
+            return null;
+        }
+        String text = fqn.getText();
+        return text == null ? null : CqrsNames.unescapeQualified(text.replaceAll("\\s+", ""));
+    }
+
+    /**
+     * Whether a declaration belongs to the given module, compared by the module's qualified name
+     * rather than by containment: a module may be split across several files and still sees all of
+     * its own elements. Taking the <em>enclosing</em> module of the declaration also covers an
+     * element nested deeper than the module (an {@code event} declared inside a method), and keeps a
+     * module named {@code a.b} apart from one named {@code a.b.c}.
+     */
+    private static boolean declaredIn(CqrsNamedElement decl, String moduleFqn) {
+        return !moduleFqn.isEmpty() && moduleFqn.equals(enclosingModuleFqn(decl));
+    }
+
+    /**
+     * Whether an imported name covers a qualified name: an exact match, or - for a wildcard - any
+     * name below its prefix. A single wildcard therefore reaches a whole context as well as a single
+     * module, which is what {@code ctx.*} and {@code ctx.mod.*} mean.
+     */
+    public static boolean coveredByImport(String fqn, List<String> imports) {
+        for (String imported : imports) {
+            if (imported.endsWith(".*")) {
+                if (fqn.startsWith(imported.substring(0, imported.length() - 1))) {
+                    return true;
+                }
+            } else if (imported.equals(fqn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Declarations a declared {@code dependency} provides. */
+    private static List<CqrsNamedElement> dependencyDeclarations(PsiElement element) {
+        return CqrsRemoteScopeResolver.getInstance(element.getProject())
+                .remoteDeclarations(element.getContainingFile());
     }
 
     /**
@@ -169,17 +232,23 @@ public final class CqrsResolveUtil {
      */
     public static List<CqrsNamedElement> referenceableDeclarations(PsiElement element) {
         Predicate<CqrsNamedElement> expected = expectedDeclaration(element);
-        List<CqrsNamedElement> visible = visibleDeclarations(element);
-        if (expected == null) {
-            return visible;
-        }
         List<CqrsNamedElement> result = new ArrayList<>();
-        for (CqrsNamedElement decl : visible) {
-            if (expected.test(decl)) {
+        for (CqrsNamedElement decl : visibleDeclarations(element)) {
+            if (isReferenceableKind(decl) && (expected == null || expected.test(decl))) {
                 result.add(decl);
             }
         }
         return result;
+    }
+
+    /**
+     * Whether a declaration is something a cross reference may point at. A {@code context} and a
+     * {@code module} are containers, never targets - no rule of the grammar references one - but they
+     * are named elements like any other, so a wildcard import covering their qualified name would
+     * otherwise offer them as if they were types.
+     */
+    private static boolean isReferenceableKind(CqrsNamedElement decl) {
+        return !(decl instanceof CqrsContextDef) && !(decl instanceof CqrsModuleDef);
     }
 
     /**
@@ -326,10 +395,10 @@ public final class CqrsResolveUtil {
      * Collapses declarations that denote the same physical source location. The project scope
      * ({@link #allDeclarations}) and the remote scope ({@link CqrsRemoteScopeResolver#remoteDeclarations})
      * overlap — a cached model is also indexed as a project file, and one artifact providing several
-     * imported namespaces is served once per namespace — so the same declaration would otherwise be
+     * imported modules is served once per module — so the same declaration would otherwise be
      * offered several times and surface as a bogus "Multiple Implementations" choice. Keying on the
      * source location (file path + start offset) rather than the name keeps genuinely distinct,
-     * same-named declarations across namespaces separate.
+     * same-named declarations across modules separate.
      */
     private static List<CqrsNamedElement> dedupByLocation(List<CqrsNamedElement> declarations) {
         List<CqrsNamedElement> result = new ArrayList<>(declarations.size());
@@ -355,43 +424,51 @@ public final class CqrsResolveUtil {
         if (referencedName == null || referencedName.isEmpty()) {
             return List.of();
         }
-        List<CqrsNamedElement> candidates = visibleDeclarations(context);
-        PsiFile contextFile = context.getContainingFile();
-        String currentNs = enclosingNamespaceFqn(context);
-        List<String> wildcards = wildcardImports(context);
-        List<String> specifics = specificImports(context);
+        List<CqrsNamedElement> candidates = resolvableDeclarations(context);
+        String currentModule = enclosingModuleFqn(context);
 
         boolean qualified = referencedName.contains(".");
         List<CqrsNamedElement> result = new ArrayList<>();
 
-        for (CqrsNamedElement decl : candidates) {
-            String simple = decl.getName();
-            if (simple == null) {
-                continue;
-            }
-            String fqn = getQualifiedName(decl);
-
-            if (qualified) {
+        if (qualified) {
+            // A fully qualified reference always resolves - it needs no import, exactly like the
+            // Xtext global scope.
+            for (CqrsNamedElement decl : candidates) {
+                if (decl.getName() == null) {
+                    continue;
+                }
+                String fqn = getQualifiedName(decl);
                 if (fqn.equals(referencedName) || fqn.endsWith("." + referencedName)) {
                     result.add(decl);
                 }
-                continue;
             }
+            return ofExpectedKind(context, result);
+        }
 
-            if (!simple.equals(referencedName)) {
+        // A simple name resolves against the closest scope that declares it: the enclosing module
+        // first, then whatever that module or its context imports. Only the closest non-empty tier
+        // is returned, so a name the module declares itself wins over an imported one instead of
+        // turning into an ambiguous match. Anything neither declared here nor imported is invisible.
+        List<String> imports = importedNames(context);
+        List<List<CqrsNamedElement>> tiers = List.of(new ArrayList<>(), new ArrayList<>());
+        for (CqrsNamedElement decl : candidates) {
+            String simple = decl.getName();
+            if (simple == null || !simple.equals(referencedName)) {
                 continue;
             }
-            // simple-name reference: only visible when local or imported
-            boolean sameFile = contextFile != null && contextFile.equals(decl.getContainingFile());
-            boolean sameNamespace = !currentNs.isEmpty() && fqn.equals(currentNs + "." + simple);
-            String declNs = namespaceOf(fqn);
-            boolean wildcardImported = wildcards.contains(declNs);
-            boolean specificImported = specifics.contains(fqn);
-            if (sameFile || sameNamespace || wildcardImported || specificImported) {
-                result.add(decl);
+            if (declaredIn(decl, currentModule)) {
+                tiers.get(0).add(decl);
+            } else if (coveredByImport(getQualifiedName(decl), imports)) {
+                tiers.get(1).add(decl);
             }
         }
-        return ofExpectedKind(context, result);
+        for (List<CqrsNamedElement> tier : tiers) {
+            List<CqrsNamedElement> expected = ofExpectedKind(context, tier);
+            if (!expected.isEmpty()) {
+                return expected;
+            }
+        }
+        return List.of();
     }
 
     /**
@@ -409,19 +486,16 @@ public final class CqrsResolveUtil {
     private static List<CqrsNamedElement> ofExpectedKind(PsiElement context,
             List<CqrsNamedElement> candidates) {
         Predicate<CqrsNamedElement> expected = expectedDeclaration(context);
-        if (expected == null) {
-            return candidates;
-        }
         List<CqrsNamedElement> result = new ArrayList<>();
         for (CqrsNamedElement decl : candidates) {
-            if (expected.test(decl)) {
+            if (isReferenceableKind(decl) && (expected == null || expected.test(decl))) {
                 result.add(decl);
             }
         }
         return result;
     }
 
-    private static String namespaceOf(String fqn) {
+    private static String moduleOf(String fqn) {
         int dot = fqn.lastIndexOf('.');
         return dot < 0 ? "" : fqn.substring(0, dot);
     }

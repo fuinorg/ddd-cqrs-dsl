@@ -1,115 +1,74 @@
 package org.fuin.dsl.cqrs.intellij.remote;
 
+import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.model.MavenArtifact;
+import org.jetbrains.idea.maven.model.MavenArtifactInfo;
+import org.jetbrains.idea.maven.model.MavenRemoteRepository;
+import org.jetbrains.idea.maven.project.MavenEmbeddersManager;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import org.jetbrains.idea.maven.server.MavenEmbedderWrapper;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URI;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Resolves a Maven artifact with classifier <code>cqrs</code> and type <code>tar.gz</code> to an
- * {@link InputStream}. The local repository (<code>~/.m2/repository</code>) is consulted first; on a
- * miss the artifact is downloaded from Maven Central (releases) or Sonatype Snapshots (SNAPSHOTs).
+ * Resolves the artifact of a <code>dependency</code> through the IDE's own Maven.
  *
- * <p>For a SNAPSHOT version the timestamped file name is looked up in <code>maven-metadata.xml</code>
- * using the JDK DOM parser. Everything here is plain JDK code (no Aether/Maven Resolver and no Apache
- * Commons), so the same source can be shared verbatim by the Maven and Eclipse projects.</p>
+ * <p>Everything the user configured for Maven in this IDE applies - the local repository, the remote
+ * repositories, mirrors, servers (authentication) and proxies of their <code>settings.xml</code> -
+ * which is why the plugin borrows the bundled Maven plugin instead of shipping a second Maven. It is
+ * the IntelliJ counterpart of the Eclipse plugin's use of m2e.</p>
  *
- * <p>The repository base URLs and the local repository location can be overridden with the system
- * properties <code>cqrs.maven.repo.snapshots</code>, <code>cqrs.maven.repo.releases</code> and
- * <code>maven.repo.local</code> (mainly to point tests at a local server).</p>
+ * <p>The artifact is an ordinary jar with no classifier; the models live inside it under
+ * <code>model/</code> and are never unpacked (see {@link CqrsModelArchives}).</p>
+ *
+ * <p><b>Threading:</b> this contacts the Maven server and may download, so it must only be called from
+ * a background thread - {@link CqrsRemoteScopeResolver} does so from its pooled-thread warming.</p>
  */
 public final class MavenArtifactResolver {
 
-    /** Classifier of the published CQRS model archive. */
-    public static final String CLASSIFIER = "cqrs";
+    /** Packaging of a model artifact. It carries no classifier. */
+    public static final String EXTENSION = "jar";
 
-    /** Packaging/extension of the published CQRS model archive. */
-    public static final String EXTENSION = "tar.gz";
+    private final Project project;
 
-    private static final String CENTRAL = "https://repo.maven.apache.org/maven2/";
-
-    private static final String SNAPSHOTS = "https://central.sonatype.com/repository/maven-snapshots/";
-
-    /**
-     * Opens the artifact content, preferring the local repository and otherwise downloading from the
-     * matching remote repository. The caller owns the returned stream and must close it.
-     */
-    public InputStream openArtifact(String groupId, String artifactId, String version) throws Exception {
-        File local = localFile(groupId, artifactId, version);
-        if (local != null && local.isFile()) {
-            return new FileInputStream(local);
-        }
-        String url = remoteUrl(groupId, artifactId, version);
-        return new URI(url).toURL().openStream();
-    }
-
-    private File localFile(String groupId, String artifactId, String version) {
-        File repo = localRepo();
-        if (repo == null) {
-            return null;
-        }
-        String path = groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/' + artifactId
-                + '-' + version + '-' + CLASSIFIER + '.' + EXTENSION;
-        return new File(repo, path);
-    }
-
-    private static File localRepo() {
-        String override = System.getProperty("maven.repo.local");
-        if (override != null && !override.isEmpty()) {
-            return new File(override);
-        }
-        String home = System.getProperty("user.home");
-        return (home == null || home.isEmpty()) ? null : new File(home, ".m2/repository");
-    }
-
-    private static String remoteUrl(String groupId, String artifactId, String version) {
-        boolean snapshot = version.endsWith("-SNAPSHOT");
-        String dir = baseUrl(snapshot) + groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/';
-        if (snapshot) {
-            return dir + snapshotFileName(dir, artifactId, version);
-        }
-        return dir + artifactId + '-' + version + '-' + CLASSIFIER + '.' + EXTENSION;
-    }
-
-    private static String baseUrl(boolean snapshot) {
-        String url = snapshot ? System.getProperty("cqrs.maven.repo.snapshots", SNAPSHOTS)
-                : System.getProperty("cqrs.maven.repo.releases", CENTRAL);
-        return url.endsWith("/") ? url : url + '/';
+    public MavenArtifactResolver(@NotNull Project project) {
+        this.project = project;
     }
 
     /**
-     * Maps a SNAPSHOT version to its timestamped artifact file name by reading
-     * <code>maven-metadata.xml</code>. Falls back to the plain <code>-SNAPSHOT</code> file name when
-     * the metadata is missing or unreadable (e.g. a locally installed SNAPSHOT mirrored on a server).
+     * Resolves an artifact, downloading it into the local repository if needed.
+     *
+     * @param groupId Group id.
+     * @param artifactId Artifact id.
+     * @param version Version.
+     *
+     * @return Path of the artifact in the local repository.
+     *
+     * @throws Exception If it cannot be resolved.
      */
-    private static String snapshotFileName(String dir, String artifactId, String version) {
+    public @NotNull Path resolve(String groupId, String artifactId, String version) throws Exception {
+        final MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
+        final List<MavenRemoteRepository> repositories = new ArrayList<>(manager.getRemoteRepositories());
+        final MavenEmbedderWrapper embedder = manager.getEmbeddersManager()
+                .getEmbedder(MavenEmbeddersManager.FOR_DEPENDENCIES_RESOLVE, project.getBasePath());
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false);
-            NodeList versions = factory.newDocumentBuilder().parse(dir + "maven-metadata.xml")
-                    .getElementsByTagName("snapshotVersion");
-            for (int i = 0; i < versions.getLength(); i++) {
-                Element el = (Element) versions.item(i);
-                if (CLASSIFIER.equals(text(el, "classifier")) && EXTENSION.equals(text(el, "extension"))) {
-                    String value = text(el, "value");
-                    if (value != null && !value.isEmpty()) {
-                        return artifactId + '-' + value + '-' + CLASSIFIER + '.' + EXTENSION;
-                    }
-                }
+            // No classifier - the models are the jar itself.
+            final MavenArtifact artifact = embedder.resolve(
+                    new MavenArtifactInfo(groupId, artifactId, version, EXTENSION, null), repositories);
+            if (artifact == null) {
+                throw new IllegalStateException("Maven resolved nothing");
             }
-        } catch (Exception ex) {
-            // fall back to the non-timestamped name below
+            final File file = artifact.getFile();
+            if (file == null || !file.isFile()) {
+                throw new IllegalStateException("the artifact is not in the local repository");
+            }
+            return file.toPath();
+        } finally {
+            manager.getEmbeddersManager().release(embedder);
         }
-        return artifactId + '-' + version + '-' + CLASSIFIER + '.' + EXTENSION;
-    }
-
-    private static String text(Element parent, String tag) {
-        NodeList list = parent.getElementsByTagName(tag);
-        return list.getLength() > 0 ? list.item(0).getTextContent() : null;
     }
 }

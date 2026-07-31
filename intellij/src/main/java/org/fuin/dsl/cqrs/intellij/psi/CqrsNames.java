@@ -19,7 +19,7 @@ public final class CqrsNames {
      * with the keyword rules in {@code CqrsDsl.flex}.
      */
     private static final Set<String> KEYWORDS = Set.of(
-            "context", "namespace", "import", "type", "element", "generics", "constraint", "input",
+            "context", "module", "import", "dependency", "local", "type", "element", "generics", "constraint", "input",
             "exception", "annotation", "cid", "message", "base", "identifies", "enum", "instances",
             "deprecated", "event", "entity", "identifier", "root", "aggregate", "constructor",
             "fires", "returns", "method", "ref", "slabel", "label", "tooltip", "prompt", "examples",

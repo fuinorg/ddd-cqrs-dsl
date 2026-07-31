@@ -29,7 +29,7 @@ public abstract class CqrsNamedElementImpl extends ASTWrapperPsiElement implemen
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        // context/namespace are named by a (possibly dotted) qualified_name node
+        // context/module are named by a (possibly dotted) qualified_name node
         CqrsQualifiedName qualified = PsiTreeUtil.getChildOfType(this, CqrsQualifiedName.class);
         if (qualified != null) {
             return qualified;

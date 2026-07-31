@@ -1,0 +1,10 @@
+// Stands in for the models a published "cqrs" artifact provides. The dependency in
+// 26-dependency.cqrs reads this directory through its "local" clause, which keeps that example
+// self-contained - no artifact has to be resolved to run it.
+context example_common {
+
+    module types {
+        type Text
+    }
+
+}

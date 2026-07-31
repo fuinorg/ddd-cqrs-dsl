@@ -1,51 +1,44 @@
-project p_19_projection_and_view {
+context p_19_projection_and_view {
 
-	context readmodel {
+    module readmodel.m {
+        type String
 
-		namespace m {
+        aggregate-id UserId identifies User {}
 
-			type String
+        aggregate User identifier UserId {
+            constructor create fires UserCreatedEvent {
+                String name
+                event UserCreatedEvent { message "created" }
+            }
+        }
 
-			aggregate-id UserId identifies User {}
+        // A projection consumes one or more events to build a read model.
+        // The events are optional: a projection may also be declared without any input.
+        projection UserList input User.create.UserCreatedEvent
 
-			aggregate User identifier UserId {
-				constructor create fires UserCreatedEvent {
-					String name
-					event UserCreatedEvent { message "created" }
-				}
-			}
+        exception UnknownUserException { message "Unknown user" }
 
-			// A projection consumes one or more events to build a read model.
-			// The events are optional: a projection may also be declared without any input.
-			projection UserList input User.create.UserCreatedEvent
+        // A view is the result produced by a projection. Like a service it may declare
+        // business rules and methods to query it - the body may also be left empty.
+        view UserListView uses UserList rest-path "/users" {
 
-			exception UnknownUserException { message "Unknown user" }
+            // Optional: REST base path for the generated controller (else derived
+            // from the aggregate name) and the projection cron (else "* * * * * *").
+            cron-schedule "* * * * * *"
 
-			// A view is the result produced by a projection. Like a service it may declare
-			// business rules and methods to query it - the body may also be left empty.
-			view UserListView uses UserList rest-path "/users" {
+            /** The requested user must exist in the read model. */
+            business-rule UserKnown exception UnknownUserException {
+                consistency strong
+            }
 
-				// Optional: REST base path for the generated controller (else derived
-				// from the aggregate name) and the projection cron (else "* * * * * *").
-				cron-schedule "* * * * * *"
+            /** Returns the name of a single user. */
+            // Optional: REST sub path for this operation. A "{name}" placeholder binds to the
+            // parameter of that name; without the clause the method name is used.
+            method findName business-rules UserKnown rest-path "/{id}/name" {
+                UserId id
+                returns String
+            }
 
-				/** The requested user must exist in the read model. */
-				business-rule UserKnown exception UnknownUserException {
-					consistency strong
-				}
-
-				/** Returns the name of a single user. */
-				// Optional: REST sub path for this operation. A "{name}" placeholder binds to the
-				// parameter of that name; without the clause the method name is used.
-				method findName business-rules UserKnown rest-path "/{id}/name" {
-					UserId id
-					returns String
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

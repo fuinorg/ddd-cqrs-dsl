@@ -1,0 +1,35 @@
+// A "dependency" is how a model reaches types that another project publishes. It names an ordinary
+// Maven artifact - a jar, no classifier - holding ".cqrs" files under "model/". It makes those models
+// resolvable; which of their types are actually visible is decided by an "import" (see 27-import).
+//
+// Resolution is Maven's: the editor or build uses the Maven it already has (m2e in Eclipse, the IDE's
+// Maven plugin in IntelliJ, MIMA elsewhere), so the repositories, mirrors, servers and proxies of
+// your "settings.xml" all apply. The models are then read straight out of the jar in the local
+// repository - nothing is ever unpacked. A coordinate that resolves to nothing is an error on the
+// coordinate itself - otherwise the only symptom would be every type it provides failing to resolve,
+// which points at the models instead of at the declaration that is wrong.
+//
+// Both declarations below add a "local" clause, which reads the models straight from a directory
+// instead of resolving the artifact. That keeps this example self-contained; drop the clause to use
+// the published artifact.
+context p_26_dependency {
+    // Declared on the context, a dependency applies to every module below it.
+    dependency "org.acme:common-model:1.0.0" local "26-dependency-models"
+
+    module shop {
+        // A module may add dependencies of its own. It always inherits the context's as well.
+        dependency "org.acme:wip-model:0.0.1-SNAPSHOT" local "26-dependency-wip"
+
+        // A dependency only makes the models resolvable - an import decides what is visible.
+        import example_common.types.*
+        import example_wip.draft.*
+
+        value-object ProductName base Text {
+            Text value
+        }
+
+        value-object StockKeepingUnit base Sku {
+            Sku value
+        }
+    }
+}

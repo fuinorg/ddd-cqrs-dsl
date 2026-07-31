@@ -32,11 +32,11 @@ public final class CqrsColorSettingsPage implements ColorSettingsPage {
     private static final String DEMO =
             "/** A customer aggregate. */\n"
             + "context com.acme {\n"
-            + "\tnamespace types {\n"
+            + "\tmodule types {\n"
             + "\t\ttype String\n"
             + "\t\ttype UUID\n"
             + "\t}\n\n"
-            + "\tnamespace sales {\n"
+            + "\tmodule sales {\n"
             + "\t\timport com.acme.types.*\n\n"
             + "\t\t// A unique customer identifier\n"
             + "\t\taggregate-id CustomerId identifies Customer base UUID {\n"

@@ -1,41 +1,34 @@
-project p_17_event {
+context p_17_event {
 
-	context events {
+    module events.m {
+        type String
 
-		namespace m {
+        aggregate-id UserId identifies User {}
 
-			type String
+        aggregate User identifier UserId {
 
-			aggregate-id UserId identifies User {}
+            // A domain event records something that happened.
+            // It is 'fired' in case the construction or method call was successful.
 
-			aggregate User identifier UserId {
+            constructor register fires UserRegisteredEvent {
 
-				// A domain event records something that happened.
-				// It is 'fired' in case the construction or method call was successful.
+                String email
 
-				constructor register fires UserRegisteredEvent {
+                // Copies the all attributes from the 'register' constructor
+                // Therefore it is not necessary to declare these here again.
+                event UserRegisteredEvent copies-attributes-of register {
+                    message "User ${email} registered"
+                }
 
-					String email
+            }
 
-					// Copies the all attributes from the 'register' constructor
-					// Therefore it is not necessary to declare these here again.
-					event UserRegisteredEvent copies-attributes-of register {
-						message "User ${email} registered"
-					}
+            // An event with its own attributes (not copying the ones from a method/constructor).
+            event UserRenamedEvent {
+                String oldName
+                String newName
+                message "Renamed ${oldName} to ${newName}"
+            }
 
-				}
-
-				// An event with its own attributes (not copying the ones from a method/constructor).
-				event UserRenamedEvent {
-					String oldName
-					String newName
-					message "Renamed ${oldName} to ${newName}"
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

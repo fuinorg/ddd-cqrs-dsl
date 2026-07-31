@@ -1,131 +1,124 @@
-project p {
+context p {
 
-	context x {
-
-		namespace types {
-			type UUID
-			type String
-			type Integer
-		}
-
-		namespace ev {
-
-			import p.x.types.*
-
-			/** Marks a domain event that brings an entity or an aggregate into existence. */
-			annotation GenesisEvent {
-			}
-
-			/** Marks a domain event that soft-deletes an entity. */
-			annotation ExileEvent {
-			}
-
-			/** Marks a domain event that hard-deletes an entity. */
-			annotation ExodusEvent {
-			}
-
-			aggregate-id CustomerId identifies Customer base UUID {
-				examples "42705de0-91a1-11e4-b4a9-0800200c9a6"
-			}
-
-			aggregate Customer identifier CustomerId {
-
-				constructor create fires EventA, EventB, EventC {
-
-					/** Aggregate event A. */
-					event EventA {
-						// No fields
-						message "Event A [${entityIdPath}]"					
-					}
-
-				}
-
-				/** Renames the customer. */
-				method rename fires EventH {
-
-					/** The new name. */
-					MyString newName
-
-				}
-
-				/** Aggregate event B. */
-				event EventB {
-					/** A. */
-					String a {
-						examples "Abc"
-					}
-					message "Event B: ${a} [${entityIdPath}]"					
-				}
-
-				/** Aggregate event C. */
-				event EventC {
-					/** A. */
-					String a {
-						examples "Abc"
-					}
-					/** B. */
-					Integer b {
-						examples 123
-					}
-					message "Event C: ${a} / ${b} [${entityIdPath}]"
-				}
-
-				/** Aggregate event F - Annotations are listed out of order on purpose. */
-				@ExodusEvent
-				@GenesisEvent
-				event EventF {
-					message "Event F [${entityIdPath}]"
-				}
-
-			}
-
-			/** Event D - Independent of an aggregate. */
-			event EventD {
-				message "Something interesting happened!"
-			}
-
-			value-object MyString base String {
-				examples "abc" "def"
-				String value
-			}
-
-			/** Event E - Independent of an aggregate with value object reference. */
-			event EventE {
-
-				/** Field A */
-				MyString a
-
-				/** Field B */
-				MyString b {
-					examples "123" "456"
-				}
-
-				message "Something interesting happened!"
-			}
-
-			/** Event G - Independent of an aggregate and annotated. */
-			@ExileEvent
-			event EventG {
-				message "Something interesting happened!"
-			}
-
-			/**
-			 * Event H - Copies the operation's parameters and declares an attribute of its own on top.
-			 * The generated event has to carry both: the parameters first, then the extra attribute.
-			 * Its message renders one of each, so an attribute silently dropped here would leave a
-			 * placeholder nothing supplies.
-			 */
-			event EventH copies-attributes-of Customer.rename {
-
-				/** The name before the change. */
-				MyString oldName
-
-				message "Renamed from ${oldName} to ${newName}"
-
-			}
-
-		}
-
+	module x.types {
+		type UUID
+		type String
+		type Integer
 	}
 
+	module x.ev {
+		import p.x.types.*
+
+		/** Marks a domain event that brings an entity or an aggregate into existence. */
+		annotation GenesisEvent {
+		}
+
+		/** Marks a domain event that soft-deletes an entity. */
+		annotation ExileEvent {
+		}
+
+		/** Marks a domain event that hard-deletes an entity. */
+		annotation ExodusEvent {
+		}
+
+		aggregate-id CustomerId identifies Customer base UUID {
+			examples "42705de0-91a1-11e4-b4a9-0800200c9a6"
+		}
+
+		aggregate Customer identifier CustomerId {
+
+			constructor create fires EventA, EventB, EventC {
+
+				/** Aggregate event A. */
+				event EventA {
+					// No fields
+					message "Event A [${entityIdPath}]"					
+				}
+
+			}
+
+			/** Renames the customer. */
+			method rename fires EventH {
+
+				/** The new name. */
+				MyString newName
+
+			}
+
+			/** Aggregate event B. */
+			event EventB {
+				/** A. */
+				String a {
+					examples "Abc"
+				}
+				message "Event B: ${a} [${entityIdPath}]"					
+			}
+
+			/** Aggregate event C. */
+			event EventC {
+				/** A. */
+				String a {
+					examples "Abc"
+				}
+				/** B. */
+				Integer b {
+					examples 123
+				}
+				message "Event C: ${a} / ${b} [${entityIdPath}]"
+			}
+
+			/** Aggregate event F - Annotations are listed out of order on purpose. */
+			@ExodusEvent
+			@GenesisEvent
+			event EventF {
+				message "Event F [${entityIdPath}]"
+			}
+
+		}
+
+		/** Event D - Independent of an aggregate. */
+		event EventD {
+			message "Something interesting happened!"
+		}
+
+		value-object MyString base String {
+			examples "abc" "def"
+			String value
+		}
+
+		/** Event E - Independent of an aggregate with value object reference. */
+		event EventE {
+
+			/** Field A */
+			MyString a
+
+			/** Field B */
+			MyString b {
+				examples "123" "456"
+			}
+
+			message "Something interesting happened!"
+		}
+
+		/** Event G - Independent of an aggregate and annotated. */
+		@ExileEvent
+		event EventG {
+			message "Something interesting happened!"
+		}
+
+		/**
+		 * Event H - Copies the operation's parameters and declares an attribute of its own on top.
+		 * The generated event has to carry both: the parameters first, then the extra attribute.
+		 * Its message renders one of each, so an attribute silently dropped here would leave a
+		 * placeholder nothing supplies.
+		 */
+		event EventH copies-attributes-of Customer.rename {
+
+			/** The name before the change. */
+			MyString oldName
+
+			message "Renamed from ${oldName} to ${newName}"
+
+		}
+	}
 }

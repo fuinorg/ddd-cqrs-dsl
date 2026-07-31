@@ -69,36 +69,32 @@ class SrcSettersTest {
     private def SrcSetters createTestee(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
-				project p {
-                context ctx {
-                
-                    namespace a.b {
-                        
-                        import ctx.types.*
-                        
-                        value-object MyValueObject {
-                            
-                            /** Human readable name. */
-                            String name
-                            
-                            /** Language the name is in. */
-                            optional Locale locale
-                            
-                        }
-                        
-                    }
-                
-                    namespace types {
-                        type String
-                        type Locale
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module ctx.a.b {
+				        import p.ctx.types.*
+
+
+				        value-object MyValueObject {
+
+				            /** Human readable name. */
+				            String name
+
+				            /** Language the name is in. */
+				            optional Locale locale
+
+				        }
+				    }
+
+				    module ctx.types {
+				        type String
+				        type Locale
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)
-        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.contexts.get(0).modules.get(0).elements.get(0) as ValueObject
         return new SrcSetters(codeSnippetContext, GenerateOptions.empty(), "public", valueObject.attributes)
     }
 

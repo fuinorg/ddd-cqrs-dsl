@@ -34,6 +34,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -57,7 +58,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -66,7 +66,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
-import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -147,19 +146,19 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createDomainModelAdapter();
       }
       @Override
-      public Adapter caseProject(Project object)
-      {
-        return createProjectAdapter();
-      }
-      @Override
       public Adapter caseContext(Context object)
       {
         return createContextAdapter();
       }
       @Override
-      public Adapter caseNamespace(Namespace object)
+      public Adapter caseModule(org.fuin.dsl.cqrs.cqrsDsl.Module object)
       {
-        return createNamespaceAdapter();
+        return createModuleAdapter();
+      }
+      @Override
+      public Adapter caseDependency(Dependency object)
+      {
+        return createDependencyAdapter();
       }
       @Override
       public Adapter caseImport(Import object)
@@ -514,21 +513,6 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Project <em>Project</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Project
-   * @generated
-   */
-  public Adapter createProjectAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Context <em>Context</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -544,16 +528,31 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Namespace <em>Namespace</em>}'.
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Module <em>Module</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Namespace
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module
    * @generated
    */
-  public Adapter createNamespaceAdapter()
+  public Adapter createModuleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Dependency <em>Dependency</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Dependency
+   * @generated
+   */
+  public Adapter createDependencyAdapter()
   {
     return null;
   }

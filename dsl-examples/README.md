@@ -7,9 +7,7 @@ comment explaining what it shows. They follow the grammar in
 
 | File | Shows |
 |------|-------|
-| [01-context-namespaces-imports](01-context-namespaces-imports.cqrs) | `context` / `namespace` structure and `import` (wildcard `.*` and a specific namespace) |
-| [01-context-without-namespace](01-context-without-namespace.cqrs) | Optional `namespace`: a `context` holding `import`s and elements directly (package becomes `project.context`) |
-| [01-context-mixed-namespaces-and-elements](01-context-mixed-namespaces-and-elements.cqrs) | A `context` mixing `namespace` blocks and type/elements as siblings |
+| [01-context-modules](01-context-modules.cqrs) | The two levels `context` / `module` (dotted module names), and the module as the unit of visibility |
 | [02-external-types](02-external-types.cqrs) | External `type`s: plain, `element`, and `generics <n>` |
 | [03-value-object](03-value-object.cqrs) | `value-object` — wrapping a `base` type vs. grouping attributes |
 | [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) and per-attribute overrides |
@@ -34,6 +32,8 @@ comment explaining what it shows. They follow the grammar in
 | [23-message-el-expressions](23-message-el-expressions.cqrs) | `message` with simple `${var}` placeholders and Jakarta EL expressions (method calls, arithmetic) |
 | [24-process-manager](24-process-manager.cqrs) | `process-manager` (saga): `process-states` and `reacts-to <Event> in-state <State>` reactions with `correlate-by`, `issues-commands`, `transition-to` and `arm-timeout`/`cancel-timeout` |
 | [25-jpa-hint](25-jpa-hint.cqrs) | `JpaHint` inside a `view` describing JPA tables (`@Table`/`@Column` plus `@Digits`/`@DecimalMin`), generated into the view's package |
+| [26-dependency](26-dependency.cqrs) | `dependency "groupId:artifactId:version"` on a `context` and on a `module`, with the optional `local` directory override. Both point at [26-dependency-models](26-dependency-models) and [26-dependency-wip](26-dependency-wip), which stand in for a published artifact and an unpublished one so the example resolves without a network |
+| [27-import](27-import.cqrs) | `import` on a `context` and on a `module`: `ctx.*`, `ctx.mod.*` and `ctx.mod.Type`, plus the fully qualified reference that needs none |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

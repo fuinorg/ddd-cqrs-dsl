@@ -65,23 +65,24 @@
       <genEnumLiterals ecoreEnumLiteral="CqrsDsl.ecore#//ErasureStrategy/review"/>
     </genEnums>
     <genClasses ecoreClass="CqrsDsl.ecore#//DomainModel">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DomainModel/projects"/>
-    </genClasses>
-    <genClasses ecoreClass="CqrsDsl.ecore#//Project">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Project/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Project/hints"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Project/contexts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//DomainModel/contexts"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Context">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Context/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/dependencies"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/namespaces"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/elements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/hints"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Context/modules"/>
     </genClasses>
-    <genClasses ecoreClass="CqrsDsl.ecore#//Namespace">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Namespace/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Namespace/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Namespace/elements"/>
+    <genClasses ecoreClass="CqrsDsl.ecore#//Module">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Module/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Module/dependencies"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Module/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Module/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//Dependency">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Dependency/coordinate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Dependency/local"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Import/importedNamespace"/>

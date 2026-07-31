@@ -43,22 +43,20 @@ public class CqrsFoldingBuilderTest extends BasePlatformTestCase {
 
     public void testNestedBlocksEachFoldSeparately() {
         List<FoldingDescriptor> regions = foldRegions("""
-                project p {
+                context p {
 
-                    context orders {
 
-                        namespace m {
+                        module orders.m {
 
                             type String
 
                         }
 
-                    }
 
                 }
                 """);
 
-        assertEquals(3, regions.size());
+        assertEquals(2, regions.size());
         for (FoldingDescriptor region : regions) {
             assertEquals("{...}", region.getPlaceholderText());
         }
@@ -75,9 +73,8 @@ public class CqrsFoldingBuilderTest extends BasePlatformTestCase {
     public void testEnumBodyAndInstancesFoldIndependently() {
         // 'enum_object' holds two brace pairs as direct children of one PSI node.
         List<String> folded = foldedTexts("""
-                project p {
-                    context c {
-                        namespace m {
+                context p {
+                        module c.m {
                             enum Color {
                                 instances {
                                     RED
@@ -85,24 +82,23 @@ public class CqrsFoldingBuilderTest extends BasePlatformTestCase {
                                 }
                             }
                         }
-                    }
                 }
                 """);
 
-        assertEquals(5, folded.size());
+        assertEquals(4, folded.size());
         assertTrue("the instances block must fold on its own",
                 folded.get(0).startsWith("{") && folded.get(0).contains("RED") && !folded.get(0).contains("enum"));
         assertTrue("the enum body must fold on its own",
-                folded.get(1).contains("instances") && !folded.get(1).contains("namespace"));
+                folded.get(1).contains("instances") && !folded.get(1).contains("module"));
     }
 
     public void testSingleLineBlockIsNotFoldable() {
-        assertEmpty(foldRegions("project p { context c { namespace m { type String } } }"));
+        assertEmpty(foldRegions("context p { module c.m { type String } }"));
     }
 
     public void testJsonObjectIsFoldable() {
         List<String> folded = foldedTexts("""
-                project p {
+                context p {
                     hint SrcGen4J {
                         "package": "a.b.c",
                         "inline": { "x": 1 }
@@ -132,24 +128,22 @@ public class CqrsFoldingBuilderTest extends BasePlatformTestCase {
     /** Drives the platform itself, so a descriptor the folding model rejects fails here. */
     public void testPlatformBuildsTheRegionsInTheEditor() {
         myFixture.configureByText("test.cqrs", """
-                project p {
+                context p {
 
-                    context orders {
 
-                        namespace m {
+                        module orders.m {
 
                             type String
 
                         }
 
-                    }
 
                 }
                 """);
         EditorTestUtil.buildInitialFoldingsInBackground(myFixture.getEditor());
 
         FoldRegion[] regions = myFixture.getEditor().getFoldingModel().getAllFoldRegions();
-        assertEquals(3, regions.length);
+        assertEquals(2, regions.length);
         for (FoldRegion region : regions) {
             assertEquals("{...}", region.getPlaceholderText());
             assertTrue("nothing may start collapsed", region.isExpanded());
@@ -159,8 +153,8 @@ public class CqrsFoldingBuilderTest extends BasePlatformTestCase {
     public void testUnbalancedBracesProduceNoRegion() {
         // An opening brace with no partner is dropped ...
         assertEmpty(foldRegions("""
-                project p {
-                    context c {
+                context p {
+                    module c {
                 """));
 
         // ... and a stray closing brace is ignored rather than throwing.

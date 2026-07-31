@@ -1,94 +1,87 @@
-project p_process_manager {
+context p_process_manager {
 
-	context orders {
+	module orders.m {
+		type UUID
 
-		namespace m {
+		aggregate-id OrderId identifies Order {}
 
-			type UUID
+		aggregate Order identifier OrderId {
 
-			aggregate-id OrderId identifies Order {}
-
-			aggregate Order identifier OrderId {
-
-				/** Places a new order. */
-				constructor place fires OrderPlacedEvent {
-					UUID id
-				}
-
-				/** Marks the order as paid. */
-				method markPaid fires OrderPaidEvent {
-					UUID id
-				}
-
-			}
-
-			/** A customer placed an order. */
-			event OrderPlacedEvent {
-				/** The order's id. */
+			/** Places a new order. */
+			constructor place fires OrderPlacedEvent {
 				UUID id
-				message "Order ${id} placed"
 			}
 
-			/** The order was paid. */
-			event OrderPaidEvent {
-				/** The order's id. */
+			/** Marks the order as paid. */
+			method markPaid fires OrderPaidEvent {
 				UUID id
-				message "Order ${id} paid"
-			}
-
-			/** Ask the payment context to collect payment for an order. */
-			command RequestPayment {
-				UUID orderId
-				message "Request payment for ${orderId}"
-			}
-
-			/** Cancel an order that was never paid. */
-			command CancelOrder {
-				UUID orderId
-				message "Cancel order ${orderId}"
-			}
-
-			/**
-			 * Coordinates collecting payment for an order via a documented state machine.
-			 */
-			process-manager OrderPaymentProcess {
-
-				cron-schedule "*/5 * * * * *"
-
-				instance-key UUID
-
-				process-states {
-
-					/** Payment has been requested and is awaited. */
-					AWAITING_PAYMENT
-
-					/** Payment arrived in time; the order is confirmed. */
-					CONFIRMED
-
-					/** No payment arrived within the window; the order was cancelled. */
-					CANCELLED
-
-				}
-
-				/** When an order is placed, request payment and start the payment window. */
-				reacts-to OrderPlacedEvent {
-					correlate-by id
-					issues-commands RequestPayment
-					transition-to AWAITING_PAYMENT
-					arm-timeout 15 minutes
-				}
-
-				/** Payment arrived while awaited: confirm and cancel the timeout. */
-				reacts-to OrderPaidEvent in-state AWAITING_PAYMENT {
-					correlate-by id
-					transition-to CONFIRMED
-					cancel-timeout
-				}
-
 			}
 
 		}
 
-	}
+		/** A customer placed an order. */
+		event OrderPlacedEvent {
+			/** The order's id. */
+			UUID id
+			message "Order ${id} placed"
+		}
 
+		/** The order was paid. */
+		event OrderPaidEvent {
+			/** The order's id. */
+			UUID id
+			message "Order ${id} paid"
+		}
+
+		/** Ask the payment context to collect payment for an order. */
+		command RequestPayment {
+			UUID orderId
+			message "Request payment for ${orderId}"
+		}
+
+		/** Cancel an order that was never paid. */
+		command CancelOrder {
+			UUID orderId
+			message "Cancel order ${orderId}"
+		}
+
+		/**
+		 * Coordinates collecting payment for an order via a documented state machine.
+		 */
+		process-manager OrderPaymentProcess {
+
+			cron-schedule "*/5 * * * * *"
+
+			instance-key UUID
+
+			process-states {
+
+				/** Payment has been requested and is awaited. */
+				AWAITING_PAYMENT
+
+				/** Payment arrived in time; the order is confirmed. */
+				CONFIRMED
+
+				/** No payment arrived within the window; the order was cancelled. */
+				CANCELLED
+
+			}
+
+			/** When an order is placed, request payment and start the payment window. */
+			reacts-to OrderPlacedEvent {
+				correlate-by id
+				issues-commands RequestPayment
+				transition-to AWAITING_PAYMENT
+				arm-timeout 15 minutes
+			}
+
+			/** Payment arrived while awaited: confirm and cancel the timeout. */
+			reacts-to OrderPaidEvent in-state AWAITING_PAYMENT {
+				correlate-by id
+				transition-to CONFIRMED
+				cancel-timeout
+			}
+
+		}
+	}
 }

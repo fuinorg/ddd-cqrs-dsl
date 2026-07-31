@@ -1,53 +1,50 @@
-project p_enumobject {
+context p_enumobject {
 
-	context x {
-		namespace types {
-			type String
-			type Integer
-			type Boolean
+	module x.types {
+		type String
+		type Integer
+		type Boolean
+	}
+
+	module x.enumobject {
+		import p_enumobject.x.types.*
+
+		enum EnumA {
+			instances {
+				A
+				B
+				C
+			}
 		}
 
-		namespace enumobject {
-			import x.types.*
+		enum EnumB {
+			Integer id
+			String shortName
+			String longName
 
-			enum EnumA {
-				instances {
-					A
-					B
-					C
-				}
+			instances {
+				A(1, "a", "First")
+				B(2, "b", "Second")
+				C(3, "c", "Third")
 			}
+		}
 
-			enum EnumB {
-				Integer id
-				String shortName
-				String longName
-
-				instances {
-					A(1, "a", "First")
-					B(2, "b", "Second")
-					C(3, "c", "Third")
-				}
+		enum EnumC {
+			instances {
+				A
+				deprecated B
+				C
 			}
+		}
 
-			enum EnumC {
-				instances {
-					A
-					deprecated B
-					C
-				}
-			}
+		enum EnumD base Integer {
+			Integer id
 
-			enum EnumD base Integer {
-				Integer id
-
-				instances {
-					A(1)
-					B(2)
-					C(3)
-				}
+			instances {
+				A(1)
+				B(2)
+				C(3)
 			}
 		}
 	}
-
 }

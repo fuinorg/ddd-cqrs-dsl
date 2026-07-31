@@ -6,30 +6,49 @@ generate cqrsDsl "http://www.fuin.org/dsl/cqrs/CqrsDsl"
 
 /** A system of abstractions that describes the selected aspects of the domain. */
 DomainModel:
-	projects+=Project*;
+	contexts+=Context*;
 
-/** A deployable unit that groups a number of contexts and carries generator hints. */
-Project:
-	'project' name=FQN '{'
-		hints+=Hint*
-		contexts+=Context*
-	'}';
-
-/** The setting in which a word or statement appears that determines its meaning. */
+/**
+ * The setting in which a word or statement appears that determines its meaning. A deployable unit
+ * that groups a number of modules and carries generator hints.
+ */
 Context:
 	'context' name=FQN '{'
+		dependencies+=Dependency*
 		imports+=Import*
-		( namespaces+=Namespace | elements+=AbstractElement )*
+		hints+=Hint*
+		modules+=Module*
 	'}';
 
-/** Structured hierarchy that allows reuse of names in different sub contexts. */
-Namespace:
-	'namespace' name=FQN '{'
+/**
+ * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
+ * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
+ * unit of visibility: only its own elements are reachable without an 'import'.
+ */
+Module:
+	'module' name=FQN '{'
+		dependencies+=Dependency*
 		imports+=Import*
 		elements+=AbstractElement*
 	'}';
 
-/** Allows using objects from other namespaces. */
+/**
+ * A Maven artifact (classifier "cqrs", type "tar.gz") that provides further '.cqrs' models. It makes
+ * those models resolvable; an 'import' still decides which of their types are actually visible. A
+ * dependency declared on the context applies to all of its modules. The optional 'local' clause
+ * reads the models straight from a directory instead of resolving the artifact, which is handy for
+ * a model that is not published yet.
+ */
+Dependency:
+	'dependency' coordinate=STRING ('local' local=STRING)?;
+
+/**
+ * Makes types of another module - of the same or of a different context - visible under their simple
+ * name. The imported name addresses a type as 'context.module.Type' and may end in a wildcard, so
+ * 'ctx.*' pulls in every module of a context, 'ctx.mod.*' every type of one module and
+ * 'ctx.mod.Type' a single type. An import declared on the context applies to all of its modules.
+ * A fully qualified reference always works without an import.
+ */
 Import:
 	'import' importedNamespace=(FQN | FQNWithWildcard);
 
@@ -520,9 +539,9 @@ JsonNull:
 FQN:
   ID ('.' ID)*;
 
-/** Unambiguous name that specifies a group of object. */
-FQNWithWildcard :
-	FQN  '.' '*';
+/** Unambiguous name that specifies a group of objects. */
+FQNWithWildcard:
+	FQN '.' '*';
 
 /** Value that can only be true or false. */
 BooleanLiteral:

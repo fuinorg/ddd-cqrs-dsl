@@ -1,0 +1,42 @@
+context p_import {
+
+	// Declared on the context, inherited by every module below.
+	import p_import.common.*
+
+	module common {
+		type String
+		type Integer
+	}
+
+	module catalog {
+		// Every type of one module.
+		import p_import.pricing.*
+
+		// A single type.
+		import p_import.sales.OrderNumber
+
+		value-object ProductName base String {
+			String value
+		}
+
+		value-object Price {
+			Money amount
+			OrderNumber number
+		}
+	}
+
+	module pricing {
+		type Money
+	}
+
+	module sales {
+		type OrderNumber
+
+		// A fully qualified reference needs no import.
+		value-object Invoice {
+			p_import.pricing.Money total
+			Integer position
+		}
+	}
+
+}

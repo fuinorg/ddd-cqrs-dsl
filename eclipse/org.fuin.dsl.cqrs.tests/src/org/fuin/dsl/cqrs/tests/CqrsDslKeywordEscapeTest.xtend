@@ -26,18 +26,17 @@ class CqrsDslKeywordEscapeTest {
 	@Test
 	def void caretEscapedKeywordsAreUsableAsIdentifiers() {
 
-		// 'context', 'type' and 'event' are all keywords - here used as names via the '^' escape.
+		// 'module', 'import', 'type', 'event', 'dependency' and 'local' are all keywords - here used as
+		// names via the '^' escape.
 		val model = parseHelper.parse('''
-			project p {
-				context ^context {
-					namespace ^type {
-						type String
-						value-object ^event {
-							String value
-						}
-						value-object Foo {
-							^event data
-						}
+			context ^module {
+				module ^type.^local {
+					type String
+					value-object ^event {
+						String value
+					}
+					value-object ^dependency {
+						^event data
 					}
 				}
 			}
@@ -49,32 +48,30 @@ class CqrsDslKeywordEscapeTest {
 		val errors = model.eResource.errors
 		assertTrue(errors.empty, '''Unexpected errors: «errors.join(", ")»''')
 
-		// The caret is stripped from the stored names.
-		val ctx = model.projects.get(0).contexts.get(0)
-		assertEquals("context", ctx.name)
-		val ns = ctx.namespaces.get(0)
-		assertEquals("type", ns.name)
+		// The caret is stripped from the stored names, per dot separated segment.
+		val ctx = model.contexts.get(0)
+		assertEquals("module", ctx.name)
+		val ns = ctx.modules.get(0)
+		assertEquals("type.local", ns.name)
 
 		val event = ns.elements.filter(ValueObject).findFirst[name == "event"]
 		assertNotNull(event, "value-object written as '^event' must be named 'event'")
 
 		// The cross reference written as '^event' resolves to that value object.
-		val foo = ns.elements.filter(ValueObject).findFirst[name == "Foo"]
-		assertNotNull(foo)
-		assertSame(event, foo.attributes.get(0).type)
+		val dep = ns.elements.filter(ValueObject).findFirst[name == "dependency"]
+		assertNotNull(dep)
+		assertSame(event, dep.attributes.get(0).type)
 	}
 
 	@Test
 	def void plainKeywordsStillParseAsKeywords() {
 		// Without the escape the words remain keywords, so this ordinary model parses cleanly.
 		val model = parseHelper.parse('''
-			project p {
-				context plain {
-					namespace m {
-						type String
-						value-object Money {
-							String amount
-						}
+			context plain {
+				module m {
+					type String
+					value-object Money {
+						String amount
 					}
 				}
 			}

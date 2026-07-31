@@ -21,12 +21,12 @@ public final class CqrsElementFactory {
 
     /** A bare identifier leaf, extracted from a synthetic {@code type} declaration. */
     public static @Nullable PsiElement createIdentifier(Project project, String name) {
-        CqrsFile file = createFile(project, "context c{namespace n{type " + name + "}}");
+        CqrsFile file = createFile(project, "context c{module n{type " + name + "}}");
         CqrsExternalType type = PsiTreeUtil.findChildOfType(file, CqrsExternalType.class);
         return type != null ? type.getNameIdentifier() : null;
     }
 
-    /** A {@code qualified_name} node for renaming a context or namespace. */
+    /** A {@code qualified_name} node for renaming a context or module. */
     public static @Nullable PsiElement createQualifiedName(Project project, String name) {
         CqrsFile file = createFile(project, "context " + name + "{}");
         CqrsContextDef ctx = PsiTreeUtil.findChildOfType(file, CqrsContextDef.class);
@@ -35,7 +35,7 @@ public final class CqrsElementFactory {
 
     /** A {@code type_ref} node carrying the given (possibly qualified) name. */
     public static @Nullable CqrsTypeRef createTypeRef(Project project, String name) {
-        CqrsFile file = createFile(project, "context c{namespace n{value-object v{" + name + " x}}}");
+        CqrsFile file = createFile(project, "context c{module n{value-object v{" + name + " x}}}");
         return PsiTreeUtil.findChildOfType(file, CqrsTypeRef.class);
     }
 }

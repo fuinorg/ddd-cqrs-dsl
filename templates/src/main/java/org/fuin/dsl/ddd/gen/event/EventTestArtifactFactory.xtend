@@ -37,7 +37,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
     override create(Event event, Map<String, Object> context, boolean preparationRun) throws GenerateException {
         val AbstractEntity entity = event.entity;
         val className = event.getName() + "Test"
-        // The namespace is optional: derive the package from the element itself - the enclosing
+        // The module is optional: derive the package from the element itself - the enclosing
         // entity for a domain event, otherwise the event.
         val EObject owner = if (entity === null) event else entity
         val pkg = owner.asPackage
@@ -94,7 +94,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
         ctx.requiresReference(event.uniqueName)
         if (entity !== null) {
             ctx.requiresReference(event.aggregate.idTypeNullsafe.uniqueName)
-            ctx.requiresReference(event.context.name.toFirstUpper + "EntityIdFactory")
+            ctx.requiresReference(contextSegment(event.module).toFirstUpper + "EntityIdFactory")
         }
         for (v : event.attributes.nullSafe) {
             addRequiredReferences(v, ctx)
@@ -178,7 +178,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
                 }
             
                 protected final XmlAdapter<?, ?>[] createAdapter() {
-                    final EntityIdPathXmlAdapter EntityIdPathXmlAdapter = new EntityIdPathXmlAdapter(new «event.context.name.toFirstUpper»EntityIdFactory());
+                    final EntityIdPathXmlAdapter EntityIdPathXmlAdapter = new EntityIdPathXmlAdapter(new «contextSegment(event.module).toFirstUpper»EntityIdFactory());
                     return new XmlAdapter[] { EntityIdPathXmlAdapter };
                 }
             

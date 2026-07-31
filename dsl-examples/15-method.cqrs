@@ -1,50 +1,43 @@
-project p_15_method {
+context p_15_method {
 
-	context behavior {
+    module behavior.m {
+        type String
+        type Boolean
 
-		namespace m {
+        constraint NotBlank input String { message "Blank" }
 
-			type String
-			type Boolean
+        aggregate-id DocId identifies Doc {}
 
-			constraint NotBlank input String { message "Blank" }
+        aggregate Doc identifier DocId {
 
-			aggregate-id DocId identifies Doc {}
+            /**
+             * Renames the document.
+             */
+            method rename fires RenamedEvent {
 
-			aggregate Doc identifier DocId {
+                // Parameters with (optional) preconditions
+                String newName preconditions NotBlank
 
-	            /**
-	             * Renames the document.
-	             */
-				method rename fires RenamedEvent {
+                // Inline defined event(s) to be fired on success
+                event RenamedEvent {
+                    String newName
+                    message "Renamed to ${newName}"
+                }
 
-					// Parameters with (optional) preconditions
-					String newName preconditions NotBlank
+                // Does not return anything
 
-	                // Inline defined event(s) to be fired on success 
-					event RenamedEvent {
-						String newName
-						message "Renamed to ${newName}"
-					}
+            }
 
-					// Does not return anything
+            // It's a function as it 'returns' a type
+            method isEmpty {
+                returns Boolean
+            }
 
-				}
+            // A 'ref' link to another method means it has exactly the same arguments
+            method forceRename ref rename {
+                // Does not return anything
+            }
 
-				// It's a function as it 'returns' a type
-				method isEmpty {
-					returns Boolean
-				}
-
-				// A 'ref' link to another method means it has exactly the same arguments
-				method forceRename ref rename {
-					// Does not return anything
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

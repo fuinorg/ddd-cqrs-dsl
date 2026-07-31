@@ -1,109 +1,102 @@
-project p_24_process_manager {
+context p_24_process_manager {
 
-	context orders {
+    module orders.m {
+        type UUID
 
-		namespace m {
+        aggregate-id OrderId identifies Order {}
 
-			type UUID
+        // An aggregate whose events drive the process manager below.
+        aggregate Order identifier OrderId {
 
-			aggregate-id OrderId identifies Order {}
+            /** Places a new order. */
+            constructor place fires OrderPlacedEvent {
+                UUID id
+            }
 
-			// An aggregate whose events drive the process manager below.
-			aggregate Order identifier OrderId {
+            /** Marks the order as paid. */
+            method markPaid fires OrderPaidEvent {
+                UUID id
+            }
 
-				/** Places a new order. */
-				constructor place fires OrderPlacedEvent {
-					UUID id
-				}
+        }
 
-				/** Marks the order as paid. */
-				method markPaid fires OrderPaidEvent {
-					UUID id
-				}
+        /** A customer placed an order. */
+        event OrderPlacedEvent {
+            /** The order's id. */
+            UUID id
+            message "Order ${id} placed"
+        }
 
-			}
+        /** The order was paid. */
+        event OrderPaidEvent {
+            /** The order's id. */
+            UUID id
+            message "Order ${id} paid"
+        }
 
-			/** A customer placed an order. */
-			event OrderPlacedEvent {
-				/** The order's id. */
-				UUID id
-				message "Order ${id} placed"
-			}
+        /** Ask the payment context to collect payment for an order. */
+        command RequestPayment {
+            /** The order to collect payment for. */
+            UUID orderId
+            message "Request payment for ${orderId}"
+        }
 
-			/** The order was paid. */
-			event OrderPaidEvent {
-				/** The order's id. */
-				UUID id
-				message "Order ${id} paid"
-			}
+        /** Cancel an order that was never paid. */
+        command CancelOrder {
+            /** The order to cancel. */
+            UUID orderId
+            message "Cancel order ${orderId}"
+        }
 
-			/** Ask the payment context to collect payment for an order. */
-			command RequestPayment {
-				/** The order to collect payment for. */
-				UUID orderId
-				message "Request payment for ${orderId}"
-			}
+        // A process manager (saga). It reacts to domain events and issues commands,
+        // moving through a small, documented state machine. This is where orchestration
+        // that no single aggregate owns is expressed.
 
-			/** Cancel an order that was never paid. */
-			command CancelOrder {
-				/** The order to cancel. */
-				UUID orderId
-				message "Cancel order ${orderId}"
-			}
+        /**
+         * Coordinates collecting payment for an order: it requests payment when an order is
+         * placed, confirms the order once paid, and cancels it if payment does not arrive in
+         * time.
+         */
+        process-manager OrderPaymentProcess {
 
-			// A process manager (saga). It reacts to domain events and issues commands,
-			// moving through a small, documented state machine. This is where orchestration
-			// that no single aggregate owns is expressed.
+            // How often the process polls its subscribed events.
+            cron-schedule "*/5 * * * * *"
 
-			/**
-			 * Coordinates collecting payment for an order: it requests payment when an order is
-			 * placed, confirms the order once paid, and cancels it if payment does not arrive in
-			 * time.
-			 */
-			process-manager OrderPaymentProcess {
+            // The business key each event is correlated to a running process by.
+            instance-key UUID
 
-				// How often the process polls its subscribed events.
-				cron-schedule "*/5 * * * * *"
+            process-states {
 
-				// The business key each event is correlated to a running process by.
-				instance-key UUID
+                /** Payment has been requested and is awaited. */
+                AWAITING_PAYMENT
 
-				process-states {
+                /** Payment arrived in time; the order is confirmed. */
+                CONFIRMED
 
-					/** Payment has been requested and is awaited. */
-					AWAITING_PAYMENT
+                /** No payment arrived within the window; the order was cancelled. */
+                CANCELLED
 
-					/** Payment arrived in time; the order is confirmed. */
-					CONFIRMED
+            }
 
-					/** No payment arrived within the window; the order was cancelled. */
-					CANCELLED
+            /**
+             * When an order is placed, request payment and start the payment window.
+             */
+            reacts-to OrderPlacedEvent {
+                correlate-by id
+                issues-commands RequestPayment
+                transition-to AWAITING_PAYMENT
+                arm-timeout 15 minutes
+            }
 
-				}
+            /**
+             * Payment arrived while still awaiting it: confirm the order and cancel the timeout.
+             */
+            reacts-to OrderPaidEvent in-state AWAITING_PAYMENT {
+                correlate-by id
+                transition-to CONFIRMED
+                cancel-timeout
+            }
 
-				/**
-				 * When an order is placed, request payment and start the payment window.
-				 */
-				reacts-to OrderPlacedEvent {
-					correlate-by id
-					issues-commands RequestPayment
-					transition-to AWAITING_PAYMENT
-					arm-timeout 15 minutes
-				}
-
-				/**
-				 * Payment arrived while still awaiting it: confirm the order and cancel the timeout.
-				 */
-				reacts-to OrderPaidEvent in-state AWAITING_PAYMENT {
-					correlate-by id
-					transition-to CONFIRMED
-					cancel-timeout
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

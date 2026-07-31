@@ -29,7 +29,7 @@ The executable jar is written to `console/target/ddd-cqrs-dsl-console.jar`.
 ## Usage
 
 ```bash
-java -jar ddd-cqrs-dsl-console.jar [--skip-dependencies-cache] <file-or-directory> [more ...]
+java -jar ddd-cqrs-dsl-console.jar [--settings <file>] [--offline] <file-or-directory> [more ...]
 ```
 
 - Each argument may be a single `*.cqrs` file or a directory (scanned recursively for `*.cqrs`).
@@ -41,7 +41,8 @@ java -jar ddd-cqrs-dsl-console.jar [--skip-dependencies-cache] <file-or-director
 
 | Option | Description |
 | --- | --- |
-| `--skip-dependencies-cache` | Ignore files under any `.dependencies-cache` directory. Those cached dependency models are still used for reference resolution (via the DSL's remote-scope mechanism), they are just not verified/reported themselves. |
+| `--settings <file>` | Maven `settings.xml` used to resolve a `dependency` (default: `~/.m2/settings.xml`). |
+| `--offline` | Never download; resolve only from the local repository. |
 
 ### Exit codes
 
@@ -54,7 +55,7 @@ java -jar ddd-cqrs-dsl-console.jar [--skip-dependencies-cache] <file-or-director
 ## Example
 
 ```console
-$ java -jar ddd-cqrs-dsl-console.jar --skip-dependencies-cache my-model/
+$ java -jar ddd-cqrs-dsl-console.jar --offline my-model/
 Verifying: /home/me/my-model/master-data/masterdata.cqrs
   OK - no issues
 Verifying: /home/me/my-model/exchange-rates/exchangerates.cqrs
@@ -70,6 +71,7 @@ the report can be captured cleanly (`... > report.txt`).
 
 - **Cross-file references** resolve only when all involved files are part of the same run — pass the
   containing directory.
-- **Externally provided models** (e.g. `org.fuin.dsl.cqrs.common.*`) are resolved through the DSL's
-  dependency mechanism when a `dependencies.json` (and its `.dependencies-cache`) is present next to
-  the model; imports that cannot be resolved are reported as errors.
+- **Externally provided models** (e.g. `org.fuin.dsl.cqrs.common.*`) are resolved through the
+  `dependency` declarations of the model itself, which are materialized under a
+  local Maven repository and read straight out of that jar; references that cannot be resolved are reported as
+  errors.

@@ -19,11 +19,11 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,9 +34,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getImports <em>Imports</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getNamespaces <em>Namespaces</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getElements <em>Elements</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getHints <em>Hints</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ContextImpl#getModules <em>Modules</em>}</li>
  * </ul>
  *
  * @generated
@@ -64,6 +65,16 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
   protected String name = NAME_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getDependencies() <em>Dependencies</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDependencies()
+   * @generated
+   * @ordered
+   */
+  protected EList<Dependency> dependencies;
+
+  /**
    * The cached value of the '{@link #getImports() <em>Imports</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -74,24 +85,24 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
   protected EList<Import> imports;
 
   /**
-   * The cached value of the '{@link #getNamespaces() <em>Namespaces</em>}' containment reference list.
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getNamespaces()
+   * @see #getHints()
    * @generated
    * @ordered
    */
-  protected EList<Namespace> namespaces;
+  protected EList<Hint> hints;
 
   /**
-   * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
+   * The cached value of the '{@link #getModules() <em>Modules</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getElements()
+   * @see #getModules()
    * @generated
    * @ordered
    */
-  protected EList<AbstractElement> elements;
+  protected EList<org.fuin.dsl.cqrs.cqrsDsl.Module> modules;
 
   /**
    * <!-- begin-user-doc -->
@@ -145,6 +156,21 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
    * @generated
    */
   @Override
+  public EList<Dependency> getDependencies()
+  {
+    if (dependencies == null)
+    {
+      dependencies = new EObjectContainmentEList<Dependency>(Dependency.class, this, CqrsDslPackage.CONTEXT__DEPENDENCIES);
+    }
+    return dependencies;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Import> getImports()
   {
     if (imports == null)
@@ -160,13 +186,13 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
    * @generated
    */
   @Override
-  public EList<Namespace> getNamespaces()
+  public EList<Hint> getHints()
   {
-    if (namespaces == null)
+    if (hints == null)
     {
-      namespaces = new EObjectContainmentEList<Namespace>(Namespace.class, this, CqrsDslPackage.CONTEXT__NAMESPACES);
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.CONTEXT__HINTS);
     }
-    return namespaces;
+    return hints;
   }
 
   /**
@@ -175,13 +201,13 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
    * @generated
    */
   @Override
-  public EList<AbstractElement> getElements()
+  public EList<org.fuin.dsl.cqrs.cqrsDsl.Module> getModules()
   {
-    if (elements == null)
+    if (modules == null)
     {
-      elements = new EObjectContainmentEList<AbstractElement>(AbstractElement.class, this, CqrsDslPackage.CONTEXT__ELEMENTS);
+      modules = new EObjectContainmentEList<org.fuin.dsl.cqrs.cqrsDsl.Module>(org.fuin.dsl.cqrs.cqrsDsl.Module.class, this, CqrsDslPackage.CONTEXT__MODULES);
     }
-    return elements;
+    return modules;
   }
 
   /**
@@ -194,12 +220,14 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
   {
     switch (featureID)
     {
+      case CqrsDslPackage.CONTEXT__DEPENDENCIES:
+        return ((InternalEList<?>)getDependencies()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.CONTEXT__IMPORTS:
         return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
-      case CqrsDslPackage.CONTEXT__NAMESPACES:
-        return ((InternalEList<?>)getNamespaces()).basicRemove(otherEnd, msgs);
-      case CqrsDslPackage.CONTEXT__ELEMENTS:
-        return ((InternalEList<?>)getElements()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.CONTEXT__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.CONTEXT__MODULES:
+        return ((InternalEList<?>)getModules()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -216,12 +244,14 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
     {
       case CqrsDslPackage.CONTEXT__NAME:
         return getName();
+      case CqrsDslPackage.CONTEXT__DEPENDENCIES:
+        return getDependencies();
       case CqrsDslPackage.CONTEXT__IMPORTS:
         return getImports();
-      case CqrsDslPackage.CONTEXT__NAMESPACES:
-        return getNamespaces();
-      case CqrsDslPackage.CONTEXT__ELEMENTS:
-        return getElements();
+      case CqrsDslPackage.CONTEXT__HINTS:
+        return getHints();
+      case CqrsDslPackage.CONTEXT__MODULES:
+        return getModules();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -240,17 +270,21 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
       case CqrsDslPackage.CONTEXT__NAME:
         setName((String)newValue);
         return;
+      case CqrsDslPackage.CONTEXT__DEPENDENCIES:
+        getDependencies().clear();
+        getDependencies().addAll((Collection<? extends Dependency>)newValue);
+        return;
       case CqrsDslPackage.CONTEXT__IMPORTS:
         getImports().clear();
         getImports().addAll((Collection<? extends Import>)newValue);
         return;
-      case CqrsDslPackage.CONTEXT__NAMESPACES:
-        getNamespaces().clear();
-        getNamespaces().addAll((Collection<? extends Namespace>)newValue);
+      case CqrsDslPackage.CONTEXT__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
-      case CqrsDslPackage.CONTEXT__ELEMENTS:
-        getElements().clear();
-        getElements().addAll((Collection<? extends AbstractElement>)newValue);
+      case CqrsDslPackage.CONTEXT__MODULES:
+        getModules().clear();
+        getModules().addAll((Collection<? extends org.fuin.dsl.cqrs.cqrsDsl.Module>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -269,14 +303,17 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
       case CqrsDslPackage.CONTEXT__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case CqrsDslPackage.CONTEXT__DEPENDENCIES:
+        getDependencies().clear();
+        return;
       case CqrsDslPackage.CONTEXT__IMPORTS:
         getImports().clear();
         return;
-      case CqrsDslPackage.CONTEXT__NAMESPACES:
-        getNamespaces().clear();
+      case CqrsDslPackage.CONTEXT__HINTS:
+        getHints().clear();
         return;
-      case CqrsDslPackage.CONTEXT__ELEMENTS:
-        getElements().clear();
+      case CqrsDslPackage.CONTEXT__MODULES:
+        getModules().clear();
         return;
     }
     super.eUnset(featureID);
@@ -294,12 +331,14 @@ public class ContextImpl extends MinimalEObjectImpl.Container implements Context
     {
       case CqrsDslPackage.CONTEXT__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case CqrsDslPackage.CONTEXT__DEPENDENCIES:
+        return dependencies != null && !dependencies.isEmpty();
       case CqrsDslPackage.CONTEXT__IMPORTS:
         return imports != null && !imports.isEmpty();
-      case CqrsDslPackage.CONTEXT__NAMESPACES:
-        return namespaces != null && !namespaces.isEmpty();
-      case CqrsDslPackage.CONTEXT__ELEMENTS:
-        return elements != null && !elements.isEmpty();
+      case CqrsDslPackage.CONTEXT__HINTS:
+        return hints != null && !hints.isEmpty();
+      case CqrsDslPackage.CONTEXT__MODULES:
+        return modules != null && !modules.isEmpty();
     }
     return super.eIsSet(featureID);
   }

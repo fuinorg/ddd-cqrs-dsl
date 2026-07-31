@@ -33,6 +33,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -53,7 +54,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -61,7 +61,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
-import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
@@ -140,6 +139,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.DATA_PROTECTION_INSTANCE:
 				sequence_DataProtectionInstance(context, (DataProtectionInstance) semanticObject); 
 				return; 
+			case CqrsDslPackage.DEPENDENCY:
+				sequence_Dependency(context, (Dependency) semanticObject); 
+				return; 
 			case CqrsDslPackage.DOMAIN_MODEL:
 				sequence_DomainModel(context, (DomainModel) semanticObject); 
 				return; 
@@ -203,8 +205,8 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.METHOD:
 				sequence_Method(context, (Method) semanticObject); 
 				return; 
-			case CqrsDslPackage.NAMESPACE:
-				sequence_Namespace(context, (Namespace) semanticObject); 
+			case CqrsDslPackage.MODULE:
+				sequence_Module(context, (org.fuin.dsl.cqrs.cqrsDsl.Module) semanticObject); 
 				return; 
 			case CqrsDslPackage.NULL_LITERAL:
 				sequence_NullLiteral(context, (NullLiteral) semanticObject); 
@@ -229,9 +231,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.PROCESS_STATE:
 				sequence_ProcessState(context, (ProcessState) semanticObject); 
-				return; 
-			case CqrsDslPackage.PROJECT:
-				sequence_Project(context, (Project) semanticObject); 
 				return; 
 			case CqrsDslPackage.PROJECTION:
 				sequence_Projection(context, (Projection) semanticObject); 
@@ -565,7 +564,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Context returns Context
 	 *
 	 * Constraint:
-	 *     (name=FQN imports+=Import* (namespaces+=Namespace | elements+=AbstractElement)*)
+	 *     (name=FQN dependencies+=Dependency* imports+=Import* hints+=Hint* modules+=Module*)
 	 * </pre>
 	 */
 	protected void sequence_Context(ISerializationContext context, Context semanticObject) {
@@ -621,10 +620,24 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     Dependency returns Dependency
+	 *
+	 * Constraint:
+	 *     (coordinate=STRING local=STRING?)
+	 * </pre>
+	 */
+	protected void sequence_Dependency(ISerializationContext context, Dependency semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     DomainModel returns DomainModel
 	 *
 	 * Constraint:
-	 *     projects+=Project+
+	 *     contexts+=Context+
 	 * </pre>
 	 */
 	protected void sequence_DomainModel(ISerializationContext context, DomainModel semanticObject) {
@@ -1021,13 +1034,13 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
-	 *     Namespace returns Namespace
+	 *     Module returns Module
 	 *
 	 * Constraint:
-	 *     (name=FQN imports+=Import* elements+=AbstractElement*)
+	 *     (name=FQN dependencies+=Dependency* imports+=Import* elements+=AbstractElement*)
 	 * </pre>
 	 */
-	protected void sequence_Namespace(ISerializationContext context, Namespace semanticObject) {
+	protected void sequence_Module(ISerializationContext context, org.fuin.dsl.cqrs.cqrsDsl.Module semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1187,20 +1200,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * </pre>
 	 */
 	protected void sequence_ProcessState(ISerializationContext context, ProcessState semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * <pre>
-	 * Contexts:
-	 *     Project returns Project
-	 *
-	 * Constraint:
-	 *     (name=FQN hints+=Hint* contexts+=Context*)
-	 * </pre>
-	 */
-	protected void sequence_Project(ISerializationContext context, Project semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

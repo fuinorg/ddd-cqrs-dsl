@@ -33,21 +33,15 @@ public class CqrsDslVerifier {
 
     private static final String CQRS_EXTENSION = ".cqrs";
 
-    /** Name of the srcgen4j dependency cache directory that may be excluded from scanning. */
-    static final String DEPENDENCIES_CACHE_DIR = ".dependencies-cache";
-
     /**
      * Verifies every {@code .cqrs} file found under the given files/directories.
      *
      * @param paths files or directories to scan; never {@code null}.
-     * @param skipDependenciesCache when {@code true}, files inside any {@code .dependencies-cache}
-     *            directory are not scanned or reported (they are still used for reference
-     *            resolution via the DSL's remote-scope mechanism).
      * @return the collected report; empty when no {@code .cqrs} file was found.
      */
-    public VerificationReport verify(final List<Path> paths, final boolean skipDependenciesCache) {
+    public VerificationReport verify(final List<Path> paths) {
         final VerificationReport report = new VerificationReport();
-        final List<Path> files = collectCqrsFiles(paths, skipDependenciesCache);
+        final List<Path> files = collectCqrsFiles(paths);
         if (files.isEmpty()) {
             return report;
         }
@@ -72,20 +66,18 @@ public class CqrsDslVerifier {
         return report;
     }
 
-    private List<Path> collectCqrsFiles(final List<Path> paths, final boolean skipDependenciesCache) {
+    private List<Path> collectCqrsFiles(final List<Path> paths) {
         final List<Path> result = new ArrayList<>();
         for (final Path path : paths) {
             if (Files.isDirectory(path)) {
                 try (Stream<Path> walk = Files.walk(path)) {
                     walk.filter(Files::isRegularFile)
                         .filter(CqrsDslVerifier::isCqrsFile)
-                        .filter(p -> !skipDependenciesCache || !isInDependenciesCache(p))
                         .forEach(result::add);
                 } catch (final IOException ex) {
                     throw new UncheckedIOException("Failed to scan directory: " + path, ex);
                 }
             } else if (Files.isRegularFile(path) && isCqrsFile(path)) {
-                // An explicitly named file is always included, even inside a dependency cache.
                 result.add(path);
             }
             // Non-existent paths and non-.cqrs files are silently ignored; an empty result
@@ -96,14 +88,5 @@ public class CqrsDslVerifier {
 
     private static boolean isCqrsFile(final Path path) {
         return path.getFileName().toString().endsWith(CQRS_EXTENSION);
-    }
-
-    private static boolean isInDependenciesCache(final Path path) {
-        for (final Path segment : path) {
-            if (DEPENDENCIES_CACHE_DIR.equals(segment.toString())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

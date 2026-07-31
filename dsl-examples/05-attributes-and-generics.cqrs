@@ -1,28 +1,21 @@
-project p_05_attributes_and_generics {
+context p_05_attributes_and_generics {
 
-	context attrs {
+    module attrs.m {
+        type String
+        type Integer
+        type List generics 1
+        type Map generics 2
 
-		namespace m {
+        value-object Profile {
 
-			type String
-			type Integer
-			type List generics 1
-			type Map generics 2
+            String name                   // Required by default
 
-			value-object Profile {
+            optional Integer age          // Makes the attribute optional
 
-				String name                   // Required by default
+            List<String> tags             // Generic with one argument
 
-				optional Integer age          // Makes the attribute optional
+            Map<String, Integer> scores   // Generic with two arguments
 
-				List<String> tags             // Generic with one argument
-
-				Map<String, Integer> scores   // Generic with two arguments
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

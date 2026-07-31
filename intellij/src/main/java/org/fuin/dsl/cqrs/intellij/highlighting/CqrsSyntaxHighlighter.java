@@ -9,6 +9,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.fuin.dsl.cqrs.intellij.CqrsLexerAdapter;
 import org.fuin.dsl.cqrs.intellij.CqrsTokenSets;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsTokenTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +64,9 @@ public final class CqrsSyntaxHighlighter extends SyntaxHighlighterBase {
         if (CqrsTokenSets.KEYWORDS.contains(tokenType)) {
             return KEYWORD_KEYS;
         }
-        if (tokenType.equals(CqrsTypes.STRING)) {
+        // A string still being typed is coloured like a finished one; that it is unterminated is
+        // reported by the parser, not by the colour.
+        if (tokenType.equals(CqrsTypes.STRING) || tokenType.equals(CqrsTokenTypes.UNCLOSED_STRING)) {
             return STRING_KEYS;
         }
         if (tokenType.equals(CqrsTypes.NUMBER)) {

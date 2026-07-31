@@ -66,18 +66,16 @@ class SrcInvokeGetterTest {
         String objName, String varName) {
         val model = parser.parse(
             '''
-                project p {
-                    context «ctx» {
-                        namespace «ns» {
-                            value-object «type» {
-                            }
+                context «ctx» {
+                    module «ns» {
+                        value-object «type» {
                         }
                     }
                 }
             '''
         )
         validationTester.assertNoIssues(model)
-        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.contexts.get(0).modules.get(0).elements.get(0) as ValueObject
         val Variable variable = CqrsDslFactory.eINSTANCE.createVariable()
         variable.setName(varName)
         variable.setType(valueObject)
