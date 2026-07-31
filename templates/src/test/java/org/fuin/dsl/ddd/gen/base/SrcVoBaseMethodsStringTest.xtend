@@ -90,25 +90,21 @@ class SrcVoBaseMethodsStringTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context y {
-                
-                    namespace types {
-                        type String
-                    }
-                    
-                    namespace a {
-                        
-                        import y.types.*
-                        
-                        aggregate-id MyAggregateId identifies MyAggregate base String {}
-                            
-                        aggregate MyAggregate identifier MyAggregateId {}
-                            
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module y.types {
+				        type String
+				    }
+
+				    module y.a {
+				        import p.y.types.*
+
+
+				        aggregate-id MyAggregateId identifies MyAggregate base String {}
+
+				        aggregate MyAggregate identifier MyAggregateId {}
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

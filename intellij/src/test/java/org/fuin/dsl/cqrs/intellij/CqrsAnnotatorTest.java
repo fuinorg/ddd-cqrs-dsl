@@ -13,23 +13,20 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
 
     public void testUnknownAttributeTypeIsError() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     event E {
                       <error descr="Cannot resolve 'Unknown'">Unknown</error> value
                     }
                   }
-                }
                 }
                 """);
     }
 
     public void testUnknownEventInFiresIsError() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type UUID
                     aggregate-id OrderId identifies Order base UUID {
@@ -43,21 +40,18 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testKnownTypeIsNotFlagged() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object X base String {
                       String value
                     }
                   }
-                }
                 }
                 """);
     }
@@ -67,9 +61,8 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
     /** The target names an attribute of the event, which can never be a method. */
     public void testCommandTargetPointingToAnAttributeIsError() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type UUID
                     aggregate-id OrderId identifies Order base UUID {
@@ -88,15 +81,13 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testCommandTargetPointingToAMethodIsValid() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type UUID
                     aggregate-id OrderId identifies Order base UUID {
@@ -115,17 +106,16 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
-    // --- a name that exists but is not imported is out of scope ---------------------------------
+    // --- visibility: imported yes, anything else no ---------------------------------------------
 
-    /** 'Money' is declared in another context and not imported, so it must not resolve. */
-    public void testTypeFromAnotherContextWithoutImportIsError() {
+    /** 'Money' is declared in another module, so it resolves once that module is imported. */
+    public void testTypeFromAnotherModuleResolvesWhenImported() {
         myFixture.configureByText("other.cqrs", """
-                project p {
-                  context other {
+                context p {
+                  module other {
                     type String
                     value-object Money base String {
                       String value
@@ -134,40 +124,82 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                 }
                 """);
         check("""
-                project p {
-                context c {
-                  namespace n {
-                    event E {
-                      <error descr="Cannot resolve 'Money'">Money</error> price
-                    }
-                  }
-                }
-                }
-                """);
-    }
-
-    /** The same reference resolves once the declaring context is imported. */
-    public void testTypeFromAnotherContextWithImportIsValid() {
-        myFixture.configureByText("other.cqrs", """
-                project p {
-                  context other {
-                    type String
-                    value-object Money base String {
-                      String value
-                    }
-                  }
-                }
-                """);
-        check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     import p.other.*
+
                     event E {
                       Money price
                     }
                   }
                 }
+                """);
+    }
+
+    /** Without an import the very same declaration stays out of reach. */
+    public void testTypeFromAnotherModuleIsErrorWithoutImport() {
+        myFixture.configureByText("other.cqrs", """
+                context p {
+                  module other {
+                    type String
+                    value-object Money base String {
+                      String value
+                    }
+                  }
+                }
+                """);
+        check("""
+                context p {
+                  module c.n {
+                    event E {
+                      <error descr="Cannot resolve 'Money'">Money</error> price
+                    }
+                  }
+                }
+                """);
+    }
+
+    /**
+     * A module is a container, never a cross reference target - not even when a wildcard import
+     * covers its qualified name.
+     */
+    public void testModuleNameIsNotAType() {
+        check("""
+                context p {
+                  module vo.m {
+                    import p.*
+
+                    value-object Money {
+                      SiblingType ok
+                      <error descr="Cannot resolve 'vo.sibling'">vo.sibling</error> x
+                    }
+                  }
+                  module vo.sibling {
+                    type SiblingType
+                  }
+                }
+                """);
+    }
+
+    /** A name from a different project needs a 'dependency'; without one it must not resolve. */
+    public void testTypeFromAnotherProjectIsError() {
+        myFixture.configureByText("other.cqrs", """
+                context q {
+                  module other {
+                    type String
+                    value-object Money base String {
+                      String value
+                    }
+                  }
+                }
+                """);
+        check("""
+                context p {
+                  module c.n {
+                    event E {
+                      <error descr="Cannot resolve 'Money'">Money</error> price
+                    }
+                  }
                 }
                 """);
     }
@@ -177,9 +209,8 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
 
     public void testOperationContextMustBeAService() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     service DoItService { }
                     aggregate-id FooId identifies Foo {}
@@ -193,30 +224,26 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testViewUsesMustBeAProjection() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     event E { }
                     projection Pj input E
                     view Ok uses Pj { }
                     view Wrong uses <error descr="Cannot resolve 'E'">E</error> { }
                   }
                 }
-                }
                 """);
     }
 
     public void testFiresMustBeAnEvent() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object Money base String { String value }
                     event OkEvent { }
@@ -227,15 +254,13 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testAggregateIdentifierMustBeAnAggregateId() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     aggregate-id FooId identifies Foo {}
                     entity-id BarId {}
@@ -243,15 +268,13 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     aggregate Baz identifier <error descr="Cannot resolve 'BarId'">BarId</error> { }
                   }
                 }
-                }
                 """);
     }
 
     public void testInvariantsMustBeAConstraint() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     constraint NotBlank input String { message "Blank" }
                     event OkEvent { }
@@ -261,7 +284,6 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
@@ -269,9 +291,8 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
         // Not every reference is narrowed: an attribute, a 'returns' and a generic argument take any
         // type, so a value object, an enum or an external type are all valid there.
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object Money base String { String value }
                     event E {
@@ -280,16 +301,14 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
     public void testEveryNarrowedReferenceUsedCorrectlyIsValid() {
         // Guards against false positives: each keyword whose reference is narrowed to one kind of
         // declaration appears here with a valid target, so a wrong narrowing shows up as an error.
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type UUID
                     type Boolean
@@ -327,7 +346,6 @@ public class CqrsAnnotatorTest extends BasePlatformTestCase {
                       }
                     }
                   }
-                }
                 }
                 """);
     }

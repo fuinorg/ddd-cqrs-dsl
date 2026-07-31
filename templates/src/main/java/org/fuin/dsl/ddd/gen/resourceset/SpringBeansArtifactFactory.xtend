@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.Context
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
 import org.fuin.dsl.cqrs.cqrsDsl.View
 import org.fuin.dsl.ddd.gen.base.AbstractSource
@@ -108,7 +108,7 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
 
     /** Returns the name of the project the given element container belongs to. */
     private def String projectName(EObject container) {
-        container.project.name
+        container.context.name
     }
 
     /** Creates the read side configuration: named prototype view beans plus the controllers. */
@@ -237,15 +237,15 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
     }
 
     /**
-     * Determines whether the given object holds model elements directly: a namespace, or a context
-     * that holds elements without an enclosing namespace.
+     * Determines whether the given object holds model elements directly: a module, or a context
+     * that holds elements without an enclosing module.
      *
      * @param obj Object to check.
      *
      * @return TRUE if the object directly contains model elements.
      */
     private def boolean isElementContainer(EObject obj) {
-        obj instanceof Namespace || (obj instanceof Context && !(obj as Context).elements.empty)
+        obj instanceof Module
     }
 
     /**
@@ -256,10 +256,7 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
      * @return Direct model elements, never <code>null</code>.
      */
     private def List<AbstractElement> elements(EObject container) {
-        if (container instanceof Namespace) {
-            return container.elements
-        }
-        if (container instanceof Context) {
+        if (container instanceof Module) {
             return container.elements
         }
         return emptyList

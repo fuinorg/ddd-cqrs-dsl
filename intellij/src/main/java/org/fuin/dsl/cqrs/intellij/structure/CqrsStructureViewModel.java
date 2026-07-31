@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/** Structure-view model: file → contexts → namespaces → elements. */
+/** Structure-view model: file → contexts → modules → elements. */
 public final class CqrsStructureViewModel extends StructureViewModelBase
         implements StructureViewModel.ElementInfoProvider {
 

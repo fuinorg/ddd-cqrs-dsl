@@ -1,101 +1,94 @@
-project p {
+context p {
 
-    context x {
+    module x.m {
+        type String
 
-        namespace m {
+        aggregate-id UserId identifies User {}
 
-            type String
-
-            aggregate-id UserId identifies User {}
-
-            aggregate User identifier UserId {
-                constructor create fires UserCreatedEvent {
-                    String name
-                    event UserCreatedEvent { message "created" }
-                }
+        aggregate User identifier UserId {
+            constructor create fires UserCreatedEvent {
+                String name
+                event UserCreatedEvent { message "created" }
             }
-
-            projection UserList input User.create.UserCreatedEvent
-
-            view PersonListView uses UserList rest-path "/persons" {
-                hint JpaHint {
-                    "tables": [
-                        {
-                            "className": "Customer",
-                            "name": "CUSTOMER",
-                            "schema": "SALES",
-                            "uniqueConstraints": [ { "name": "UQ_EMAIL", "columnNames": ["EMAIL"] } ],
-                            "indexes": [ { "name": "IX_NAME", "columnList": "LAST_NAME", "unique": false } ],
-                            "columns": [
-                                {
-                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
-                                    "name": "ID", "nullable": false
-                                },
-                                {
-                                    "fieldName": "amount", "javaType": "java.math.BigDecimal",
-                                    "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2,
-                                    "digits": { "integer": 10, "fraction": 2 },
-                                    "decimalMin": { "value": "0.0", "inclusive": true }
-                                },
-                                {
-                                    "fieldName": "name", "javaType": "String",
-                                    "name": "LAST_NAME", "length": 100
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-
-            view OrderListView uses UserList rest-path "/orders" {
-                hint JpaHint {
-                    "tables": [
-                        {
-                            "className": "Order",
-                            "name": "ORDERS",
-                            "columns": [
-                                {
-                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
-                                    "name": "ID", "nullable": false
-                                }
-                            ],
-                            "oneToManys": [
-                                {
-                                    "fieldName": "lines", "targetClassName": "OrderLine", "mappedBy": "order",
-                                    "fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
-                                }
-                            ]
-                        },
-                        {
-                            "className": "OrderLine",
-                            "name": "ORDER_LINES",
-                            "columns": [
-                                {
-                                    "fieldName": "id", "javaType": "java.util.UUID", "id": true,
-                                    "name": "ID", "nullable": false
-                                },
-                                {
-                                    "fieldName": "amount", "javaType": "java.math.BigDecimal",
-                                    "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2
-                                }
-                            ],
-                            "manyToOnes": [
-                                {
-                                    "fieldName": "order", "targetClassName": "Order",
-                                    "fetch": "LAZY", "optional": false,
-                                    "joinColumn": {
-                                        "name": "ORDER_ID", "referencedColumnName": "ID",
-                                        "nullable": false, "foreignKey": "NO_CONSTRAINT"
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-
         }
 
-    }
+        projection UserList input User.create.UserCreatedEvent
 
+        view PersonListView uses UserList rest-path "/persons" {
+            hint JpaHint {
+                "tables": [
+                    {
+                        "className": "Customer",
+                        "name": "CUSTOMER",
+                        "schema": "SALES",
+                        "uniqueConstraints": [ { "name": "UQ_EMAIL", "columnNames": ["EMAIL"] } ],
+                        "indexes": [ { "name": "IX_NAME", "columnList": "LAST_NAME", "unique": false } ],
+                        "columns": [
+                            {
+                                "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                "name": "ID", "nullable": false
+                            },
+                            {
+                                "fieldName": "amount", "javaType": "java.math.BigDecimal",
+                                "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2,
+                                "digits": { "integer": 10, "fraction": 2 },
+                                "decimalMin": { "value": "0.0", "inclusive": true }
+                            },
+                            {
+                                "fieldName": "name", "javaType": "String",
+                                "name": "LAST_NAME", "length": 100
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        view OrderListView uses UserList rest-path "/orders" {
+            hint JpaHint {
+                "tables": [
+                    {
+                        "className": "Order",
+                        "name": "ORDERS",
+                        "columns": [
+                            {
+                                "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                "name": "ID", "nullable": false
+                            }
+                        ],
+                        "oneToManys": [
+                            {
+                                "fieldName": "lines", "targetClassName": "OrderLine", "mappedBy": "order",
+                                "fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
+                            }
+                        ]
+                    },
+                    {
+                        "className": "OrderLine",
+                        "name": "ORDER_LINES",
+                        "columns": [
+                            {
+                                "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                "name": "ID", "nullable": false
+                            },
+                            {
+                                "fieldName": "amount", "javaType": "java.math.BigDecimal",
+                                "name": "AMOUNT", "nullable": false, "precision": 12, "scale": 2
+                            }
+                        ],
+                        "manyToOnes": [
+                            {
+                                "fieldName": "order", "targetClassName": "Order",
+                                "fetch": "LAZY", "optional": false,
+                                "joinColumn": {
+                                    "name": "ORDER_ID", "referencedColumnName": "ID",
+                                    "nullable": false, "foreignKey": "NO_CONSTRAINT"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
 }

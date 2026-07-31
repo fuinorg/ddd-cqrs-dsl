@@ -44,7 +44,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
         val AbstractEntity entity = event.entity;
         val className = event.getName()
-        // The namespace is optional: derive the package from the element itself - the enclosing
+        // The module is optional: derive the package from the element itself - the enclosing
         // entity for a domain event, otherwise the event.
         val EObject owner = if (entity === null) event else entity
         val pkg = owner.asPackage

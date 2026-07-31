@@ -58,37 +58,31 @@ class SrcJavaDocMethodTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context a {
-                    
-                    namespace b {
-                        
-                        type String
-                        type Integer
-                
-                        value-object MyValueObject {
-                
-                            /**
-                             * This method does cool things.
-                             */
-                            method whatever {
-                                
-                                /** Abc. */
-                                String a
-                                
-                                /** Def. */
-                                Integer b
-                                
-                            }
-                
-                        }
-                
-                
-                
-                    }
-                
-                }
-            }
+				context p {
+
+				    module a.b {
+
+				        type String
+				        type Integer
+
+				        value-object MyValueObject {
+
+				            /**
+				             * This method does cool things.
+				             */
+				            method whatever {
+
+				                /** Abc. */
+				                String a
+
+				                /** Def. */
+				                Integer b
+
+				            }
+
+				        }
+				    }
+				}
 			''')
             validationTester.assertNoIssues(model)
             return model        

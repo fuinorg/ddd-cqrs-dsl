@@ -84,25 +84,21 @@ class SrcVoBaseMethodsUUIDTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context y {
-                
-                    namespace types {
-                        type UUID
-                    }
-                    
-                    namespace a {
-                        
-                        import y.types.*
-                        
-                        aggregate-id MyAggregateId identifies MyAggregate base UUID {}
-                            
-                        aggregate MyAggregate identifier MyAggregateId {}
-                            
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module y.types {
+				        type UUID
+				    }
+
+				    module y.a {
+				        import p.y.types.*
+
+
+				        aggregate-id MyAggregateId identifies MyAggregate base UUID {}
+
+				        aggregate MyAggregate identifier MyAggregateId {}
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

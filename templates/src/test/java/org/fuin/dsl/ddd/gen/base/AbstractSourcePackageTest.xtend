@@ -6,7 +6,7 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.ddd.gen.resourceset.PackageInfoArtifactFactory
@@ -23,8 +23,8 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 
 /**
  * Tests the package name construction in {@link AbstractSource}: it is derived from the
- * "srcgen4j-default.json" preset (project.module.group.context.namespace), the same for primary
- * (local) and remotely resolved elements.
+ * "srcgen4j-default.json" preset (context.module.group.module), the same for primary (local) and
+ * dependency resolved elements.
  */
 @InjectWith(typeof(CqrsDslInjectorProvider))
 @ExtendWith(InjectionExtension)
@@ -34,7 +34,7 @@ class AbstractSourcePackageTest {
     ParseHelper<DomainModel> parser
 
     @Test
-    def void testAsPackageUsesProjectContextNamespace() {
+    def void testAsPackageUsesContextAndNamespace() {
         // A local model (primary) and a remote model (non-primary) in the SAME resource set.
         val localModel = parser.parse(Utils.readAsString(class.getResource("/valueobject.cqrs")))
         val resourceSet = localModel.eResource.resourceSet
@@ -42,8 +42,8 @@ class AbstractSourcePackageTest {
         PrimaryResources.install(resourceSet, Set.of(localModel.eResource.URI))
 
         val testee = createTestee()
-        val localNs = localModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "valueobject"]
-        val remoteNs = remoteModel.eAllContents.filter(typeof(Namespace)).findFirst[name == "enumobject"]
+        val localNs = localModel.eAllContents.filter(typeof(Module)).findFirst[name == "x.valueobject"]
+        val remoteNs = remoteModel.eAllContents.filter(typeof(Module)).findFirst[name == "x.enumobject"]
 
         // Both local and remote elements use the preset package (PackageInfoArtifactFactory targets
         // the ResourceSet type: module "shared", group "domain"), with no primary/remote distinction.
@@ -52,17 +52,17 @@ class AbstractSourcePackageTest {
     }
 
     @Test
-    def void testAsPackageOmitsOptionalNamespaceSegment() {
-        // An element declared directly in a context (no namespace): the optional "[.${namespace}]"
-        // segment of the package pattern is dropped, so the package ends at the context.
-        val model = parser.parse(Utils.readAsString(class.getResource("/valueobject-no-namespace.cqrs")))
+    def void testAsPackageOfAModuleNamedAfterItsFormerContext() {
+        // Elements that used to sit directly in a context now live in a module carrying that
+        // context's name, which yields exactly the package the omitted segment used to produce.
+        val model = parser.parse(Utils.readAsString(class.getResource("/valueobject-no-module.cqrs")))
         val resourceSet = model.eResource.resourceSet
         PrimaryResources.install(resourceSet, Set.of(model.eResource.URI))
 
         val testee = createTestee()
         val vo = model.eAllContents.filter(typeof(ValueObject)).findFirst[name == "MyValueObject"]
 
-        assertThat(vo.namespace).isNull
+        assertThat(vo.module.name).isEqualTo("x")
         assertThat(testee.asPackage(vo)).isEqualTo("p.shared.domain.x")
     }
 

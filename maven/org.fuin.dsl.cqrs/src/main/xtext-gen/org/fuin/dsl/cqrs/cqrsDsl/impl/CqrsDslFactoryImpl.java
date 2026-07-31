@@ -38,6 +38,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtection;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
@@ -65,7 +66,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
 import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -74,7 +74,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
-import org.fuin.dsl.cqrs.cqrsDsl.Project;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
@@ -142,9 +141,9 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
     switch (eClass.getClassifierID())
     {
       case CqrsDslPackage.DOMAIN_MODEL: return createDomainModel();
-      case CqrsDslPackage.PROJECT: return createProject();
       case CqrsDslPackage.CONTEXT: return createContext();
-      case CqrsDslPackage.NAMESPACE: return createNamespace();
+      case CqrsDslPackage.MODULE: return createModule();
+      case CqrsDslPackage.DEPENDENCY: return createDependency();
       case CqrsDslPackage.IMPORT: return createImport();
       case CqrsDslPackage.HINT: return createHint();
       case CqrsDslPackage.ABSTRACT_ELEMENT: return createAbstractElement();
@@ -293,18 +292,6 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
-  public Project createProject()
-  {
-    ProjectImpl project = new ProjectImpl();
-    return project;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Context createContext()
   {
     ContextImpl context = new ContextImpl();
@@ -317,10 +304,22 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
-  public Namespace createNamespace()
+  public org.fuin.dsl.cqrs.cqrsDsl.Module createModule()
   {
-    NamespaceImpl namespace = new NamespaceImpl();
-    return namespace;
+    ModuleImpl module = new ModuleImpl();
+    return module;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Dependency createDependency()
+  {
+    DependencyImpl dependency = new DependencyImpl();
+    return dependency;
   }
 
   /**

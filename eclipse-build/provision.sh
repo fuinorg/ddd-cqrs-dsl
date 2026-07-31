@@ -41,13 +41,16 @@ fi
 # --- 2. Install required features via the p2 director ----------------------------------
 
 # Marker so the (slow) director step is skipped once everything is installed.
-PROVISION_MARKER="$ECLIPSE_HOME/.provisioned-${XTEXT_VERSION}"
+# The marker carries the m2e generation too, so an existing cache is re-provisioned once.
+PROVISION_MARKER="$ECLIPSE_HOME/.provisioned-${XTEXT_VERSION}-m2e"
 
 if [ ! -f "$PROVISION_MARKER" ]; then
-  log "Installing Xtext SDK $XTEXT_VERSION and EMF SDK"
+  log "Installing Xtext SDK $XTEXT_VERSION, EMF SDK and m2e"
+  # m2e resolves a model 'dependency' for the plugin (see M2eArtifactResolver), so it has to be part
+  # of the target platform. It comes from the release train repository already configured above.
   run_eclipse_app org.eclipse.equinox.p2.director \
     -repository "${RELEASE_REPO},${XTEXT_REPO}" \
-    -installIU "org.eclipse.xtext.sdk.feature.group,org.eclipse.emf.sdk.feature.group" \
+    -installIU "org.eclipse.xtext.sdk.feature.group,org.eclipse.emf.sdk.feature.group,org.eclipse.m2e.feature.feature.group" \
     -destination "$ECLIPSE_HOME" \
     -profile SDKProfile \
     || die "p2 director install failed (check that $XTEXT_REPO and $RELEASE_REPO are reachable)."

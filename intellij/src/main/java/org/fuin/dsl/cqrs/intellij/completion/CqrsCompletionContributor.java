@@ -31,14 +31,16 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsMethodDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsNames;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsContextDef;
-import org.fuin.dsl.cqrs.intellij.psi.CqrsNamespaceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsModuleDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessManager;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessReaction;
-import org.fuin.dsl.cqrs.intellij.psi.CqrsProjectDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsTokenTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsViewDef;
 import org.fuin.dsl.cqrs.intellij.reference.CqrsResolveUtil;
+import java.util.TreeSet;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsImportDecl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -105,6 +107,19 @@ public final class CqrsCompletionContributor extends CompletionContributor {
                                                   @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
+                        // Nothing the DSL knows about may be proposed inside a string: a Maven
+                        // coordinate, a 'local' directory or a label is free text, and offering
+                        // keywords or type names there is only noise.
+                        IElementType positionType = position.getNode().getElementType();
+                        if (positionType == CqrsTypes.STRING
+                                || positionType == CqrsTokenTypes.UNCLOSED_STRING) {
+                            return;
+                        }
+                        // Inside an 'import' only the importable paths make sense - no keyword and
+                        // no bare type name would be legal there.
+                        if (addImportVariants(position, result)) {
+                            return;
+                        }
                         for (String keyword : keywordsFor(position)) {
                             result.addElement(LookupElementBuilder.create(keyword).bold());
                         }
@@ -116,6 +131,44 @@ public final class CqrsCompletionContributor extends CompletionContributor {
                         }
                     }
                 });
+    }
+
+    /**
+     * Offers what may follow an {@code import}: every context and module wildcard, plus every single
+     * type, drawn from everything the file can reach. The own module is left out - importing it would
+     * be redundant - and so is anything already imported.
+     *
+     * @param position Position the caret sits at.
+     * @param result Result set to add the proposals to.
+     *
+     * @return TRUE if the caret is inside an import, so nothing else should be offered.
+     */
+    private static boolean addImportVariants(PsiElement position, @NotNull CompletionResultSet result) {
+        if (PsiTreeUtil.getParentOfType(position, CqrsImportDecl.class) == null
+                && prevType(position) != CqrsTypes.KW_IMPORT) {
+            return false;
+        }
+        String ownModule = CqrsResolveUtil.enclosingModuleFqn(position);
+        List<String> already = CqrsResolveUtil.importedNames(position);
+        Set<String> proposals = new TreeSet<>();
+        for (CqrsNamedElement decl : CqrsResolveUtil.resolvableDeclarations(position)) {
+            String fqn = CqrsResolveUtil.getQualifiedName(decl);
+            if (fqn.isEmpty()) {
+                continue;
+            }
+            if (decl instanceof CqrsContextDef || decl instanceof CqrsModuleDef) {
+                if (!fqn.equals(ownModule)) {
+                    proposals.add(fqn + ".*");
+                }
+            } else if (!CqrsResolveUtil.enclosingModuleFqn(decl).equals(ownModule)) {
+                proposals.add(fqn);
+            }
+        }
+        proposals.removeAll(already);
+        for (String proposal : proposals) {
+            result.addElement(LookupElementBuilder.create(proposal));
+        }
+        return true;
     }
 
     /** Element type of the token before the caret, or {@code null} if there is none. */
@@ -201,7 +254,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        // A 'data-protection { ... }' block is nested inside a namespace (or an entity/aggregate),
+        // A 'data-protection { ... }' block is nested inside a module (or an entity/aggregate),
         // so it must be checked first; inside it we offer the clause keywords and, right after a
         // clause keyword, its enum values.
         if (enclosingDataProtection(position) != null) {
@@ -255,7 +308,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         }
 
         // A 'process-manager { ... }' block (and its 'reacts-to { ... }' reactions) is nested inside a
-        // namespace/context, so it must be checked before them - a caret in a reaction body is offered
+        // module/context, so it must be checked before them - a caret in a reaction body is offered
         // the reaction clauses; elsewhere in the manager body, the manager clauses.
         if (enclosingProcessManager(position) != null) {
             return processManagerKeywords(position);
@@ -277,7 +330,8 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        if (enclosingNamespace(position) != null) {
+        if (enclosingModule(position) != null) {
+            keywords.add("dependency");
             keywords.add("import");
             keywords.addAll(ELEMENT_KEYWORDS);
             keywords.addAll(META_KEYWORDS);
@@ -290,31 +344,17 @@ public final class CqrsCompletionContributor extends CompletionContributor {
             return keywords;
         }
 
-        // inside a context (but not a namespace): a context accepts a 'namespace' block and/or
-        // imports/elements directly, mixed as siblings (the same content a namespace holds).
+        // inside a context (but not a module)
         if (enclosingContext(position) != null) {
-            keywords.add("namespace");
+            keywords.add("dependency");
             keywords.add("import");
-            keywords.addAll(ELEMENT_KEYWORDS);
-            keywords.addAll(META_KEYWORDS);
-            keywords.add("optional");
-            keywords.add("protected-by");
-            keywords.add("base");
-            keywords.add("message");
-            keywords.add("constructor");
-            keywords.add("method");
-            return keywords;
-        }
-
-        // inside a project (but not a context)
-        if (PsiTreeUtil.getParentOfType(position, CqrsProjectDef.class) != null) {
             keywords.add("hint");
-            keywords.add("context");
+            keywords.add("module");
             return keywords;
         }
 
         // top level
-        keywords.add("project");
+        keywords.add("context");
         return keywords;
     }
 
@@ -448,9 +488,9 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         return PsiTreeUtil.getParentOfType(prev, CqrsContextDef.class);
     }
 
-    /** The {@code namespace} block surrounding the caret, or {@code null} (same recovery as above). */
-    private static CqrsNamespaceDef enclosingNamespace(PsiElement position) {
-        CqrsNamespaceDef ns = PsiTreeUtil.getParentOfType(position, CqrsNamespaceDef.class);
+    /** The {@code module} block surrounding the caret, or {@code null} (same recovery as above). */
+    private static CqrsModuleDef enclosingModule(PsiElement position) {
+        CqrsModuleDef ns = PsiTreeUtil.getParentOfType(position, CqrsModuleDef.class);
         if (ns != null) {
             return ns;
         }
@@ -458,7 +498,7 @@ public final class CqrsCompletionContributor extends CompletionContributor {
         if (prev == null || prev.getNode().getElementType() == CqrsTypes.RBRACE) {
             return null;
         }
-        return PsiTreeUtil.getParentOfType(prev, CqrsNamespaceDef.class);
+        return PsiTreeUtil.getParentOfType(prev, CqrsModuleDef.class);
     }
 
     /** The {@code reacts-to} reaction surrounding the caret, or {@code null} (same recovery as above). */

@@ -10,8 +10,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
-import org.fuin.dsl.cqrs.cqrsDsl.Project;
 
 /**
  * Provides extension methods for EObject.
@@ -19,24 +17,24 @@ import org.fuin.dsl.cqrs.cqrsDsl.Project;
 @SuppressWarnings("all")
 public class CqrsEObjectExtensions {
   /**
-   * Returns the namespace for an object.
+   * Returns the module for an object.
    * 
-   * @param obj Object to return the namespace for.
+   * @param obj Object to return the module for.
    * 
-   * @return Namespace or null if the object is not inside one.
+   * @return Module or null if the object is not inside one.
    */
-  public static Namespace getNamespace(final EObject obj) {
+  public static org.fuin.dsl.cqrs.cqrsDsl.Module getModule(final EObject obj) {
     if ((obj == null)) {
       return null;
     }
-    if ((obj instanceof Namespace)) {
-      return ((Namespace)obj);
+    if ((obj instanceof org.fuin.dsl.cqrs.cqrsDsl.Module)) {
+      return ((org.fuin.dsl.cqrs.cqrsDsl.Module)obj);
     }
-    return CqrsEObjectExtensions.getNamespace(obj.eContainer());
+    return CqrsEObjectExtensions.getModule(obj.eContainer());
   }
 
   /**
-   * Returns the context for an object.
+   * Returns the context an object belongs to.
    * 
    * @param obj Object to return the context for.
    * 
@@ -50,23 +48,6 @@ public class CqrsEObjectExtensions {
       return ((Context)obj);
     }
     return CqrsEObjectExtensions.getContext(obj.eContainer());
-  }
-
-  /**
-   * Returns the project an object belongs to.
-   * 
-   * @param obj Object to return the project for.
-   * 
-   * @return Project or null if the object is not inside one.
-   */
-  public static Project getProject(final EObject obj) {
-    if ((obj == null)) {
-      return null;
-    }
-    if ((obj instanceof Project)) {
-      return ((Project)obj);
-    }
-    return CqrsEObjectExtensions.getProject(obj.eContainer());
   }
 
   /**

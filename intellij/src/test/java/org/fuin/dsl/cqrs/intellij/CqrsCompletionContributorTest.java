@@ -20,41 +20,96 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
         return strings == null ? List.of() : strings;
     }
 
+    /**
+     * The same scenario the Eclipse editor showed: an attribute inside a value object must offer the
+     * module's own types only - not a sibling module's, not another file's, and not the module names
+     * themselves.
+     */
+    public void testAttributeStartOffersOnlyReachableTypes() {
+        myFixture.configureByText("other.cqrs", """
+                context other_ctx {
+                  module far.away {
+                    type ShouldNotBeOffered
+                  }
+                }
+                """);
+        List<String> lookups = lookups("""
+                context p_03_value_object {
+                  module vo.m {
+                    type String
+                    type Integer
+
+                    value-object Money {
+                      <caret>
+                    }
+                  }
+                  module vo.sibling {
+                    type SiblingType
+                  }
+                }
+                """);
+        assertTrue("own module types must be offered: " + lookups, lookups.contains("String"));
+        assertTrue("own module types must be offered: " + lookups, lookups.contains("Integer"));
+        assertFalse("a sibling module needs an import: " + lookups, lookups.contains("SiblingType"));
+        assertFalse("another file must not leak in: " + lookups, lookups.contains("ShouldNotBeOffered"));
+        assertFalse("a module is not a type: " + lookups, lookups.contains("vo.sibling"));
+        assertFalse("a module is not a type: " + lookups, lookups.contains("vo.m"));
+        assertFalse("a context is not a type: " + lookups, lookups.contains("p_03_value_object"));
+    }
+
+    /** A context wide wildcard reaches the modules' types - but the module names are not types. */
+    public void testContextWildcardDoesNotOfferModuleNames() {
+        List<String> lookups = lookups("""
+                context p {
+                  module vo.m {
+                    import p.*
+
+                    type Integer
+
+                    value-object Money {
+                      <caret>
+                    }
+                  }
+                  module vo.sibling {
+                    type SiblingType
+                  }
+                }
+                """);
+        assertTrue("an imported type must be offered: " + lookups, lookups.contains("SiblingType"));
+        assertFalse("a module is not a type: " + lookups, lookups.contains("vo.sibling"));
+        assertFalse("a module is not a type: " + lookups, lookups.contains("vo.m"));
+    }
+
     public void testValueObjectAttributeStartOffersTypes() {
         assertContainsType(lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object Foo {
                       <caret>
                     }
                   }
                 }
-                }
                 """));
     }
 
     public void testConstraintAttributeStartOffersTypes() {
         assertContainsType(lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     constraint NotBlank input String {
                       <caret>
                     }
                   }
                 }
-                }
                 """));
     }
 
     public void testAggregateAttributeStartOffersTypes() {
         assertContainsType(lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     aggregate-id FooId identifies Foo {}
                     aggregate Foo identifier FooId {
@@ -62,44 +117,95 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """));
     }
 
     public void testNamespaceLevelDoesNotOfferTypesButOffersElementKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     <caret>
                   }
                 }
-                }
                 """);
-        assertFalse("namespace level must not offer types: " + lookups, lookups.contains("String"));
-        assertTrue("namespace level must offer element keywords: " + lookups, lookups.contains("value-object"));
+        assertFalse("module level must not offer types: " + lookups, lookups.contains("String"));
+        assertTrue("module level must offer element keywords: " + lookups, lookups.contains("value-object"));
     }
 
-    public void testContextWithoutNamespaceOffersElementKeywords() {
-        // The namespace is optional: element keywords (and "import") are offered directly inside a
-        // context, while "namespace" is still offered too.
+    /** After 'import' the reachable contexts, modules and single types are offered. */
+    public void testImportOffersReachablePaths() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  <caret>
+                context p {
+                  module types {
+                    type Money
+                  }
+                  module use {
+                    import <caret>
+                  }
                 }
+                """);
+        assertTrue("must offer the module wildcard: " + lookups, lookups.contains("p.types.*"));
+        assertTrue("must offer the context wildcard: " + lookups, lookups.contains("p.*"));
+        assertTrue("must offer the single type: " + lookups, lookups.contains("p.types.Money"));
+        assertFalse("must not offer the own module: " + lookups, lookups.contains("p.use.*"));
+        assertFalse("must not offer element keywords: " + lookups, lookups.contains("value-object"));
+    }
+
+    /** A type of another module is offered only once that module is imported. */
+    public void testTypeOfAnotherModuleIsOfferedOnlyWhenImported() {
+        List<String> without = lookups("""
+                context p {
+                  module types {
+                    type Money
+                  }
+                  module use {
+                    value-object Price {
+                      <caret>
+                    }
+                  }
+                }
+                """);
+        assertFalse("a type that is not imported must not be offered: " + without,
+                without.contains("Money"));
+
+        List<String> with = lookups("""
+                context p {
+                  module types {
+                    type Money
+                  }
+                  module use {
+                    import p.types.*
+
+                    value-object Price {
+                      <caret>
+                    }
+                  }
+                }
+                """);
+        assertTrue("an imported type must be offered: " + with, with.contains("Money"));
+    }
+
+    public void testContextLevelOffersDependencyImportHintAndModule() {
+        // A context holds only its dependencies, its hints and its modules - never elements.
+        List<String> lookups = lookups("""
+                context p {
+                  <caret>
+                  module c { }
                 }
                 """);
         assertFalse("context level must not offer types: " + lookups, lookups.contains("String"));
-        assertTrue("context without namespace must offer element keywords: " + lookups, lookups.contains("value-object"));
-        assertTrue("context without namespace must still offer 'namespace': " + lookups, lookups.contains("namespace"));
+        assertFalse("context level must not offer element keywords: " + lookups, lookups.contains("value-object"));
+        assertTrue("context must offer 'module': " + lookups, lookups.contains("module"));
+        assertTrue("context must offer 'dependency': " + lookups, lookups.contains("dependency"));
+        assertTrue("context must offer 'hint': " + lookups, lookups.contains("hint"));
+        assertTrue("context must offer 'import': " + lookups, lookups.contains("import"));
     }
 
     public void testTopLevelDoesNotOfferTypes() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
+                context p {
+                module c {
                   <caret>
                 }
                 }
@@ -116,14 +222,12 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testProtectionOffersProtectionLevels() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     data-protection P {
                       protection <caret>
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected protection levels, got: " + lookups,
@@ -132,15 +236,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testLawfulBasisOffersBases() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     data-protection P {
                       protection personal
                       lawful-basis <caret>
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected lawful bases, got: " + lookups,
@@ -149,15 +251,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testRetentionNumberOffersTimeUnits() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     data-protection P {
                       protection personal
                       retention 10 <caret>
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected time units, got: " + lookups,
@@ -166,15 +266,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testThenOffersErasureStrategies() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     data-protection P {
                       protection personal
                       retention 10 years then <caret>
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected erasure strategies, got: " + lookups,
@@ -183,20 +281,18 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testDataProtectionClauseStartOffersClauseKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     data-protection P {
                       protection personal
                       <caret>
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected clause keywords, got: " + lookups,
                 lookups.containsAll(List.of("category", "subject", "purpose", "lawful-basis", "retention")));
-        assertFalse("must not offer namespace element keywords inside the block: " + lookups,
+        assertFalse("must not offer module element keywords inside the block: " + lookups,
                 lookups.contains("value-object"));
     }
 
@@ -204,12 +300,10 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testNamespaceOffersProcessManagerElementKeyword() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     <caret>
                   }
-                }
                 }
                 """);
         assertTrue("expected 'process-manager' among element keywords, got: " + lookups,
@@ -218,27 +312,24 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testProcessManagerBodyOffersClauseKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     process-manager P {
                       <caret>
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected process-manager clauses, got: " + lookups,
                 lookups.containsAll(List.of("cron-schedule", "instance-key", "process-states", "reacts-to")));
-        assertFalse("must not offer namespace element keywords inside the block: " + lookups,
+        assertFalse("must not offer module element keywords inside the block: " + lookups,
                 lookups.contains("value-object"));
     }
 
     public void testProcessReactionBodyOffersReactionKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     event E { message "e" }
                     process-manager P {
                       reacts-to E {
@@ -247,7 +338,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected reaction clauses, got: " + lookups,
                 lookups.containsAll(List.of("correlate-by", "issues-commands", "transition-to", "arm-timeout", "cancel-timeout")));
@@ -255,9 +345,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testArmTimeoutNumberOffersTimeUnits() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     event E { message "e" }
                     process-manager P {
                       reacts-to E {
@@ -266,7 +355,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected time units after the arm-timeout number, got: " + lookups,
                 lookups.containsAll(List.of("seconds", "minutes", "hours")));
@@ -274,36 +362,32 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testViewBodyOffersBusinessRuleAndMethod() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       <caret>
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected view-body keywords, got: " + lookups,
                 lookups.containsAll(List.of("hint", "cron-schedule", "business-rule", "method")));
         assertFalse("'rest-path' is a header clause and must not be offered in the view body: " + lookups,
                 lookups.contains("rest-path"));
-        assertFalse("must not offer namespace element keywords inside the view body: " + lookups,
+        assertFalse("must not offer module element keywords inside the view body: " + lookups,
                 lookups.contains("value-object"));
     }
 
     public void testViewHeaderOffersRestPath() {
         // 'rest-path' sits between the projection reference and the opening brace.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj <caret> {
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected 'rest-path' in the view header, got: " + lookups,
@@ -313,16 +397,14 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
     public void testViewMethodHeaderOffersRestPath() {
         // A view method is exposed as a REST operation, so its header may set its own sub path.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       method find <caret> {
                       }
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected 'rest-path' in the view method header, got: " + lookups,
@@ -332,9 +414,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
     public void testViewMethodBodyDoesNotOfferRestPath() {
         // Inside the body it would be invalid syntax - only 'returns' and friends belong there.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       method find {
@@ -342,7 +423,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                       }
                     }
                   }
-                }
                 }
                 """);
         assertFalse("'rest-path' is a header clause and must not be offered in a method body: " + lookups,
@@ -353,15 +433,13 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
     public void testServiceMethodDoesNotOfferRestPath() {
         // Only a view method is a REST operation - on any other method 'rest-path' is an error.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     service S {
                       method doIt <caret> {
                       }
                     }
                   }
-                }
                 }
                 """);
         assertFalse("'rest-path' must not be offered outside a view method: " + lookups,
@@ -454,9 +532,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
     public void testBusinessRuleExceptionPositionStillOffersTypes() {
         // The one type position inside a business rule - suppressing the type dump must not break it.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     exception MyException { message "m" }
                     aggregate-id FooId identifies Foo {}
@@ -464,7 +541,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                       business-rule Rule exception <caret>
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected the exception type among completions, got: " + lookups,
@@ -482,9 +558,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
      */
     private List<String> aggregateBusinessRule(String ruleBody) {
         return lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     exception MyException { message "m" }
                     aggregate-id FooId identifies Foo {}
@@ -495,7 +570,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """.formatted(ruleBody));
     }
 
@@ -503,9 +577,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testMethodBodyOffersOperationContextAndService() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     aggregate-id FooId identifies Foo {}
                     aggregate Foo identifier FooId {
@@ -515,7 +588,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected the operation's own clauses, got: " + lookups,
                 lookups.containsAll(List.of("operation-context", "service", "returns")));
@@ -523,9 +595,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testOperationContextOffersTheVisibleServices() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     service DoItService { }
                     aggregate-id FooId identifies Foo {}
@@ -535,7 +606,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                       }
                     }
                   }
-                }
                 }
                 """);
         assertTrue("expected the declared service as the operation context, got: " + lookups,
@@ -549,9 +619,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
     public void testOperationContextOffersAnInlineServiceOnly() {
         // A service declared inside the operation itself is the usual case.
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type Boolean
                     aggregate-id FooId identifies Foo {}
@@ -567,7 +636,6 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertTrue("expected the inline service, got: " + lookups, lookups.contains("DoItService"));
         assertFalse("must not offer plain types: " + lookups, lookups.contains("String"));
@@ -578,9 +646,8 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
 
     public void testExamplesOffersLiteralKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object Foo {
                       String value
@@ -588,16 +655,14 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertOffersExactly(lookups, "null", "true", "false");
     }
 
     public void testConstraintArgumentListOffersLiteralKeywords() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     constraint Length input String { message "m" }
                     value-object Foo {
@@ -605,19 +670,16 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertOffersExactly(lookups, "null", "true", "false");
     }
 
     public void testTypeOffersElementKeyword() {
         List<String> lookups = lookups("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type <caret>
                   }
-                }
                 }
                 """);
         assertOffersExactly(lookups, "element");
@@ -636,5 +698,90 @@ public class CqrsCompletionContributorTest extends BasePlatformTestCase {
                 lookups.contains("business-rule"));
         assertFalse("must not offer the aggregate body keywords inside a business rule: " + lookups,
                 lookups.contains("method"));
+    }
+    /**
+     * Typing a Maven coordinate must stay quiet. The dots in "org.fuin..." and in the version used to
+     * pop up the keyword list, because a string is unterminated while it is being typed: the lexer
+     * needs both quotes for a STRING, so the opening quote stayed a bad character and the content
+     * lexed as ordinary identifiers and dots.
+     */
+    public void testNothingIsOfferedInsideADependencyCoordinate() {
+        assertEmpty("a coordinate is free text", lookups("""
+                context cp {
+                  dependency "org.fuin.<caret>"
+                  module m {
+                    type Own
+                  }
+                }
+                """));
+        assertEmpty("the version is free text too", lookups("""
+                context cp {
+                  dependency "g:a:0.1.<caret>"
+                  module m {
+                    type Own
+                  }
+                }
+                """));
+        assertEmpty("a 'local' directory is free text too", lookups("""
+                context cp {
+                  dependency "g:a:1" local "some.<caret>"
+                  module m {
+                    type Own
+                  }
+                }
+                """));
+    }
+
+    /** A label is free text as well - the same string rule protects it. */
+    public void testNothingIsOfferedInsideALabel() {
+        assertEmpty("a label is free text", lookups("""
+                context cp {
+                  module m {
+                    value-object V {
+                      label "some. <caret>"
+                    }
+                  }
+                }
+                """));
+    }
+
+    /**
+     * Opening a quote closes it at once, so a string is never left unterminated while it is typed.
+     * That is what keeps the lexer producing a STRING for it - see
+     * {@link org.fuin.dsl.cqrs.intellij.CqrsQuoteHandler}.
+     */
+    public void testTypingAQuoteClosesIt() {
+        myFixture.configureByText("test.cqrs", """
+                context cp {
+                  dependency <caret>
+                }
+                """);
+        myFixture.type('"');
+        myFixture.checkResult("""
+                context cp {
+                  dependency ""
+                }
+                """);
+    }
+
+    /** With the quote closed, typing the coordinate offers nothing at any dot. */
+    public void testTypingACoordinateOffersNothing() {
+        myFixture.configureByText("test.cqrs", """
+                context cp {
+                  dependency <caret>
+                  module m {
+                    type Own
+                  }
+                }
+                """);
+        myFixture.type("\"org.fuin.");
+        myFixture.complete(CompletionType.BASIC);
+        List<String> strings = myFixture.getLookupElementStrings();
+        assertEmpty("typing a coordinate must stay quiet",
+                strings == null ? List.of() : strings);
+    }
+
+    private static void assertEmpty(String message, List<String> lookups) {
+        assertTrue(message + ", but got: " + lookups, lookups.isEmpty());
     }
 }

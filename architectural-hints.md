@@ -101,18 +101,92 @@ an existing keyword token in another rule needs only steps 2 (the rule reference
   emits nothing).
 - `eclipse`, `intellij`, `dsl-examples`.
 
-## Remote model resolution
-- The maven module's `CqrsDslGlobalScopeProvider` lazily loads remote dependency models into the
-  **same ResourceSet** during cross-reference resolution, via `dependencies.json` →
-  `MavenArtifactResolver` → materialized under `.dependencies-cache/` (which sits **inside** the
-  model source dir). Useful for parsing; must NOT produce generated artifacts (hence PrimaryResources).
-- Catalog entries can use a `local` directory override (remote models read from an arbitrary local
-  dir, not the cache) — so "exclude `.dependencies-cache`" is NOT a reliable origin test; use the
-  primary/source-dir notion instead.
+## Scoping — a `module` is the unit of visibility
+A module sees only what it declares itself; anything else needs an `import`. A `dependency` says
+where models come from, an import what of them is visible, and the two share `CqrsDependencies` so
+they cannot disagree about what a model depends on:
+- **Local (simple names)** — `CqrsDslLocalScopeProvider` (a subclass of Xtext's
+  `ImportedNamespaceAwareLocalScopeProvider`) turns the declared `import`s into `ImportNormalizer`s:
+  for a `Module` its own qualified name plus its imports, for a `Context` its imports (which every
+  module below therefore inherits), and **nothing** at the model root. It is installed by overriding
+  **`configureIScopeProviderDelegate`** — *not* `bindIScopeProvider`, which is the declarative
+  `CqrsDslScopeProvider` and is deliberately left empty.
+  - A wildcard normalizer maps exactly **one** segment and does not recurse, and both a context and a
+    module name may itself be dotted (`common.types`). So a wildcard import cannot be handed over as
+    written: besides the literal prefix, one normalizer per **module below that prefix** is added,
+    which is what makes `context.*` reach the types of a module. Those modules are read from the
+    **index** (`ResourceDescriptionsProvider` + `IContainer.Manager`, the same pair
+    `CqrsDslValidator.getAllExceptions` uses), so blocks declared in other files are included in the
+    editor and in a headless SrcGen4J run alike.
+  - Because Xtext applies the normalizers per container from the outside in, the **innermost block
+    wins**: a module's own declaration shadows a same-named imported one. A name that really is
+    ambiguous at one level resolves to *nothing* rather than an arbitrary pick, so it has to be
+    qualified.
+  - A context block is per **file**: two `context p { … }` blocks in two files are two objects, so a
+    context-level import in one of them does *not* reach the modules of the other.
+  - Caveat: `getImportedNamespaceResolvers` is memoized per resource, and the wildcard expansion
+    depends on *other* resources. Adding a module in one file may need the referencing file to be
+    re-parsed before it is seen.
+- **Fully qualified names** — resolved by the **global** scope and therefore never need an import.
+  Narrowing visibility is deliberately a *local*-scope concern only; `CqrsDslGlobalScopeProvider` is
+  untouched by the import rules.
+- **Across projects** — `CqrsDslGlobalScopeProvider` lazily loads the models of a declared
+  `dependency "groupId:artifactId:version"` into the **same ResourceSet** during cross-reference
+  resolution, via `CqrsModelArchives`. It makes those models *resolvable*; an `import` still decides
+  what is visible. They must NOT produce generated artifacts (hence PrimaryResources).
+  - **Resolution is each environment's own Maven**, behind `CqrsArtifactResolver`, picked by
+    `CqrsArtifactResolvers.get()` probing implementation class names — only one is ever present in a
+    given tree:
+
+    | Front end | Implementation |
+    |---|---|
+    | Eclipse | `M2eArtifactResolver` — m2e's `IMaven.resolve` |
+    | IntelliJ | `remote/MavenArtifactResolver` — the IDE's `MavenEmbedderWrapper` |
+    | Console, SrcGen4J plugin | `MimaArtifactResolver` — MIMA `standalone-static` |
+
+    So `settings.xml` (mirrors, servers, proxies, local repository) applies everywhere. The two IDE
+    implementations are kept out of each other's tree by the exclude list of
+    `mirror-eclipse-sources-to-maven.sh` — neither would compile in the other's.
+  - **Nothing is unpacked.** The artifact is an ordinary jar (no classifier) with the models under
+    `model/`, read in place from the local repository: EMF gets
+    `archive:file:/…/x.jar!/model/types.cqrs`, IntelliJ mounts it with `JarFileSystem`. The last
+    segment still ends in `.cqrs`, so the resource factory applies as usual. Entries are taken
+    **recursively** below `model/` and everything outside it is ignored.
+  - A dependency model therefore has an `archive:` URI and can never be mistaken for a source model —
+    the old `.dependencies-cache/` inside the source dir, and the "is it under the cache?" origin
+    test, are both gone.
+  - What an artifact resolved to is remembered for the **session**, success and failure alike, so a
+    bad coordinate is attempted once rather than on every keystroke; the flip side is that an artifact
+    appearing later needs a restart (`CqrsModelArchives.invalidate`).
+  - `CqrsDependencies.declared` must iterate a **copy** of `resourceSet.resources`: resolving a
+    dependency adds resources to the very set being iterated.
+  - Inside a Maven build the SrcGen4J Mojo passes no session down, so the build's `-o` / `-s` are not
+    inherited. Worse, `settings.xml` cannot be read there **at all**: the DSL jar sits in the plugin's
+    class realm next to Maven's own, and building the settings needs `DefaultSettingsDecrypter`, whose
+    `SecDispatcher` parameter type exists in *both* realms — linking it throws `LinkageError`.
+    `MimaArtifactResolver.createContext` catches that and falls back to the default repositories plus
+    the local repository, which covers anything already resolved or on Central. Fixing it properly
+    needs the Mojo to hand its session down (MIMA's `embedded-maven` runtime), i.e. a change in
+    `srcgen4j`.
+- The IntelliJ plugin ports the same rules onto the PSI in `CqrsResolveUtil.resolve`: a simple name is
+  matched against two tiers (the enclosing module, then what that module or its context imports) and
+  only the **closest non-empty tier** is returned; a *qualified* name is matched against everything
+  reachable, so it needs no import either. "Same module" is compared by the module's **qualified
+  name**, not by PSI containment, because a module may be split across files.
+  `referenceableDeclarations` applies the same filter, which is what makes completion offer only
+  imported types.
+
+## The two meanings of "module"
+Since `namespace` was renamed to `module` there are two unrelated notions in play — keep them apart:
+- the DSL `module` block an element lives in — the `${module}` variable of a SrcGen4J hint's
+  `package` pattern;
+- the **target Maven module** an artifact is generated into (`shared`, `command.core`, …) — the
+  `"module"` key of a hint's `types`/`artifacts` entry, exposed as the `${mvnModule}` pattern
+  variable. `AbstractSource.expandPackage` builds both.
 
 ## Value conversion (Xtext)
 - The grammar defines its **own** terminals (no `with org.eclipse.xtext.common.Terminals`). Names use
-  both `ID` (simple) and the `FQN`/`FQNWithWildcard` datatype rules; almost all cross-refs are `[X|FQN]`.
+  both `ID` (simple) and the `FQN` datatype rule; almost all cross-refs are `[X|FQN]`.
 - A custom `IValueConverterService` is bound in the concrete `CqrsDslRuntimeModule` (shared by
   Eclipse + Maven; IntelliJ is separate). NOTE: `DefaultTerminalConverters` is in package
   `org.eclipse.xtext.common.services`, NOT `org.eclipse.xtext.conversion.impl`.

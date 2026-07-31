@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * Resolves a {@code type_ref} occurrence to its declaration(s). Poly-variant because a lenient
- * simple-name match can hit several same-named declarations across namespaces.
+ * simple-name match can hit several same-named declarations across modules.
  */
 public final class CqrsReference extends PsiReferenceBase<CqrsReferenceElement>
         implements PsiPolyVariantReference {

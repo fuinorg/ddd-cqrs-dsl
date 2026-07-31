@@ -33,15 +33,6 @@ public interface CqrsDslFactory extends EFactory
   DomainModel createDomainModel();
 
   /**
-   * Returns a new object of class '<em>Project</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Project</em>'.
-   * @generated
-   */
-  Project createProject();
-
-  /**
    * Returns a new object of class '<em>Context</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -51,13 +42,22 @@ public interface CqrsDslFactory extends EFactory
   Context createContext();
 
   /**
-   * Returns a new object of class '<em>Namespace</em>'.
+   * Returns a new object of class '<em>Module</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Namespace</em>'.
+   * @return a new object of class '<em>Module</em>'.
    * @generated
    */
-  Namespace createNamespace();
+  Module createModule();
+
+  /**
+   * Returns a new object of class '<em>Dependency</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dependency</em>'.
+   * @generated
+   */
+  Dependency createDependency();
 
   /**
    * Returns a new object of class '<em>Import</em>'.

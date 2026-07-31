@@ -8,7 +8,7 @@
 	"properties": {
 		"package": {
 			"type": "string",
-			"description": "Package name pattern, e.g. '${project}.${module}.${group}.${context}[.${namespace}]'."
+			"description": "Package name pattern, e.g. '${context}.${mvnModule}.${group}.${module}'."
 		},
 		"constraintMappings": {
 			"type": "array",

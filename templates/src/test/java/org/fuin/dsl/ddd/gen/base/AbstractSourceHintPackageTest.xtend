@@ -36,9 +36,9 @@ class AbstractSourceHintPackageTest {
 
         // PREPARE
         val model = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
-                    "package": "${project}.${module}.${group}.${context}.${namespace}",
+                    "package": "${context}.${mvnModule}.${group}.${module}",
                     "types": [
                         {
                             "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
@@ -50,14 +50,13 @@ class AbstractSourceHintPackageTest {
                         }
                     ]
                 }
-                context ctx {
-                    namespace ns {
-                        type String
-                        value-object Money {
-                            String amount
-                        }
-                    }
-                }
+
+             module ctx.ns {
+              type String
+              value-object Money {
+                  String amount
+              }
+             }
             }
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
@@ -68,11 +67,11 @@ class AbstractSourceHintPackageTest {
         factory.init(config)
 
         // TEST
-        val pkg = factory.asPackage(vo.namespace)
+        val pkg = factory.asPackage(vo.module)
         val artifact = factory.newArtifact("myproj/shared/domain/ctx/ns/Money.java",
-            "data".getBytes("UTF-8"), vo.namespace)
+            "data".getBytes("UTF-8"), vo.module)
 
-        // VERIFY the package (project/context/namespace from the model, module/group from the hint)
+        // VERIFY the package (context/module from the model, module/group from the hint)
         assertThat(pkg).isEqualTo("myproj.shared.domain.ctx.ns")
 
         // VERIFY newArtifact takes the target module from the hint "module" and the folder from the
@@ -82,14 +81,14 @@ class AbstractSourceHintPackageTest {
     }
 
     @Test
-    def void testHintDrivenPackageOmitsOptionalNamespace() {
+    def void testHintDrivenPackageOfANamespaceNamedAfterItsFormerContext() {
 
-        // PREPARE - the same hint as above (optional "[.${namespace}]" segment), but the value-object
-        // is declared directly in the context, without a namespace.
+        // PREPARE - the same hint as above, but the value-object lives in a module carrying the
+        // name its enclosing context used to have.
         val model = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
-                    "package": "${project}.${module}.${group}.${context}[.${namespace}]",
+                    "package": "${context}.${mvnModule}.${group}.${module}",
                     "types": [
                         {
                             "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
@@ -101,12 +100,13 @@ class AbstractSourceHintPackageTest {
                         }
                     ]
                 }
-                context ctx {
-                    type String
-                    value-object Money {
-                        String amount
-                    }
-                }
+
+             module ctx {
+              type String
+              value-object Money {
+                  String amount
+              }
+             }
             }
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
@@ -116,12 +116,11 @@ class AbstractSourceHintPackageTest {
         config.init(new DefaultContext(), null)
         factory.init(config)
 
-        // TEST - derive the package from the element itself (its namespace is null).
+        // TEST - derive the package from the element itself.
         val pkg = factory.asPackage(vo)
 
-        // VERIFY the optional namespace segment is dropped: the package ends at the context, with no
-        // trailing dot.
-        assertThat(vo.namespace).isNull
+        // VERIFY the package is exactly what the omitted optional segment used to produce.
+        assertThat(vo.module.name).isEqualTo("ctx")
         assertThat(pkg).isEqualTo("myproj.shared.domain.ctx")
     }
 
@@ -132,18 +131,17 @@ class AbstractSourceHintPackageTest {
         // ("srcgen4j-default.json") still supplies the ValueObject type entry (module "shared", group
         // "domain"), but the model's "package" pattern must win over the preset's.
         val model = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
-                    "package": "${project}.${context}.${namespace}"
+                    "package": "${context}.${module}"
                 }
-                context ctx {
-                    namespace ns {
-                        type String
-                        value-object Money {
-                            String amount
-                        }
-                    }
-                }
+
+             module ctx.ns {
+              type String
+              value-object Money {
+                  String amount
+              }
+             }
             }
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
@@ -154,37 +152,36 @@ class AbstractSourceHintPackageTest {
         factory.init(config)
 
         // TEST
-        val pkg = factory.asPackage(vo.namespace)
+        val pkg = factory.asPackage(vo.module)
 
-        // VERIFY the model's "package" overwrites the preset's: no ${module}/${group} segment, so the
-        // result is project.context.namespace and NOT the default "myproj.shared.domain.ctx.ns".
+        // VERIFY the model's "package" overwrites the preset's: no ${mvnModule}/${group} segment, so the
+        // result is context.module and NOT the default "myproj.shared.domain.ctx.ns".
         assertThat(pkg).isEqualTo("myproj.ctx.ns")
     }
 
     @Test
     def void testHintFromAnotherFileOfTheSameProject() {
 
-        // PREPARE - a project split across two ".cqrs" files (two resources in one resource set): the
-        // "SrcGen4J" hint is declared in one file's "project myproj" block...
+        // PREPARE - a context split across two ".cqrs" files (two resources in one resource set): the
+        // "SrcGen4J" hint is declared in one file's "context myproj" block...
         val hintModel = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
-                    "package": "${project}.${context}.${namespace}"
+                    "package": "${context}.${module}"
                 }
             }
         ''')
         val resourceSet = hintModel.eResource.resourceSet
         // ...while the value-object lives in the OTHER file's block for the same project.
         val elementModel = parser.parse('''
-            project myproj {
-                context ctx {
-                    namespace ns {
-                        type String
-                        value-object Money {
-                            String amount
-                        }
-                    }
-                }
+            context myproj {
+
+             module ctx.ns {
+              type String
+              value-object Money {
+                  String amount
+              }
+             }
             }
         ''', resourceSet)
         val vo = elementModel.find(typeof(ValueObject), "Money")
@@ -196,7 +193,7 @@ class AbstractSourceHintPackageTest {
 
         // TEST + VERIFY the hint from the sibling file is picked up (same logical project), overriding
         // the preset package.
-        assertThat(factory.asPackage(vo.namespace)).isEqualTo("myproj.ctx.ns")
+        assertThat(factory.asPackage(vo.module)).isEqualTo("myproj.ctx.ns")
     }
 
     @Test
@@ -206,19 +203,18 @@ class AbstractSourceHintPackageTest {
         // artifacts (here the aggregate's ESRepository -> folder "mainJava") must keep applying, but with
         // the overridden module/group. This mirrors the cqrs-keycloak-example hint.
         val model = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
                     "types": [
                         { "name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "command", "group": "core.domain" }
                     ]
                 }
-                context ctx {
-                    namespace ns {
-                        type String
-                        aggregate-id OrderId identifies Order {}
-                        aggregate Order identifier OrderId {}
-                    }
-                }
+
+             module ctx.ns {
+              type String
+              aggregate-id OrderId identifies Order {}
+              aggregate Order identifier OrderId {}
+             }
             }
         ''')
         val aggregate = model.find(typeof(Aggregate), "Order")
@@ -229,13 +225,13 @@ class AbstractSourceHintPackageTest {
         factory.init(config)
 
         // TEST - route the generated artifact through the hint.
-        val artifact = factory.newArtifact("Order.java", "data".getBytes("UTF-8"), aggregate.namespace)
+        val artifact = factory.newArtifact("Order.java", "data".getBytes("UTF-8"), aggregate.module)
 
         // VERIFY the overridden module becomes the target module, while the folder still comes from the
         // preset's ESRepository artifact ("mainJava"); the package uses the overridden module/group.
         assertThat(artifact.module).isEqualTo("command")
         assertThat(artifact.folder).isEqualTo("mainJava")
-        assertThat(factory.asPackage(aggregate.namespace)).isEqualTo("myproj.command.core.domain.ctx.ns")
+        assertThat(factory.asPackage(aggregate.module)).isEqualTo("myproj.command.core.domain.ctx.ns")
     }
 
     @Test
@@ -245,9 +241,9 @@ class AbstractSourceHintPackageTest {
         // overrides them with "api"/"dto". The per-artifact override must win for both the target module
         // and the package (a sibling artifact without an override would keep inheriting the type's values).
         val model = parser.parse('''
-            project myproj {
+            context myproj {
                 hint SrcGen4J {
-                    "package": "${project}.${module}.${group}.${context}.${namespace}",
+                    "package": "${context}.${mvnModule}.${group}.${module}",
                     "types": [
                         {
                             "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
@@ -259,14 +255,13 @@ class AbstractSourceHintPackageTest {
                         }
                     ]
                 }
-                context ctx {
-                    namespace ns {
-                        type String
-                        value-object Money {
-                            String amount
-                        }
-                    }
-                }
+
+             module ctx.ns {
+              type String
+              value-object Money {
+                  String amount
+              }
+             }
             }
         ''')
         val vo = model.find(typeof(ValueObject), "Money")
@@ -277,8 +272,8 @@ class AbstractSourceHintPackageTest {
         factory.init(config)
 
         // TEST
-        val pkg = factory.asPackage(vo.namespace)
-        val artifact = factory.newArtifact("Money.java", "data".getBytes("UTF-8"), vo.namespace)
+        val pkg = factory.asPackage(vo.module)
+        val artifact = factory.newArtifact("Money.java", "data".getBytes("UTF-8"), vo.module)
 
         // VERIFY the artifact-level module/group win over the type's, for both the package and the module.
         assertThat(pkg).isEqualTo("myproj.api.dto.ctx.ns")

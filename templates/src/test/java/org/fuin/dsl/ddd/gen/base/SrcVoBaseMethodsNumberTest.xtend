@@ -109,30 +109,26 @@ class SrcVoBaseMethodsNumberTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context y {
-                
-                    namespace types {
-                        type Long
-                        type UUID
-                    }
-                    
-                    namespace a {
-                        
-                        import y.types.*
-                        
-                        entity-id MyEntityId identifies MyEntity base Long {}
-                        
-                        entity MyEntity identifier MyEntityId root MyAggregate {}
-                
-                        aggregate-id MyAggregateId identifies MyAggregate base UUID {}
-                            
-                        aggregate MyAggregate identifier MyAggregateId {}
-                            
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module y.types {
+				        type Long
+				        type UUID
+				    }
+
+				    module y.a {
+				        import p.y.types.*
+
+
+				        entity-id MyEntityId identifies MyEntity base Long {}
+
+				        entity MyEntity identifier MyEntityId root MyAggregate {}
+
+				        aggregate-id MyAggregateId identifies MyAggregate base UUID {}
+
+				        aggregate MyAggregate identifier MyAggregateId {}
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

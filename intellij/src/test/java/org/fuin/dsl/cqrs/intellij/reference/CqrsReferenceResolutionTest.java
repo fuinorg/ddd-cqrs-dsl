@@ -18,28 +18,32 @@ import java.nio.file.Path;
 
 /**
  * Reproduces the "Multiple Implementations" popup that listed the same type several times. A single
- * remote source reached through more than one imported namespace (a Maven artifact provides several
- * namespaces, so {@link org.fuin.dsl.cqrs.intellij.remote.CqrsRemoteScopeResolver} serves its models
- * once per namespace) must resolve a reference to exactly one declaration &mdash; while a genuinely
- * ambiguous name (two distinct declarations in two namespaces) must still resolve to several.
+ * declaration reached through a dependency declared more than once must resolve a reference to exactly
+ * one declaration &mdash; while a genuinely ambiguous name (two distinct declarations in two
+ * modules) must still resolve to several.
  *
- * <p>The models live on the real filesystem (not the in-memory fixture) because the remote resolve
- * path walks the file's directory to discover the {@code dependencies.json} catalog. A {@code local}
- * catalog entry keeps the whole test offline.</p>
+ * <p>The models live on the real filesystem (not the in-memory fixture) because the dependency
+ * resolve path works off the declaring file's directory. A {@code local} clause keeps the whole test
+ * offline.</p>
  */
 public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
 
     /**
-     * A consumer that references {@code Foo}, importing the given namespaces. An imported namespace
-     * is the fully qualified {@code project.context.namespace} of the declaring model - the same name
-     * the catalog routes - because a reference only resolves against what is actually imported.
+     * A consumer that references {@code Foo} and declares the test dependency the given number of
+     * times. The models it provides are read straight from the {@code local} directory, so a
+     * reference resolves against everything the dependency declares - no import is involved.
      */
-    private static String consumer(String... imports) {
-        StringBuilder sb = new StringBuilder("project cp {\n  context cc {\n    namespace nn {\n");
-        for (String imp : imports) {
-            sb.append("      import ").append(imp).append(".*\n");
+    private static String consumer(int dependencyCount, String... imports) {
+        StringBuilder sb = new StringBuilder("context cp {\n");
+        for (int i = 0; i < dependencyCount; i++) {
+            sb.append("  dependency \"g:a:1\" local \"local-models\"\n");
         }
-        return sb.append("      event E {\n        Foo value\n      }\n    }\n  }\n}\n").toString();
+        sb.append("  module cc.nn {\n");
+        // A dependency only makes the models resolvable - an import decides what is visible.
+        for (String imported : imports) {
+            sb.append("    import ").append(imported).append("\n");
+        }
+        return sb.append("    event E {\n      Foo value\n    }\n  }\n}\n").toString();
     }
 
     private Path workDir;
@@ -67,38 +71,35 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
         }
     }
 
-    /** One remote declaration reached through two imported namespaces must resolve exactly once. */
+    /** One declaration reached through a dependency declared twice must resolve exactly once. */
     public void testSameTypeReachedTwiceResolvesOnce() throws Exception {
-        writeCatalog("rp.c.n", "rp.c.m");
-        // The single model declares Foo only in namespace n, yet both imports route to this same dir.
-        writeModel("foo.cqrs", "project rp { context c { namespace n { type Foo } } }");
+        writeModel("foo.cqrs", "context rp { module c.n { type Foo } }");
 
-        CqrsFile consumer = writeAndLoadConsumer(consumer("rp.c.n", "rp.c.m"));
+        CqrsFile consumer = writeAndLoadConsumer(consumer(2, "rp.c.n.*"));
         ResolveResult[] results = resolveFoo(consumer);
 
-        assertEquals("the same declaration reached through two imports must be de-duplicated",
+        assertEquals("the same declaration reached through a repeated dependency must be de-duplicated",
                 1, results.length);
         assertNotNull("must resolve to a declaration", results[0].getElement());
     }
 
     /** Two genuinely distinct types named {@code Foo} must still resolve to several targets. */
     public void testGenuinelyDistinctTypesStayMultiple() throws Exception {
-        writeCatalog("rn.c.n", "rm.c.m");
-        writeModel("foo_n.cqrs", "project rn { context c { namespace n { type Foo } } }");
-        writeModel("foo_m.cqrs", "project rm { context c { namespace m { type Foo } } }");
+        writeModel("foo_n.cqrs", "context rn { module c.n { type Foo } }");
+        writeModel("foo_m.cqrs", "context rm { module c.m { type Foo } }");
 
-        CqrsFile consumer = writeAndLoadConsumer(consumer("rn.c.n", "rm.c.m"));
+        CqrsFile consumer = writeAndLoadConsumer(consumer(1, "rn.c.n.*", "rm.c.m.*"));
         ResolveResult[] results = resolveFoo(consumer);
 
         assertEquals("two distinct declarations must both remain as separate targets",
                 2, results.length);
     }
 
-    /** A reference resolves against a declaration in the same namespace-less context. */
+    /** A reference resolves against a declaration in the same module. */
     public void testReferenceResolvesWithinNamespacelessContext() {
         PsiFile file = myFixture.configureByText("m.cqrs", """
-                project p {
-                  context c {
+                context p {
+                  module c {
                     type String
                     value-object Money base String {
                       String amount
@@ -118,35 +119,31 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
         PsiReference reference = ref.getReference();
         assertInstanceOf(reference, PsiPolyVariantReference.class);
         ResolveResult[] results = ((PsiPolyVariantReference) reference).multiResolve(false);
-        assertTrue("reference must resolve within the namespace-less context, but got " + results.length,
+        assertTrue("reference must resolve within the module, but got " + results.length,
                 results.length >= 1);
         assertNotNull("must resolve to a declaration", results[0].getElement());
     }
 
     /**
-     * Two files, one namespace: a reference resolves against a declaration that lives in the same
-     * namespace but in another file, without an import. This is what "same namespace" means &mdash;
+     * Two files, one module: a reference resolves against a declaration that lives in the same
+     * module but in another file, without an import. This is what "same module" means &mdash;
      * being in the same file is not a requirement.
      */
     public void testReferenceResolvesAcrossFilesWithinSameNamespace() {
         myFixture.configureByText("types.cqrs", """
-                project p {
-                  context c {
-                    namespace n {
+                context p {
+                    module c.n {
                       type String
                     }
-                  }
                 }
                 """);
         PsiFile file = myFixture.configureByText("money.cqrs", """
-                project p {
-                  context c {
-                    namespace n {
+                context p {
+                    module c.n {
                       value-object Money base String {
                         String amount
                       }
                     }
-                  }
                 }
                 """);
 
@@ -159,28 +156,14 @@ public class CqrsReferenceResolutionTest extends BasePlatformTestCase {
         }
         assertNotNull("a type reference to 'String' must be present", ref);
         ResolveResult[] results = ((PsiPolyVariantReference) ref.getReference()).multiResolve(false);
-        assertTrue("must resolve to the declaration in the same namespace of the other file, but got "
+        assertTrue("must resolve to the declaration in the same module of the other file, but got "
                 + results.length, results.length >= 1);
         assertNotNull("must resolve to a declaration", results[0].getElement());
     }
 
     // ---- helpers ---------------------------------------------------------
 
-    /** A {@code dependencies.json} whose single {@code local} entry provides all the given namespaces. */
-    private void writeCatalog(String... namespaces) throws Exception {
-        StringBuilder ns = new StringBuilder();
-        for (String n : namespaces) {
-            if (ns.length() > 0) {
-                ns.append(", ");
-            }
-            ns.append('"').append(n).append('"');
-        }
-        Files.writeString(projectDir.resolve("dependencies.json"),
-                "[ { \"type\": \"maven\", \"namespaces\": [" + ns + "], \"data\": {"
-                        + " \"groupId\": \"g\", \"artifactId\": \"a\", \"version\": \"1\","
-                        + " \"local\": \"local-models\" } } ]", StandardCharsets.UTF_8);
-    }
-
+    /** Writes a model into the directory the consumer's {@code local} clause points at. */
     private void writeModel(String fileName, String content) throws Exception {
         Path model = localModels.resolve(fileName);
         Files.writeString(model, content, StandardCharsets.UTF_8);

@@ -1,35 +1,62 @@
-project p {
+context p {
 
-	context x {
+	module x.types {
+		type String
+		type Integer
+	}
 
-		namespace types {
-			type String
-			type Integer
+	module x.entities {
+		import p.x.types.*
+
+		/** The constraint was violated. */
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
 		}
 
-		namespace entities {
+		aggregate-id AggregateXId identifies AggregateX {}
 
-			import p.x.types.*
+		aggregate AggregateX identifier AggregateXId {}
 
-			/** The constraint was violated. */
-			exception AnyConstraintViolatedException {
-				message "Any constraint violated"
+		entity-id EntityAId identifies EntityA {}
+
+		/** Entity A - No variables. */
+		entity EntityA identifier EntityAId root AggregateX {
+		}
+
+		entity-id EntityBId identifies EntityB {}
+
+		/** Entity B - With variables. */
+		entity EntityB identifier EntityBId root AggregateX {
+
+			/** Variable A. */
+			String a
+
+			/** Variable B. */
+			Integer b
+
+		}
+
+		entity-id EntityCId identifies EntityC {}
+
+		/** Entity C - With constructor, constraint and event. */
+		entity EntityC identifier EntityCId root AggregateX {
+
+			/** Variable A. */
+			String a
+
+			/** Variable B. */
+			Integer b
+
+			/** Checks something. */
+			business-rule AnyConstraint exception AnyConstraintViolatedException {
+
+				/** Explain why it's strict. */
+				consistency strong
+
 			}
 
-			aggregate-id AggregateXId identifies AggregateX {}
-
-			aggregate AggregateX identifier AggregateXId {}
-
-			entity-id EntityAId identifies EntityA {}
-
-			/** Entity A - No variables. */
-			entity EntityA identifier EntityAId root AggregateX {
-			}
-
-			entity-id EntityBId identifies EntityB {}
-
-			/** Entity B - With variables. */
-			entity EntityB identifier EntityBId root AggregateX {
+			/** Creates the entity. */			
+			constructor create business-rules AnyConstraint fires EntityCCreatedEvent {
 
 				/** Variable A. */
 				String a
@@ -37,29 +64,8 @@ project p {
 				/** Variable B. */
 				Integer b
 
-			}
-
-			entity-id EntityCId identifies EntityC {}
-
-			/** Entity C - With constructor, constraint and event. */
-			entity EntityC identifier EntityCId root AggregateX {
-
-				/** Variable A. */
-				String a
-
-				/** Variable B. */
-				Integer b
-
-				/** Checks something. */
-				business-rule AnyConstraint exception AnyConstraintViolatedException {
-
-					/** Explain why it's strict. */
-					consistency strong
-
-				}
-
-				/** Creates the entity. */			
-				constructor create business-rules AnyConstraint fires EntityCCreatedEvent {
+				/** The entity C was created. */
+				event EntityCCreatedEvent {
 
 					/** Variable A. */
 					String a
@@ -67,25 +73,12 @@ project p {
 					/** Variable B. */
 					Integer b
 
-					/** The entity C was created. */
-					event EntityCCreatedEvent {
-
-						/** Variable A. */
-						String a
-
-						/** Variable B. */
-						Integer b
-
-						message "Entity C was created: ${a} / ${b} [${entityIdPath}]"
-
-					}
+					message "Entity C was created: ${a} / ${b} [${entityIdPath}]"
 
 				}
 
 			}
 
 		}
-
 	}
-
 }

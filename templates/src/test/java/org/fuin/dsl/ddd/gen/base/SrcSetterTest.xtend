@@ -92,64 +92,56 @@ class SrcSetterTest {
     private def SrcSetter createTesteeNoMultiplicity(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
-				project p {
-                context ctx {
-                
-                    namespace a.b {
-                        
-                        import ctx.types.*
-                        
-                        value-object MyValueObject {
-                            
-                            /** Human readable name. */
-                            String name
-                            
-                        }
-                        
-                    }
-                
-                    namespace types {
-                        type String
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module ctx.a.b {
+				        import p.ctx.types.*
+
+
+				        value-object MyValueObject {
+
+				            /** Human readable name. */
+				            String name
+
+				        }
+				    }
+
+				    module ctx.types {
+				        type String
+				    }
+				}
 			'''
         )
-        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.contexts.get(0).modules.get(0).elements.get(0) as ValueObject
         return new SrcSetter(codeSnippetContext, GenerateOptions.empty(), "public", valueObject.attributes.first)
     }
 
     private def SrcSetter createTesteeWithMultiplicity(CodeSnippetContext codeSnippetContext) {
         val model = parser.parse(
             '''
-				project p {
-                context ctx {
-                
-                    namespace a.b {
-                        
-                        import ctx.types.*
-                        
-                        value-object MyValueObject {
-                            
-                            /** List of human readable names. */
-                            List<String> names
-                            
-                        }
-                        
-                    }
-                
-                    namespace types {
-                        type String
-                        type List generics 1
-                    }
-                    
-                }
-            }
+				context p {
+
+				    module ctx.a.b {
+				        import p.ctx.types.*
+
+
+				        value-object MyValueObject {
+
+				            /** List of human readable names. */
+				            List<String> names
+
+				        }
+				    }
+
+				    module ctx.types {
+				        type String
+				        type List generics 1
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)
-        val ValueObject valueObject = model.projects.get(0).contexts.get(0).namespaces.get(0).elements.get(0) as ValueObject
+        val ValueObject valueObject = model.contexts.get(0).modules.get(0).elements.get(0) as ValueObject
         return new SrcSetter(codeSnippetContext, GenerateOptions.empty(), "public", valueObject.attributes.first)
     }
 

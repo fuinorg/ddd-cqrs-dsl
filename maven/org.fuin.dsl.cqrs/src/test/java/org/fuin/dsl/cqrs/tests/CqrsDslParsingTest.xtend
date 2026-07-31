@@ -7,26 +7,71 @@ import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
-import org.junit.jupiter.api.Disabled
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CqrsDslInjectorProvider)
 class CqrsDslParsingTest {
+
 	@Inject
 	ParseHelper<DomainModel> parseHelper
-	
-	@Disabled("Re-enable!")
+
+	@Inject
+	ValidationTestHelper validationHelper
+
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			Hello Xtext!
+			context foo {
+				module bar {
+
+					type String
+
+					annotation Foo {
+						String x
+					}
+
+					@Foo("x")
+					value-object Bar {}
+
+				}
+			}
 		''')
 		Assertions.assertNotNull(result)
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+
+		validationHelper.assertNoErrors(result)
+	}
+
+	/** A module reaches a sibling module of the same context through an import. */
+	@Test
+	def void moduleImportsSiblingModule() {
+		val result = parseHelper.parse('''
+			context foo {
+
+				module inner {
+					type Integer
+				}
+
+				module outer {
+					import foo.inner.*
+
+					value-object ImportingVo {
+						Integer id
+					}
+				}
+
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+
+		validationHelper.assertNoErrors(result)
 	}
 }

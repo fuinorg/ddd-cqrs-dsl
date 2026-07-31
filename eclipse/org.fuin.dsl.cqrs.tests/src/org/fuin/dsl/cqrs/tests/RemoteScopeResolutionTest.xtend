@@ -2,12 +2,13 @@ package org.fuin.dsl.cqrs.tests
 
 import com.google.inject.Inject
 import com.google.inject.Provider
-import com.sun.net.httpserver.HttpServer
-import java.net.InetSocketAddress
+import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Map
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.resource.XtextResourceSet
@@ -17,235 +18,239 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
+import org.fuin.dsl.cqrs.scoping.CqrsArtifactResolvers
+import org.fuin.dsl.cqrs.scoping.CqrsModelArchives
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 /**
- * Verifies that cross-references are resolved against remote {@code .cqrs} models declared in the
- * {@code dependencies.json} catalog: a {@code maven} artifact (tar.gz) cached once per GAV under the
- * {@code .dependencies-cache} directory, and a {@code local} directory that is read directly.
+ * Verifies that cross-references resolve against the models of a declared {@code dependency}: an
+ * artifact resolved by Maven and read <em>inside</em> its jar in the local repository, and a
+ * {@code local} directory read directly.
+ *
+ * <p>The artifact is a jar written by the test and handed over by a stub resolver, so this covers the
+ * reading half only - that {@code MimaArtifactResolverTest} really resolves through Maven is verified
+ * separately.</p>
  */
 @ExtendWith(InjectionExtension)
 @InjectWith(CqrsDslInjectorProvider)
 class RemoteScopeResolutionTest {
 
+	static val COORDINATE = "org.fuin.test:cqrs-model:1.0.0"
+
 	static val REMOTE_BILLING = '''
-		project remote {
-			context com.acme {
-				namespace billing {
-					type Money
-				}
+		context remote {
+			module com.acme.billing {
+				type Money
 			}
 		}
 	'''
 
 	static val REMOTE_CATALOG = '''
-		project remote {
-			context com.acme {
-				namespace catalog {
-					type Sku
-				}
-			}
-		}
-	'''
-
-	static val LOCAL_SALES = '''
-		project local {
-			context com.acme.sales {
-				namespace sales {
-					import remote.com.acme.billing.*
-					value-object Price {
-						Money amount
-					}
-				}
-			}
-		}
-	'''
-
-	/** Imports two namespaces that a single catalog entry provides from one source. */
-	static val LOCAL_SALES_BOTH = '''
-		project local {
-			context com.acme.sales {
-				namespace sales {
-					import remote.com.acme.billing.*
-					import remote.com.acme.catalog.*
-					value-object Price {
-						Money amount
-						Sku item
-					}
-				}
+		context remote {
+			module com.acme.catalog {
+				type Sku
 			}
 		}
 	'''
 
 	@Inject ParseHelper<DomainModel> parseHelper
 	@Inject Provider<XtextResourceSet> resourceSetProvider
+	@Inject CqrsModelArchives archives
 
 	/**
-	 * Fetches a {@code maven} artifact (tar.gz) over HTTP, unpacks all models and resolves types from
-	 * <em>two</em> namespaces declared by a single catalog entry. The artifact is cached once per GAV,
-	 * so both namespaces share a single <code>&lt;artifactId&gt;-&lt;version&gt;-&lt;sha1&gt;</code> dir.
+	 * What an artifact resolved to is remembered for the session, and every test here publishes the
+	 * same coordinate into a temp repository of its own - so the memory has to be dropped in between,
+	 * or the second test would see the first one's jar.
+	 */
+	@BeforeEach
+	def void forgetPreviousResolutions() {
+		archives.invalidate
+	}
+
+	@AfterEach
+	def void restoreResolver() {
+		CqrsArtifactResolvers.set(null)
+	}
+
+	/**
+	 * The artifact is resolved by Maven and its models are read straight out of the jar - the URIs of
+	 * the resolved types point <em>inside</em> the archive, nothing is unpacked.
 	 */
 	@Test
-	def void resolvesMavenArtifactOverHttpAndCaches() {
+	def void resolvesFromInsideTheArtifactJar() {
 		val root = Files.createTempDirectory("remote-scope-maven")
-		val tarGz = TarGzTestSupport.tarGz(#{
-			"money.cqrs" -> REMOTE_BILLING.toString,
-			"sku.cqrs" -> REMOTE_CATALOG.toString
+		installResolver(root, #{
+			"model/money.cqrs" -> REMOTE_BILLING.toString,
+			"model/sub/sku.cqrs" -> REMOTE_CATALOG.toString
 		})
-		val dir = "/org/fuin/test/cqrs-model/0.1.0-SNAPSHOT/"
-		val server = serve(#{
-			dir + "maven-metadata.xml" -> mavenMetadata.getBytes(StandardCharsets.UTF_8),
-			dir + "cqrs-model-0.1.0-20240101.000000-1-cqrs.tar.gz" -> tarGz
-		})
-		server.start
-		val emptyLocalRepo = Files.createTempDirectory("m2-empty")
-		System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:" + server.address.port + "/")
-		System.setProperty("maven.repo.local", emptyLocalRepo.toString)
-		try {
-			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["remote.com.acme.billing", "remote.com.acme.catalog"], "data": {
-					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT" } } ]
-			''')
 
-			val model = parse(root, LOCAL_SALES_BOTH)
-			EcoreUtil.resolveAll(model.eResource)
-			Assertions.assertTrue(model.eResource.errors.empty,
-				'''Unexpected errors: «model.eResource.errors.join(", ")»''')
-			val attributeTypes = model.projects.head.contexts.head.namespaces.head.elements.filter(ValueObject).head.attributes.map[type]
-			Assertions.assertTrue(attributeTypes.forall[it instanceof ExternalType && !eIsProxy],
-				"both remote types must be resolved")
-			Assertions.assertEquals(#["Money", "Sku"], attributeTypes.map[name].sort)
+		val model = parse(root, '''
+			context consumer {
+				dependency "«COORDINATE»"
 
-			val cacheDirs = Files.list(root.resolve(".dependencies-cache")).filter[Files.isDirectory(it)].collect(
-				java.util.stream.Collectors.toList)
-			Assertions.assertEquals(1, cacheDirs.size,
-				"the artifact must be cached once per GAV, shared by both namespaces (no duplication)")
-			Assertions.assertTrue(cacheDirs.head.fileName.toString.startsWith("cqrs-model-0.1.0-SNAPSHOT-"),
-				"cache dir name must be <artifactId>-<version>-<sha1>")
-			Assertions.assertEquals(2, Files.list(cacheDirs.head).filter[toString.endsWith(".cqrs")].count,
-				"both .cqrs files from the tar.gz must be unpacked once")
-		} finally {
-			System.clearProperty("cqrs.maven.repo.snapshots")
-			System.clearProperty("maven.repo.local")
-			server.stop(0)
-		}
-	}
+				module com.acme.sales {
+					import remote.com.acme.billing.*
+					import remote.com.acme.catalog.*
 
-	/** A {@code maven} artifact already present in the local repository is used without any network. */
-	@Test
-	def void resolvesMavenArtifactFromLocalRepository() {
-		val root = Files.createTempDirectory("remote-scope-maven-local")
-		val localRepo = Files.createTempDirectory("m2-local")
-		val artifactDir = Files.createDirectories(
-			localRepo.resolve("org/fuin/test/cqrs-model/0.1.0-SNAPSHOT"))
-		Files.write(artifactDir.resolve("cqrs-model-0.1.0-SNAPSHOT-cqrs.tar.gz"),
-			TarGzTestSupport.tarGz(#{"money.cqrs" -> REMOTE_BILLING.toString}))
-		// Unreachable remote base: the local repository must be used instead.
-		System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/")
-		System.setProperty("maven.repo.local", localRepo.toString)
-		try {
-			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["remote.com.acme.billing"], "data": {
-					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT" } } ]
-			''')
-
-			assertResolvesToMoney(parse(root, LOCAL_SALES))
-		} finally {
-			System.clearProperty("cqrs.maven.repo.snapshots")
-			System.clearProperty("maven.repo.local")
-		}
-	}
-
-	/** A {@code local} directory is read directly: models resolve and no cache directory is created. */
-	@Test
-	def void resolvesFromLocalDirectory() {
-		val root = Files.createTempDirectory("remote-scope-local")
-		val localDir = Files.createTempDirectory("local-models")
-		Files.writeString(localDir.resolve("billing.cqrs"), REMOTE_BILLING.toString)
-		// Unreachable remote base: it must never be contacted because a local directory is configured.
-		System.setProperty("cqrs.maven.repo.snapshots", "http://127.0.0.1:1/")
-		try {
-			Files.writeString(root.resolve("dependencies.json"), '''
-				[ { "type": "maven", "namespaces": ["remote.com.acme.billing"], "data": {
-					"groupId": "org.fuin.test", "artifactId": "cqrs-model", "version": "0.1.0-SNAPSHOT",
-					"local": "«localDir.toString»" } } ]
-			''')
-
-			assertResolvesToMoney(parse(root, LOCAL_SALES))
-			Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")),
-				"a local directory must be read directly without creating a cache")
-		} finally {
-			System.clearProperty("cqrs.maven.repo.snapshots")
-		}
-	}
-
-	/** Without a catalog the standard mechanism applies and the remote reference stays unresolved. */
-	@Test
-	def void fallsBackWithoutCatalog() {
-		val root = Files.createTempDirectory("remote-scope-none")
-		val model = parse(root, LOCAL_SALES)
-		EcoreUtil.resolveAll(model.eResource)
-		Assertions.assertFalse(model.eResource.errors.empty,
-			"reference to remote type must stay unresolved without a catalog")
-	}
-
-	/** An empty (or otherwise unparseable) catalog must degrade gracefully instead of breaking editing. */
-	@Test
-	def void fallsBackWithEmptyCatalog() {
-		val root = Files.createTempDirectory("remote-scope-empty")
-		Files.writeString(root.resolve("dependencies.json"), "")
-		val model = parse(root, LOCAL_SALES)
-		EcoreUtil.resolveAll(model.eResource)
-		Assertions.assertFalse(model.eResource.errors.empty,
-			"reference to remote type must stay unresolved when the catalog cannot be parsed")
-	}
-
-	private def static String mavenMetadata() '''
-		<metadata>
-			<groupId>org.fuin.test</groupId>
-			<artifactId>cqrs-model</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<versioning>
-				<snapshotVersions>
-					<snapshotVersion>
-						<classifier>cqrs</classifier>
-						<extension>tar.gz</extension>
-						<value>0.1.0-20240101.000000-1</value>
-					</snapshotVersion>
-				</snapshotVersions>
-			</versioning>
-		</metadata>
-	'''
-
-	/** Starts (but does not yet {@code start()}) a local HTTP server answering the given byte routes. */
-	private def static HttpServer serve(Map<String, byte[]> routes) {
-		val server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0)
-		for (route : routes.entrySet) {
-			val body = route.value
-			server.createContext(route.key) [ exchange |
-				exchange.sendResponseHeaders(200, body.length)
-				exchange.responseBody.write(body)
-				exchange.close
-			]
-		}
-		return server
-	}
-
-	private def DomainModel parse(Path root, CharSequence text) {
-		val uri = URI.createFileURI(root.resolve("model.cqrs").toString)
-		parseHelper.parse(text, uri, resourceSetProvider.get)
-	}
-
-	private def void assertResolvesToMoney(DomainModel model) {
+					value-object Price {
+						Money amount
+						Sku item
+					}
+				}
+			}
+		''')
 		EcoreUtil.resolveAll(model.eResource)
 		Assertions.assertTrue(model.eResource.errors.empty,
 			'''Unexpected errors: «model.eResource.errors.join(", ")»''')
-		val valueObject = model.projects.head.contexts.head.namespaces.head.elements.filter(ValueObject).head
-		val type = valueObject.attributes.head.type
-		Assertions.assertFalse(type.eIsProxy, "remote type reference must be resolved")
-		Assertions.assertTrue(type instanceof ExternalType)
-		Assertions.assertEquals("Money", type.name)
+
+		val attributeTypes = model.contexts.head.modules.head.elements.filter(ValueObject).head.attributes.map[type]
+		Assertions.assertTrue(attributeTypes.forall[it instanceof ExternalType && !eIsProxy],
+			"both types of the artifact must be resolved")
+		Assertions.assertEquals(#["Money", "Sku"], attributeTypes.map[name].sort)
+
+		// The decisive assertion: read in place, out of the jar in the local repository.
+		for (type : attributeTypes) {
+			val uri = type.eResource.URI.toString
+			Assertions.assertTrue(uri.startsWith("archive:"),
+				"a model of a dependency must be read from inside the jar, but was: " + uri)
+			Assertions.assertTrue(uri.contains("!/model/"),
+				"only models below 'model/' are read, but was: " + uri)
+		}
+
+		Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")),
+			"nothing may be unpacked next to the model any more")
+	}
+
+	/** A model in a sub folder of the jar is found too - entries are read recursively. */
+	@Test
+	def void readsModelsFromSubFoldersOfTheJar() {
+		val root = Files.createTempDirectory("remote-scope-nested")
+		installResolver(root, #{"model/sub/sku.cqrs" -> REMOTE_CATALOG.toString})
+
+		assertResolves(parse(root, '''
+			context consumer {
+				dependency "«COORDINATE»"
+
+				module com.acme.sales {
+					import remote.com.acme.catalog.*
+
+					value-object Price {
+						Sku item
+					}
+				}
+			}
+		'''), "Sku")
+	}
+
+	/** Entries outside 'model/' are not models and must be ignored. */
+	@Test
+	def void ignoresEntriesOutsideTheModelFolder() {
+		val root = Files.createTempDirectory("remote-scope-outside")
+		installResolver(root, #{"other/money.cqrs" -> REMOTE_BILLING.toString})
+
+		val model = parse(root, '''
+			context consumer {
+				dependency "«COORDINATE»"
+
+				module com.acme.sales {
+					value-object Price {
+						Money amount
+					}
+				}
+			}
+		''')
+		EcoreUtil.resolveAll(model.eResource)
+		Assertions.assertFalse(model.eResource.errors.empty,
+			"a '.cqrs' outside 'model/' must not be picked up")
+	}
+
+	/** A {@code local} directory is read directly, with no resolution at all. */
+	@Test
+	def void readsLocalDirectoryDirectly() {
+		val root = Files.createTempDirectory("remote-scope-local")
+		val localDir = Files.createDirectories(root.resolve("provider"))
+		Files.writeString(localDir.resolve("billing.cqrs"), REMOTE_BILLING.toString)
+		// No resolver at all: a 'local' clause must never reach Maven.
+		CqrsArtifactResolvers.set([ groupId, artifactId, version |
+			throw new IllegalStateException("must not resolve when 'local' is declared")
+		])
+
+		assertResolves(parse(root, '''
+			context consumer {
+				dependency "«COORDINATE»" local "provider"
+
+				module com.acme.sales {
+					import remote.com.acme.billing.*
+
+					value-object Price {
+						Money amount
+					}
+				}
+			}
+		'''), "Money")
+	}
+
+	/** Without a dependency the artifact's types stay unresolved. */
+	@Test
+	def void fallsBackWithoutDependency() {
+		val root = Files.createTempDirectory("remote-scope-none")
+		val model = parse(root, '''
+			context consumer {
+				module com.acme.sales {
+					value-object Price {
+						Money amount
+					}
+				}
+			}
+		''')
+		EcoreUtil.resolveAll(model.eResource)
+		Assertions.assertFalse(model.eResource.errors.empty,
+			"reference to a type of another project must stay unresolved without a dependency")
+	}
+
+	// ---- helpers ---------------------------------------------------------
+
+	/**
+	 * Writes a jar with the given entries and installs a resolver that answers with it.
+	 *
+	 * <p>Which Maven does the resolving is beside the point here - that is
+	 * {@code MimaArtifactResolverTest} - so a stub keeps this test free of any environment and lets the
+	 * Eclipse tests bundle, which resolves through m2e, run exactly the same code.</p>
+	 */
+	private def void installResolver(Path root, Map<String, String> entries) {
+		val jar = root.resolve("cqrs-model-1.0.0.jar")
+		Files.write(jar, jar(entries))
+		CqrsArtifactResolvers.set([ groupId, artifactId, version | jar ])
+	}
+
+	/** A jar holding the given entries (path inside the archive to content). */
+	private def byte[] jar(Map<String, String> entries) {
+		val bytes = new ByteArrayOutputStream
+		val zip = new ZipOutputStream(bytes)
+		for (entry : entries.entrySet) {
+			zip.putNextEntry(new ZipEntry(entry.key))
+			zip.write(entry.value.getBytes(StandardCharsets.UTF_8))
+			zip.closeEntry
+		}
+		zip.close
+		return bytes.toByteArray
+	}
+
+	private def DomainModel parse(Path root, CharSequence text) {
+		return parseHelper.parse(text, URI.createFileURI(root.resolve("main.cqrs").toString),
+			resourceSetProvider.get)
+	}
+
+	private def void assertResolves(DomainModel model, String typeName) {
+		EcoreUtil.resolveAll(model.eResource)
+		Assertions.assertTrue(model.eResource.errors.empty,
+			'''Unexpected errors: «model.eResource.errors.join(", ")»''')
+		val type = model.contexts.head.modules.head.elements.filter(ValueObject).head.attributes.head.type
+		Assertions.assertFalse(type.eIsProxy, typeName + " must resolve")
+		Assertions.assertEquals(typeName, type.name)
 	}
 }

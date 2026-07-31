@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.valueobject
 
 import java.util.Map
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -32,7 +32,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
         val className = vo.name
         val abstractClassName = vo.abstractName
-        val Namespace ns = vo.namespace;
+        val Module ns = vo.module;
         val pkg = vo.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
@@ -58,10 +58,10 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         ctx.requiresReference(vo.uniqueAbstractName)
     }
 
-    def create(SimpleCodeSnippetContext ctx, Namespace ns, ValueObject vo, String pkg, String className, String abstractClassName) {
+    def create(SimpleCodeSnippetContext ctx, Module ns, ValueObject vo, String pkg, String className, String abstractClassName) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            «new SrcMetaAnnotations(ctx, vo.metaInfo, vo.context.name, (if (ns === null) className else ns.name + "." + className))»
+            «new SrcMetaAnnotations(ctx, vo.metaInfo, contextSegment(ns), (if (subModule(ns) === null) className else subModule(ns) + "." + className))»
             «IF vo.base === null && options.jaxb»
                 «new SrcXmlRootElement(ctx, vo)»
             «ENDIF»

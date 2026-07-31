@@ -3,6 +3,7 @@ package org.fuin.dsl.cqrs.conversion;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.IGrammarAccess;
@@ -30,7 +31,7 @@ import org.eclipse.xtext.xbase.lib.ListExtensions;
 public class CqrsDslValueConverterService extends DefaultTerminalConverters {
   /**
    * Strips/adds the caret escape per dot separated segment. A {@code *} wildcard segment is never
-   * escaped.
+   * escaped, although the grammar declares it as a keyword.
    */
   private static class QualifiedNameCaretConverter implements IValueConverter<String> {
     private final Set<String> keywords;
@@ -54,8 +55,7 @@ public class CqrsDslValueConverterService extends DefaultTerminalConverters {
       }
       final Function1<String, String> _function = (String segment) -> {
         String _xifexpression = null;
-        boolean _contains = this.keywords.contains(segment);
-        if (_contains) {
+        if (((!Objects.equals(segment, "*")) && this.keywords.contains(segment))) {
           _xifexpression = ("^" + segment);
         } else {
           _xifexpression = segment;

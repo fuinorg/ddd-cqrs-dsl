@@ -2,7 +2,7 @@ package org.fuin.dsl.ddd.gen.aggregate
 
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.GenerateException
@@ -19,12 +19,12 @@ class ESJpaLiquibaseXmlArtifactFactory extends AbstractSource<Aggregate> impleme
     }
     
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
-        val Namespace ns = aggregate.namespace
+        val Module ns = aggregate.module
         val filename = "changelog-xxxxx-" + aggregate.getName().toSqlLower + "_events.xml"
         return List.of(newArtifact(filename, create(aggregate, ns).toString().getBytes("UTF-8"), aggregate));
     }
     
-    def create(Aggregate aggregate, Namespace ns) {
+    def create(Aggregate aggregate, Module ns) {
         ''' 
         <?xml version="1.0" encoding="UTF-8"?>
         <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"

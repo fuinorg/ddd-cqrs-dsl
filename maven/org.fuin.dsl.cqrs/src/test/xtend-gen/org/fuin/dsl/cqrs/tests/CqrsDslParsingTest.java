@@ -10,11 +10,11 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.extensions.InjectionExtension;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,12 +25,44 @@ public class CqrsDslParsingTest {
   @Inject
   private ParseHelper<DomainModel> parseHelper;
 
-  @Disabled("Re-enable!")
+  @Inject
+  private ValidationTestHelper validationHelper;
+
   @Test
   public void loadModel() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("Hello Xtext!");
+      _builder.append("context foo {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module bar {");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("type String");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("annotation Foo {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("String x");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("@Foo(\"x\")");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object Bar {}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("}");
       _builder.newLine();
       final DomainModel result = this.parseHelper.parse(_builder);
       Assertions.assertNotNull(result);
@@ -41,6 +73,64 @@ public class CqrsDslParsingTest {
       String _join = IterableExtensions.join(errors, ", ");
       _builder_1.append(_join);
       Assertions.assertTrue(_isEmpty, _builder_1.toString());
+      this.validationHelper.assertNoErrors(result);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * A module reaches a sibling module of the same context through an import.
+   */
+  @Test
+  public void moduleImportsSiblingModule() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("context foo {");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module inner {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("type Integer");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module outer {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("import foo.inner.*");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object ImportingVo {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("Integer id");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      final DomainModel result = this.parseHelper.parse(_builder);
+      Assertions.assertNotNull(result);
+      final EList<Resource.Diagnostic> errors = result.eResource().getErrors();
+      boolean _isEmpty = errors.isEmpty();
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("Unexpected errors: ");
+      String _join = IterableExtensions.join(errors, ", ");
+      _builder_1.append(_join);
+      Assertions.assertTrue(_isEmpty, _builder_1.toString());
+      this.validationHelper.assertNoErrors(result);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }

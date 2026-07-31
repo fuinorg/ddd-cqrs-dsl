@@ -1,0 +1,28 @@
+// A model has exactly two levels: a "context" holding one or more "module" blocks. Every element
+// lives in a module.
+//
+// The Bounded Context is the conceptual boundary within which a specific domain model is defined and
+// applicable. It is also the deployable unit, and carries the generator hints (see 22-hint) and the
+// dependencies (see 26-dependency).
+context p_01_context_modules {
+
+    // A module is a logical grouping used to organize and isolate different layers, sub-domains
+    // or technical components within the Bounded Context. Its name is a qualified name, so a nested
+    // grouping is simply written with a dot - see "shop.catalog" below.
+    module shop.types {
+        type String
+    }
+
+    // A module is the unit of visibility: only what it declares itself is reachable by a simple name.
+    // Everything else has to be imported - even a sibling module of the very same context (see
+    // 27-import). Without the import below, "String" would not resolve. A fully qualified name
+    // ("p_01_context_modules.shop.types.String") always works without an import.
+    module shop.catalog {
+        import p_01_context_modules.shop.types.*
+
+        value-object ProductName base String {
+            String value
+        }
+    }
+
+}

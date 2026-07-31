@@ -8,7 +8,9 @@
 # Maven
 !.mvn
 target
-**/test-bin/**
+# JDT output folder of the test projects - the directory itself, not just its contents,
+# so nothing inside it can be added by accident again.
+test-bin/
 
 # Eclipse
 !.classpath

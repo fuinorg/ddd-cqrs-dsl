@@ -1,117 +1,110 @@
-project p_25_jpa_hint {
+context p_25_jpa_hint {
 
-	context readmodel {
+    module readmodel.m {
+        type String
 
-		namespace m {
+        aggregate-id UserId identifies User {}
 
-			type String
+        aggregate User identifier UserId {
+            constructor create fires UserCreatedEvent {
+                String name
+                event UserCreatedEvent { message "created" }
+            }
+        }
 
-			aggregate-id UserId identifies User {}
+        projection UserList input User.create.UserCreatedEvent
 
-			aggregate User identifier UserId {
-				constructor create fires UserCreatedEvent {
-					String name
-					event UserCreatedEvent { message "created" }
-				}
-			}
+        // A "JpaHint" placed inside a view describes one or more JPA tables. The generated
+        // @Entity classes are written into the same package as the view's other artifacts.
+        // Its JSON is validated against a JSON schema (jpa-hint.schema.json); placing the
+        // same hint outside a view would be flagged with a warning (it generates nothing there).
+        view UserListView uses UserList {
 
-			projection UserList input User.create.UserCreatedEvent
+            hint JpaHint {
+                "tables": [
+                    {
+                        // "className" is the generated Java class; the remaining keys are the
+                        // attributes of the JPA "@Table" annotation.
+                        "className": "UserReadModel",
+                        "name": "USER_READ_MODEL",
+                        "schema": "READMODEL",
+                        "uniqueConstraints": [
+                            { "name": "UQ_USER_EMAIL", "columnNames": [ "EMAIL" ] }
+                        ],
+                        "indexes": [
+                            { "name": "IX_USER_NAME", "columnList": "LAST_NAME,FIRST_NAME", "unique": false }
+                        ],
+                        "columns": [
+                            {
+                                // "id": true adds "@Id"; "javaType" may be a simple or fully qualified name.
+                                "fieldName": "id", "javaType": "java.util.UUID", "id": true,
+                                "name": "ID", "nullable": false
+                            },
+                            {
+                                // The remaining keys are the attributes of "@Column".
+                                "fieldName": "email", "javaType": "String",
+                                "name": "EMAIL", "nullable": false, "unique": true, "length": 255
+                            },
+                            {
+                                // "digits" -> "@Digits", "decimalMin" -> "@DecimalMin" (its value is a
+                                // string, as in JPA). Numbers cannot be negative in the DSL's JSON, so a
+                                // lower bound like "0.00" is expressed as a string.
+                                "fieldName": "creditLimit", "javaType": "java.math.BigDecimal",
+                                "name": "CREDIT_LIMIT", "nullable": false, "precision": 12, "scale": 2,
+                                "digits": { "integer": 10, "fraction": 2 },
+                                "decimalMin": { "value": "0.00", "inclusive": true }
+                            }
+                        ]
+                    }
+                ]
+            }
 
-			// A "JpaHint" placed inside a view describes one or more JPA tables. The generated
-			// @Entity classes are written into the same package as the view's other artifacts.
-			// Its JSON is validated against a JSON schema (jpa-hint.schema.json); placing the
-			// same hint outside a view would be flagged with a warning (it generates nothing there).
-			view UserListView uses UserList {
+        }
 
-				hint JpaHint {
-					"tables": [
-						{
-							// "className" is the generated Java class; the remaining keys are the
-							// attributes of the JPA "@Table" annotation.
-							"className": "UserReadModel",
-							"name": "USER_READ_MODEL",
-							"schema": "READMODEL",
-							"uniqueConstraints": [
-								{ "name": "UQ_USER_EMAIL", "columnNames": [ "EMAIL" ] }
-							],
-							"indexes": [
-								{ "name": "IX_USER_NAME", "columnList": "LAST_NAME,FIRST_NAME", "unique": false }
-							],
-							"columns": [
-								{
-									// "id": true adds "@Id"; "javaType" may be a simple or fully qualified name.
-									"fieldName": "id", "javaType": "java.util.UUID", "id": true,
-									"name": "ID", "nullable": false
-								},
-								{
-									// The remaining keys are the attributes of "@Column".
-									"fieldName": "email", "javaType": "String",
-									"name": "EMAIL", "nullable": false, "unique": true, "length": 255
-								},
-								{
-									// "digits" -> "@Digits", "decimalMin" -> "@DecimalMin" (its value is a
-									// string, as in JPA). Numbers cannot be negative in the DSL's JSON, so a
-									// lower bound like "0.00" is expressed as a string.
-									"fieldName": "creditLimit", "javaType": "java.math.BigDecimal",
-									"name": "CREDIT_LIMIT", "nullable": false, "precision": 12, "scale": 2,
-									"digits": { "integer": 10, "fraction": 2 },
-									"decimalMin": { "value": "0.00", "inclusive": true }
-								}
-							]
-						}
-					]
-				}
+        // A view's JpaHint may also declare associations between its tables (same package). Here an
+        // "order" read model is split into a header table and a child line-item table, wired with
+        // @OneToMany on the parent and @ManyToOne + @JoinColumn on the child. "foreignKey":
+        // "NO_CONSTRAINT" keeps the projection - not a DB foreign key - in charge of integrity, as
+        // is common for a read model.
+        view OrderListView uses UserList {
 
-			}
+            hint JpaHint {
+                "tables": [
+                    {
+                        "className": "OrderReadModel",
+                        "name": "ORDER_READ_MODEL",
+                        "columns": [
+                            { "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
+                        ],
+                        // The inverse (collection) side; "mappedBy" is the @ManyToOne field on the child.
+                        "oneToManys": [
+                            {
+                                "fieldName": "lines", "targetClassName": "OrderLineReadModel", "mappedBy": "order",
+                                "fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
+                            }
+                        ]
+                    },
+                    {
+                        "className": "OrderLineReadModel",
+                        "name": "ORDER_LINE_READ_MODEL",
+                        "columns": [
+                            { "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
+                        ],
+                        // The owning side: a foreign-key @JoinColumn to the parent's primary key.
+                        "manyToOnes": [
+                            {
+                                "fieldName": "order", "targetClassName": "OrderReadModel",
+                                "fetch": "LAZY", "optional": false,
+                                "joinColumn": {
+                                    "name": "ORDER_ID", "referencedColumnName": "ID",
+                                    "nullable": false, "foreignKey": "NO_CONSTRAINT"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
 
-			// A view's JpaHint may also declare associations between its tables (same package). Here an
-			// "order" read model is split into a header table and a child line-item table, wired with
-			// @OneToMany on the parent and @ManyToOne + @JoinColumn on the child. "foreignKey":
-			// "NO_CONSTRAINT" keeps the projection - not a DB foreign key - in charge of integrity, as
-			// is common for a read model.
-			view OrderListView uses UserList {
-
-				hint JpaHint {
-					"tables": [
-						{
-							"className": "OrderReadModel",
-							"name": "ORDER_READ_MODEL",
-							"columns": [
-								{ "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
-							],
-							// The inverse (collection) side; "mappedBy" is the @ManyToOne field on the child.
-							"oneToManys": [
-								{
-									"fieldName": "lines", "targetClassName": "OrderLineReadModel", "mappedBy": "order",
-									"fetch": "LAZY", "orphanRemoval": true, "cascade": [ "ALL" ]
-								}
-							]
-						},
-						{
-							"className": "OrderLineReadModel",
-							"name": "ORDER_LINE_READ_MODEL",
-							"columns": [
-								{ "fieldName": "id", "javaType": "java.util.UUID", "id": true, "name": "ID", "nullable": false }
-							],
-							// The owning side: a foreign-key @JoinColumn to the parent's primary key.
-							"manyToOnes": [
-								{
-									"fieldName": "order", "targetClassName": "OrderReadModel",
-									"fetch": "LAZY", "optional": false,
-									"joinColumn": {
-										"name": "ORDER_ID", "referencedColumnName": "ID",
-										"nullable": false, "foreignKey": "NO_CONSTRAINT"
-									}
-								}
-							]
-						}
-					]
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

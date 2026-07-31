@@ -1,0 +1,17 @@
+context p_dependency {
+	// A dependency names the Maven artifact (a plain jar with the models under "model/") whose contexts
+	// become visible. Declared on the project it applies to every context below.
+	dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT"
+
+	module shop {
+		// A context may declare its own dependencies, and "local" reads the models straight from a
+		// directory instead of resolving the artifact - handy while that model is unpublished.
+		dependency "org.acme:wip-model:0.0.1-SNAPSHOT" local "../wip-model/src/main/cqrs"
+
+		type String
+
+		value-object ProductName base String {
+			String value
+		}
+	}
+}

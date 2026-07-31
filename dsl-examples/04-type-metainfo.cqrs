@@ -1,32 +1,25 @@
-project p_04_type_metainfo {
+context p_04_type_metainfo {
 
-	context meta {
+    module meta.m {
+        type String
 
-		namespace m {
+        value-object FullName {
 
-			type String
+            // UI metadata can be attached to a type and overridden per attribute.
 
-			value-object FullName {
+            slabel "Name"                        // Abbreviation label to be shown in the UI
+            label "Full name"                    // Label to be shown in a UI
+            tooltip "A person's full name"       // Tooltipp to be shown in a UI
+            examples "Peter Parker" "Mary Jane"  // Examples that may be used for test code or in UI
 
-	            // UI metadata can be attached to a type and overridden per attribute.
+            String first {
+                label "First name"               // Overrides the label defined above
+                prompt "Enter your first name"   // Defines a prompt just for this field
+                examples "Peter"                 // Overrides examples from above
+            }
 
-				slabel "Name"                        // Abbreviation label to be shown in the UI
-				label "Full name"                    // Label to be shown in a UI
-				tooltip "A person's full name"       // Tooltipp to be shown in a UI
-				examples "Peter Parker" "Mary Jane"  // Examples that may be used for test code or in UI
+            String last                          // Inherits meta data from above
 
-				String first {
-					label "First name"               // Overrides the label defined above
-					prompt "Enter your first name"   // Defines a prompt just for this field
-					examples "Peter"                 // Overrides examples from above
-				}
-
-				String last                          // Inherits meta data from above
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

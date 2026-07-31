@@ -15,10 +15,11 @@
 
   tokens=[
     // Structural keywords
-    KW_PROJECT='project'
     KW_CONTEXT='context'
-    KW_NAMESPACE='namespace'
+    KW_MODULE='module'
     KW_IMPORT='import'
+    KW_DEPENDENCY='dependency'
+    KW_LOCAL='local'
     KW_HINT='hint'
     KW_TYPE='type'
     KW_ELEMENT='element'
@@ -182,30 +183,31 @@
 // Root
 // =========================================================================
 
-domainModel ::= project_def*
+domainModel ::= context_def*
 
-project_def ::= KW_PROJECT qualified_name LBRACE hint_def* context_def* RBRACE {
+// A context holds its dependencies first, then its imports, then its generator hints, then its
+// modules. Every element lives in a module; the module name is a qualified name, so a nested
+// grouping is written as 'module a.b'.
+context_def ::= KW_CONTEXT qualified_name LBRACE dependency_decl* import_decl* hint_def* module_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-// A context holds imports first, then any mix of namespace blocks and type/elements as siblings.
-// namespace_def starts with KW_NAMESPACE and element with the element_start keywords (disjoint sets),
-// so the '(namespace_def | element)*' loop is unambiguous for this PEG parser. A namespace-less
-// context (imports + elements directly) and an all-namespace context are both still valid.
-context_def ::= KW_CONTEXT qualified_name LBRACE import_decl* (namespace_def | element)* RBRACE {
+module_def ::= KW_MODULE qualified_name LBRACE dependency_decl* import_decl* element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-namespace_def ::= KW_NAMESPACE qualified_name LBRACE import_decl* element* RBRACE {
+// A Maven artifact ("groupId:artifactId:version") providing further models. Two bare STRINGs, so
+// Grammar-Kit generates no accessor - read them with CqrsValidationUtil.firstTokenAfter.
+dependency_decl ::= KW_DEPENDENCY STRING (KW_LOCAL STRING)? {
   pin=1
-  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
-  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
+// Makes types of another module visible under their simple name. The imported name addresses a type
+// as 'context.module.Type' and may end in a wildcard on any level.
 import_decl ::= KW_IMPORT import_fqn {
   pin=1
 }
@@ -248,7 +250,7 @@ private element_recover ::= !(RBRACE | element_start)
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
           | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
           | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
-          | KW_NAMESPACE
+          | KW_MODULE | KW_IMPORT
 
 external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
   pin=1
@@ -512,7 +514,7 @@ type_ref ::= ID (DOT ID)* {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsReferenceElementImpl"
 }
 
-// The declared (defining) name of a context or namespace.
+// The declared (defining) name of a context or module.
 qualified_name ::= ID (DOT ID)*
 
 literal ::= KW_NULL | KW_TRUE | KW_FALSE | NUMBER | STRING

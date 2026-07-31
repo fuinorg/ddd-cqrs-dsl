@@ -10,6 +10,7 @@ import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.resource.IContainer
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider
@@ -21,7 +22,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
+import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
 import org.fuin.dsl.cqrs.cqrsDsl.Event
@@ -30,10 +33,14 @@ import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
+import org.fuin.dsl.cqrs.cqrsDsl.Import
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
+import org.fuin.dsl.cqrs.scoping.CqrsDependencies
+import org.fuin.dsl.cqrs.scoping.RemoteScopeEntry
 
 import org.eclipse.emf.common.util.EList
 import org.fuin.dsl.cqrs.cqrsDsl.Type
@@ -87,6 +94,18 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val EVENT_MSG_UNKNOWN_VAR = 'eventMsgUnknownVar'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
+
+	public static val DEPENDENCY_INVALID_COORDINATE = 'dependencyInvalidCoordinate'
+
+	public static val DEPENDENCY_DUPLICATE = 'dependencyDuplicate'
+
+	public static val DEPENDENCY_UNRESOLVED = 'dependencyUnresolved'
+
+	public static val IMPORT_UNRESOLVED = 'importUnresolved'
+
+	public static val IMPORT_DUPLICATE = 'importDuplicate'
+
+	public static val IMPORT_UNUSED = 'importUnused'
 
 	public static val SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents"
 
@@ -158,12 +177,208 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	@Inject
 	ResourceDescriptionsProvider resourceDescriptionsProvider;
 
+	@Inject
+	IQualifiedNameProvider qualifiedNameProvider;
+
+	@Inject
+	CqrsDependencies dependencies;
+
 	@Check
 	def checkNameStartsWithCapital(Variable variable) {
 		if (!Character::isLowerCase(variable.name.charAt(0))) {
 			warning("Variable names should start with a lower case", variable,
 				CqrsDslPackage.Literals::VARIABLE__NAME, INVALID_VAR_NAME)
 		}
+	}
+
+	/** A dependency coordinate must be a Maven GAV: "groupId:artifactId:version". */
+	@Check
+	def checkDependencyCoordinate(Dependency dependency) {
+		if (RemoteScopeEntry.parse(dependency.coordinate, dependency.local) === null) {
+			error(
+				"A dependency must be 'groupId:artifactId:version', but was '" + dependency.coordinate + "'",
+				dependency,
+				CqrsDslPackage.Literals::DEPENDENCY__COORDINATE,
+				DEPENDENCY_INVALID_COORDINATE
+			)
+		}
+	}
+
+	/**
+	 * A well formed coordinate must also resolve to something. Without this the only symptom of a
+	 * missing artifact is every type it provides failing to resolve, which points at the models
+	 * instead of at the declaration that is actually wrong.
+	 */
+	@Check
+	def checkDependencyResolves(Dependency dependency) {
+		val problem = dependencies.resolutionProblem(dependency)
+		if (problem !== null) {
+			error(
+				"Cannot resolve dependency '" + dependency.coordinate + "': " + problem,
+				dependency,
+				CqrsDslPackage.Literals::DEPENDENCY__COORDINATE,
+				DEPENDENCY_UNRESOLVED
+			)
+		}
+	}
+
+	/**
+	 * The same artifact must not be declared twice in one block, nor repeated on a module that
+	 * already inherits it from its context.
+	 */
+	@Check
+	def checkDuplicateDependency(Dependency dependency) {
+		val coordinate = dependency.coordinate
+		if(coordinate === null) return;
+		val container = dependency.eContainer
+
+		val siblings = switch container {
+			Context: container.dependencies
+			Module: container.dependencies
+			default: null
+		}
+		if(siblings === null) return;
+		if (siblings.filter[it.coordinate == coordinate].size > 1 && siblings.findFirst [
+			it.coordinate == coordinate
+		] !== dependency) {
+			error("Duplicate dependency '" + coordinate + "'", dependency,
+				CqrsDslPackage.Literals::DEPENDENCY__COORDINATE, DEPENDENCY_DUPLICATE)
+			return;
+		}
+
+		if (container instanceof Module) {
+			val context = container.eContainer
+			if (context instanceof Context) {
+				if (context.dependencies.exists[it.coordinate == coordinate]) {
+					warning(
+						"Dependency '" + coordinate + "' is already declared by context '" + context.name + "'",
+						dependency, CqrsDslPackage.Literals::DEPENDENCY__COORDINATE, DEPENDENCY_DUPLICATE)
+				}
+			}
+		}
+	}
+
+	/**
+	 * An import must address something that exists: a context, a module or a single type. Anything
+	 * else is a typo that would silently leave every name it was meant to provide unresolved.
+	 */
+	@Check
+	def checkImportResolves(Import imp) {
+		val imported = imp.importedNamespace
+		if(imported.nullOrEmpty) return;
+
+		if (!importMatchesAnything(imp, imported)) {
+			error("Import '" + imported + "' does not match any context, module or type", imp,
+				CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_UNRESOLVED)
+		}
+	}
+
+	/**
+	 * The same name must not be imported twice in one block, nor repeated on a module that already
+	 * inherits it from its context.
+	 */
+	@Check
+	def checkDuplicateImport(Import imp) {
+		val imported = imp.importedNamespace
+		if(imported.nullOrEmpty) return;
+		val container = imp.eContainer
+
+		val siblings = switch container {
+			Context: container.imports
+			Module: container.imports
+			default: null
+		}
+		if(siblings === null) return;
+		if (siblings.filter[it.importedNamespace == imported].size > 1 &&
+			siblings.findFirst[it.importedNamespace == imported] !== imp) {
+			error("Duplicate import '" + imported + "'", imp,
+				CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_DUPLICATE)
+			return;
+		}
+
+		if (container instanceof Module) {
+			val context = container.eContainer
+			if (context instanceof Context) {
+				if (context.imports.exists[it.importedNamespace == imported]) {
+					warning(
+						"Import '" + imported + "' is already declared by context '" + context.name + "'",
+						imp, CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_DUPLICATE)
+				}
+			}
+		}
+	}
+
+	/** An import nothing in the block refers to is dead weight and hides the real coupling. */
+	@Check
+	def checkUnusedImport(Import imp) {
+		val imported = imp.importedNamespace
+		if(imported.nullOrEmpty) return;
+		val container = imp.eContainer
+		if(container === null) return;
+
+		// An unresolvable import is reported by checkImportResolves - do not pile a second marker on it.
+		if(!importMatchesAnything(imp, imported)) return;
+
+		if (!referencedNames(container).exists[covers(imported, it)]) {
+			warning("Import '" + imported + "' is not used", imp,
+				CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_UNUSED)
+		}
+	}
+
+	/**
+	 * The qualified names of everything the cross references inside the given block resolve to. A
+	 * context is asked for its own references and for those of all of its modules, because a context
+	 * level import serves them all.
+	 */
+	private def Iterable<String> referencedNames(EObject container) {
+		val result = <String>newArrayList
+		val contents = container.eAllContents
+		while (contents.hasNext) {
+			val EObject obj = contents.next
+			for (reference : obj.eClass.EAllReferences.filter[!containment && !derived]) {
+				val value = obj.eGet(reference, false)
+				val targets = if (reference.many) value as List<?> else Collections.singletonList(value)
+				for (target : targets.filterNull) {
+					if (target instanceof EObject) {
+						if (!target.eIsProxy) {
+							val name = qualifiedNameProvider.getFullyQualifiedName(target)
+							if(name !== null) result.add(name.toString)
+						}
+					}
+				}
+			}
+		}
+		return result
+	}
+
+	/**
+	 * Whether an imported name covers a fully qualified name: an exact match, or - for a wildcard -
+	 * a name below its prefix.
+	 */
+	private def boolean covers(String imported, String qualifiedName) {
+		if (imported.endsWith(".*")) {
+			return qualifiedName.startsWith(imported.substring(0, imported.length - 1))
+		}
+		return imported == qualifiedName
+	}
+
+	/** Whether anything visible in the index matches the imported name. */
+	private def boolean importMatchesAnything(Import imp, String imported) {
+		val resource = imp.eResource
+		if(resource === null) return true;
+		val resourceDescriptions = resourceDescriptionsProvider.getResourceDescriptions(resource)
+		val resourceDescription = resourceDescriptions.getResourceDescription(resource.URI)
+		if(resourceDescription === null) return true;
+
+		for (container : containerManager.getVisibleContainers(resourceDescription, resourceDescriptions)) {
+			for (IEObjectDescription descr : container.getExportedObjects()) {
+				val name = descr.name
+				if (name !== null && covers(imported, name.toString)) {
+					return true
+				}
+			}
+		}
+		return false
 	}
 
 	@Check

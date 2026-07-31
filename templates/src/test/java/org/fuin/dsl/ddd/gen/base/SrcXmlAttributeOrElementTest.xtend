@@ -95,30 +95,26 @@ class SrcXmlAttributeOrElementTest {
     def DomainModel createModel() {
         val DomainModel model =parser.parse(
             '''
-				project p {
-                context x {
-                    
-                    namespace a {
-                        
-                        import x.types.*
-                
-                        value-object MyValueObject {}
-                
-                        aggregate MyAggregate identifier MyAggregateId {
-                            MyAggregateId id
-                            MyValueObject vo
-                        }
-                
-                        aggregate-id MyAggregateId identifies MyAggregate base String {}
-                
-                    }
-                
-                    namespace types {
-                        type String
-                    }
-                        
-                }
-            }
+				context p {
+
+				    module x.a {
+				        import p.x.types.*
+
+
+				        value-object MyValueObject {}
+
+				        aggregate MyAggregate identifier MyAggregateId {
+				            MyAggregateId id
+				            MyValueObject vo
+				        }
+
+				        aggregate-id MyAggregateId identifies MyAggregate base String {}
+				    }
+
+				    module x.types {
+				        type String
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

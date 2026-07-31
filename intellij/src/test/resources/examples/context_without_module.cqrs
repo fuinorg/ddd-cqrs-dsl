@@ -1,0 +1,14 @@
+context p_context_without_module {
+
+	module x {
+		type String
+
+		value-object MyValueObject base String {
+			String value
+		}
+
+		value-object MyValueObject2 {
+			String id
+		}
+	}
+}

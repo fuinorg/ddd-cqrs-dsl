@@ -3,8 +3,11 @@
  */
 package org.fuin.dsl.cqrs.ui;
 
+import com.google.inject.Binder;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
+import org.fuin.dsl.cqrs.scoping.CqrsArtifactResolvers;
+import org.fuin.dsl.cqrs.ui.scoping.M2eArtifactResolver;
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -12,6 +15,25 @@ import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
 @FinalFieldsConstructor
 @SuppressWarnings("all")
 public class CqrsDslUiModule extends AbstractCqrsDslUiModule {
+  /**
+   * Hands the language bundle the resolver of this IDE: m2e, so a model <code>dependency</code> is
+   * resolved with the Maven the user already configured here.
+   * 
+   * <p>It is pushed in from the UI plugin rather than discovered by the language bundle, because m2e
+   * must not be on that bundle's class path: {@code org.eclipse.m2e.maven.runtime} re-exports Maven's
+   * own Guice while only <em>importing</em> {@code javax.inject}, so requiring it shadowed Xtext's
+   * Guice and broke the "Generate CqrsDsl (cqrs) Language Infrastructure" MWE2 launch with a missing
+   * {@code javax/inject/Provider}. The language bundle is also the one mirrored into the plain Maven
+   * jar, where m2e cannot exist at all. Outside an IDE the resolver is still found on the class
+   * path.</p>
+   */
+  @Override
+  public void configure(final Binder binder) {
+    M2eArtifactResolver _m2eArtifactResolver = new M2eArtifactResolver();
+    CqrsArtifactResolvers.set(_m2eArtifactResolver);
+    super.configure(binder);
+  }
+
   public CqrsDslUiModule(final AbstractUIPlugin plugin) {
     super(plugin);
   }

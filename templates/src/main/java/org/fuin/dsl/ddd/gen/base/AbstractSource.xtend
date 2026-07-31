@@ -5,6 +5,7 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.Hint
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GeneratedArtifact
@@ -72,7 +73,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      *
      * @param filename Relative path and filename to write the source code to.
      * @param data Generated data.
-     * @param ns Namespace the generated element belongs to (drives the hint lookup).
+     * @param ns Module the generated element belongs to (drives the hint lookup).
      *
      * @return New generated artifact.
      */
@@ -105,7 +106,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * Determines the target folder for artifacts of this factory: the folder of the matching hint artifact
      * entry, or the folder from the {@link ArtifactFactoryConfig} as a fallback.
      *
-     * @param ns Namespace the generated element belongs to (drives the hint lookup).
+     * @param ns Module the generated element belongs to (drives the hint lookup).
      *
      * @return Folder name.
      */
@@ -154,26 +155,25 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     def String asPackage(EObject el) {
-        // Primary path: derive the package from the "SrcGen4J" generator hint of the project the
-        // element belongs to (this handles remote and local elements the same way).
+        // Primary path: derive the package from the "SrcGen4J" generator hint of the context the
+        // element belongs to (this handles dependency and local elements the same way).
         var String pkg = hintPackage(el)
         if (pkg === null) {
             // Fallback (no matching SrcGen4J hint for this factory/type): the same for primary and
-            // remotely resolved elements - project.context[.namespace]. The namespace is optional;
-            // joinPackage skips it when the element is declared directly in a context.
-            pkg = joinPackage(el.project?.name, el.context?.name, el.namespace?.name)
+            // dependency resolved elements - context.module.
+            pkg = joinPackage(el.context?.name, el.module?.name)
         }
         return pkg
     }
 
     /**
-     * Builds the package from the "SrcGen4J" generator hint of the project the given namespace belongs
+     * Builds the package from the "SrcGen4J" generator hint of the project the given module belongs
      * to. The type entry whose name matches this factory's model type ({@link #getModelType}) and whose
      * artifacts contain this factory's class supplies the "module" and "group"; the hint's "package"
-     * pattern is then expanded by replacing the variables with the current project/context/namespace
+     * pattern is then expanded by replacing the variables with the current project/context/module
      * names and that type's module/group.
      *
-     * @param ns Namespace to build the package for.
+     * @param ns Module to build the package for.
      *
      * @return Package name, or <code>null</code> if there is no project, no "SrcGen4J" hint, or no type
      *         entry matching both this factory's model type and its class (caller falls back).
@@ -188,32 +188,34 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     /**
-     * Expands the hint's "package" pattern for the given type entry and namespace. The type entry supplies
-     * the "module" and "group", the namespace the project, context and namespace names.
+     * Expands the hint's "package" pattern for the given type entry and element. The type entry supplies
+     * the target Maven module ("mvnModule") and the "group", the element the context and DSL module names.
+     * <p>
+     * Note the two distinct notions of "module": <code>${mvnModule}</code> is the Maven module an artifact
+     * is generated into, <code>${module}</code> the DSL <code>module</code> block an element lives in.
      *
      * @param hint Effective hint that provides the pattern.
-     * @param type Type entry that supplies "module" and "group".
-     * @param ns Namespace to build the package for.
+     * @param type Type entry that supplies "mvnModule" and "group".
+     * @param el Element to build the package for.
      *
      * @return Package name.
      */
     protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, EObject el) {
         val values = newLinkedHashMap(
-            "project" -> (el.project?.name ?: ""),
-            "module" -> (effectiveModule(type) ?: ""),
-            "group" -> (effectiveGroup(type) ?: ""),
             "context" -> (el.context?.name ?: ""),
-            "namespace" -> (el.namespace?.name ?: "")
+            "mvnModule" -> (effectiveModule(type) ?: ""),
+            "group" -> (effectiveGroup(type) ?: ""),
+            "module" -> (el.module?.name ?: "")
         )
         return expandPattern(hint.packagePattern, values)
     }
 
     /**
      * Expands a package pattern. Each <code>${var}</code> placeholder is replaced with its value
-     * from the given map. A group wrapped in square brackets - e.g. <code>[.${namespace}]</code> -
+     * from the given map. A group wrapped in square brackets - e.g. <code>[.${module}]</code> -
      * is optional: it is removed entirely (including the leading separator inside the brackets) when
      * any placeholder inside it resolves to an empty value, otherwise the brackets are dropped and
-     * the content is kept. This lets the optional namespace segment disappear for elements that are
+     * the content is kept. This lets the optional module segment disappear for elements that are
      * declared directly in a context.
      *
      * @param pattern Package pattern, possibly containing <code>${var}</code> placeholders and
@@ -240,6 +242,14 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         // 2. Substitute the remaining "${var}" placeholders.
         for (e : values.entrySet) {
             result = result.replace("${" + e.key + "}", e.value ?: "")
+        }
+        // 3. Anything left is a variable this generator does not know. Failing here is essential:
+        // an unexpanded "${project}" would otherwise be taken for a package segment and quietly
+        // generate into a directory literally named "${project}".
+        if (result.contains("${")) {
+            throw new IllegalStateException(
+                "Unknown variable in the 'package' pattern of the \"SrcGen4J\" hint: '" + pattern +
+                "' expanded to '" + result + "'. Known variables are " + values.keySet.sort + ".")
         }
         return result
     }
@@ -287,12 +297,12 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     /**
-     * Resolves the effective "SrcGen4J" hint for the project the given namespace belongs to. The
+     * Resolves the effective "SrcGen4J" hint for the project the given module belongs to. The
      * "srcgen4j-default.json" preset is always used as the base; when the project defines its own
      * "SrcGen4J" hint, that hint is merged on top so its values overwrite the preset's (see
      * {@link SrcGen4JHint#merge}).
      *
-     * @param ns Namespace (may be <code>null</code>).
+     * @param ns Module (may be <code>null</code>).
      *
      * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
      *         preset with the model hint merged on top.
@@ -307,31 +317,31 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     /**
-     * Finds the "SrcGen4J" hint that applies to the given namespace. A project - like a context or a
-     * namespace - may be split across several ".cqrs" files; all blocks with the same name denote the
-     * same logical project, so the hint may be declared in any of them. The lookup therefore searches
-     * every same-named project in the resource set, not only the project block the namespace is
-     * physically nested in.
+     * Finds the "SrcGen4J" hint that applies to the given element. A context - like a module - may
+     * be split across several ".cqrs" files; all blocks with the same name denote the same logical
+     * context, so the hint may be declared in any of them. The lookup therefore searches every
+     * same-named context in the resource set, not only the context block the element is physically
+     * nested in.
      *
-     * @param ns Namespace (may be <code>null</code>).
+     * @param el Element (may be <code>null</code>).
      *
-     * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing project or no such hint.
+     * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing context or no such hint.
      */
     private static def Hint modelHint(EObject el) {
-        val project = el?.project
-        if (project === null) {
+        val context = el?.context
+        if (context === null) {
             return null
         }
         val rs = el.eResource?.resourceSet
         if (rs === null) {
-            return project.hints.findFirst[name == "SrcGen4J"]
+            return context.hints.findFirst[name == "SrcGen4J"]
         }
-        val projectName = project.name
+        val contextName = context.name
         return rs.resources
             .map[contents].flatten
             .filter(DomainModel)
-            .map[projects].flatten
-            .filter[name == projectName]
+            .map[contexts].flatten
+            .filter[name == contextName]
             .map[hints].flatten
             .findFirst[name == "SrcGen4J"]
     }
@@ -399,10 +409,65 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * empty). This means an unset base package does not result in a "null." prefix - the package
      * name then simply starts with the context name.
      *
-     * @param parts Package segments in order (e.g. base package, context, package, namespace).
+     * @param parts Package segments in order (e.g. base package, context, package, module).
      *
      * @return Dot separated package name built from the non-empty segments.
      */
+    /**
+     * Resource bundle base name for elements of a module: its <em>last</em> segment, capitalized.
+     * A module name is an FQN, so a grouping that used to be a nested module now reads
+     * "outer.inner" - the bundle stays "Inner", the name the properties file is looked up under.
+     *
+     * @param ns Module (may be <code>null</code>).
+     *
+     * @return Bundle base name, or <code>null</code> when there is no module.
+     */
+    /**
+     * The bounded context a module belongs to: the <em>first</em> segment of its name. A module
+     * name is an FQN, so "journal" is its own bounded context while "journal.view" is a sub grouping
+     * of "journal". Used for artifacts that exist once per bounded context, such as the
+     * "&lt;Context&gt;EntityIdFactory".
+     *
+     * @param ns Module (may be <code>null</code>).
+     *
+     * @return First segment of the module name, or <code>null</code> when there is no module.
+     */
+    protected static def String contextSegment(Module ns) {
+        val name = ns?.name
+        if (name === null) {
+            return null
+        }
+        val idx = name.indexOf('.')
+        return if(idx < 0) name else name.substring(0, idx)
+    }
+
+    /**
+     * The sub grouping of a module inside its bounded context: everything after the first segment
+     * of its name, or <code>null</code> when the module <em>is</em> the bounded context. For
+     * "journal.view" this is "view"; for "journal" it is <code>null</code>.
+     *
+     * @param ns Module (may be <code>null</code>).
+     *
+     * @return Module name without its first segment, or <code>null</code> when there is none.
+     */
+    protected static def String subModule(Module ns) {
+        val name = ns?.name
+        if (name === null) {
+            return null
+        }
+        val idx = name.indexOf('.')
+        return if(idx < 0) null else name.substring(idx + 1)
+    }
+
+    protected static def String bundleName(Module ns) {
+        val name = ns?.name
+        if (name === null) {
+            return null
+        }
+        val idx = name.lastIndexOf('.')
+        return (if(idx < 0) name else name.substring(idx + 1)).toFirstUpper
+    }
+
     protected def String joinPackage(String... parts) {
         val segments = new ArrayList<String>()
         for (part : parts) {

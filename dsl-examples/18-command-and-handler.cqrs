@@ -1,50 +1,42 @@
-project p_18_command_and_handler {
+context p_18_command_and_handler {
 
-	context commands {
+    module commands.m {
+        type String
 
-		namespace m {
+        aggregate-id TaskId identifies Task {}
 
-			type String
+        aggregate Task identifier TaskId {
+            constructor create fires CreatedEvent {
+                String title
+                event CreatedEvent {
+                    message "created"
+                }
+            }
+        }
 
-			aggregate-id TaskId identifies Task {}
+        // An immutable object that represents a user's intent to mutate the system's state.
+        // It may target an aggregate's method which should be executed.
+        // The 'sla' defines a 'service level agreement', e.g. the maximum time between receiving
+        // the command and returning after executing it.
 
-			aggregate Task identifier TaskId {
-				constructor create fires CreatedEvent {
-					String title
-					event CreatedEvent {
-						message "created"
-					}
-				}
-			}
+        /**
+         * Creates a task using the 'create' constructor of the 'Task' aggregate.
+         */
+        command CreateTask target Task.create sla 2 seconds {
 
+            String title
 
-	        // An immutable object that represents a user's intent to mutate the system's state.
-	        // It may target an aggregate's method which should be executed.
-	        // The 'sla' defines a 'service level agreement', e.g. the maximum time between receiving
-	        // the command and returning after executing it.
+            message "Create a new task"
 
-	        /**
-	         * Creates a task using the 'create' constructor of the 'Task' aggregate.
-	         */         
-			command CreateTask target Task.create sla 2 seconds {
+        }
 
-				String title
+        // A stateless worker that handles on one or more specific commands and executes
+        // some application logic to complete the request. The handler can be independent
+        // of agggreates or use to one or more aggregates.
 
-				message "Create a new task"
-
-			}
-
-	         // A stateless worker that handles on one or more specific commands and executes
-	         // some application logic to complete the request. The handler can be independent
-	         // of agggreates or use to one or more aggregates.
-
-	        /**
-	         * Handles the create task command using the Task aggregate.
-	         */        
-			command-handler TaskHandler handles CreateTask uses Task
-
-		}
-
-	}
-
+        /**
+         * Handles the create task command using the Task aggregate.
+         */
+        command-handler TaskHandler handles CreateTask uses Task
+    }
 }

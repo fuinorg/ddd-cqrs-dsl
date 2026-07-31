@@ -3,7 +3,7 @@ package org.fuin.dsl.ddd.gen.valueobject
 import java.util.Collections
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.SrcAll
@@ -36,7 +36,7 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
         }
 
         val className = valueObject.name
-        val Namespace ns = valueObject.namespace;
+        val Module ns = valueObject.module;
         val pkg = valueObject.asPackage
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
@@ -109,10 +109,10 @@ class SimpleStringValueObjectArtifactFactory extends AbstractSource<ValueObject>
         
     }
     
-    def create(SimpleCodeSnippetContext ctx, Namespace ns, ValueObject vo, String pkg, String className) {
+    def create(SimpleCodeSnippetContext ctx, Module ns, ValueObject vo, String pkg, String className) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            «new SrcMetaAnnotations(ctx, vo.metaInfo, (if (ns === null) vo.context.name.toFirstUpper else ns.name.toFirstUpper), className)»
+            «new SrcMetaAnnotations(ctx, vo.metaInfo, bundleName(ns), className)»
             @Immutable
             @Generated("Generated class - Manual changes will be overwritten")
             @HasPublicStaticIsValidMethod

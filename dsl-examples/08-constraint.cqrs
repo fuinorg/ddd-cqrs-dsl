@@ -1,48 +1,42 @@
-project p_08_constraint {
+context p_08_constraint {
 
-	context constraints {
+    module constraints.m {
+        type String
+        type Integer
 
-		namespace m {
+        exception ConstraintViolationException {
+            message "Invalid value"
+        }
 
-			type String
-			type Integer
+        // A constraint is a condition that mandates that an input comply with a specific pattern.
 
-			exception ConstraintViolationException {
-				message "Invalid value"
-			}
+        // Validates a String, parameterized by a min/max length.
+        // Throws a defined exception in case the condition is violated.
+        constraint Length input String exception ConstraintViolationException {
 
-	        // A constraint is a condition that mandates that an input comply with a specific pattern.
+            Integer min
 
-			// Validates a String, parameterized by a min/max length.
-			// Throws a defined exception in case the condition is violated.
-			constraint Length input String exception ConstraintViolationException {
+            Integer max
 
-				Integer min
+            // Attributes can be referenced in the message with ${NAME}.
+            message "Length must be between ${min} and ${max}"
 
-				Integer max
+        }
 
-	           // Attributes can be referenced in the message with ${NAME}.
-				message "Length must be between ${min} and ${max}"
+        // Accepts more than one input type
+        constraint NotEmpty input String | Integer {
 
-			}
+            // Message is mandatory
+            message "Must not be empty"
 
-			// Accepts more than one input type
-			constraint NotEmpty input String | Integer {
+        }
 
-				// Message is mandatory
-				message "Must not be empty"
+        // Defines a type-level constraint
+        constraint NameTypeCheck input Name {
+            message "Rule for 'Name' instances"
+        }
 
-			}
-
-			// Defines a type-level constraint
-			constraint NameTypeCheck input Name {
-				message "Rule for 'Name' instances"
-			}
-
-	        value-object Name invariants NameTypeCheck {
-		    }
-
-		}
-	}
-
+        value-object Name invariants NameTypeCheck {
+        }
+    }
 }

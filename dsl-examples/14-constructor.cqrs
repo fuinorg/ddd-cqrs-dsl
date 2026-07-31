@@ -1,36 +1,29 @@
-project p_14_constructor {
+context p_14_constructor {
 
-	context ctor {
+    module ctor.m {
+        type String
+        type Integer
 
-		namespace m {
+        aggregate-id ItemId identifies Item {}
 
-			type String
-			type Integer
+        aggregate Item identifier ItemId {
 
-			aggregate-id ItemId identifies Item {}
+            // A constructor creates an aggregate/entity.
+            constructor create fires ItemCreatedEvent {
 
-			aggregate Item identifier ItemId {
+                // Parameters
+                String name
 
-				// A constructor creates an aggregate/entity.
-				constructor create fires ItemCreatedEvent {
+                optional Integer quantity
 
-					// Parameters
-					String name
+                // Inline defined event(s) to be fired on success
+                event ItemCreatedEvent {
+                    String name
+                    message "Item ${name} created"
+                }
 
-					optional Integer quantity
+            }
 
-	                // Inline defined event(s) to be fired on success 
-					event ItemCreatedEvent {
-						String name
-						message "Item ${name} created"
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

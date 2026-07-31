@@ -42,180 +42,218 @@ the provisioned Eclipse from the headless build (`.eclipse-build-cache/eclipse`)
 
 > After regenerating, the Xtext generator may rewrite tracked `src-gen`/`plugin.xml`/`MANIFEST.MF`
 > files — review the diff and commit it. It manages `Require-Bundle`; manual `Import-Package` entries
-> (e.g. `com.google.gson`, see [below](#resolving-references-against-remote-maven-addressed-models)) are
+> (e.g. `com.google.gson`, see [below](#resolving-references-against-another-projects-models)) are
 > left untouched.
 
 ---
 
-## Resolving references against remote (Maven-addressed) models
 
-By default Xtext resolves cross-references (`[Type|FQN]`, `[Exception|FQN]`, …) only against models
-that live in the workspace. `CqrsDslGlobalScopeProvider` extends that so a model can reference types
-defined in another `.cqrs` model declared in a catalog. The source is a `maven` artifact (classifier
-`cqrs`, type `tar.gz`) whose archive bundles one or more `.cqrs` models — typically a shared, centrally
-published model — or, as an override, a `local` directory of `.cqrs` files read directly.
+## Name resolution
+
+The DSL has **no `import`**. Two mechanisms make a name visible, and both are configured in
+[`CqrsDslRuntimeModule`](org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/CqrsDslRuntimeModule.xtend), which
+the Eclipse editor and the headless generator share — so they behave identically.
+
+### A module is the unit of visibility
+
+A `module` sees only what it declares itself. A module may be split across several `.cqrs` files; all
+blocks with the same name are one logical block, so "same module" does not mean "same file".
+
+Everything else needs an `import` — a sibling module of the very same context included:
+
+```
+module ordering {
+    import com.acme.sales.types.*      // every type of one module
+    import com.acme.sales.tax.TaxRate  // a single type
+}
+```
+
+The imported name is written over the `context.module.Type` path and may end in a wildcard on any
+level: `ctx.*` pulls in every module of a context, `ctx.mod.*` every type of one module, and
+`ctx.mod.Type` a single type. An import declared on the `context` applies to every module below it;
+note that a context block is per file, so it reaches only the modules written in that same file.
+
+A simple name resolves against the **closest** scope that declares it:
+
+1. the enclosing module,
+2. whatever that module or its context imports.
+
+Only the closest match is used, so reusing a name such as `TaxRate` in several modules is unambiguous
+— each module sees its own. A name that is genuinely ambiguous at one level resolves to *nothing*
+rather than to an arbitrary pick, and has to be qualified. A **fully qualified** name
+(`com.acme.sales.journal.TaxRate`) always resolves through the global scope and needs no import.
+
+A type that is neither declared in the module nor imported does not resolve, so the editor marks it
+red and the headless build fails — the same error in both.
+
+This is implemented by `CqrsDslLocalScopeProvider`, a subclass of Xtext's
+`ImportedNamespaceAwareLocalScopeProvider` that turns the declared imports into wildcard resolvers.
+It is installed by overriding `configureIScopeProviderDelegate` (the *declarative*
+`CqrsDslScopeProvider` bound by `bindIScopeProvider` stays empty). Because a wildcard resolver covers
+a single name segment, a wildcard import is additionally expanded into one resolver per module below
+its prefix, read from the Xtext index — that is what makes `ctx.*` reach a module's types, and it
+works for dotted module names too.
+
+> Because that expansion is memoized per resource and depends on *other* resources, adding a module
+> in one file may need the referencing file to be re-parsed before it is seen. A *Project ▸ Clean* is
+> the manual escape hatch.
+
+---
+
+## Resolving references against another context's models
+
+To reach types of a *different* context, declare the Maven artifact that provides them. The source is
+an ordinary Maven artifact — a jar, no classifier — holding one or more `.cqrs` models under
+`model/`, typically a shared, centrally published model — or, as an override, a `local` directory of
+`.cqrs` files read directly.
+
+```
+context com.acme.sales {
+
+    dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT"
+
+    module ordering {
+        dependency "org.acme:wip-model:0.0.1-SNAPSHOT" local "../wip-model/src/main/cqrs"
+        import org.fuin.dsl.cqrs.common.types.*
+        ...
+    }
+
+}
+```
+
+Every module the artifact declares becomes **importable** — the dependency alone makes nothing
+visible, each module still imports what it uses. A dependency declared on the `context` applies to all
+of its modules; a `module` may add its own.
 
 ### How it works
 
 Scoping never fetches anything itself; it resolves names against the EMF `Resource`s that are already
-loaded. So the feature has two halves — *get the remote model loaded*, and *make its elements visible
-to scoping* — split across three classes in
+loaded. So the feature has two halves — *get the model loaded*, and *make its elements visible to
+scoping* — split across these classes in
 [`org.fuin.dsl.cqrs/.../scoping`](org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/scoping):
 
 | Class | Responsibility |
 |-------|----------------|
-| `RemoteScopeCatalog`        | Reads the `dependencies.json` catalog and answers *namespace → typed source* (`RemoteScopeEntry`). |
-| `RemoteScopeCache`          | Materializes the remote `.cqrs` model(s) — resolving + unpacking a `maven` artifact (or reading a `local` directory directly) — caches each artifact once per GAV under `.dependencies-cache/`, and serves them from disk on later runs. |
-| `MavenArtifactResolver` / `TarGz` | Resolve a Maven artifact (local `~/.m2` first, then Maven Central / Sonatype Snapshots) and unpack its `tar.gz`. JDK only — no Aether or Commons Compress. |
-| `CqrsDslGlobalScopeProvider`| The `IGlobalScopeProvider`. For every `import` it consults the catalog/cache and adds the remote model's elements to the global scope. |
+| `CqrsDependencies`          | Collects the `dependency` declarations that apply to a resource and resolves them to `.cqrs` files. Shared by the global and local scope providers, so the two can never disagree. |
+| `RemoteScopeEntry`          | A parsed coordinate (`parse("groupId:artifactId:version", local)`); `null` when malformed. Plain JDK, shared verbatim with the IntelliJ plugin. |
+| `CqrsModelArchives`         | Turns a dependency into model URIs: the entries below `model/` **inside** the resolved jar (`archive:file:/…/x.jar!/model/types.cqrs`), or the files of a `local` directory. Remembers per session what resolved and what failed. |
+| `CqrsArtifactResolver` / `CqrsArtifactResolvers` | Resolves the artifact. In Eclipse that is **m2e** (`IMaven.resolve`), so the IDE's `settings.xml` — repositories, mirrors, servers, proxies, local repository — applies. `M2eArtifactResolver` lives in the **UI** plugin and is registered with `CqrsArtifactResolvers.set(...)`; outside an IDE the resolver is found on the class path. |
+| `CqrsDslGlobalScopeProvider`| The `IGlobalScopeProvider`. Loads the models of every declared dependency and adds their elements to the global scope. |
 
-For each `import` in a model, the provider takes the **imported namespace**, looks it up in the
-catalog, loads the matching remote model (from the local cache, or downloading it once on a miss), and
-exposes its objects **by fully qualified name** on top of the normal local scope. The catalog declares
-*where a namespace lives*, so the same entry serves every model that imports it — the importing context
-is irrelevant. Because the elements are added *directly* — not through the workspace index, which never
-contains a remote resource — resolution behaves identically in the **Eclipse editor** and in the
-**headless / standalone generator**. The provider is bound once in
-[`CqrsDslRuntimeModule`](org.fuin.dsl.cqrs/src/org/fuin/dsl/cqrs/CqrsDslRuntimeModule.xtend), which both
-contexts share.
+Because a context may be split across files, the context-level dependencies are collected from
+**every same-named context block in the resource set**, not just the one the current file contains —
+the same union the generator already does for the `SrcGen4J` hint. That is what lets a single
+declaration in an `aaa.cqrs` apply to modules declared in sibling files.
 
-A coordinate that is **not** in the catalog adds nothing, so resolution falls back to the standard
-file-based mechanism. Any failure (missing catalog, offline and not yet cached, parse error) is logged
-and degrades to the local scope, so editing and generation never break.
+Elements are added *directly* — not through the workspace index, which never contains a dependency
+resource — so resolution behaves identically in the **Eclipse editor** and in the **headless /
+standalone generator**.
 
-> Requires the `com.google.gson` bundle on the classpath (declared via `Import-Package` in
-> `org.fuin.dsl.cqrs/META-INF/MANIFEST.MF`; it ships with the Xtext SDK / Orbit target platform).
+A model without dependencies adds nothing, so resolution falls back to the standard file-based
+mechanism. Any failure (malformed coordinate, offline and not yet cached, parse error) is logged and
+degrades to the local scope, so editing and generation never break.
 
-### Configuration
+> **Requires m2e**, provisioned into the headless build's target platform
+> (`eclipse-build/provision.sh`). Every Eclipse Java package ships m2e; a bare SDK does not.
+>
+> Two things about *how* it is declared, both learned the hard way.
+> `org.eclipse.m2e.maven.runtime` exports Maven's own Guice (`com.google.inject;provider=m2e`) while
+> only **importing** `javax.inject`. So it must never appear in a `Require-Bundle`, which would import
+> all of its exports: that Guice then shadows Xtext's, and anything building an injector fails with a
+> missing `javax/inject/Provider`. The UI plugin instead uses a narrow `Import-Package` —
+> `org.eclipse.m2e.core`, `org.eclipse.m2e.core.embedder`, `org.apache.maven.artifact` and
+> `org.apache.maven.artifact.repository` (both with the mandatory `provider=m2e` attribute) — so its
+> Guice is never wired in.
+>
+> And it is the **UI** plugin, not the language bundle: the language bundle is what the
+> "Generate CqrsDsl (cqrs) Language Infrastructure" MWE2 launch runs against, and it is the bundle
+> mirrored into the plain Maven jar, where m2e cannot exist at all. `CqrsDslUiModule` therefore
+> registers `M2eArtifactResolver` with `CqrsArtifactResolvers.set(...)`.
 
-**1. The catalog — `dependencies.json`**
+### Nothing is unpacked
 
-Place it in your project root (it is discovered by walking up the directory tree from the model being
-edited). It is a JSON **array** of typed objects, each declaring the fully qualified `namespaces` it
-provides, a `type` discriminator (always `maven`) and a `data` block:
-
-```json
-[
-  { "type": "maven", 
-    "namespaces": ["billing.com.acme.billing", "billing.com.acme.catalog"],
-    "data": { 
-      "groupId": "org.fuin.dsl.cqrs.contexts",
-      "artifactId": "cqrs-billing-model", 
-      "version": "0.1.0-SNAPSHOT"
-    }
-  },
-  { "type": "maven", 
-    "namespaces": ["wip.dev.workinprogress"],
-    "data": { 
-      "groupId": "org.acme", 
-      "artifactId": "wip-model", 
-      "version": "0.0.1-SNAPSHOT",
-      "local": "../wip-model/src/main/cqrs"
-    }
-  }
-]
-```
-
-- `namespaces` lists the provided namespaces — the fully qualified `project.context.namespace` values
-  exactly as they are written in an `import`. They say *where those namespaces live*, independent of who
-  imports them, so one entry serves every importing model. Listing several namespaces in one entry is
-  handy because a single Maven artifact often holds more than one context and namespace. A trailing `.*`
-  is ignored, so `import a.b.c` and `import a.b.c.*` match the entry that lists `a.b.c`.
-- `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
-  `cqrs` and type `tar.gz`. The artifact is resolved from the local repository (`~/.m2/repository`)
-  first, otherwise downloaded from Maven Central (releases) or Sonatype Snapshots (`-SNAPSHOT`
-  versions), and every `.cqrs` file in the archive is unpacked.
-- `data.local` (optional) is a local directory of `.cqrs` files (relative to the catalog when not
-  absolute). When set, those files are read **directly** from that folder instead of downloading the
-  artifact — handy while developing a model that is not published yet.
-
-The catalog is re-read automatically when the file's modification time changes, so edits take effect on
-the next reconcile — **no Eclipse restart needed**. (Adding a catalog where none existed before is the
-one exception: a model that previously found no catalog still needs a restart.)
-
-**2. The cache — `.dependencies-cache/`**
-
-Created automatically next to `dependencies.json`. On first use its `index.json` (entries of
-`{ source, dir }`) is read into memory for fast lookups; each Maven artifact is stored once in a
-sub-directory `<artifactId>-<version>-<sha1(gav)>/` holding every `.cqrs` unpacked from the archive.
-Keying by the Maven coordinate (not by namespace) means an artifact that provides several namespaces
-is unpacked only once and shared by all of them. After the first fetch everything is served from disk,
-so editing keeps working **offline**.
+The models are read **in place, out of the jar in the local Maven repository**:
 
 ```
-<project root>/
-├── dependencies.json
-└── .dependencies-cache/
-    ├── index.json
-    └── cqrs-billing-model-0.1.0-SNAPSHOT-3f9a1c…​/
-        ├── billing.cqrs
-        └── catalog.cqrs
+archive:file:/home/me/.m2/repository/org/fuin/…/cqrs-common-model-0.1.0-SNAPSHOT.jar!/model/types.cqrs
 ```
 
-A `maven` artifact (including a re-published `-SNAPSHOT`) is treated as up to date once cached; delete
-the entry's cache directory (or the whole `.dependencies-cache/`) to force a refresh. A `local`
-directory is read directly and never cached.
+EMF resolves an `archive:` URI out of the box and the last segment still ends in `.cqrs`, so Xtext's
+resource factory applies exactly as for a workspace file — `F3` navigates into the entry. Only files
+below `model/` count, taken recursively; anything else in the jar is ignored. There is no
+`.dependencies-cache/` any more, and therefore nothing inside the model source directory that the
+generator or the console verifier has to skip: a dependency model has an `archive:` URI and can never
+be mistaken for a source model.
 
-**3. Optional system property**
+The local repository is the only cache there is. What a coordinate resolved to — and why it failed —
+is remembered for the session, so a bad coordinate is attempted once rather than on every keystroke;
+an artifact that appears later is picked up after a restart.
 
-| Property | Default | Effect |
-|----------|---------|--------|
-| `cqrs.dependencies.file` | `dependencies.json` | Name of the catalog file to look for. |
+### Validation
+
+| Rule | Severity |
+|------|----------|
+| Coordinate is not `groupId:artifactId:version` | error |
+| Same coordinate declared twice in one block | error |
+| A module repeats a dependency its context already declares | warning |
+| An import matches no context, module or type | error |
+| The same import twice in one block | error |
+| The artifact cannot be resolved (no such artifact, `local` directory missing, nothing provided) | error |
+| A module repeats an import its context already declares | warning |
+| An import nothing in the block refers to | warning |
+
+An artifact that cannot be resolved **is** an error, on the coordinate itself. Otherwise the only
+symptom is every type it provides failing to resolve, which points at the models instead of at the
+declaration that is actually wrong.
+
+Resolution stays out of the editor's way: an artifact is resolved once and both the result and the
+failure are remembered for the session, so a coordinate that cannot be downloaded is not retried on
+every keystroke. The flip side is that an artifact which becomes available later is only picked up
+after a restart.
 
 ### Worked example
 
-Remote model published as the Maven artifact
-`org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT` (classifier `cqrs`, type `tar.gz`),
+Model published as the Maven artifact
+`org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT` (a plain jar with the models under `model/`),
 bundling a `billing.cqrs`:
 
 ```
-project common {
-    context com.acme {
-        namespace billing {
-            type Money
-        }
+context common {
+    module com.acme.billing {
+        type Money
     }
 }
 ```
 
-`dependencies.json` in the local project root:
-
-```json
-[ { "type": "maven", "namespaces": ["common.com.acme.billing"],
-    "data": { "groupId": "org.fuin.dsl.cqrs.contexts",
-              "artifactId": "cqrs-common-model", "version": "0.1.0-SNAPSHOT" } } ]
-```
-
-(Or, while developing that model locally, point at its source folder instead — its `.cqrs` files are
-read directly, no build or publish needed:)
-
-```json
-[ { "type": "maven", "namespaces": ["common.com.acme.billing"],
-    "data": { "groupId": "org.fuin.dsl.cqrs.contexts", "artifactId": "cqrs-common-model",
-              "version": "0.1.0-SNAPSHOT", "local": "../cqrs-common-model/src/main/cqrs" } } ]
-```
-
-Local model that references the remote `Money` type:
+The consuming model declares the artifact and imports the module that provides `Money`:
 
 ```
-project sales {
-    context com.acme.sales {
-        namespace sales {
-            import common.com.acme.billing.*
-            value-object Price {
-                Money amount
-            }
+context sales {
+
+    dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT"
+
+    module com.acme.sales {
+        import common.com.acme.billing.*
+
+        value-object Price {
+            Money amount
         }
     }
+
 }
 ```
 
-`Money`'s fully qualified name is `common.com.acme.billing.Money` (project `common` + context `com.acme`
-+ namespace `billing` + `Money`). The `import common.com.acme.billing.*` therefore makes it visible as
-the simple name `Money`, and the catalog entry for the namespace `common.com.acme.billing` tells the
-provider where to download the model defining it. The cross-reference resolves exactly as if `Money`
-were a local type — `F3` navigates into the cached copy, and content assist proposes it.
+`Money`'s fully qualified name is `common.com.acme.billing.Money` (context `common` + module
+`com.acme.billing` + `Money`). The dependency makes the artifact's models resolvable and the import
+makes that module's types visible, so the simple name resolves; writing the fully qualified name
+instead would work without the import. The cross-reference then behaves exactly as if `Money` were a
+local type — `F3` navigates into the cached copy, and content assist proposes it.
 
-> The import path must match the remote type's FQN prefix, just as it would for a local model. The
-> provider only handles *loading*; name resolution stays standard Xtext.
+While developing that model locally, point at its source folder instead — its `.cqrs` files are then
+read directly, no build or publish needed:
 
+```
+dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT" local "../cqrs-common-model/src/main/cqrs"
+```
+
+The path is relative to the model that declares the dependency.

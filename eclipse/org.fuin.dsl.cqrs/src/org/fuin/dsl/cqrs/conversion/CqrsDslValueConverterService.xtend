@@ -46,7 +46,7 @@ class CqrsDslValueConverterService extends DefaultTerminalConverters {
 
 	/**
 	 * Strips/adds the caret escape per dot separated segment. A {@code *} wildcard segment is never
-	 * escaped.
+	 * escaped, although the grammar declares it as a keyword.
 	 */
 	private static class QualifiedNameCaretConverter implements IValueConverter<String> {
 
@@ -68,7 +68,9 @@ class CqrsDslValueConverterService extends DefaultTerminalConverters {
 			if (value === null) {
 				throw new ValueConverterException("Qualified name may not be null", null, null)
 			}
-			return value.split("\\.", -1).map[segment|if (keywords.contains(segment)) "^" + segment else segment].join(".")
+			return value.split("\\.", -1).map [ segment |
+				if (segment != "*" && keywords.contains(segment)) "^" + segment else segment
+			].join(".")
 		}
 	}
 }

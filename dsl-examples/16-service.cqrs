@@ -1,68 +1,61 @@
-project p_16_service {
+context p_16_service {
 
-	context services {
+    module services.m {
+        type String
+        type Boolean
 
-		namespace m {
+        exception DeniedException { message "Access denied" }
 
-			type String
-			type Boolean
+        // A service groups related methods that are not tied to a single aggregate.
+        service AuthService {
 
-			exception DeniedException { message "Access denied" }
+            // It may also declare business rules.
 
-	         // A service groups related methods that are not tied to a single aggregate.
-			service AuthService {
+            /** Credentials must be valid. */
+            business-rule CredentialsValid exception DeniedException {
+                consistency strong
+            }
 
-	            // It may also declare business rules.
+            method login business-rules CredentialsValid {
+                String user
+                String password
+                returns Boolean
+            }
 
-				/** Credentials must be valid. */
-				business-rule CredentialsValid exception DeniedException {
-					consistency strong
-				}
+        }
 
-				method login business-rules CredentialsValid {
-					String user
-					String password
-					returns Boolean
-				}
+        aggregate-id DoorId identifies Door {}
 
-			}
+        /** An operation names the service it needs as its 'operation-context'. */
+        aggregate Door identifier DoorId {
 
-			aggregate-id DoorId identifies Door {}
+            method unlock {
 
-			/** An operation names the service it needs as its 'operation-context'. */
-			aggregate Door identifier DoorId {
+                String code
 
-				method unlock {
+                // The SPI this operation needs to verify a rule or fetch data it does not hold.
+                // It becomes a trailing parameter of the generated method, handed in by the
+                // command handler - a service is never a modelled parameter or a command field.
+                operation-context AuthService
 
-					String code
+            }
 
-					// The SPI this operation needs to verify a rule or fetch data it does not hold.
-					// It becomes a trailing parameter of the generated method, handed in by the
-					// command handler - a service is never a modelled parameter or a command field.
-					operation-context AuthService
+            /** A service declared inline is nested in the aggregate; the context points at it. */
+            method open {
 
-				}
+                operation-context OpenService
 
-				/** A service declared inline is nested in the aggregate; the context points at it. */
-				method open {
+                /** Checks whether the door may be opened right now. */
+                service OpenService {
 
-					operation-context OpenService
+                    method mayOpen {
+                        returns Boolean
+                    }
 
-					/** Checks whether the door may be opened right now. */
-					service OpenService {
+                }
 
-						method mayOpen {
-							returns Boolean
-						}
+            }
 
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

@@ -1,12 +1,8 @@
-project p_common_constr {
+context p_common_constr {
 
-	context common {
+	// Defines custom constraints
 
-	    // Defines custom constraints
-		namespace constraints {
-
-			import common.types.*
-
+	module common.constraints {
 			/** Makes sure a string is not empty. */
 			constraint NotEmpty input String {
 
@@ -145,10 +141,5 @@ project p_common_constr {
 		        message "Expected a size between ${min} and ${max} entries, but value was: '${input}'"
 
 			}
-
-		}
-
 	}
-
-
 }

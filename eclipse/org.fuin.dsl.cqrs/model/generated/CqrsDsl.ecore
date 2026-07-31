@@ -2,31 +2,32 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="cqrsDsl" nsURI="http://www.fuin.org/dsl/cqrs/CqrsDsl" nsPrefix="cqrsDsl">
   <eClassifiers xsi:type="ecore:EClass" name="DomainModel">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="projects" upperBound="-1"
-        eType="#//Project" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Project">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
-        eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contexts" upperBound="-1"
         eType="#//Context" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Context">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
+        eType="#//Dependency" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="namespaces" upperBound="-1"
-        eType="#//Namespace" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modules" upperBound="-1"
+        eType="#//Module" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Module">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
+        eType="#//Dependency" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
+        eType="#//Import" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//AbstractElement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Namespace">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
-        eType="#//Import" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//AbstractElement" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Dependency">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="coordinate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="local" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

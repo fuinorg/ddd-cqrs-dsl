@@ -18,7 +18,8 @@ public final class CqrsTokenSets {
 
     /** Every reserved word in the language (structural, value and literal keywords). */
     public static final TokenSet KEYWORDS = TokenSet.create(
-            CqrsTypes.KW_PROJECT, CqrsTypes.KW_CONTEXT, CqrsTypes.KW_NAMESPACE, CqrsTypes.KW_IMPORT,
+            CqrsTypes.KW_CONTEXT, CqrsTypes.KW_MODULE, CqrsTypes.KW_IMPORT,
+            CqrsTypes.KW_DEPENDENCY, CqrsTypes.KW_LOCAL,
             CqrsTypes.KW_HINT, CqrsTypes.KW_TYPE,
             CqrsTypes.KW_ELEMENT, CqrsTypes.KW_GENERICS, CqrsTypes.KW_CONSTRAINT, CqrsTypes.KW_INPUT,
             CqrsTypes.KW_EXCEPTION, CqrsTypes.KW_BUSINESS_RULE, CqrsTypes.KW_ANNOTATION, CqrsTypes.KW_CID,

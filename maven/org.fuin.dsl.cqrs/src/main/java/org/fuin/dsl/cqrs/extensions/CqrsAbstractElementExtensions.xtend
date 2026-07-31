@@ -16,21 +16,16 @@ class CqrsAbstractElementExtensions {
 	 * 
 	 * @param el Element to return a unique name for.
 	 * 
-	 * @return Unique name in the context/namespace.
+	 * @return Unique name in the context/module.
 	 */
 	def static String uniqueName(AbstractElement el) {
 		if (el === null) {
 			throw new IllegalArgumentException("argument 'el' cannot be null")
 		}
-		if (el.context === null) {
-			throw new IllegalArgumentException("argument 'el.context' cannot be null: " + el.path)
+		if (el.module === null) {
+			throw new IllegalArgumentException("argument 'el.module' cannot be null: " + el.path)
 		}
-		// The namespace is optional: an element may be declared directly inside a context. In that
-		// case the unique name simply drops the namespace segment (project.context.name).
-		if (el.namespace === null) {
-			return separated(".", el.project.name, el.context.name, el.name)
-		}
-		return separated(".", el.project.name, el.context.name, el.namespace.name, el.name)
+		return separated(".", el.context.name, el.module.name, el.name)
 	}
 
 	/**
@@ -38,20 +33,16 @@ class CqrsAbstractElementExtensions {
 	 * 
 	 * @param el Element to return an abstract unique name for.
 	 * 
-	 * @return Abstract unique name in the context/namespace.
+	 * @return Abstract unique name in the context/module.
 	 */
 	def static String uniqueAbstractName(AbstractElement el) {
 		if (el === null) {
 			throw new IllegalArgumentException("argument 'el' cannot be null")
 		}
-		if (el.context === null) {
-			throw new IllegalArgumentException("argument 'el.context' cannot be null")
+		if (el.module === null) {
+			throw new IllegalArgumentException("argument 'el.module' cannot be null")
 		}
-		// The namespace is optional (see uniqueName): drop the segment when absent.
-		if (el.namespace === null) {
-			return separated(".", el.project.name, el.context.name, el.abstractName)
-		}
-		return separated(".", el.project.name, el.context.name, el.namespace.name, el.abstractName)
+		return separated(".", el.context.name, el.module.name, el.abstractName)
 	}
 
 
@@ -60,7 +51,7 @@ class CqrsAbstractElementExtensions {
 	 * 
 	 * @param el Element to return a unique name for.
 	 * 
-	 * @return Unique name in the context/namespace.
+	 * @return Unique name in the context/module.
 	 */
 	def static String abstractName(AbstractElement el) {
 		if (el === null) {
@@ -75,7 +66,7 @@ class CqrsAbstractElementExtensions {
 	 * @param a1 Element 1.
 	 * @param a2 Element 2.
 	 * 
-	 * @return TRUE if both elements have the same unique name (context/namespace/name).
+	 * @return TRUE if both elements have the same unique name (context/module/name).
 	 */
 	def static boolean same(AbstractElement a1, AbstractElement a2) {
 		if (a1 === null) {

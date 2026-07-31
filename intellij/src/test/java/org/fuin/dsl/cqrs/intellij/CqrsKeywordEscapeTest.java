@@ -17,9 +17,8 @@ import java.util.Collection;
 public class CqrsKeywordEscapeTest extends BasePlatformTestCase {
 
     private static final String MODEL = """
-                project p {
-            context c {
-              namespace n {
+                context p {
+              module c.n {
                 type String
                 value-object ^event {
                   String value
@@ -28,7 +27,6 @@ public class CqrsKeywordEscapeTest extends BasePlatformTestCase {
                   ^ev<caret>ent data
                 }
               }
-            }
             }
                 """;
 

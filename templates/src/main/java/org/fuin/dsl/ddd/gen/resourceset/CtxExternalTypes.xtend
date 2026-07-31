@@ -8,7 +8,7 @@ import java.util.Locale
 import java.util.Map
 import java.util.UUID
 import org.eclipse.emf.ecore.resource.ResourceSet
-import org.fuin.dsl.cqrs.cqrsDsl.Context
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
@@ -21,12 +21,12 @@ import java.util.Collections
 
 /**
  * Registers a set of external types. It does NOT create any source code.
- * The default namespace for the types is expected to be "&lt;context&gt;.types".
- * It's possible to change the namespace using the variable <code>namespace</code>
+ * The default module for the types is expected to be "&lt;context&gt;.types".
+ * It's possible to change the module using the variable <code>module</code>
  * The "ddd" file that contains the types should look like this:<br>
  * <code>
  * context myctx {
- *     namespace types {
+ *     module types {
  *         type Byte
  *         type Short
  *         type Integer
@@ -73,44 +73,49 @@ class CtxExternalTypes extends AbstractSource<ResourceSet> {
 
     override create(ResourceSet resourceSet, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
-        val pkg = getVar("namespace", "types")
+        val pkg = getVar("module", "types")
         val dateType = getVar(pkg + ".Date", "java.time.LocalDate")
         val timeType = getVar(pkg + ".Time", "java.time.LocalDateTime")
         val dateTimeType = getVar(pkg + ".Timestamp", "java.time.ZonedDateTime")
         val uuidType = getVar(pkg + ".UUID", UUID.name)
 
-        // Just registers the external types
-        val Iterator<Context> iter = resourceSet.getAllContents().filter(typeof(Context))
+        // Just registers the external types. The module holding them is identified by its last
+        // segment (the "module" variable, "types" by default), so a module named "common.types"
+        // registers its types under "<context>.common.types.X".
+        val Iterator<Module> iter = resourceSet.getAllContents().filter(typeof(Module))
         while (iter.hasNext) {
-            val Context ctx = iter.next
-            val name = org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.getProject(ctx).name + "." + ctx.name
+            val Module ns = iter.next
+            val nsName = ns.name
+            if (nsName !== null && (nsName == pkg || nsName.endsWith("." + pkg))) {
+            val name = org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.getContext(ns).name + "." + nsName
             val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-            refReg.putReference(name + "." + pkg + ".Byte", Byte.name)
-            refReg.putReference(name + "." + pkg + ".Short", Short.name)
-            refReg.putReference(name + "." + pkg + ".Integer", Integer.name)
-            refReg.putReference(name + "." + pkg + ".Long", Long.name)
-            refReg.putReference(name + "." + pkg + ".Float", Float.name)
-            refReg.putReference(name + "." + pkg + ".Double", Double.name)
-            refReg.putReference(name + "." + pkg + ".Boolean", Boolean.name)
-            refReg.putReference(name + "." + pkg + ".Character", Character.name)
-            refReg.putReference(name + "." + pkg + ".String", String.name)
-            refReg.putReference(name + "." + pkg + ".Date", dateType)
-            refReg.putReference(name + "." + pkg + ".Time", timeType)
-            refReg.putReference(name + "." + pkg + ".Timestamp", dateTimeType)
-            refReg.putReference(name + "." + pkg + ".UUID", uuidType)
-            refReg.putReference(name + "." + pkg + ".Currency", Currency.name)
-            refReg.putReference(name + "." + pkg + ".BigDecimal", BigDecimal.name)
-            refReg.putReference(name + "." + pkg + ".BigInteger", BigInteger.name)
-            refReg.putReference(name + "." + pkg + ".Number", Number.name)
-            refReg.putReference(name + "." + pkg + ".Locale", Locale.name)
-            refReg.putReference(name + "." + pkg + ".Object", Object.name)
-            refReg.putReference(name + "." + pkg + ".EntityIdPath", "org.fuin.ddd4j.core.EntityIdPath")
-            refReg.putReference(name + "." + pkg + ".Collection", Collection.name)
-            refReg.putReference(name + "." + pkg + ".List", List.name)
-            refReg.putReference(name + "." + pkg + ".Map", Map.name)
-            refReg.putReference(name + "." + pkg + ".Set", Set.name)
-            refReg.putReference(name + "." + pkg + ".Binary", "byte[]")
-            
+            refReg.putReference(name + ".Byte", Byte.name)
+            refReg.putReference(name + ".Short", Short.name)
+            refReg.putReference(name + ".Integer", Integer.name)
+            refReg.putReference(name + ".Long", Long.name)
+            refReg.putReference(name + ".Float", Float.name)
+            refReg.putReference(name + ".Double", Double.name)
+            refReg.putReference(name + ".Boolean", Boolean.name)
+            refReg.putReference(name + ".Character", Character.name)
+            refReg.putReference(name + ".String", String.name)
+            refReg.putReference(name + ".Date", dateType)
+            refReg.putReference(name + ".Time", timeType)
+            refReg.putReference(name + ".Timestamp", dateTimeType)
+            refReg.putReference(name + ".UUID", uuidType)
+            refReg.putReference(name + ".Currency", Currency.name)
+            refReg.putReference(name + ".BigDecimal", BigDecimal.name)
+            refReg.putReference(name + ".BigInteger", BigInteger.name)
+            refReg.putReference(name + ".Number", Number.name)
+            refReg.putReference(name + ".Locale", Locale.name)
+            refReg.putReference(name + ".Object", Object.name)
+            refReg.putReference(name + ".EntityIdPath", "org.fuin.ddd4j.core.EntityIdPath")
+            refReg.putReference(name + ".Collection", Collection.name)
+            refReg.putReference(name + ".List", List.name)
+            refReg.putReference(name + ".Map", Map.name)
+            refReg.putReference(name + ".Set", Set.name)
+            refReg.putReference(name + ".Binary", "byte[]")
+            }
+
         }
 
         // Will never produce anything

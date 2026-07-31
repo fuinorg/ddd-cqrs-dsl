@@ -7,76 +7,36 @@ import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
-import org.eclipse.xtext.testing.validation.ValidationTestHelper
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CqrsDslInjectorProvider)
-
 class CqrsDslParsingTest {
 
 	@Inject
 	ParseHelper<DomainModel> parseHelper
-	
+
 	@Inject
 	ValidationTestHelper validationHelper
-	
+
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			project p {
-				context foo {
-					namespace bar {
-
-						type String
-
-						annotation Foo {
-							String x
-						}
-
-						@Foo("x")
-						value-object Bar {}
-
-					}
-				}
-			}
-		''')
-		Assertions.assertNotNull(result)
-		val errors = result.eResource.errors
-		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
-		
-		validationHelper.assertNoErrors(result);
-
-	}
-
-	@Test
-	def void contextMixesNamespacesAndElements() {
-		val result = parseHelper.parse('''
-			project p {
-				context foo {
-
-					import p.foo.inner.*
+			context foo {
+				module bar {
 
 					type String
 
-					value-object DirectVo base String {
-						String value
+					annotation Foo {
+						String x
 					}
 
-					namespace inner {
-						type Integer
-
-						value-object NamespacedVo {
-							Integer id
-						}
-					}
-
-					value-object AnotherDirectVo base String {
-						String value
-					}
+					@Foo("x")
+					value-object Bar {}
 
 				}
 			}
@@ -85,6 +45,33 @@ class CqrsDslParsingTest {
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 
-		validationHelper.assertNoErrors(result);
+		validationHelper.assertNoErrors(result)
+	}
+
+	/** A module reaches a sibling module of the same context through an import. */
+	@Test
+	def void moduleImportsSiblingModule() {
+		val result = parseHelper.parse('''
+			context foo {
+
+				module inner {
+					type Integer
+				}
+
+				module outer {
+					import foo.inner.*
+
+					value-object ImportingVo {
+						Integer id
+					}
+				}
+
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+
+		validationHelper.assertNoErrors(result)
 	}
 }

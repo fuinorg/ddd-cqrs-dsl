@@ -1,30 +1,274 @@
-project p {
+context p {
 
-	context x {
+	module x.types {
+		type String
+		type Integer
+	}
 
-		namespace types {
-			type String
-			type Integer
+	module x.aggregates {
+		import p.x.types.*
+
+		/** The constraint was violated. */
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
 		}
 
-		namespace aggregates {
+		aggregate-id AggregateAId identifies AggregateA {}
 
-			import p.x.types.*
+		/** Aggregate A. */
+		aggregate AggregateA identifier AggregateAId {}
 
-			/** The constraint was violated. */
-			exception AnyConstraintViolatedException {
-				message "Any constraint violated"
+		aggregate-id AggregateBId identifies AggregateB {}
+
+		/** Aggregate B - With variables. */
+		aggregate AggregateB identifier AggregateBId {
+
+			/** Variable A. */
+			String a
+
+			/** Variable B. */
+			Integer b
+
+		}
+
+		/** The aggregate D was changed - declared here, not inside the method that fires it. */
+		event AggregateDChangedEvent {
+
+			/** Variable A. */
+			String a
+
+			message "Aggregate D was changed: ${a} [${entityIdPath}]"
+
+		}
+
+		/**
+		 * The aggregate D was renamed - carries whatever the operation was given, rather than
+		 * declaring its own attributes.
+		 */
+		event AggregateDRenamedEvent copies-attributes-of AggregateD.rename {
+
+			message "Aggregate D was renamed to ${newName} [${entityIdPath}]"
+
+		}
+
+		aggregate-id AggregateDId identifies AggregateD {}
+
+		/** Aggregate D - Fires an event declared outside the method. */
+		aggregate AggregateD identifier AggregateDId {
+
+			/** Changes something. */
+			method change fires AggregateDChangedEvent {
+
+				/** Variable A. */
+				String a
+
 			}
 
-			aggregate-id AggregateAId identifies AggregateA {}
+			/** Renames something. */
+			method rename fires AggregateDRenamedEvent {
 
-			/** Aggregate A. */
-			aggregate AggregateA identifier AggregateAId {}
+				/** The new name. */
+				String newName
 
-			aggregate-id AggregateBId identifies AggregateB {}
+			}
 
-			/** Aggregate B - With variables. */
-			aggregate AggregateB identifier AggregateBId {
+		}
+
+		/**
+		 * A service declared outside any operation, so it becomes a top-level interface of its
+		 * own - unlike an inline one, which is nested in the aggregate that declares it.
+		 */
+		service SharedService {
+
+			/** Returns how many others already use the value. */
+			method countUsages {
+
+				/** Variable A. */
+				String a
+
+				/** Number of other users. */
+				returns Integer
+
+			}
+
+		}
+
+		aggregate-id AggregateEId identifies AggregateE {}
+
+		/**
+		 * Aggregate E - A constructor and a method that each reference a service. The referenced
+		 * service is the collaborator the operation needs to verify its rule, and becomes a
+		 * trailing parameter; the inline declaration itself is only the nested interface.
+		 */
+		aggregate AggregateE identifier AggregateEId {
+
+			/** Variable A. */
+			String a
+
+			/** Checks something that needs data the aggregate does not hold. */
+			business-rule AnyConstraint exception AnyConstraintViolatedException {
+
+				/** Explain why it's strict. */
+				consistency strong
+
+			}
+
+			/** Creates the entity. */
+			constructor create business-rules AnyConstraint fires AggregateECreatedEvent {
+
+				/** Variable A. */
+				String a
+
+				operation-context CreateService
+
+				/** Verifies the value is still free. */
+				service CreateService {
+
+					/** Returns how many others already use the value. */
+					method countUsages {
+
+						/** Variable A. */
+						String a
+
+						/** Number of other users. */
+						returns Integer
+
+					}
+
+				}
+
+				/** The aggregate E was created. */
+				event AggregateECreatedEvent {
+
+					/** Variable A. */
+					String a
+
+					message "Aggregate E was created: ${a} [${entityIdPath}]"
+
+				}
+
+			}
+
+			/** Changes something. */
+			method change business-rules AnyConstraint fires AggregateEChangedEvent {
+
+				/** Variable A. */
+				String a
+
+				operation-context ChangeService
+
+				/** Verifies the new value is still free. */
+				service ChangeService {
+
+					/** Returns how many others already use the value. */
+					method countUsages {
+
+						/** Variable A. */
+						String a
+
+						/** Number of other users. */
+						returns Integer
+
+					}
+
+				}
+
+				/** The aggregate E was changed. */
+				event AggregateEChangedEvent {
+
+					/** Variable A. */
+					String a
+
+					message "Aggregate E was changed: ${a} [${entityIdPath}]"
+
+				}
+
+			}
+
+		}
+
+		aggregate-id AggregateFId identifies AggregateF {}
+
+		/**
+		 * Aggregate F - References the service declared outside the operation. It becomes the same
+		 * kind of trailing parameter as an inline one, but is imported as the top-level type it is.
+		 */
+		aggregate AggregateF identifier AggregateFId {
+
+			/** Variable A. */
+			String a
+
+			/** Checks something that needs data the aggregate does not hold. */
+			business-rule AnyConstraint exception AnyConstraintViolatedException {
+
+				/** Explain why it's strict. */
+				consistency strong
+
+			}
+
+			/** Creates the entity. */
+			constructor create business-rules AnyConstraint fires AggregateFCreatedEvent {
+
+				/** Variable A. */
+				String a
+
+				operation-context SharedService
+
+				/** The aggregate F was created. */
+				event AggregateFCreatedEvent {
+
+					/** Variable A. */
+					String a
+
+					message "Aggregate F was created: ${a} [${entityIdPath}]"
+
+				}
+
+			}
+
+			/** Changes something. */
+			method change business-rules AnyConstraint fires AggregateFChangedEvent {
+
+				/** Variable A. */
+				String a
+
+				operation-context SharedService
+
+				/** The aggregate F was changed. */
+				event AggregateFChangedEvent {
+
+					/** Variable A. */
+					String a
+
+					message "Aggregate F was changed: ${a} [${entityIdPath}]"
+
+				}
+
+			}
+
+		}
+
+		aggregate-id AggregateCId identifies AggregateC {}
+
+		/** Aggregate C - With constructor, constraint and event. */
+		aggregate AggregateC identifier AggregateCId {
+
+			/** Variable A. */
+			String a
+
+			/** Variable B. */
+			Integer b
+
+			/** Checks something. */
+			business-rule AnyConstraint exception AnyConstraintViolatedException {
+
+				/** Explain why it's strict. */
+				consistency strong
+
+			}
+
+			/** Creates the entity. */			
+			constructor create business-rules AnyConstraint fires AggregateCCreatedEvent {
 
 				/** Variable A. */
 				String a
@@ -32,246 +276,8 @@ project p {
 				/** Variable B. */
 				Integer b
 
-			}
-
-			/** The aggregate D was changed - declared here, not inside the method that fires it. */
-			event AggregateDChangedEvent {
-
-				/** Variable A. */
-				String a
-
-				message "Aggregate D was changed: ${a} [${entityIdPath}]"
-
-			}
-
-			/**
-			 * The aggregate D was renamed - carries whatever the operation was given, rather than
-			 * declaring its own attributes.
-			 */
-			event AggregateDRenamedEvent copies-attributes-of AggregateD.rename {
-
-				message "Aggregate D was renamed to ${newName} [${entityIdPath}]"
-
-			}
-
-			aggregate-id AggregateDId identifies AggregateD {}
-
-			/** Aggregate D - Fires an event declared outside the method. */
-			aggregate AggregateD identifier AggregateDId {
-
-				/** Changes something. */
-				method change fires AggregateDChangedEvent {
-
-					/** Variable A. */
-					String a
-
-				}
-
-				/** Renames something. */
-				method rename fires AggregateDRenamedEvent {
-
-					/** The new name. */
-					String newName
-
-				}
-
-			}
-
-			/**
-			 * A service declared outside any operation, so it becomes a top-level interface of its
-			 * own - unlike an inline one, which is nested in the aggregate that declares it.
-			 */
-			service SharedService {
-
-				/** Returns how many others already use the value. */
-				method countUsages {
-
-					/** Variable A. */
-					String a
-
-					/** Number of other users. */
-					returns Integer
-
-				}
-
-			}
-
-			aggregate-id AggregateEId identifies AggregateE {}
-
-			/**
-			 * Aggregate E - A constructor and a method that each reference a service. The referenced
-			 * service is the collaborator the operation needs to verify its rule, and becomes a
-			 * trailing parameter; the inline declaration itself is only the nested interface.
-			 */
-			aggregate AggregateE identifier AggregateEId {
-
-				/** Variable A. */
-				String a
-
-				/** Checks something that needs data the aggregate does not hold. */
-				business-rule AnyConstraint exception AnyConstraintViolatedException {
-
-					/** Explain why it's strict. */
-					consistency strong
-
-				}
-
-				/** Creates the entity. */
-				constructor create business-rules AnyConstraint fires AggregateECreatedEvent {
-
-					/** Variable A. */
-					String a
-
-					operation-context CreateService
-
-					/** Verifies the value is still free. */
-					service CreateService {
-
-						/** Returns how many others already use the value. */
-						method countUsages {
-
-							/** Variable A. */
-							String a
-
-							/** Number of other users. */
-							returns Integer
-
-						}
-
-					}
-
-					/** The aggregate E was created. */
-					event AggregateECreatedEvent {
-
-						/** Variable A. */
-						String a
-
-						message "Aggregate E was created: ${a} [${entityIdPath}]"
-
-					}
-
-				}
-
-				/** Changes something. */
-				method change business-rules AnyConstraint fires AggregateEChangedEvent {
-
-					/** Variable A. */
-					String a
-
-					operation-context ChangeService
-
-					/** Verifies the new value is still free. */
-					service ChangeService {
-
-						/** Returns how many others already use the value. */
-						method countUsages {
-
-							/** Variable A. */
-							String a
-
-							/** Number of other users. */
-							returns Integer
-
-						}
-
-					}
-
-					/** The aggregate E was changed. */
-					event AggregateEChangedEvent {
-
-						/** Variable A. */
-						String a
-
-						message "Aggregate E was changed: ${a} [${entityIdPath}]"
-
-					}
-
-				}
-
-			}
-
-			aggregate-id AggregateFId identifies AggregateF {}
-
-			/**
-			 * Aggregate F - References the service declared outside the operation. It becomes the same
-			 * kind of trailing parameter as an inline one, but is imported as the top-level type it is.
-			 */
-			aggregate AggregateF identifier AggregateFId {
-
-				/** Variable A. */
-				String a
-
-				/** Checks something that needs data the aggregate does not hold. */
-				business-rule AnyConstraint exception AnyConstraintViolatedException {
-
-					/** Explain why it's strict. */
-					consistency strong
-
-				}
-
-				/** Creates the entity. */
-				constructor create business-rules AnyConstraint fires AggregateFCreatedEvent {
-
-					/** Variable A. */
-					String a
-
-					operation-context SharedService
-
-					/** The aggregate F was created. */
-					event AggregateFCreatedEvent {
-
-						/** Variable A. */
-						String a
-
-						message "Aggregate F was created: ${a} [${entityIdPath}]"
-
-					}
-
-				}
-
-				/** Changes something. */
-				method change business-rules AnyConstraint fires AggregateFChangedEvent {
-
-					/** Variable A. */
-					String a
-
-					operation-context SharedService
-
-					/** The aggregate F was changed. */
-					event AggregateFChangedEvent {
-
-						/** Variable A. */
-						String a
-
-						message "Aggregate F was changed: ${a} [${entityIdPath}]"
-
-					}
-
-				}
-
-			}
-
-			aggregate-id AggregateCId identifies AggregateC {}
-
-			/** Aggregate C - With constructor, constraint and event. */
-			aggregate AggregateC identifier AggregateCId {
-
-				/** Variable A. */
-				String a
-
-				/** Variable B. */
-				Integer b
-
-				/** Checks something. */
-				business-rule AnyConstraint exception AnyConstraintViolatedException {
-
-					/** Explain why it's strict. */
-					consistency strong
-
-				}
-
-				/** Creates the entity. */			
-				constructor create business-rules AnyConstraint fires AggregateCCreatedEvent {
+				/** The aggregate C was created. */
+				event AggregateCCreatedEvent {
 
 					/** Variable A. */
 					String a
@@ -279,25 +285,12 @@ project p {
 					/** Variable B. */
 					Integer b
 
-					/** The aggregate C was created. */
-					event AggregateCCreatedEvent {
-
-						/** Variable A. */
-						String a
-
-						/** Variable B. */
-						Integer b
-
-						message "Aggregate C was created: ${a} / ${b} [${entityIdPath}]"
-
-					}
+					message "Aggregate C was created: ${a} / ${b} [${entityIdPath}]"
 
 				}
 
 			}
 
 		}
-
 	}
-
 }

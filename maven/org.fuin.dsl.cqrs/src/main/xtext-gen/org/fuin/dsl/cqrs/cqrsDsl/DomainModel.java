@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getProjects <em>Projects</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.DomainModel#getContexts <em>Contexts</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getDomainModel()
@@ -26,15 +26,15 @@ import org.eclipse.emf.ecore.EObject;
 public interface DomainModel extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Projects</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Project}.
+   * Returns the value of the '<em><b>Contexts</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Context}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Projects</em>' containment reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getDomainModel_Projects()
+   * @return the value of the '<em>Contexts</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getDomainModel_Contexts()
    * @model containment="true"
    * @generated
    */
-  EList<Project> getProjects();
+  EList<Context> getContexts();
 
 } // DomainModel

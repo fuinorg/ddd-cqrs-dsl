@@ -11,9 +11,10 @@ parser) reproducing the language defined by the Xtext grammar.
 - **Code completion** — context-aware DSL keywords plus declared names (types, value-objects,
   entities, aggregates, events, exceptions, …).
 - **Navigation** — go-to-definition (`Ctrl/Cmd+B`), find-usages, rename, and a structure view.
-- **Remote references** — resolves cross-references against remote `.cqrs` models declared in a
-  `dependencies.json` catalog (see below), interoperable with the Eclipse plugin's on-disk cache.
-- **Code folding** — collapse any multi-line `{ }` block (project, context, namespace, aggregate,
+- **Dependencies** — resolves cross-references against the `.cqrs` models of a Maven artifact
+  declared with `dependency "groupId:artifactId:version"` (see below), interoperable with the
+  Eclipse plugin's on-disk cache.
+- **Code folding** — collapse any multi-line `{ }` block (context, module, aggregate,
   constructor, `instances`, JSON hints, …) and multi-line block/doc comments. Fold at the caret with
   `Ctrl/Cmd+-`, everything with `Ctrl/Cmd+Shift+-`.
 - Brace matching, line/block commenting (`Ctrl/Cmd+/`) and a color settings page
@@ -84,61 +85,86 @@ are overridable:
 `updatePlugins.xml` is also generated on every `./gradlew buildPlugin` (under
 `build/distributions/`). In CI the publish step runs only on pushes to `main`.
 
-## Remote references (`dependencies.json`)
+## Name resolution
 
-By default cross-references resolve against `.cqrs` files in the project. To also resolve against a
-remote model, add a `dependencies.json` catalog to your project (it is discovered by walking up the
-directory tree from the model being edited). It is a JSON **array of typed objects**, each declaring the
-fully qualified `namespaces` it provides, a `type` discriminator (always `maven`) and a `data` block:
+A model has two levels: a `context` holding one or more `module` blocks. Every element lives in a
+module, and a module name is a qualified name, so a nested grouping is written with a dot
+(`receipts.receiptview`).
 
-```json
-[
-  { "type": "maven",
-    "namespaces": ["billing.com.acme.billing", "billing.com.acme.catalog"],
-    "data": {
-      "groupId": "org.fuin.dsl.cqrs.contexts",
-      "artifactId": "cqrs-billing-model",
-      "version": "0.1.0-SNAPSHOT"
+A **module is the unit of visibility**: only what it declares itself resolves by a simple name. To
+reach anything else — a sibling module of the very same context included — it needs an `import`:
+
+```
+context de.fuin.melkheftken {
+
+    module receipts {
+        import de.fuin.melkheftken.categories.*      // every type of one module
+        import de.fuin.melkheftken.journal.TaxRate   // a single type
+        ...
     }
-  },
-  { "type": "maven",
-    "namespaces": ["wip.dev.workinprogress"],
-    "data": {
-      "groupId": "org.acme",
-      "artifactId": "wip-model",
-      "version": "0.0.1-SNAPSHOT",
-      "local": "../wip-model/src/main/cqrs"
-    }
-  }
-]
+}
 ```
 
-- `namespaces` lists the provided namespaces — the fully qualified `project.context.namespace` values
-  exactly as written in an `import` (a trailing `.*` is ignored, so `import a.b.c` and `import a.b.c.*`
-  both match the entry that lists `a.b.c`). One entry can list several namespaces, which is handy
-  because a single Maven artifact often holds more than one context and namespace.
-- `data.groupId` / `data.artifactId` / `data.version` identify a Maven artifact with classifier
-  `cqrs` and type `tar.gz` — resolved from the local `~/.m2/repository` first, otherwise Maven
-  Central (releases) or Sonatype Snapshots (`-SNAPSHOT`) — whose every `.cqrs` is unpacked.
-- `data.local` (optional) points at a local directory of `.cqrs` files (relative to the catalog when
-  not absolute). When set, those files are read **directly** from that folder instead of downloading
-  the artifact — handy while developing a model that is not published yet.
+The imported name is written over the `context.module.Type` path and may end in a wildcard on any
+level: `ctx.*` pulls in every module of a context, `ctx.mod.*` every type of one module, and
+`ctx.mod.Type` a single type. An import declared on the `context` applies to every module below it —
+but a context block is per file, so it only reaches the modules written in that same file.
 
-Downloaded artifacts are cached next to the catalog under `.dependencies-cache/` (an `index.json`
-plus one `<artifactId>-<version>-<sha1>/` sub-directory **per Maven artifact**, shared by every
-namespace it provides), so editing keeps working **offline** after the first fetch. A `maven`
-artifact (including a re-published `-SNAPSHOT`) is treated as up to date once cached — delete the
-entry's cache directory or bump the version to force a refresh. A `local` directory is read directly
-and never cached. This is the same layout the Eclipse plugin uses, so the two can share a cache
-directory.
+A simple name resolves against the closest scope that declares it — the enclosing module first, then
+whatever is imported. Only that closest scope is used, so reusing a name such as `TaxRate` in several
+modules is unambiguous: each module sees its own. A **fully qualified** name
+(`de.fuin.melkheftken.journal.TaxRate`) always resolves and needs no import at all.
 
-| System property | Default | Effect |
-|-----------------|---------|--------|
-| `cqrs.dependencies.file` | `dependencies.json` | Name of the catalog file to look for. |
+A type that is neither declared in the module nor imported does not resolve and is marked red, exactly
+as the Eclipse plugin and the build report it. Code completion follows the same rule: it offers only
+types that are in scope, and after `import` the reachable contexts, modules and types.
 
-Downloads happen on a background thread; while a remote model is being fetched its names resolve once
-the download lands (the editor refreshes automatically). Any failure (missing catalog, offline and
-not yet cached, parse error) degrades gracefully to local-only resolution.
+An import that matches nothing and a duplicate import are errors; an unused import is a warning.
+
+## Dependencies
+
+To reach types of *another* project, declare the artifact that provides them on a `context` or on a
+`module`. A module also inherits every dependency of its context. A dependency makes those models
+**resolvable**; an `import` still decides which of their types are visible.
+
+```
+context de.fuin.melkheftken {
+
+    dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT"
+
+    module receipts {
+        dependency "org.acme:wip-model:0.0.1-SNAPSHOT" local "../wip-model/src/main/cqrs"
+        import org.fuin.dsl.cqrs.common.types.*
+        ...
+    }
+}
+```
+
+- The coordinate is `groupId:artifactId:version` and identifies an ordinary Maven artifact — a jar,
+  no classifier — holding the `.cqrs` files under `model/`. It is resolved by **the IDE's own Maven**
+  (the bundled Maven plugin), so your `settings.xml` — local repository, remote repositories, mirrors,
+  servers and proxies — applies exactly as it does for a Maven project. Every module the artifact
+  declares becomes importable.
+- `local` (optional) points at a directory of `.cqrs` files, relative to the model that declares the
+  dependency when not absolute. Those files are read **directly** instead of downloading the
+  artifact — handy while developing a model that is not published yet.
+
+**Nothing is unpacked.** The models are read in place, out of the jar in the local repository: the
+artifact is mounted with the IDE's `JarFileSystem`, so the entries below `model/` are real virtual
+files — go-to-definition lands inside the jar, and find-usages works on them. Only `model/` counts,
+taken recursively; anything else in the jar is ignored. There is no `.dependencies-cache/` any more.
+
+The local repository is the only cache. What a coordinate resolved to — and why it failed — is
+remembered for the session, so a bad coordinate is attempted once rather than on every keystroke; an
+artifact that appears later is picked up after a restart.
+
+Resolution happens on a background thread; while a dependency is being fetched its names resolve once
+the download lands (the editor refreshes automatically). Any failure (malformed coordinate, offline
+and not yet in the local repository, parse error) degrades gracefully to local-only resolution and is
+reported on the coordinate.
+
+> **Requires the bundled Maven plugin** (`org.jetbrains.idea.maven`), declared in `plugin.xml`. It
+> ships with IntelliJ IDEA; if it is disabled the DSL plugin cannot resolve a `dependency`.
 
 ## License
 

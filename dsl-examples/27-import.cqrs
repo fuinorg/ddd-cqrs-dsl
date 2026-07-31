@@ -1,0 +1,59 @@
+// An "import" makes types of another module visible under their simple name. A module only ever sees
+// its own elements without one - a sibling module of the very same context included - so an import is
+// what makes the coupling between modules explicit and reviewable.
+//
+// The imported name is written over the fully qualified path "context.module.Type" and may end in a
+// wildcard on any level:
+//
+//   import ctx.*            every module of a context
+//   import ctx.mod.*        every type of one module
+//   import ctx.mod.Type     a single type
+//
+// An import declared on the "context" applies to every module below it. A fully qualified reference
+// always resolves, with or without a matching import.
+//
+// A type that is neither declared in the module nor imported does not resolve: the reference is an
+// error and both editor plugins mark it red.
+context p_27_import {
+
+    // Declared once here, inherited by every module below.
+    import p_27_import.common.*
+
+    module common {
+        type String
+        type Integer
+    }
+
+    module catalog {
+        // A single type of another module.
+        import p_27_import.pricing.Money
+
+        value-object ProductName base String {
+            String value
+        }
+
+        value-object Price {
+            Money amount
+        }
+    }
+
+    module pricing {
+        type Money
+    }
+
+    module sales {
+        // Everything one module declares.
+        import p_27_import.catalog.*
+
+        value-object Order {
+            ProductName product
+            Integer quantity
+        }
+
+        // The fully qualified name needs no import at all.
+        value-object Invoice {
+            p_27_import.pricing.Money total
+        }
+    }
+
+}

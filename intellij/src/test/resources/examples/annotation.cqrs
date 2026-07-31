@@ -1,35 +1,32 @@
-project p_annotation {
+context p_annotation {
 
-	context x {
-		namespace m {
-			type String
-			type Integer
+	module x.m {
+		type String
+		type Integer
 
-			annotation Encrypted {
-			}
+		annotation Encrypted {
+		}
 
-			annotation MaxLength {
-				Integer value
-			}
+		annotation MaxLength {
+			Integer value
+		}
 
-			// annotation instances prefixing a value-object
+		// annotation instances prefixing a value-object
+		@Encrypted
+		@MaxLength(50)
+		value-object Secret base String {
+			String value
+		}
+
+		aggregate-id DocId identifies Doc {}
+		aggregate Doc identifier DocId {
+
+			// annotation instance prefixing an event
 			@Encrypted
-			@MaxLength(50)
-			value-object Secret base String {
-				String value
-			}
-
-			aggregate-id DocId identifies Doc {}
-			aggregate Doc identifier DocId {
-
-				// annotation instance prefixing an event
-				@Encrypted
-				event DocCreated {
-					String title
-					message "created"
-				}
+			event DocCreated {
+				String title
+				message "created"
 			}
 		}
 	}
-
 }

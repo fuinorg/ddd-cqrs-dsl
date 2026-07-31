@@ -31,19 +31,17 @@ class CqrsDslRestPathTest {
 
 	/** Model with one projection and one view whose methods carry the given body. */
 	private def String model(String methods) '''
-		project p {
-			context c {
-				namespace n {
-					type String
-					type Integer
-					value-object ItemId {
-						String value
-					}
-					projection ItemProjection
+		context p {
+			module c.n {
+				type String
+				type Integer
+				value-object ItemId {
+					String value
+				}
+				projection ItemProjection
 
-					view ItemView uses ItemProjection {
-						«methods»
-					}
+				view ItemView uses ItemProjection {
+					«methods»
 				}
 			}
 		}
@@ -92,13 +90,11 @@ class CqrsDslRestPathTest {
 	def void restPathOutsideAViewIsRejected() {
 
 		val m = parseHelper.parse('''
-			project p {
-				context c {
-					namespace n {
-						type String
-						service ItemService {
-							method doSomething rest-path "/nope" {
-							}
+			context p {
+				module c.n {
+					type String
+					service ItemService {
+						method doSomething rest-path "/nope" {
 						}
 					}
 				}

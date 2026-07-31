@@ -1,26 +1,20 @@
-project p_02_external_types {
+context p_02_external_types {
 
-	context ext {
+    module ext.types {
+        // A type is a link to an external type defined
+        // outside the model (JDK or library classes).
 
-		namespace types {
+        // Simple type
+        type String
 
-	        // A type is a link to an external type defined
-	        // outside the model (JDK or library classes).
+        // -TBD-
+        type element Serializable
 
-	        // Simple type
-			type String
+        // Generic type with one parameter (like 'List<String>' in Java).
+        type List generics 1
 
-			// -TBD-
-			type element Serializable
-
-			// Generic type with one parameter (like 'List<String>' in Java).
-			type List generics 1
-
-			// Generic type with two parameters (like 'Map<String, Object>' in Java).
-			type Map generics 2
-
-		}
-
-	}
+        // Generic type with two parameters (like 'Map<String, Object>' in Java).
+        type Map generics 2
+    }
 
 }

@@ -116,13 +116,14 @@ class ValidatorArtifactFactoryTest {
 
     private def mappedModel() {
         val DomainModel model = parser.parse('''
-            project mapped {
+            context mapped {
                 hint SrcGen4J {
                     "constraintMappings": [
                         "mapped.x.MappedConstr(expected)=jakarta.validation.constraints.Size(min=expected)"
                     ]
                 }
-                context x {
+
+                module x {
                     type String
                     type Integer
                     /** Mapped constraint. */

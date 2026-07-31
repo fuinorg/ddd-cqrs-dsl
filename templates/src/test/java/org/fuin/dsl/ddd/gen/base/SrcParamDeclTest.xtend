@@ -119,32 +119,28 @@ class SrcParamDeclTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-            context y {
-                
-                namespace a {
-                    
-                    import y.types.*
-            
-                    constraint NoArgConstraint input String {
-                        message "NoArgConstraint message"
-                    }
-            
-                    value-object MyValueObject {
-                        String a invariants NoArgConstraint
-                        optional String b invariants NoArgConstraint
-                        String c
-                        optional String d                        
-                    }
-            
-                }
-            
-                namespace types {
-                    type String
-                }
-                    
-            }
-            }
+				context p {
+
+				    module y.a {
+				        import p.y.types.*
+
+
+				        constraint NoArgConstraint input String {
+				            message "NoArgConstraint message"
+				        }
+
+				        value-object MyValueObject {
+				            String a invariants NoArgConstraint
+				            optional String b invariants NoArgConstraint
+				            String c
+				            optional String d                        
+				        }
+				    }
+
+				    module y.types {
+				        type String
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

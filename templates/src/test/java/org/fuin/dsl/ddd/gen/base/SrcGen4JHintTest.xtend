@@ -23,7 +23,7 @@ class SrcGen4JHintTest {
 
         // PREPARE
         val model = parser.parse('''
-            project shop {
+            context shop {
                 hint SrcGen4J {
                     "package": "a.b.c",
                     "types": [
@@ -40,7 +40,7 @@ class SrcGen4JHintTest {
                 }
             }
         ''')
-        val hint = model.projects.get(0).hints.get(0)
+        val hint = model.contexts.get(0).hints.get(0)
 
         // TEST
         val result = SrcGen4JHint.parse(hint)

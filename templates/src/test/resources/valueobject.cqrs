@@ -1,122 +1,113 @@
-project p {
+context p {
 
-	context x {
-
-		namespace types {
-			type String
-			type Integer
-			type BigDecimal
-		}
-
-		namespace constr {
-
-			import p.x.types.*
-
-			/** Makes sure a string has a defined length (min/max). */
-			constraint Length input String {
-
-				/** Expected minimum length (inclusive). */
-				Integer min
-
-				/** Expected maximum length (inclusive). */
-				Integer max
-
-				message "Expected a length between {min} and {max} characters"
-
-			}
-
-		}
-
-		namespace valueobject {
-
-			import p.x.types.*
-			import p.x.constr.*
-
-			/** Value object single attribute and base. */
-			value-object MyValueObject base String {
-
-				/** Persistent value. */
-				String value 
-
-			}
-
-			/** Value object single attribute and without base. */
-			value-object MyValueObject2 {
-
-				/** Persistent value. */
-				String id 
-
-			}
-
-			/** Value object multiple attribute and without base. */
-			value-object MyValueObject4  {
-
-				/** Persistent value A. */
-				String a 
-
-				/** Persistent value B. */
-				String b
-
-			}
-
-			/** A person's full nomenclature, also known as a personal name. */
-			value-object FullName  {
-
-				slabel "Name"
-				label "Full name"
-				tooltip "A person's full nomenclature, also known as a personal name"
-				examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
-
-				/** First name. */
-				String firstName {
-					slabel "First"
-					label "First name"
-					tooltip "A given name, also known as a personal name or forename"
-					prompt "Enter your first name"
-					examples "Peter" "Mary Jane" "Harry"
-				} 
-
-				/** Last name. */
-				String lastName {
-					slabel "Last"
-					label "Last name"
-					tooltip "A family name, also known as a surname"
-					prompt "Enter your last name"
-					examples "Parker" "Watson" "Osborn"
-				}
-
-			}
-
-			/** Simple value object single attribute and base. */
-			value-object MySimpleStringValueObject base String {
-
-				examples "one" "two" "three"
-
-				/** Persistent value. */
-				String value
-
-			}
-
-			/** Value object with a decimal base, which has no abstract base class in objects4j. */
-			value-object MyDecimalValueObject base BigDecimal {
-
-				/** Persistent value. */
-				BigDecimal value
-
-			}
-
-			/** Simple value object with an invariant that restricts the value. */
-			value-object MyConstrainedStringValueObject base String {
-
-				examples "abc"
-
-				/** Persistent value. */
-				String value invariants Length(3, 10)
-
-			}
-
-		}
-
+	module x.types {
+		type String
+		type Integer
+		type BigDecimal
 	}
 
+	module x.constr {
+		import p.x.types.*
+
+		/** Makes sure a string has a defined length (min/max). */
+		constraint Length input String {
+
+			/** Expected minimum length (inclusive). */
+			Integer min
+
+			/** Expected maximum length (inclusive). */
+			Integer max
+
+			message "Expected a length between {min} and {max} characters"
+
+		}
+	}
+
+	module x.valueobject {
+		import p.x.constr.*
+		import p.x.types.*
+
+		/** Value object single attribute and base. */
+		value-object MyValueObject base String {
+
+			/** Persistent value. */
+			String value 
+
+		}
+
+		/** Value object single attribute and without base. */
+		value-object MyValueObject2 {
+
+			/** Persistent value. */
+			String id 
+
+		}
+
+		/** Value object multiple attribute and without base. */
+		value-object MyValueObject4  {
+
+			/** Persistent value A. */
+			String a 
+
+			/** Persistent value B. */
+			String b
+
+		}
+
+		/** A person's full nomenclature, also known as a personal name. */
+		value-object FullName  {
+
+			slabel "Name"
+			label "Full name"
+			tooltip "A person's full nomenclature, also known as a personal name"
+			examples "Peter Parker" "Mary Jane Watson" "Harry Osborn"
+
+			/** First name. */
+			String firstName {
+				slabel "First"
+				label "First name"
+				tooltip "A given name, also known as a personal name or forename"
+				prompt "Enter your first name"
+				examples "Peter" "Mary Jane" "Harry"
+			} 
+
+			/** Last name. */
+			String lastName {
+				slabel "Last"
+				label "Last name"
+				tooltip "A family name, also known as a surname"
+				prompt "Enter your last name"
+				examples "Parker" "Watson" "Osborn"
+			}
+
+		}
+
+		/** Simple value object single attribute and base. */
+		value-object MySimpleStringValueObject base String {
+
+			examples "one" "two" "three"
+
+			/** Persistent value. */
+			String value
+
+		}
+
+		/** Value object with a decimal base, which has no abstract base class in objects4j. */
+		value-object MyDecimalValueObject base BigDecimal {
+
+			/** Persistent value. */
+			BigDecimal value
+
+		}
+
+		/** Simple value object with an invariant that restricts the value. */
+		value-object MyConstrainedStringValueObject base String {
+
+			examples "abc"
+
+			/** Persistent value. */
+			String value invariants Length(3, 10)
+
+		}
+	}
 }

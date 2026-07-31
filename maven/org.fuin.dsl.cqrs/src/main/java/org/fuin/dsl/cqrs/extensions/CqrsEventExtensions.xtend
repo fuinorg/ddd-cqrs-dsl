@@ -18,21 +18,16 @@ class CqrsEventExtensions {
 	 * 
 	 * @param el Event to return a unique name for.
 	 * 
-	 * @return Unique name in the context/namespace.
+	 * @return Unique name in the context/module.
 	 */
 	def static String uniqueName(Event event) {
 		if (event === null) {
 			throw new IllegalArgumentException("argument 'event' cannot be null")
 		}
-		if (event.context === null) {
-			throw new IllegalArgumentException("argument 'event.context' cannot be null")
+		if (event.module === null) {
+			throw new IllegalArgumentException("argument 'event.module' cannot be null")
 		}
-		// The namespace is optional: an event may be declared directly inside a context (or inside an
-		// entity that itself lives directly in a context). Drop the namespace segment when absent.
-		if (event.namespace === null) {
-			return separated(".", event.project.name, event.context.name, event.name)
-		}
-		return separated(".", event.project.name, event.context.name, event.namespace.name, event.name)
+		return separated(".", event.context.name, event.module.name, event.name)
 	}
 
 

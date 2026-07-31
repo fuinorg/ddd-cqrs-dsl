@@ -5,8 +5,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Context
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace
-import org.fuin.dsl.cqrs.cqrsDsl.Project
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
 import java.lang.reflect.Method
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
@@ -17,27 +16,27 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 class CqrsEObjectExtensions {
 
 	/**
-	 * Returns the namespace for an object.
-	 * 
-	 * @param obj Object to return the namespace for.
-	 * 
-	 * @return Namespace or null if the object is not inside one.
+	 * Returns the module for an object.
+	 *
+	 * @param obj Object to return the module for.
+	 *
+	 * @return Module or null if the object is not inside one.
 	 */
-	def static Namespace getNamespace(EObject obj) {
+	def static Module getModule(EObject obj) {
 		if (obj === null) {
 			return null
 		}
-		if (obj instanceof Namespace) {
+		if (obj instanceof Module) {
 			return obj
 		}
-		return getNamespace(obj.eContainer)
+		return getModule(obj.eContainer)
 	}
 
 	/**
-	 * Returns the context for an object.
-	 * 
+	 * Returns the context an object belongs to.
+	 *
 	 * @param obj Object to return the context for.
-	 * 
+	 *
 	 * @return Context or null if the object is not inside one.
 	 */
 	def static Context getContext(EObject obj) {
@@ -48,23 +47,6 @@ class CqrsEObjectExtensions {
 			return obj
 		}
 		return getContext(obj.eContainer)
-	}
-
-	/**
-	 * Returns the project an object belongs to.
-	 *
-	 * @param obj Object to return the project for.
-	 *
-	 * @return Project or null if the object is not inside one.
-	 */
-	def static Project getProject(EObject obj) {
-		if (obj === null) {
-			return null
-		}
-		if (obj instanceof Project) {
-			return obj
-		}
-		return getProject(obj.eContainer)
 	}
 
 

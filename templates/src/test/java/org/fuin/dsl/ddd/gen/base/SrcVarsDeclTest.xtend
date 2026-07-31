@@ -60,25 +60,21 @@ class SrcVarsDeclTest {
     def DomainModel createModel() {
         val DomainModel model = parser.parse(
             '''
-				project p {
-                context a {
-                    
-                    namespace b {
-                        
-                        type String
-                        type Integer
-                        type Boolean
-                
-                        value-object MyValueObject {
-                            String a
-                            Integer b
-                            optional Boolean c
-                        }
-                
-                    }
-                
-                }
-            }
+				context p {
+
+				    module a.b {
+
+				        type String
+				        type Integer
+				        type Boolean
+
+				        value-object MyValueObject {
+				            String a
+				            Integer b
+				            optional Boolean c
+				        }
+				    }
+				}
 			'''
         )
         validationTester.assertNoIssues(model)

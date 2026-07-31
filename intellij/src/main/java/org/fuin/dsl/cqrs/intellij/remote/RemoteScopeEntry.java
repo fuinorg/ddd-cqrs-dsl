@@ -1,9 +1,8 @@
 package org.fuin.dsl.cqrs.intellij.remote;
 
 /**
- * A single typed source entry of the <code>dependencies.json</code> catalog: it describes <em>where
- * one or more namespaces live</em>, selected by a <code>type</code> discriminator. The namespaces
- * an entry provides are kept by the catalog (one map key per namespace), not on the entry itself.
+ * The resolved form of a <code>dependency</code> declared in a model: <em>where the models of a
+ * dependency live</em>, selected by a <code>type</code> discriminator.
  *
  * <p>Only the <b>maven</b> type is supported: a Maven artifact ({@link #getGroupId() groupId}/
  * {@link #getArtifactId() artifactId}/{@link #getVersion() version}) with classifier
@@ -13,12 +12,39 @@ package org.fuin.dsl.cqrs.intellij.remote;
  * artifact.</p>
  *
  * <p>This class is plain JDK code (no Gson, EMF or IntelliJ types) so the same source can be shared
- * verbatim by the Maven and Eclipse projects.</p>
+ * verbatim by the Maven, Eclipse and IntelliJ projects.</p>
  */
 public final class RemoteScopeEntry {
 
     /** Discriminator value for a Maven artifact source. */
     public static final String TYPE_MAVEN = "maven";
+
+    /**
+     * Splits a <code>"groupId:artifactId:version"</code> coordinate as written in a
+     * <code>dependency</code> declaration. Returns <code>null</code> when the coordinate is not
+     * exactly three non-empty, whitespace-free segments, so callers can degrade gracefully while the
+     * validator reports the malformed value.
+     *
+     * @param coordinate Coordinate string (may be <code>null</code>).
+     * @param local      Optional local directory override (may be <code>null</code>).
+     *
+     * @return Parsed entry, or <code>null</code> if the coordinate is malformed.
+     */
+    public static RemoteScopeEntry parse(String coordinate, String local) {
+        if (coordinate == null) {
+            return null;
+        }
+        final String[] parts = coordinate.trim().split(":", -1);
+        if (parts.length != 3) {
+            return null;
+        }
+        for (final String part : parts) {
+            if (part.isEmpty() || part.chars().anyMatch(Character::isWhitespace)) {
+                return null;
+            }
+        }
+        return maven(parts[0], parts[1], parts[2], local);
+    }
 
     private final String type;
     private final String groupId;
@@ -75,8 +101,8 @@ public final class RemoteScopeEntry {
      */
     public String getSourceId() {
         if (TYPE_MAVEN.equals(type)) {
-            return "mvn:" + groupId + ":" + artifactId + ":" + version + ":" + MavenArtifactResolver.CLASSIFIER
-                    + ":" + MavenArtifactResolver.EXTENSION;
+            return "mvn:" + groupId + ":" + artifactId + ":" + version + ":"
+                    + MavenArtifactResolver.EXTENSION;
         }
         return null;
     }

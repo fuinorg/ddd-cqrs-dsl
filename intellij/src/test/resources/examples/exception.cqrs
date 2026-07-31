@@ -1,44 +1,41 @@
-project p_exception {
+context p_exception {
 
-	context x {
-		namespace types {
-			type String
-			type Integer
-		}
-
-		namespace except {
-			import x.types.*
-
-			exception ExceptionA {
-				message "Exception A"
-			}
-
-			exception ExceptionB cid 123 {
-				message "Exception B"
-			}
-
-			exception ExceptionC {
-				String a
-				message "Exception C: ${a}"
-			}
-
-			exception ExceptionD {
-				String a
-				Integer b
-				message "Exception D: ${a} / ${b}"
-			}
-
-			exception ExceptionE cid 124 {
-				String a
-				message "Exception C: ${a}"
-			}
-
-			exception ExceptionF cid 125 {
-				String a
-				Integer b
-				message "Exception F: ${a} / ${b}"
-			}
-		}
+	module x.types {
+		type String
+		type Integer
 	}
 
+	module x.except {
+		import p_exception.x.types.*
+
+		exception ExceptionA {
+			message "Exception A"
+		}
+
+		exception ExceptionB cid 123 {
+			message "Exception B"
+		}
+
+		exception ExceptionC {
+			String a
+			message "Exception C: ${a}"
+		}
+
+		exception ExceptionD {
+			String a
+			Integer b
+			message "Exception D: ${a} / ${b}"
+		}
+
+		exception ExceptionE cid 124 {
+			String a
+			message "Exception C: ${a}"
+		}
+
+		exception ExceptionF cid 125 {
+			String a
+			Integer b
+			message "Exception F: ${a} / ${b}"
+		}
+	}
 }

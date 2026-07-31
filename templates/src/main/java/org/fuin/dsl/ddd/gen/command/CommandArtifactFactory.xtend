@@ -43,7 +43,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 
         val Aggregate entity = command.aggregate
         val className = command.getName()
-        // The namespace is optional: derive the package from the element itself - the target
+        // The module is optional: derive the package from the element itself - the target
         // aggregate for a domain command, otherwise the command.
         val EObject owner = if (entity === null) command else entity
         val pkg = owner.asPackage

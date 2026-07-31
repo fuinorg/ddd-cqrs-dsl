@@ -1,32 +1,25 @@
-project p_07_exception {
+context p_07_exception {
 
-	context errors {
+    module errors.m {
+        type String
+        type Integer
 
-		namespace m {
+        // An exception describes an error condition. A 'message' is mandatory;
+        exception NotFoundException {
 
-			type String
-			type Integer
+            message "Entity not found"
 
-	        // An exception describes an error condition. A 'message' is mandatory;
-			exception NotFoundException {
+        }
 
-				message "Entity not found"
+        // An optional client id ('cid') and attributes can be added.
+        // This is meant as a unique error number to support identifying the exact problem.
+        // Attributes can be referenced in the message with ${NAME}.
+        exception LimitExceededException cid 1001 {
 
-			}
+            Integer limit
 
-	        // An optional client id ('cid') and attributes can be added.
-	        // This is meant as a unique error number to support identifying the exact problem.   
-	        // Attributes can be referenced in the message with ${NAME}.
-			exception LimitExceededException cid 1001 {
+            message "Limit ${limit} exceeded"
 
-				Integer limit
-
-				message "Limit ${limit} exceeded"
-
-			}
-
-		}
-
-	}
-
+        }
+    }
 }

@@ -1,47 +1,44 @@
-project p_service {
+context p_service {
 
-	context x {
-		namespace types {
-			type String
-			type Integer
-			type List generics 1
+	module x.types {
+		type String
+		type Integer
+		type List generics 1
+	}
+
+	module x.services {
+		import p_service.x.types.*
+
+		exception AnyConstraintViolatedException {
+			message "Any constraint violated"
 		}
 
-		namespace services {
-			import x.types.*
+		service ServiceA {
+		}
 
-			exception AnyConstraintViolatedException {
-				message "Any constraint violated"
+		service ServiceB {
+			method find {
+				Integer a
+				returns String
 			}
+		}
 
-			service ServiceA {
+		service ServiceC {
+			method list {
+				Integer a
+				returns List<String>
 			}
+		}
 
-			service ServiceB {
-				method find {
-					Integer a
-					returns String
-				}
+		service ServiceD {
+			method find {
+				Integer a
+				returns optional String
 			}
-
-			service ServiceC {
-				method list {
-					Integer a
-					returns List<String>
-				}
-			}
-
-			service ServiceD {
-				method find {
-					Integer a
-					returns optional String
-				}
-				method list {
-					Integer a
-					returns optional List<String>
-				}
+			method list {
+				Integer a
+				returns optional List<String>
 			}
 		}
 	}
-
 }

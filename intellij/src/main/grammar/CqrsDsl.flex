@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static org.fuin.dsl.cqrs.intellij.psi.CqrsTokenTypes.UNCLOSED_STRING;
 import static org.fuin.dsl.cqrs.intellij.psi.CqrsTypes.*;
 
 %%
@@ -31,6 +32,9 @@ BLOCK_COMMENT="/*"([^*]|"*"+[^*/])*"*"+"/"
 ID="^"?[A-Za-z][A-Za-z_0-9]*
 
 STRING=\"([^\\\"]|\\[^])*\"|'([^\\']|\\[^])*'
+// A string opened but not closed before the end of the line. The longest match wins, so a closed
+// string - even a multi line one - is still lexed as STRING.
+UNCLOSED_STRING=\"([^\\\"\r\n]|\\[^\r\n])*|'([^\\'\r\n]|\\[^\r\n])*
 
 HEX=0[xX][0-9a-fA-F_]+("#"(([bB][iI])|[lL]))?
 INT=[0-9][0-9_]*
@@ -72,10 +76,11 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "rest-path"               { return KW_REST_PATH; }
 
   // ---- Structural keywords ----
-  "project"                 { return KW_PROJECT; }
   "context"                 { return KW_CONTEXT; }
-  "namespace"               { return KW_NAMESPACE; }
+  "module"                  { return KW_MODULE; }
   "import"                  { return KW_IMPORT; }
+  "dependency"              { return KW_DEPENDENCY; }
+  "local"                   { return KW_LOCAL; }
   "hint"                    { return KW_HINT; }
   "type"                    { return KW_TYPE; }
   "element"                 { return KW_ELEMENT; }
@@ -205,6 +210,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
 
   // ---- Terminals ----
   {STRING}                  { return STRING; }
+  {UNCLOSED_STRING}         { return UNCLOSED_STRING; }
   {NUMBER}                  { return NUMBER; }
   {ID}                      { return ID; }
 

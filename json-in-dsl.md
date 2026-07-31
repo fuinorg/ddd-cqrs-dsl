@@ -1,5 +1,11 @@
 # Add a `Hint` element (with simplified JSON) to the CqrsDsl grammar
 
+> [!NOTE]
+> Historical design record of a change that has since been implemented. The surrounding grammar has
+> moved on: `import` no longer exists (a `project`/`context` declares a `dependency` instead, and
+> names within a project are visible implicitly), so the references below to `import_decl` /
+> `import_fqn` and to "imports and elements" describe the grammar as it was at the time.
+
 ## Context
 Add a new `Hint` element to the CqrsDsl grammar so a `context` can carry named, JSON-structured
 generator hints. Syntax: `hint <FQN> <json>`, positioned in the `Context` block **before `namespaces`**

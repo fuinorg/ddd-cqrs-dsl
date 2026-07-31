@@ -23,7 +23,7 @@ import java.util.List;
  * the Eclipse/Xtext validator gets for free from the EMF model (type identity, positional access to
  * keyword-introduced cross references, message-variable scanning) on top of the Grammar-Kit PSI.
  */
-final class CqrsValidationUtil {
+public final class CqrsValidationUtil {
 
     private CqrsValidationUtil() {
     }
@@ -69,7 +69,7 @@ final class CqrsValidationUtil {
      * (e.g. the {@code STRING} after {@code cron-schedule} in a {@code view}, which also has a
      * {@code rest-path} {@code STRING}).
      */
-    static @Nullable PsiElement firstTokenAfter(@NotNull PsiElement parent, @NotNull IElementType keyword,
+    public static @Nullable PsiElement firstTokenAfter(@NotNull PsiElement parent, @NotNull IElementType keyword,
             @NotNull IElementType token) {
         boolean active = false;
         for (PsiElement child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {

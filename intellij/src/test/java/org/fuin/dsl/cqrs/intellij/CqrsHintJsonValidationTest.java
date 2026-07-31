@@ -25,9 +25,8 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
 
     public void testValidJpaHintValidatesClean() {
         List<String> messages = validateHint("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       hint JpaHint {
@@ -38,7 +37,6 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertEmpty(messages);
     }
@@ -46,9 +44,8 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
     public void testInvalidJpaHintReportsSchemaViolation() {
         // "length" must be an integer, not a string.
         List<String> messages = validateHint("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       hint JpaHint {
@@ -60,7 +57,6 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
         assertFalse("expected a schema violation, got none", messages.isEmpty());
     }
@@ -68,9 +64,9 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
     public void testInvalidSrcGen4JReportsSchemaViolation() {
         // A "types" entry must have a "name".
         List<String> messages = validateHint("""
-                project p {
+                context p {
                   hint SrcGen4J { "types": [ { "module": "x" } ] }
-                  context c { }
+                  module c { }
                 }
                 """);
         assertFalse("expected a schema violation, got none", messages.isEmpty());
@@ -78,15 +74,13 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
 
     public void testJpaHintInsideViewHasNoWarning() {
         myFixture.configureByText("test.cqrs", """
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       hint JpaHint { "tables": [] }
                     }
                   }
-                }
                 }
                 """);
         myFixture.checkHighlighting(true, false, false);
@@ -94,9 +88,9 @@ public class CqrsHintJsonValidationTest extends BasePlatformTestCase {
 
     public void testJpaHintOutsideViewWarns() {
         myFixture.configureByText("test.cqrs", """
-                project p {
+                context p {
                   hint <warning descr="JpaHint only generates code inside a view">JpaHint</warning> { "tables": [] }
-                  context c { }
+                  module c { }
                 }
                 """);
         myFixture.checkHighlighting(true, false, false);

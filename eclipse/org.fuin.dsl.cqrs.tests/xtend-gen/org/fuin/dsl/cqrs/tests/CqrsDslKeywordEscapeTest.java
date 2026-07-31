@@ -15,7 +15,6 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,34 +35,28 @@ public class CqrsDslKeywordEscapeTest {
   public void caretEscapedKeywordsAreUsableAsIdentifiers() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
+      _builder.append("context ^module {");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("context ^context {");
+      _builder.append("module ^type.^local {");
       _builder.newLine();
       _builder.append("\t\t");
-      _builder.append("namespace ^type {");
-      _builder.newLine();
-      _builder.append("\t\t\t");
       _builder.append("type String");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.append("value-object ^event {");
       _builder.newLine();
-      _builder.append("\t\t\t\t");
+      _builder.append("\t\t\t");
       _builder.append("String value");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.append("}");
       _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("value-object Foo {");
+      _builder.append("\t\t");
+      _builder.append("value-object ^dependency {");
       _builder.newLine();
-      _builder.append("\t\t\t\t");
+      _builder.append("\t\t\t");
       _builder.append("^event data");
-      _builder.newLine();
-      _builder.append("\t\t\t");
-      _builder.append("}");
       _builder.newLine();
       _builder.append("\t\t");
       _builder.append("}");
@@ -83,10 +76,10 @@ public class CqrsDslKeywordEscapeTest {
       String _join = IterableExtensions.join(errors, ", ");
       _builder_1.append(_join);
       Assertions.assertTrue(_isEmpty, _builder_1.toString());
-      final Context ctx = model.getProjects().get(0).getContexts().get(0);
-      Assertions.assertEquals("context", ctx.getName());
-      final Namespace ns = ctx.getNamespaces().get(0);
-      Assertions.assertEquals("type", ns.getName());
+      final Context ctx = model.getContexts().get(0);
+      Assertions.assertEquals("module", ctx.getName());
+      final org.fuin.dsl.cqrs.cqrsDsl.Module ns = ctx.getModules().get(0);
+      Assertions.assertEquals("type.local", ns.getName());
       final Function1<ValueObject, Boolean> _function = (ValueObject it) -> {
         String _name = it.getName();
         return Boolean.valueOf(Objects.equals(_name, "event"));
@@ -95,11 +88,11 @@ public class CqrsDslKeywordEscapeTest {
       Assertions.assertNotNull(event, "value-object written as \'^event\' must be named \'event\'");
       final Function1<ValueObject, Boolean> _function_1 = (ValueObject it) -> {
         String _name = it.getName();
-        return Boolean.valueOf(Objects.equals(_name, "Foo"));
+        return Boolean.valueOf(Objects.equals(_name, "dependency"));
       };
-      final ValueObject foo = IterableExtensions.<ValueObject>findFirst(Iterables.<ValueObject>filter(ns.getElements(), ValueObject.class), _function_1);
-      Assertions.assertNotNull(foo);
-      Assertions.assertSame(event, foo.getAttributes().get(0).getType());
+      final ValueObject dep = IterableExtensions.<ValueObject>findFirst(Iterables.<ValueObject>filter(ns.getElements(), ValueObject.class), _function_1);
+      Assertions.assertNotNull(dep);
+      Assertions.assertSame(event, dep.getAttributes().get(0).getType());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -109,25 +102,19 @@ public class CqrsDslKeywordEscapeTest {
   public void plainKeywordsStillParseAsKeywords() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("project p {");
-      _builder.newLine();
-      _builder.append("\t");
       _builder.append("context plain {");
       _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("namespace m {");
+      _builder.append("\t");
+      _builder.append("module m {");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.append("type String");
       _builder.newLine();
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.append("value-object Money {");
       _builder.newLine();
-      _builder.append("\t\t\t\t");
-      _builder.append("String amount");
-      _builder.newLine();
       _builder.append("\t\t\t");
-      _builder.append("}");
+      _builder.append("String amount");
       _builder.newLine();
       _builder.append("\t\t");
       _builder.append("}");

@@ -14,7 +14,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 /**
  * Maps constraints from the DSL to Java validation annotations. A mapping has the form "DSL=JAVA":
  * <ul>
- * <li>DSL is "project.context.namespace.Name(parameter names)" or "project.context.Name(parameter names)".
+ * <li>DSL is "context.module.Name(parameter names)".
  * The parameter list may be omitted if the constraint has no parameters.</li>
  * <li>JAVA is the fully qualified name of one or more annotations, each of them with optional parameters in
  * the form "java parameter name = DSL parameter name". Multiple annotations are separated by a comma.</li>
@@ -119,16 +119,12 @@ class ConstraintMappings {
     }
 
     /**
-     * Returns the unique name of a constraint in the DSL. The namespace inside the context is optional, so it
-     * is only used if the constraint is not declared directly inside the context.
+     * Returns the unique name of a constraint in the DSL.
      *
-     * @return Either "project.context.namespace.Name" or "project.context.Name".
+     * @return "context.module.Name".
      */
     private static def String dslName(Constraint constr) {
-        if (constr.namespace === null) {
-            return constr.project.name + "." + constr.context.name + "." + constr.name
-        }
-        return constr.project.name + "." + constr.context.name + "." + constr.namespace.name + "." + constr.name
+        return constr.context.name + "." + constr.module.name + "." + constr.name
     }
 
     private static def Mapping parseMapping(String entry) {

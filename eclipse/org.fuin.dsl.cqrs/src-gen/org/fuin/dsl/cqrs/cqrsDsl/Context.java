@@ -17,9 +17,10 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getName <em>Name</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getImports <em>Imports</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getNamespaces <em>Namespaces</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getElements <em>Elements</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getHints <em>Hints</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Context#getModules <em>Modules</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext()
@@ -51,6 +52,18 @@ public interface Context extends EObject
   void setName(String value);
 
   /**
+   * Returns the value of the '<em><b>Dependencies</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Dependency}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Dependencies</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext_Dependencies()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Dependency> getDependencies();
+
+  /**
    * Returns the value of the '<em><b>Imports</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Import}.
    * <!-- begin-user-doc -->
@@ -63,27 +76,27 @@ public interface Context extends EObject
   EList<Import> getImports();
 
   /**
-   * Returns the value of the '<em><b>Namespaces</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Namespace}.
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Namespaces</em>' containment reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext_Namespaces()
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext_Hints()
    * @model containment="true"
    * @generated
    */
-  EList<Namespace> getNamespaces();
+  EList<Hint> getHints();
 
   /**
-   * Returns the value of the '<em><b>Elements</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.AbstractElement}.
+   * Returns the value of the '<em><b>Modules</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Module}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Elements</em>' containment reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext_Elements()
+   * @return the value of the '<em>Modules</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getContext_Modules()
    * @model containment="true"
    * @generated
    */
-  EList<AbstractElement> getElements();
+  EList<org.fuin.dsl.cqrs.cqrsDsl.Module> getModules();
 
 } // Context

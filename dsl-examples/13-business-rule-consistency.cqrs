@@ -1,50 +1,45 @@
-project p_13_business_rule_consistency {
+context p_13_business_rule_consistency {
 
-	context banking {
+    module banking.m {
+        type String
 
-		namespace m {
+        exception OverdrawnException { message "Overdrawn" }
 
-			type String
+        exception StaleException { message "Stale" }
 
-			exception OverdrawnException { message "Overdrawn" }
+        aggregate-id AccountId identifies Account {}
 
-			exception StaleException { message "Stale" }
+        aggregate Account identifier AccountId {
 
-			aggregate-id AccountId identifies Account {}
+            // A business-rule is a checked condition tied to an exception and a consistency
+            // level. A doc comment (/** ... */) is required directly before it.
+            // Rules are applied to constructors/methods via 'business-rules' (with optional
+            // parameters).
 
-			aggregate Account identifier AccountId {
+            /** The balance must never go negative. */
+            business-rule NotOverdrawn exception OverdrawnException {
 
-				// A business-rule is a checked condition tied to an exception and a consistency
-				// level. A doc comment (/** ... */) is required directly before it.
-				// Rules are applied to constructors/methods via 'business-rules' (with optional
-				// parameters).
+                // A 'strong' consistency means the rule may never be violated.
+                consistency strong
+            }
 
-				/** The balance must never go negative. */
-				business-rule NotOverdrawn exception OverdrawnException {
+            /** A read model may lag behind for a short while. */
+            business-rule EventuallyConsistent exception StaleException {
 
-	 			    // A 'strong' consistency means the rule may never be violated.
-					consistency strong
-				}
+                // A 'weak' consistency means a temporary violation is allowed.
+                // 'acceptable' amount defines after what time the problem must be solved.
+                // 'detection' describes how the problem will be detected ('automatic', 'manually' or 'never').
+                // 'resolution' describes how it will be solved ('automatic', 'manually', 'workflow' or 'never').
+                consistency weak {
+                    acceptable 5 minutes
+                    detection automatic
+                    resolution workflow
+                }
+            }
 
-				/** A read model may lag behind for a short while. */
-				business-rule EventuallyConsistent exception StaleException {
+            method withdraw business-rules NotOverdrawn {
+            }
 
-					// A 'weak' consistency means a temporary violation is allowed.
-					// 'acceptable' amount defines after what time the problem must be solved.
-					// 'detection' describes how the problem will be detected ('automatic', 'manually' or 'never').
-					// 'resolution' describes how it will be solved ('automatic', 'manually', 'workflow' or 'never').
-					consistency weak {
-						acceptable 5 minutes
-						detection automatic
-						resolution workflow
-					}
-				}
-
-				method withdraw business-rules NotOverdrawn {
-				}
-
-			}
-		}
-	}
-
+        }
+    }
 }

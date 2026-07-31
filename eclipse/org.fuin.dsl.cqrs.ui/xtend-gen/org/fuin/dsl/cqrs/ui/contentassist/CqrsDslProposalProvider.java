@@ -3,10 +3,53 @@
  */
 package org.fuin.dsl.cqrs.ui.contentassist;
 
+import com.google.common.base.Predicate;
+import com.google.inject.Inject;
+import java.util.List;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.CrossReference;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.fuin.dsl.cqrs.scoping.CqrsImportProposals;
+import org.fuin.dsl.cqrs.scoping.CqrsVisibleNames;
+
 /**
  * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#content-assist
  * on how to customize the content assistant.
  */
 @SuppressWarnings("all")
 public class CqrsDslProposalProvider extends AbstractCqrsDslProposalProvider {
+  @Inject
+  private CqrsImportProposals importProposals;
+
+  /**
+   * Proposes only the names the surrounding module actually reaches: its own elements and whatever
+   * it - or its context - imports.
+   * 
+   * <p>The scope a cross reference resolves against is deliberately wider. Besides those names it
+   * carries every element under its container relative name (<code>otherModule.Type</code>) and,
+   * through the global scope, every element of the workspace under its fully qualified name - which
+   * is what lets a fully qualified reference work without an <code>import</code>. Proposing all of
+   * it would list every type of every model in the workspace, several times over.</p>
+   */
+  @Override
+  protected void lookupCrossReference(final CrossReference crossReference, final ContentAssistContext context, final ICompletionProposalAcceptor acceptor, final Predicate<IEObjectDescription> filter) {
+    super.lookupCrossReference(crossReference, context, acceptor, 
+      CqrsVisibleNames.addressableOnly(context.getCurrentModel(), filter));
+  }
+
+  /**
+   * Proposes what may follow an <code>import</code>: every reachable context and module as a
+   * wildcard, plus every single type. The imported name is a datatype rule rather than a cross
+   * reference, so nothing would be proposed here otherwise.
+   */
+  @Override
+  public void completeImport_ImportedNamespace(final EObject model, final Assignment assignment, final ContentAssistContext context, final ICompletionProposalAcceptor acceptor) {
+    List<String> _candidates = this.importProposals.candidates(model);
+    for (final String candidate : _candidates) {
+      acceptor.accept(this.createCompletionProposal(candidate, context));
+    }
+  }
 }

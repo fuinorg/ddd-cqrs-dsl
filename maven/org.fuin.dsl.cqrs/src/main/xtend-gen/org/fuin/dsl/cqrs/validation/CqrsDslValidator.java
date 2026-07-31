@@ -13,17 +13,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
@@ -36,13 +43,16 @@ import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint;
 import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
+import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
@@ -64,6 +74,8 @@ import org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension;
 import org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions;
+import org.fuin.dsl.cqrs.scoping.CqrsDependencies;
+import org.fuin.dsl.cqrs.scoping.RemoteScopeEntry;
 
 /**
  * This class contains custom validation rules.
@@ -97,6 +109,18 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String EVENT_MSG_UNKNOWN_VAR = "eventMsgUnknownVar";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
+
+  public static final String DEPENDENCY_INVALID_COORDINATE = "dependencyInvalidCoordinate";
+
+  public static final String DEPENDENCY_DUPLICATE = "dependencyDuplicate";
+
+  public static final String DEPENDENCY_UNRESOLVED = "dependencyUnresolved";
+
+  public static final String IMPORT_UNRESOLVED = "importUnresolved";
+
+  public static final String IMPORT_DUPLICATE = "importDuplicate";
+
+  public static final String IMPORT_UNUSED = "importUnused";
 
   public static final String SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents";
 
@@ -168,6 +192,12 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   @Inject
   private ResourceDescriptionsProvider resourceDescriptionsProvider;
 
+  @Inject
+  private IQualifiedNameProvider qualifiedNameProvider;
+
+  @Inject
+  private CqrsDependencies dependencies;
+
   @Check
   public void checkNameStartsWithCapital(final Variable variable) {
     boolean _isLowerCase = Character.isLowerCase(variable.getName().charAt(0));
@@ -176,6 +206,299 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       this.warning("Variable names should start with a lower case", variable, 
         CqrsDslPackage.Literals.VARIABLE__NAME, CqrsDslValidator.INVALID_VAR_NAME);
     }
+  }
+
+  /**
+   * A dependency coordinate must be a Maven GAV: "groupId:artifactId:version".
+   */
+  @Check
+  public void checkDependencyCoordinate(final Dependency dependency) {
+    RemoteScopeEntry _parse = RemoteScopeEntry.parse(dependency.getCoordinate(), dependency.getLocal());
+    boolean _tripleEquals = (_parse == null);
+    if (_tripleEquals) {
+      String _coordinate = dependency.getCoordinate();
+      String _plus = ("A dependency must be \'groupId:artifactId:version\', but was \'" + _coordinate);
+      String _plus_1 = (_plus + "\'");
+      this.error(_plus_1, dependency, 
+        CqrsDslPackage.Literals.DEPENDENCY__COORDINATE, 
+        CqrsDslValidator.DEPENDENCY_INVALID_COORDINATE);
+    }
+  }
+
+  /**
+   * A well formed coordinate must also resolve to something. Without this the only symptom of a
+   * missing artifact is every type it provides failing to resolve, which points at the models
+   * instead of at the declaration that is actually wrong.
+   */
+  @Check
+  public void checkDependencyResolves(final Dependency dependency) {
+    final String problem = this.dependencies.resolutionProblem(dependency);
+    if ((problem != null)) {
+      String _coordinate = dependency.getCoordinate();
+      String _plus = ("Cannot resolve dependency \'" + _coordinate);
+      String _plus_1 = (_plus + "\': ");
+      String _plus_2 = (_plus_1 + problem);
+      this.error(_plus_2, dependency, 
+        CqrsDslPackage.Literals.DEPENDENCY__COORDINATE, 
+        CqrsDslValidator.DEPENDENCY_UNRESOLVED);
+    }
+  }
+
+  /**
+   * The same artifact must not be declared twice in one block, nor repeated on a module that
+   * already inherits it from its context.
+   */
+  @Check
+  public void checkDuplicateDependency(final Dependency dependency) {
+    final String coordinate = dependency.getCoordinate();
+    if ((coordinate == null)) {
+      return;
+    }
+    final EObject container = dependency.eContainer();
+    EList<Dependency> _switchResult = null;
+    boolean _matched = false;
+    if (container instanceof Context) {
+      _matched=true;
+      _switchResult = ((Context)container).getDependencies();
+    }
+    if (!_matched) {
+      if (container instanceof org.fuin.dsl.cqrs.cqrsDsl.Module) {
+        _matched=true;
+        _switchResult = ((org.fuin.dsl.cqrs.cqrsDsl.Module)container).getDependencies();
+      }
+    }
+    if (!_matched) {
+      _switchResult = null;
+    }
+    final EList<Dependency> siblings = _switchResult;
+    if ((siblings == null)) {
+      return;
+    }
+    if (((IterableExtensions.size(IterableExtensions.<Dependency>filter(siblings, ((Function1<Dependency, Boolean>) (Dependency it) -> {
+      String _coordinate = it.getCoordinate();
+      return Boolean.valueOf(Objects.equals(_coordinate, coordinate));
+    }))) > 1) && (IterableExtensions.<Dependency>findFirst(siblings, ((Function1<Dependency, Boolean>) (Dependency it) -> {
+      String _coordinate = it.getCoordinate();
+      return Boolean.valueOf(Objects.equals(_coordinate, coordinate));
+    })) != dependency))) {
+      this.error((("Duplicate dependency \'" + coordinate) + "\'"), dependency, 
+        CqrsDslPackage.Literals.DEPENDENCY__COORDINATE, CqrsDslValidator.DEPENDENCY_DUPLICATE);
+      return;
+    }
+    if ((container instanceof org.fuin.dsl.cqrs.cqrsDsl.Module)) {
+      final EObject context = ((org.fuin.dsl.cqrs.cqrsDsl.Module)container).eContainer();
+      if ((context instanceof Context)) {
+        final Function1<Dependency, Boolean> _function = (Dependency it) -> {
+          String _coordinate = it.getCoordinate();
+          return Boolean.valueOf(Objects.equals(_coordinate, coordinate));
+        };
+        boolean _exists = IterableExtensions.<Dependency>exists(((Context)context).getDependencies(), _function);
+        if (_exists) {
+          String _name = ((Context)context).getName();
+          String _plus = ((("Dependency \'" + coordinate) + "\' is already declared by context \'") + _name);
+          String _plus_1 = (_plus + "\'");
+          this.warning(_plus_1, dependency, CqrsDslPackage.Literals.DEPENDENCY__COORDINATE, CqrsDslValidator.DEPENDENCY_DUPLICATE);
+        }
+      }
+    }
+  }
+
+  /**
+   * An import must address something that exists: a context, a module or a single type. Anything
+   * else is a typo that would silently leave every name it was meant to provide unresolved.
+   */
+  @Check
+  public void checkImportResolves(final Import imp) {
+    final String imported = imp.getImportedNamespace();
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(imported);
+    if (_isNullOrEmpty) {
+      return;
+    }
+    boolean _importMatchesAnything = this.importMatchesAnything(imp, imported);
+    boolean _not = (!_importMatchesAnything);
+    if (_not) {
+      this.error((("Import \'" + imported) + "\' does not match any context, module or type"), imp, 
+        CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_UNRESOLVED);
+    }
+  }
+
+  /**
+   * The same name must not be imported twice in one block, nor repeated on a module that already
+   * inherits it from its context.
+   */
+  @Check
+  public void checkDuplicateImport(final Import imp) {
+    final String imported = imp.getImportedNamespace();
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(imported);
+    if (_isNullOrEmpty) {
+      return;
+    }
+    final EObject container = imp.eContainer();
+    EList<Import> _switchResult = null;
+    boolean _matched = false;
+    if (container instanceof Context) {
+      _matched=true;
+      _switchResult = ((Context)container).getImports();
+    }
+    if (!_matched) {
+      if (container instanceof org.fuin.dsl.cqrs.cqrsDsl.Module) {
+        _matched=true;
+        _switchResult = ((org.fuin.dsl.cqrs.cqrsDsl.Module)container).getImports();
+      }
+    }
+    if (!_matched) {
+      _switchResult = null;
+    }
+    final EList<Import> siblings = _switchResult;
+    if ((siblings == null)) {
+      return;
+    }
+    if (((IterableExtensions.size(IterableExtensions.<Import>filter(siblings, ((Function1<Import, Boolean>) (Import it) -> {
+      String _importedNamespace = it.getImportedNamespace();
+      return Boolean.valueOf(Objects.equals(_importedNamespace, imported));
+    }))) > 1) && 
+      (IterableExtensions.<Import>findFirst(siblings, ((Function1<Import, Boolean>) (Import it) -> {
+        String _importedNamespace = it.getImportedNamespace();
+        return Boolean.valueOf(Objects.equals(_importedNamespace, imported));
+      })) != imp))) {
+      this.error((("Duplicate import \'" + imported) + "\'"), imp, 
+        CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_DUPLICATE);
+      return;
+    }
+    if ((container instanceof org.fuin.dsl.cqrs.cqrsDsl.Module)) {
+      final EObject context = ((org.fuin.dsl.cqrs.cqrsDsl.Module)container).eContainer();
+      if ((context instanceof Context)) {
+        final Function1<Import, Boolean> _function = (Import it) -> {
+          String _importedNamespace = it.getImportedNamespace();
+          return Boolean.valueOf(Objects.equals(_importedNamespace, imported));
+        };
+        boolean _exists = IterableExtensions.<Import>exists(((Context)context).getImports(), _function);
+        if (_exists) {
+          String _name = ((Context)context).getName();
+          String _plus = ((("Import \'" + imported) + "\' is already declared by context \'") + _name);
+          String _plus_1 = (_plus + "\'");
+          this.warning(_plus_1, imp, CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_DUPLICATE);
+        }
+      }
+    }
+  }
+
+  /**
+   * An import nothing in the block refers to is dead weight and hides the real coupling.
+   */
+  @Check
+  public void checkUnusedImport(final Import imp) {
+    final String imported = imp.getImportedNamespace();
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(imported);
+    if (_isNullOrEmpty) {
+      return;
+    }
+    final EObject container = imp.eContainer();
+    if ((container == null)) {
+      return;
+    }
+    boolean _importMatchesAnything = this.importMatchesAnything(imp, imported);
+    boolean _not = (!_importMatchesAnything);
+    if (_not) {
+      return;
+    }
+    final Function1<String, Boolean> _function = (String it) -> {
+      return Boolean.valueOf(this.covers(imported, it));
+    };
+    boolean _exists = IterableExtensions.<String>exists(this.referencedNames(container), _function);
+    boolean _not_1 = (!_exists);
+    if (_not_1) {
+      this.warning((("Import \'" + imported) + "\' is not used"), imp, 
+        CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_UNUSED);
+    }
+  }
+
+  /**
+   * The qualified names of everything the cross references inside the given block resolve to. A
+   * context is asked for its own references and for those of all of its modules, because a context
+   * level import serves them all.
+   */
+  private Iterable<String> referencedNames(final EObject container) {
+    final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
+    final TreeIterator<EObject> contents = container.eAllContents();
+    while (contents.hasNext()) {
+      {
+        final EObject obj = contents.next();
+        final Function1<EReference, Boolean> _function = (EReference it) -> {
+          return Boolean.valueOf(((!it.isContainment()) && (!it.isDerived())));
+        };
+        Iterable<EReference> _filter = IterableExtensions.<EReference>filter(obj.eClass().getEAllReferences(), _function);
+        for (final EReference reference : _filter) {
+          {
+            final Object value = obj.eGet(reference, false);
+            List<?> _xifexpression = null;
+            boolean _isMany = reference.isMany();
+            if (_isMany) {
+              _xifexpression = ((List<?>) value);
+            } else {
+              _xifexpression = Collections.<Object>singletonList(value);
+            }
+            final List<?> targets = _xifexpression;
+            Iterable<?> _filterNull = IterableExtensions.filterNull(targets);
+            for (final Object target : _filterNull) {
+              if ((target instanceof EObject)) {
+                boolean _eIsProxy = ((EObject)target).eIsProxy();
+                boolean _not = (!_eIsProxy);
+                if (_not) {
+                  final QualifiedName name = this.qualifiedNameProvider.getFullyQualifiedName(((EObject)target));
+                  if ((name != null)) {
+                    result.add(name.toString());
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Whether an imported name covers a fully qualified name: an exact match, or - for a wildcard -
+   * a name below its prefix.
+   */
+  private boolean covers(final String imported, final String qualifiedName) {
+    boolean _endsWith = imported.endsWith(".*");
+    if (_endsWith) {
+      int _length = imported.length();
+      int _minus = (_length - 1);
+      return qualifiedName.startsWith(imported.substring(0, _minus));
+    }
+    return Objects.equals(imported, qualifiedName);
+  }
+
+  /**
+   * Whether anything visible in the index matches the imported name.
+   */
+  private boolean importMatchesAnything(final Import imp, final String imported) {
+    final Resource resource = imp.eResource();
+    if ((resource == null)) {
+      return true;
+    }
+    final IResourceDescriptions resourceDescriptions = this.resourceDescriptionsProvider.getResourceDescriptions(resource);
+    final IResourceDescription resourceDescription = resourceDescriptions.getResourceDescription(resource.getURI());
+    if ((resourceDescription == null)) {
+      return true;
+    }
+    List<IContainer> _visibleContainers = this.containerManager.getVisibleContainers(resourceDescription, resourceDescriptions);
+    for (final IContainer container : _visibleContainers) {
+      Iterable<IEObjectDescription> _exportedObjects = container.getExportedObjects();
+      for (final IEObjectDescription descr : _exportedObjects) {
+        {
+          final QualifiedName name = descr.getName();
+          if (((name != null) && this.covers(imported, name.toString()))) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   @Check

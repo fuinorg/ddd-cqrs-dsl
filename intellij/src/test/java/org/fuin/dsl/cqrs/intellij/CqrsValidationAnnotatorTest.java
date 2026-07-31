@@ -24,15 +24,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testValueObjectBaseSingleMatchingAttributeIsValid() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object Email base String {
                       String value
                     }
                   }
-                }
                 }
                 """);
     }
@@ -40,9 +38,8 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
     /** The PhoneNumber shape: a String-backed VO whose base representation packs several attributes. */
     public void testValueObjectBaseWithSeveralAttributesIsValid() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     enum PhoneType {
                       instances {
@@ -56,15 +53,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testValueObjectBaseWithMismatchingAttributeTypeIsValid() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type Integer
                     value-object X base Integer {
@@ -72,15 +67,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testValueObjectWithoutBaseAllowsSeveralAttributes() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     type Integer
                     value-object Money {
@@ -89,7 +82,6 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
@@ -97,9 +89,8 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testValueObjectBaseWithConstructorIsFlagged() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object X base String {
                       String value
@@ -108,15 +99,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testValueObjectBaseWithMethodIsFlagged() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object X base String {
                       String value
@@ -126,7 +115,6 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                     }
                   }
                 }
-                }
                 """);
     }
 
@@ -134,15 +122,13 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testVariableNameStartingUpperCaseIsWarned() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     type String
                     value-object X {
                       String <warning>Value</warning>
                     }
                   }
-                }
                 }
                 """);
     }
@@ -151,59 +137,51 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
 
     public void testViewValidCronScheduleIsAccepted() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       cron-schedule "0 0 12 * * MON-FRI"
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testViewMacroCronScheduleIsAccepted() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       cron-schedule "@daily"
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testViewInvalidCronScheduleIsReported() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     projection Pj
                     view V uses Pj {
                       cron-schedule <error>"not a cron"</error>
                     }
                   }
                 }
-                }
                 """);
     }
 
     public void testProcessManagerInvalidCronScheduleIsReported() {
         check("""
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     process-manager PM {
                       cron-schedule <error>"99 * * * * *"</error>
                     }
                   }
-                }
                 }
                 """);
     }
@@ -252,11 +230,111 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
      *
      * @return Complete model source.
      */
+    // --- dependency ------------------------------------------------------------------------------
+
+    public void testWellFormedDependencyIsValid() {
+        check("""
+                context p {
+                  dependency "org.acme:acme-model:1.0.0"
+                  dependency "org.acme:other-model:2.0.0" local "../other/src/main/cqrs"
+                  module c {
+                    type String
+                  }
+                }
+                """);
+    }
+
+    public void testMalformedDependencyCoordinateIsError() {
+        check("""
+                context p {
+                  dependency <error descr="A dependency must be 'groupId:artifactId:version', but was 'org.acme:acme-model'">"org.acme:acme-model"</error>
+                  module c {
+                    type String
+                  }
+                }
+                """);
+    }
+
+    // --- import ----------------------------------------------------------------------------------
+
+    public void testUnresolvedImportIsError() {
+        check("""
+                context p {
+                  module c {
+                    import <error descr="Import 'nowhere.at.all.*' does not match any context, module or type">nowhere.at.all.*</error>
+                    type String
+                  }
+                }
+                """);
+    }
+
+    public void testDuplicateImportIsError() {
+        check("""
+                context p {
+                  module types {
+                    type String
+                  }
+                  module c {
+                    import p.types.*
+                    import <error descr="Duplicate import 'p.types.*'">p.types.*</error>
+                    value-object V base String {
+                      String v
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testImportAlreadyDeclaredByContextIsWarning() {
+        check("""
+                context p {
+                  import p.types.*
+                  module types {
+                    type String
+                  }
+                  module c {
+                    import <warning descr="Import 'p.types.*' is already declared by context 'p'">p.types.*</warning>
+                    value-object V base String {
+                      String v
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testUnusedImportIsWarning() {
+        check("""
+                context p {
+                  module types {
+                    type String
+                  }
+                  module c {
+                    import <warning descr="Import 'p.types.*' is not used">p.types.*</warning>
+                    type Own
+                    value-object V base Own {
+                      Own v
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testDuplicateDependencyIsError() {
+        check("""
+                context p {
+                  dependency "org.acme:acme-model:1.0.0"
+                  dependency <error descr="Duplicate dependency 'org.acme:acme-model:1.0.0'">"org.acme:acme-model:1.0.0"</error>
+                  module c {
+                    type String
+                  }
+                }
+                """);
+    }
+
     private static String businessRule(String consistency) {
         return """
-                project p {
-                context c {
-                  namespace n {
+                context p {
+                  module c.n {
                     exception MyException { message "m" }
                     aggregate-id FooId identifies Foo {}
                     aggregate Foo identifier FooId {
@@ -265,7 +343,6 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                       }
                     }
                   }
-                }
                 }
                 """.formatted(consistency);
     }

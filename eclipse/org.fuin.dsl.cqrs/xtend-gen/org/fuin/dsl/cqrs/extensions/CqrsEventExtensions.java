@@ -6,10 +6,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
-import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
-import org.fuin.dsl.cqrs.cqrsDsl.Namespace;
 
 /**
  * Provides extension methods for Event.
@@ -21,23 +19,18 @@ public class CqrsEventExtensions {
    * 
    * @param el Event to return a unique name for.
    * 
-   * @return Unique name in the context/namespace.
+   * @return Unique name in the context/module.
    */
   public static String uniqueName(final Event event) {
     if ((event == null)) {
       throw new IllegalArgumentException("argument \'event\' cannot be null");
     }
-    Context _context = CqrsEObjectExtensions.getContext(event);
-    boolean _tripleEquals = (_context == null);
+    org.fuin.dsl.cqrs.cqrsDsl.Module _module = CqrsEObjectExtensions.getModule(event);
+    boolean _tripleEquals = (_module == null);
     if (_tripleEquals) {
-      throw new IllegalArgumentException("argument \'event.context\' cannot be null");
+      throw new IllegalArgumentException("argument \'event.module\' cannot be null");
     }
-    Namespace _namespace = CqrsEObjectExtensions.getNamespace(event);
-    boolean _tripleEquals_1 = (_namespace == null);
-    if (_tripleEquals_1) {
-      return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(event).getName(), CqrsEObjectExtensions.getContext(event).getName(), event.getName());
-    }
-    return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getProject(event).getName(), CqrsEObjectExtensions.getContext(event).getName(), CqrsEObjectExtensions.getNamespace(event).getName(), event.getName());
+    return CqrsExtensionUtils.separated(".", CqrsEObjectExtensions.getContext(event).getName(), CqrsEObjectExtensions.getModule(event).getName(), event.getName());
   }
 
   /**

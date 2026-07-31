@@ -200,6 +200,25 @@
 	</build>
 
 	<dependencies>
+		<!--
+			Maven Resolver, configured the way Maven itself would configure it (MIMA). This is how a
+			'dependency' is resolved everywhere except the Eclipse plugin, which borrows m2e's Maven
+			instead. The runtime flavour sits here rather than only on the console so that the
+			SrcGen4J Maven plugin, which pulls this jar in, can resolve as well.
+			'standalone-static' avoids Sisu: the console is a Spring Boot fat jar, where index and
+			service-file discovery is fragile.
+		-->
+		<dependency>
+			<groupId>eu.maveniverse.maven.mima</groupId>
+			<artifactId>context</artifactId>
+			<version>${version.mima}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.maveniverse.maven.mima.runtime</groupId>
+			<artifactId>standalone-static</artifactId>
+			<version>${version.mima}</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

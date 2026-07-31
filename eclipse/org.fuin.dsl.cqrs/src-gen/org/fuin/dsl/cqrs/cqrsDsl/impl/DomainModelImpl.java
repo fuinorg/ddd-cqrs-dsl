@@ -17,9 +17,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
-import org.fuin.dsl.cqrs.cqrsDsl.Project;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,7 +29,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Project;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DomainModelImpl#getProjects <em>Projects</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DomainModelImpl#getContexts <em>Contexts</em>}</li>
  * </ul>
  *
  * @generated
@@ -37,14 +37,14 @@ import org.fuin.dsl.cqrs.cqrsDsl.Project;
 public class DomainModelImpl extends MinimalEObjectImpl.Container implements DomainModel
 {
   /**
-   * The cached value of the '{@link #getProjects() <em>Projects</em>}' containment reference list.
+   * The cached value of the '{@link #getContexts() <em>Contexts</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getProjects()
+   * @see #getContexts()
    * @generated
    * @ordered
    */
-  protected EList<Project> projects;
+  protected EList<Context> contexts;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,13 +73,13 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
    * @generated
    */
   @Override
-  public EList<Project> getProjects()
+  public EList<Context> getContexts()
   {
-    if (projects == null)
+    if (contexts == null)
     {
-      projects = new EObjectContainmentEList<Project>(Project.class, this, CqrsDslPackage.DOMAIN_MODEL__PROJECTS);
+      contexts = new EObjectContainmentEList<Context>(Context.class, this, CqrsDslPackage.DOMAIN_MODEL__CONTEXTS);
     }
-    return projects;
+    return contexts;
   }
 
   /**
@@ -92,8 +92,8 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
   {
     switch (featureID)
     {
-      case CqrsDslPackage.DOMAIN_MODEL__PROJECTS:
-        return ((InternalEList<?>)getProjects()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.DOMAIN_MODEL__CONTEXTS:
+        return ((InternalEList<?>)getContexts()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -108,8 +108,8 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
   {
     switch (featureID)
     {
-      case CqrsDslPackage.DOMAIN_MODEL__PROJECTS:
-        return getProjects();
+      case CqrsDslPackage.DOMAIN_MODEL__CONTEXTS:
+        return getContexts();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -125,9 +125,9 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
   {
     switch (featureID)
     {
-      case CqrsDslPackage.DOMAIN_MODEL__PROJECTS:
-        getProjects().clear();
-        getProjects().addAll((Collection<? extends Project>)newValue);
+      case CqrsDslPackage.DOMAIN_MODEL__CONTEXTS:
+        getContexts().clear();
+        getContexts().addAll((Collection<? extends Context>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +143,8 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
   {
     switch (featureID)
     {
-      case CqrsDslPackage.DOMAIN_MODEL__PROJECTS:
-        getProjects().clear();
+      case CqrsDslPackage.DOMAIN_MODEL__CONTEXTS:
+        getContexts().clear();
         return;
     }
     super.eUnset(featureID);
@@ -160,8 +160,8 @@ public class DomainModelImpl extends MinimalEObjectImpl.Container implements Dom
   {
     switch (featureID)
     {
-      case CqrsDslPackage.DOMAIN_MODEL__PROJECTS:
-        return projects != null && !projects.isEmpty();
+      case CqrsDslPackage.DOMAIN_MODEL__CONTEXTS:
+        return contexts != null && !contexts.isEmpty();
     }
     return super.eIsSet(featureID);
   }
