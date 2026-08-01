@@ -219,6 +219,21 @@
 			<version>${version.mima}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!--
+			Inside a Maven build the standalone runtime cannot be used: it builds a SettingsDecrypter
+			while starting up, and that fails to link in a plugin realm where Maven's own copy of
+			SecDispatcher competes with this jar's. This runtime activates only when running within
+			Maven and takes the repository system, the session and the repositories from Maven itself,
+			so the settings, mirrors, credentials and the offline flag of the running build apply -
+			and it can download, which a plugin realm otherwise cannot. It stays dormant everywhere
+			else, leaving the console on 'standalone-static'.
+		-->
+		<dependency>
+			<groupId>eu.maveniverse.maven.mima.runtime</groupId>
+			<artifactId>embedded-maven</artifactId>
+			<version>${version.mima}</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
