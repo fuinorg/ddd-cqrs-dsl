@@ -18,7 +18,6 @@
 package p.shared.domain.x.valueobject;
 
 import java.io.Serial;
-import p.x.valueobject.AbstractMyValueObject4;
 
 /**
  * Value object multiple attribute and without base.

@@ -37,8 +37,8 @@ class SrcVoBaseMethodsBigDecimal implements CodeSnippet {
         }
         this.typeName = vo.name
         this.baseName = vo.baseType.name
-        ctx.requiresReference(vo.uniqueName)
-        ctx.requiresReference(vo.baseType.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(vo))
+        ctx.requiresReference(TypeKeys.refKey(vo.baseType))
         ctx.requiresImport("org.jspecify.annotations.Nullable")
     }
 

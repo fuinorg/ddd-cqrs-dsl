@@ -44,7 +44,7 @@ class SrcMethodSignature implements CodeSnippet {
         if (methodData.returnType === null) {
             this.returnType = "void"
         } else {
-            ctx.requiresReference(methodData.returnType.type.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(methodData.returnType.type))
             val generics = methodData.returnType.generics
             var String type
             if (generics === null) {
@@ -56,7 +56,7 @@ class SrcMethodSignature implements CodeSnippet {
                         sb.append(", ")
                     }
                     sb.append(arg.name)
-                    ctx.requiresReference(arg.uniqueName)
+                    ctx.requiresReference(TypeKeys.refKey(arg))
                 }
                 type = methodData.returnType.type.name + "<" + sb + ">"
             }

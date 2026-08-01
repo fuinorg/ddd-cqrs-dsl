@@ -20,7 +20,6 @@ package p.shared.domain.x.entityid;
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
 import org.jspecify.annotations.Nullable;
-import p.x.entityid.AbstractMyEntity3Id;
 
 /**
  * Entity ID multiple attributes and base.

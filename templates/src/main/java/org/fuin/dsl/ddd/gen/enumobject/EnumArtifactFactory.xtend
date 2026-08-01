@@ -21,12 +21,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcGetters
 
 class EnumArtifactFactory extends AbstractSource<EnumObject> {
 
     override getModelType() {
         typeof(EnumObject)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_ENUM
     }
 
     override create(EnumObject enu, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -37,7 +42,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(enu.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(enu), fqn)
 
         if (preparationRun) {
 

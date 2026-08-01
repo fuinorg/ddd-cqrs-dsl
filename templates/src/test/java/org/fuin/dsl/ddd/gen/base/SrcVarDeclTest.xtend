@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -31,9 +32,9 @@ class SrcVarDeclTest {
     def void testCreateWithConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.a.types.String", "java.lang.String")
-        refReg.putReference("p.a.b.AnyConstraint", "x.y.z.AnyConstraint")
+        refReg.putReference(TypeKeys.refKey("p.a.b.AnyConstraint", TypeKeys.JAVA_CONSTRAINT), "x.y.z.AnyConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -58,9 +59,9 @@ class SrcVarDeclTest {
     def void testCreateWithoutConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.a.types.String", "java.lang.String")
-        refReg.putReference("p.a.b.AnyConstraint", "x.y.z.AnyConstraint")
+        refReg.putReference(TypeKeys.refKey("p.a.b.AnyConstraint", TypeKeys.JAVA_CONSTRAINT), "x.y.z.AnyConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -83,7 +84,7 @@ class SrcVarDeclTest {
     def void testCreateWithoutConstraintNullable() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
@@ -107,7 +108,7 @@ private String str3;
     def void testCreateWithXmlAttribute() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
@@ -136,7 +137,7 @@ private String str3;
     def void testCreateWithXmlElement() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.a.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 

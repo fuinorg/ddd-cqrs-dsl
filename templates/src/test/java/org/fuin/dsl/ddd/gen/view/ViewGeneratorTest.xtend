@@ -24,6 +24,7 @@ import org.fuin.srcgen4j.commons.GeneratedArtifact
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -62,7 +63,7 @@ class ViewGeneratorTest {
     private def List<GeneratedArtifact> generateView(String runtime, View view) {
         val Map<String, Object> context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("p.x.m.UserCreatedEvent", "com.example.UserCreatedEvent")
+        refReg.putReference(TypeKeys.refKey("p.x.m.UserCreatedEvent", TypeKeys.JAVA_EVENT), "com.example.UserCreatedEvent")
 
         val factories = <AbstractSource<EObject>>newArrayList
         factories.add(configured(new ViewArtifactFactory(), ViewArtifactFactory.name, runtime))

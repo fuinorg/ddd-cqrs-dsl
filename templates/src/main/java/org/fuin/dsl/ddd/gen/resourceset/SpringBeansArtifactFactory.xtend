@@ -18,8 +18,10 @@ import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
+import org.fuin.dsl.ddd.gen.script.CqrsScripts
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -50,6 +52,10 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         typeof(ResourceSet)
     }
 
+    override getTypeKey() {
+        TypeKeys.JAVA_SPRING_CONFIG
+    }
+
     override isIncremental() {
         false
     }
@@ -72,23 +78,22 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         while (it.hasNext) {
             val EObject container = it.next
             if (container.isElementContainer) {
-                val hint = srcGen4JHint(container)
-                if (hint !== null) {
-                    for (element : container.elements) {
-                        val type = typeForElement(hint, element)
-                        if (type !== null && type.module !== null) {
-                            val pkg = expandPackage(hint, type, container)
-                            if (element instanceof View) {
-                                project = container.projectName
-                                views.add(pkg + "." + element.name)
-                                controllers.add(pkg + "." + ArtifactNames.viewBaseName(element.name) + "Controller")
-                            } else if (element instanceof Aggregate) {
-                                project = container.projectName
-                                repositoryFactories.add(pkg + "." + element.name + "RepositoryFactory")
-                            } else if (element instanceof ProcessManager) {
-                                project = container.projectName
-                                processManagerViews.add(pkg + "." + element.name + "ManagerView")
-                            }
+                for (element : container.elements) {
+                    val typeKey = TypeKeys.primaryTypeKey(element)
+                    if (typeKey !== null) {
+                        val pkg = CqrsScripts.model2JavaPackage(element, typeKey)
+                        if (element instanceof View) {
+                            project = container.projectName
+                            views.add(pkg + "." + element.name)
+                            controllers.add(pkg + "." + ArtifactNames.viewBaseName(element.name) + "Controller")
+                        } else if (element instanceof Aggregate) {
+                            project = container.projectName
+                            repositoryFactories.add(
+                                CqrsScripts.model2JavaPackage(element, TypeKeys.JAVA_AGGREGATE_REPOSITORY_FACTORY)
+                                    + "." + element.name + "RepositoryFactory")
+                        } else if (element instanceof ProcessManager) {
+                            project = container.projectName
+                            processManagerViews.add(pkg + "." + element.name + "ManagerView")
                         }
                     }
                 }

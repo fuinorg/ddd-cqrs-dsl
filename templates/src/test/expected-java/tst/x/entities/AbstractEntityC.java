@@ -20,9 +20,9 @@ package p.command.core.domain.x.entities;
 import org.fuin.ddd4j.core.AbstractEntity;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
-import p.x.entities.AggregateX;
-import p.x.entities.AggregateXId;
-import p.x.entities.EntityCId;
+import p.shared.domain.x.entities.AggregateXId;
+import p.shared.domain.x.entities.EntityCCreatedEvent;
+import p.shared.domain.x.entities.EntityCId;
 
 /**
  * Entity C - With constructor, constraint and event.

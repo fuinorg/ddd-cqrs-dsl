@@ -10,7 +10,7 @@ import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.ddd.gen.base.Utils
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
@@ -33,7 +33,7 @@ class SrcServiceTest {
     def void testServiceA() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Service service = model.find(typeof(Service), "ServiceA")
         val SrcService testee = new SrcService(ctx, service)
@@ -59,7 +59,7 @@ class SrcServiceTest {
     def void testServiceB() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
         refReg.putReference("p.x.types.String", "java.lang.String")
         
@@ -97,7 +97,7 @@ class SrcServiceTest {
     def void testServiceC() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.List", "java.util.List")

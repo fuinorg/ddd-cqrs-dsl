@@ -28,8 +28,8 @@ class SrcVoBaseMethodsString implements CodeSnippet {
             throw new IllegalArgumentException("vo.base cannot be null")
         }
         this.typeName = vo.name
-        ctx.requiresReference(vo.uniqueName)
-        ctx.requiresReference(vo.baseType.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(vo))
+        ctx.requiresReference(TypeKeys.refKey(vo.baseType))
         ctx.requiresImport("org.jspecify.annotations.Nullable")
     }
 

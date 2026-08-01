@@ -12,6 +12,7 @@ import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -39,6 +40,10 @@ class ViewQuarkusApiArtifactFactory extends AbstractSource<View> {
         typeof(View)
     }
 
+    override getTypeKey() {
+        TypeKeys.JAVA_VIEW_REST_API_QUARKUS
+    }
+
     override create(View view, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val baseName = ArtifactNames.viewBaseName(view.name)
@@ -48,7 +53,7 @@ class ViewQuarkusApiArtifactFactory extends AbstractSource<View> {
 
         // Register the interface FQN so FinalViewArtifactFactory (a different module/package) can import it.
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(ArtifactNames.restApiRefKey(view.uniqueName, "quarkus"), fqn)
+        refReg.putReference(TypeKeys.refKey(view, TypeKeys.JAVA_VIEW_REST_API_QUARKUS), fqn)
 
         if (preparationRun) {
             return null

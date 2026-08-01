@@ -5,6 +5,7 @@ import java.util.List
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
@@ -102,7 +103,7 @@ class ViewRestSupport {
         if (method.returnType === null) {
             return "Void"
         }
-        ctx.requiresReference(method.returnType.type.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(method.returnType.type))
         val name = method.returnType.type.simpleName(ctx)
         if (method.returnType.generics === null) {
             return name
@@ -112,7 +113,7 @@ class ViewRestSupport {
             if (sb.length > 0) {
                 sb.append(", ")
             }
-            ctx.requiresReference(arg.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(arg))
             sb.append(arg.simpleName(ctx))
         }
         name + "<" + sb + ">"

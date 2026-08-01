@@ -10,12 +10,17 @@ import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ESJpaLiquibaseXmlArtifactFactory extends AbstractSource<Aggregate> implements ArtifactFactory<Aggregate> {
 
     override getModelType() {
         return typeof(Aggregate)
+    }
+
+    override getTypeKey() {
+        TypeKeys.RES_AGGREGATE_LIQUIBASE
     }
     
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {

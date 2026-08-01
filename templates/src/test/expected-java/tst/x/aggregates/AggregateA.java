@@ -17,7 +17,6 @@
  */
 package p.command.core.domain.x.aggregates;
 
-import p.x.aggregates.AbstractAggregateA;
 
 /**
  * Aggregate A.

@@ -27,7 +27,6 @@ import org.fuin.esc.api.HasSerializedDataTypeConstant;
 import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
-import p.x.ev.CustomerId;
 
 /**
  * Aggregate event A.

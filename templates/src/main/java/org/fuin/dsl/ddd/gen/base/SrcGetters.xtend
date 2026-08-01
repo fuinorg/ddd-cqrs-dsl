@@ -24,7 +24,7 @@ class SrcGetters implements CodeSnippet {
         this.modifiers = modifiers
         this.variables = new ArrayList<Variable>(variables)
         for (Variable attribute : variables) {
-            ctx.requiresReference(attribute.type.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(attribute.type))
         }
     }
 

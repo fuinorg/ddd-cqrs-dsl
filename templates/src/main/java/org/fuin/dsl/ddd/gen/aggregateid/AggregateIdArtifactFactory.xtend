@@ -22,12 +22,17 @@ import java.util.List
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateIdExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 class AggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     override getModelType() {
         typeof(AggregateId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_ID
     }
 
     override create(AggregateId aggregateId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -37,7 +42,7 @@ class AggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregateId.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(aggregateId), fqn)
 
         if (preparationRun) {
 
@@ -67,7 +72,7 @@ class AggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     def addReferences(CodeSnippetContext ctx, AggregateId entityId) {
         if (entityId.base !== null) {
-            ctx.requiresReference(entityId.uniqueName + "Converter")
+            // The "Converter" is a nested class of the generated id itself - no import needed.
         }
     }
 

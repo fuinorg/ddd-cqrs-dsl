@@ -20,9 +20,9 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
-import p.x.aggregates.AggregateDChangedEvent;
-import p.x.aggregates.AggregateDId;
-import p.x.aggregates.AggregateDRenamedEvent;
+import p.shared.domain.x.aggregates.AggregateDChangedEvent;
+import p.shared.domain.x.aggregates.AggregateDId;
+import p.shared.domain.x.aggregates.AggregateDRenamedEvent;
 
 /**
  * Aggregate D - Fires an event declared outside the method.

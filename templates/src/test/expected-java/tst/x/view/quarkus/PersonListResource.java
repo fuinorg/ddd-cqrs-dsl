@@ -23,11 +23,11 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import p.query.api.view.x.m.PersonListResourceApi;
+import p.shared.domain.x.m.PersonListItem;
+import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
 import p.x.m.List;
-import p.x.m.PersonListItem;
 import p.x.m.String;
-import p.x.m.UserId;
 
 /**
  * REST resource providing the PersonList read model. Implements {@link PersonListResourceApi}; the

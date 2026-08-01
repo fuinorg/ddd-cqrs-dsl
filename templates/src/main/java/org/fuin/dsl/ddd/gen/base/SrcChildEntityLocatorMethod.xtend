@@ -35,8 +35,8 @@ class SrcChildEntityLocatorMethod implements CodeSnippet {
             CqrsDslFactory.eINSTANCE.createParameter(entity.idTypeNullsafe, entity.idTypeNullsafe.name.toFirstLower, false)]
 
         ctx.requiresImport("org.fuin.ddd4j.ddd.ChildEntityLocator")
-        ctx.requiresReference(entity.uniqueName)
-        ctx.requiresReference(entity.idTypeNullsafe.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(entity))
+        ctx.requiresReference(TypeKeys.refKey(entity.idTypeNullsafe))
     }
 
     override toString() {

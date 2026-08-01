@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.24.0
+- **Breaking:** the `SrcGen4J` hint no longer describes where generated code goes with a `package` pattern and a `types` table. Two JavaScript functions decide instead, named by the hint and written next to the model: `model2JavaPackage(element, typeKey)` returns the Java package of a generated type, `artifact2Target(element, typeKey, artifactFactory)` the Maven module and folder its file is written to. A model that declares neither uses the mapping shipped with the templates, so most models need no hint at all. The two old keys are now rejected by the hint's JSON schema, which is what this release changes for the editor - an unmigrated model is reported here rather than generating into the wrong packages later.
+
 ## 1.23.1
 - A `dependency` declared on a `context` now applies to every file of that context, as it already did in the SrcGen4J build. Until now the editor only saw a `dependency` written in the same file, so a context split across files - the dependency in one, the modules importing its types in the others - had every one of those imports reported as `does not match any context, module or type` while code generation resolved them fine. A `local` directory is resolved relative to the file that declares the dependency.<br> Code completion after `import` now offers the contexts, modules and types a dependency provides. Completion runs on a non-physical copy of the edited file, and that copy has no location on disk, so the dependencies were dropped and only what the project itself declares was proposed.
 

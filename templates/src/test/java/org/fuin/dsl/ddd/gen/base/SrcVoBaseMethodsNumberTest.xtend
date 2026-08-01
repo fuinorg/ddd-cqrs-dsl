@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -31,10 +32,10 @@ class SrcVoBaseMethodsNumberTest {
     def void testString() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         refReg.putReference("p.y.types.Long", "java.lang.Long")
-        refReg.putReference("p.y.a.MyEntityId", "a.b.c.MyEntityId")
+        refReg.putReference(TypeKeys.refKey("p.y.a.MyEntityId", TypeKeys.JAVA_ENTITY_ID), "a.b.c.MyEntityId")
         val EntityId entityId = createModel().find(EntityId, "MyEntityId")
 
         val testee = new SrcVoBaseMethodsNumber(ctx, entityId)

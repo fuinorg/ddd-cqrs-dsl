@@ -20,8 +20,7 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.ddd4j.esc.EventStoreRepository;
 import org.fuin.esc.api.EventStore;
-import p.x.aggregates.AggregateC;
-import p.x.aggregates.AggregateCId;
+import p.shared.domain.x.aggregates.AggregateCId;
 
 /**
  * Repository that is capable of storing a {@link AggregateC}.

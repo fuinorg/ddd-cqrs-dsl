@@ -6,6 +6,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GenerateException
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 /**
@@ -35,6 +36,10 @@ class CombinedAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     override getModelType() {
         typeof(AggregateId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_ID
     }
 
     override init(ArtifactFactoryConfig config) {

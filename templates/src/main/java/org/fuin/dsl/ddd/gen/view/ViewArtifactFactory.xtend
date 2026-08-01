@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -31,6 +32,10 @@ class ViewArtifactFactory extends AbstractSource<View> {
         typeof(View)
     }
 
+    override getTypeKey() {
+        TypeKeys.JAVA_VIEW
+    }
+
     override create(View view, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val runtime = getVar("runtime", "spring")
@@ -40,7 +45,7 @@ class ViewArtifactFactory extends AbstractSource<View> {
         val events = if (view.projection === null) newArrayList else view.projection.events
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(view.uniqueName, pkg + "." + viewName)
+        refReg.putReference(TypeKeys.refKey(view), pkg + "." + viewName)
 
         if (preparationRun) {
             return null
@@ -74,7 +79,7 @@ class ViewArtifactFactory extends AbstractSource<View> {
         ctx.requiresImport("java.util.List")
         ctx.requiresImport("java.util.Set")
         for (Event event : events) {
-            ctx.requiresReference(event.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(event))
         }
         val cron = if (view.cron === null) "* * * * * *" else view.cron
         val projectionName = runtime + "-qry-" + baseName.toLowerCase

@@ -19,7 +19,6 @@ package p.shared.domain.x.enumobject;
 
 import java.util.List;
 import org.jspecify.annotations.Nullable;
-import p.x.enumobject.AbstractEnumB;
 
 /** Enumeration type B - With variables. */
 public final class EnumB extends AbstractEnumB {

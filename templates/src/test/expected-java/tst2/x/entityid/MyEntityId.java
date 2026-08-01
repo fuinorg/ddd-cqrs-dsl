@@ -27,7 +27,6 @@ import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
 import org.jspecify.annotations.Nullable;
-import p.x.entityid.MyEntityIdConverter;
 
 /**
  * Entity ID single attribute and base.

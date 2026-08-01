@@ -22,7 +22,6 @@ import nl.jqno.equalsverifier.Warning;
 import org.fuin.utils4j.Utils4J;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
-import x.valueobject.MySimpleStringValueObject;
 
 // CHECKSTYLE:OFF
 public final class MySimpleStringValueObjectTest {

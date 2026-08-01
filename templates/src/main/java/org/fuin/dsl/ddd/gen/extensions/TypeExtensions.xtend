@@ -2,6 +2,7 @@ package org.fuin.dsl.ddd.gen.extensions
 
 import org.fuin.dsl.cqrs.cqrsDsl.Type
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 
@@ -19,7 +20,7 @@ class TypeExtensions {
      * @return Simple name (Name without package).
      */
     def static String simpleName(Type type, CodeSnippetContext ctx) {
-        val String name = ctx.getReference(type.uniqueName)
+        val String name = ctx.getReference(TypeKeys.refKey(type))
         val int p = name.lastIndexOf('.')
         if (p == -1) {
             return name

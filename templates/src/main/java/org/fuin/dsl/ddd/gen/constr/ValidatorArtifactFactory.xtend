@@ -17,12 +17,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsTypeExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ValidatorArtifactFactory extends AbstractSource<Constraint> {
 
     override getModelType() {
         typeof(Constraint)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_CONSTRAINT_VALIDATOR
     }
 
     override create(Constraint constraint, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -42,7 +47,7 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
         val filename = fqn.replace('.', '/') + ".java";
         
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(constraint.uniqueName + "Validator", fqn)
+        refReg.putReference(TypeKeys.refKey(constraint, TypeKeys.JAVA_CONSTRAINT_VALIDATOR), fqn)
 
         if (preparationRun) {
 
@@ -67,10 +72,10 @@ class ValidatorArtifactFactory extends AbstractSource<Constraint> {
     }
 
     def addReferences(CodeSnippetContext ctx, Constraint constraint) {
-        ctx.requiresReference(constraint.uniqueName) 
-        ctx.requiresReference(constraint.input.iterator.next.uniqueName) 
+        ctx.requiresReference(TypeKeys.refKey(constraint)) 
+        ctx.requiresReference(TypeKeys.refKey(constraint.input.iterator.next)) 
         if (constraint.exception !== null) {
-            ctx.requiresReference(constraint.exception.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(constraint.exception))
         }
     }
 

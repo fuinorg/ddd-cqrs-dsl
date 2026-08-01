@@ -26,12 +26,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsTypeExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class EventTestArtifactFactory extends AbstractSource<Event> {
 
     override getModelType() {
         typeof(Event)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_EVENT_TEST
     }
 
     override create(Event event, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -45,7 +50,7 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(event.uniqueName + "Test", fqn)
+        refReg.putReference(TypeKeys.refKey(event, TypeKeys.JAVA_EVENT_TEST), fqn)
 
         if (preparationRun) {
 
@@ -91,9 +96,9 @@ class EventTestArtifactFactory extends AbstractSource<Event> {
     }
 
     def addReferences(CodeSnippetContext ctx, AbstractEntity entity, Event event) {
-        ctx.requiresReference(event.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(event))
         if (entity !== null) {
-            ctx.requiresReference(event.aggregate.idTypeNullsafe.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(event.aggregate.idTypeNullsafe))
             ctx.requiresReference(contextSegment(event.module).toFirstUpper + "EntityIdFactory")
         }
         for (v : event.attributes.nullSafe) {

@@ -7,6 +7,7 @@ import java.util.List
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint
 import org.fuin.dsl.cqrs.cqrsDsl.ConstraintInstance
+import org.fuin.dsl.ddd.gen.script.CqrsScripts
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
@@ -47,7 +48,7 @@ class ConstraintMappings {
      * @return Mappings, never {@literal null}, but may be empty.
      */
     static def ConstraintMappings of(Constraint constr) {
-        return parse(AbstractSource.srcGen4JHint(constr).constraintMappings)
+        return parse(CqrsScripts.constraintMappings(constr))
     }
 
     /**

@@ -20,7 +20,6 @@ package p.shared.domain.x.valueobject;
 import java.io.Serial;
 import java.math.BigDecimal;
 import org.jspecify.annotations.Nullable;
-import p.x.valueobject.AbstractMyDecimalValueObject;
 
 /**
  * Value object with a decimal base, which has no abstract base class in objects4j.

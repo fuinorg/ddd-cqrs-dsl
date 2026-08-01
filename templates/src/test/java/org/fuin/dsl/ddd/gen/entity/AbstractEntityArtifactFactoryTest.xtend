@@ -16,6 +16,7 @@ import org.fuin.srcgen4j.commons.DefaultContext
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -56,10 +57,6 @@ class AbstractEntityArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.entities.AggregateX", "p.x.entities.AggregateX")
-        refReg.putReference("p.x.entities.AggregateXId", "p.x.entities.AggregateXId")
-        refReg.putReference("p.x.entities." + entityName + "Id", "p.x.entities." + entityName + "Id")
-        refReg.putReference("p.x.entities.AnyConstraintViolatedException", "p.x.entities.AnyConstraintViolatedException")
         refReg.putReference("p.x.entities." + entityName + "CreatedEvent", "p.x.entities." + entityName + "Id")
 
         val AbstractEntityArtifactFactory testee = createTestee()

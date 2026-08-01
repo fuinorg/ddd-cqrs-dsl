@@ -94,7 +94,6 @@ class CommandArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.cmd.CustomerId", "p.x.cmd.CustomerId")
 
         testCreate(context, "CommandE")
 
@@ -107,7 +106,6 @@ class CommandArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.cmd.CustomerId", "p.x.cmd.CustomerId")
 
         testCreate(context, "CommandF")
 

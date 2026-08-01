@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -35,10 +36,10 @@ class SrcValidationAnnotationTest {
     def void testCreateNoArgConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("org.fuin.types.String", "java.lang.String")
         refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
-        refReg.putReference("org.fuin.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        refReg.putReference(TypeKeys.refKey("org.fuin.a.NoArgConstraint", TypeKeys.JAVA_CONSTRAINT), "a.b.c.NoArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -59,10 +60,10 @@ class SrcValidationAnnotationTest {
     def void testCreateOneArgConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("org.fuin.types.String", "java.lang.String")
         refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
-        refReg.putReference("org.fuin.a.OneArgConstraint", "a.b.c.OneArgConstraint")
+        refReg.putReference(TypeKeys.refKey("org.fuin.a.OneArgConstraint", TypeKeys.JAVA_CONSTRAINT), "a.b.c.OneArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -83,10 +84,10 @@ class SrcValidationAnnotationTest {
     def void testCreateTwoArgsConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("org.fuin.types.String", "java.lang.String")
         refReg.putReference("org.fuin.types.Integer", "java.lang.Integer")
-        refReg.putReference("org.fuin.a.TwoArgsConstraint", "a.b.c.TwoArgsConstraint")
+        refReg.putReference(TypeKeys.refKey("org.fuin.a.TwoArgsConstraint", TypeKeys.JAVA_CONSTRAINT), "a.b.c.TwoArgsConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -107,7 +108,7 @@ class SrcValidationAnnotationTest {
     def void testMinValue() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -128,7 +129,7 @@ class SrcValidationAnnotationTest {
     def void testMaxValue() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -149,7 +150,7 @@ class SrcValidationAnnotationTest {
     def void testValueRange() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -170,7 +171,7 @@ class SrcValidationAnnotationTest {
     def void testNegative() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -192,7 +193,7 @@ class SrcValidationAnnotationTest {
     def void testNegativeOrZero() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -213,7 +214,7 @@ class SrcValidationAnnotationTest {
     def void testPositive() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -235,7 +236,7 @@ class SrcValidationAnnotationTest {
     def void testPositiveOrZero() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -256,7 +257,7 @@ class SrcValidationAnnotationTest {
     def void testMinLength() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -277,7 +278,7 @@ class SrcValidationAnnotationTest {
     def void testMaxLength() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -298,7 +299,7 @@ class SrcValidationAnnotationTest {
     def void testExactLength() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -319,7 +320,7 @@ class SrcValidationAnnotationTest {
     def void testLength() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -340,7 +341,7 @@ class SrcValidationAnnotationTest {
     def void testNotNull() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -361,7 +362,7 @@ class SrcValidationAnnotationTest {
     def void testNull() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -382,7 +383,7 @@ class SrcValidationAnnotationTest {
     def void testAssertTrue() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -403,7 +404,7 @@ class SrcValidationAnnotationTest {
     def void testAssertFalse() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -424,7 +425,7 @@ class SrcValidationAnnotationTest {
     def void testStringNotEmpty() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -445,7 +446,7 @@ class SrcValidationAnnotationTest {
     def void testListNotEmpty() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -468,7 +469,7 @@ class SrcValidationAnnotationTest {
     def void testNotBlank() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -489,7 +490,7 @@ class SrcValidationAnnotationTest {
     def void testPattern() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")

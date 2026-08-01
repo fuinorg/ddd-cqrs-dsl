@@ -36,6 +36,7 @@
 		<ddd-4-java.version>0.8.0-SNAPSHOT</ddd-4-java.version>
 		<ddd-cqrs-dsl.version>1.0.0-SNAPSHOT</ddd-cqrs-dsl.version>
 		<esc.version>0.10.0-SNAPSHOT</esc.version>
+		<rhino.version>1.7.15</rhino.version>
 		<srcgen4j-core.version>0.5.0-SNAPSHOT</srcgen4j-core.version>
 		<units4j.version>0.12.0</units4j.version>
 
@@ -82,6 +83,17 @@
 			<groupId>org.fuin.dsl</groupId>
 			<artifactId>ddd-cqrs-dsl</artifactId>
 			<version>${ddd-cqrs-dsl.version}</version>
+		</dependency>
+
+		<!--
+			Runs the "model2JavaPackage" / "artifact2Target" functions a model declares in its "SrcGen4J"
+			hint. Rhino is pure Java with no native parts, so the same engine would also work inside the
+			Eclipse plugin, where OSGi rules out GraalVM/Truffle.
+		-->
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>${rhino.version}</version>
 		</dependency>
 
 		<dependency>

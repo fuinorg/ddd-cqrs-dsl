@@ -13,12 +13,17 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateIdExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class AggregateIdStreamFactoryArtifactFactory extends AbstractSource<AggregateId> {
 
     override getModelType() {
         typeof(AggregateId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_ID_STREAM_FACTORY
     }
 
     override create(AggregateId aggregateId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -32,7 +37,7 @@ class AggregateIdStreamFactoryArtifactFactory extends AbstractSource<AggregateId
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregateId.uniqueName + "StreamFactory", fqn)
+        refReg.putReference(TypeKeys.refKey(aggregateId, TypeKeys.JAVA_AGGREGATE_ID_STREAM_FACTORY), fqn)
 
         if (preparationRun) {
 
@@ -55,8 +60,8 @@ class AggregateIdStreamFactoryArtifactFactory extends AbstractSource<AggregateId
     }
 
     def addReferences(CodeSnippetContext ctx, AggregateId entityId) {
-        ctx.requiresReference(entityId.uniqueName)
-        ctx.requiresReference(entityId.aggregateNullsafe.uniqueName + "Stream")
+        ctx.requiresReference(TypeKeys.refKey(entityId))
+        ctx.requiresReference(TypeKeys.refKey(entityId.aggregateNullsafe, TypeKeys.JAVA_AGGREGATE_JPA_STREAM))
     }
 
     def create(SimpleCodeSnippetContext ctx, AggregateId id, String pkg, String className) {

@@ -21,7 +21,7 @@ class SrcHandleEventMethod implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, Event event) {
         this.name = event.name
-        ctx.requiresReference(event.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(event))
         ctx.requiresImport("org.fuin.ddd4j.core.ApplyEvent")
     }
 

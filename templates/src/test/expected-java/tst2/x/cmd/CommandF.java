@@ -30,7 +30,7 @@ import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
-import p.x.cmd.CustomerId;
+import p.shared.domain.x.cmd.CustomerId;
 
 /**
  * Command F - Targets an aggregate method and declares an attribute of its own on top, so both have to end up on the generated command: the method's parameters first, then the extra attribute.

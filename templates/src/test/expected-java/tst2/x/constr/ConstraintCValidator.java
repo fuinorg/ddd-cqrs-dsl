@@ -20,9 +20,6 @@ package p.shared.domain.x.constr;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Validator;
-import p.x.constr.CException;
-import p.x.constr.ConstraintC;
-import p.x.constr.ValueObjectC;
 
 /** Constraint C - Value object target - With exception - No variables */
 // CHECKSTYLE:OFF:LineLength

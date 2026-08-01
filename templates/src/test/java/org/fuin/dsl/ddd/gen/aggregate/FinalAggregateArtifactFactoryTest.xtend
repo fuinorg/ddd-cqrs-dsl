@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.DefaultContext
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -73,12 +74,6 @@ class FinalAggregateArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.aggregates." + abstractName, "p.x.aggregates." + abstractName)
-        refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
-        refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
-        refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
-        refReg.putReference("p.x.aggregates." + aggregateName + "RenamedEvent", "p.x.aggregates." + aggregateName + "RenamedEvent")
-        refReg.putReference("p.x.aggregates.AnyConstraintViolatedException", "p.x.aggregates.AnyConstraintViolatedException")
         // The two kinds of service a constructor or method can reference, registered here the way the
         // preparation run would (it does not happen in this isolated test):
         // - declared inline: a nested interface of the abstract aggregate, in scope by its simple name,
@@ -88,7 +83,6 @@ class FinalAggregateArtifactFactoryTest {
         refReg.putReference("p.x.aggregates.ChangeService", "ChangeService")
         // - declared outside the operation: a top-level interface of its own, so it is imported like
         //   any other type (see ServiceArtifactFactory).
-        refReg.putReference("p.x.aggregates.SharedService", "p.x.aggregates.SharedService")
 
         val FinalAggregateArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)

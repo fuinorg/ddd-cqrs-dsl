@@ -20,12 +20,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcXmlRootElement
 
 class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
     override getModelType() {
         typeof(ValueObject)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_VALUE_OBJECT
     }
 
     override create(ValueObject vo, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -38,7 +43,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(vo.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(vo), fqn)
 
         if (preparationRun) {
 
@@ -55,7 +60,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     }
 
     def addReferences(CodeSnippetContext ctx, ValueObject vo) {
-        ctx.requiresReference(vo.uniqueAbstractName)
+        ctx.requiresReference(TypeKeys.refKey(vo, TypeKeys.JAVA_VALUE_OBJECT_ABSTRACT))
     }
 
     def create(SimpleCodeSnippetContext ctx, Module ns, ValueObject vo, String pkg, String className, String abstractClassName) {

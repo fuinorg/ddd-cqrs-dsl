@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import p.query.api.view.x.m.PersonListControllerApi;
+import p.shared.domain.x.m.PersonListItem;
+import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
 import p.x.m.List;
-import p.x.m.PersonListItem;
 import p.x.m.String;
-import p.x.m.UserId;
 
 /**
  * REST controller providing the PersonList read model. Implements {@link PersonListControllerApi} and adds

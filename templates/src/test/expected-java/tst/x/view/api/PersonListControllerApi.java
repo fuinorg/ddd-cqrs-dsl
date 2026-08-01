@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import p.shared.domain.x.m.PersonListItem;
+import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
 import p.x.m.List;
-import p.x.m.PersonListItem;
 import p.x.m.String;
-import p.x.m.UserId;
 
 /**
  * REST contract for the "PersonList" view: an {@code @HttpExchange} interface usable by an

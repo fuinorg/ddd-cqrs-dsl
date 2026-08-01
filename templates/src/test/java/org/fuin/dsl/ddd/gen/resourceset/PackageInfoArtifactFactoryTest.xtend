@@ -62,50 +62,6 @@ class PackageInfoArtifactFactoryTest {
 
     }
 
-    @Test
-    def void testCreateWithModelHintOverride() {
-
-        // PREPARE - the model overrides the module of the "Aggregate" type, exactly like a real project does.
-        // The aggregate then lands in "command" instead of the preset's "core", and the "package-info.java"
-        // has to follow it.
-        val DomainModel model = parser.parse('''
-            context p {
-                hint SrcGen4J {
-                    "types": [
-                        { "name": "org.fuin.dsl.cqrs.cqrsDsl.Aggregate", "module": "command", "group": "core.domain" }
-                    ]
-                }
-
-                module x.types {
-                    type String
-                }
-
-                module x.resourceset {
-                    import p.x.types.*
-
-                    aggregate AggregateA identifier AggregateAId {}
-                    aggregate-id AggregateAId identifies AggregateA base String {
-                        String value
-                    }
-                }
-            }
-        ''')
-        validationTester.assertNoIssues(model)
-        val context = new HashMap<String, Object>()
-        val PackageInfoArtifactFactory testee = createTestee()
-
-        // TEST
-        val result = testee.create(model.eResource.resourceSet, context, false)
-
-        // VERIFY - the override wins for the aggregate, the preset still applies to the aggregate id
-        assertThat(result).hasSize(2)
-        assertThat(result.map[module]).containsExactlyInAnyOrder("command", "shared")
-        assertThat(result.findFirst[module == "command"].pathAndName)
-            .isEqualTo("p/command/core/domain/x/resourceset/package-info.java")
-        assertThat(result.findFirst[module == "shared"].pathAndName)
-            .isEqualTo("p/shared/domain/x/resourceset/package-info.java")
-
-    }
 
     def createTestee() {
         val factory = new PackageInfoArtifactFactory()

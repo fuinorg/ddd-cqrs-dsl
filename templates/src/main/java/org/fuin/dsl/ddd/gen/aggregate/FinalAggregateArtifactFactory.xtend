@@ -31,12 +31,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.OperationContextExtensions.*
 import java.util.ArrayList
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
 
     override getModelType() {
         return typeof(Aggregate)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE
     }
 
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -47,7 +52,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregate.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(aggregate), fqn)
 
         if (preparationRun) {
 
@@ -67,7 +72,7 @@ class FinalAggregateArtifactFactory extends AbstractSource<Aggregate> {
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
-        ctx.requiresReference(aggregate.uniqueAbstractName)
+        ctx.requiresReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_ABSTRACT))
     }
 
     def create(SimpleCodeSnippetContext ctx, Aggregate aggregate, String pkg, String className) {

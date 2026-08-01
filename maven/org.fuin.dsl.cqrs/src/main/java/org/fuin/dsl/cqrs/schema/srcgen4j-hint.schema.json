@@ -2,49 +2,24 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "https://www.fuin.org/dsl/cqrs/schema/srcgen4j-hint.schema.json",
 	"title": "SrcGen4J",
-	"description": "Configures the srcgen4j code generation: the package pattern, the DSL-constraint to bean-validation mappings, and, per DSL model type, the artifact factories to run and where their output goes. A model's hint is merged on top of the built-in 'srcgen4j-default.json' preset, so it may be partial.",
+	"description": "Configures the srcgen4j code generation. Where a generated type goes is decided by two JavaScript functions the model points at: 'model2JavaPackage' names its Java package, 'artifact2Target' the Maven module and folder its file is written to. Both are optional; without them the preset shipped with the templates applies. Which factories run at all is not part of the hint - that stays in the generator configuration.",
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
-		"package": {
+		"model2JavaPackage": {
 			"type": "string",
-			"description": "Package name pattern, e.g. '${context}.${mvnModule}.${group}.${module}'."
+			"minLength": 1,
+			"description": "Path of the script exporting 'model2JavaPackage(element, typeKey)', relative to this '.cqrs' file. Returns the Java package of the given kind of generated type. Resolved per declaring context, so an imported type is named the way its producer generated it - ship this script with the model."
+		},
+		"artifact2Target": {
+			"type": "string",
+			"minLength": 1,
+			"description": "Path of the script exporting 'artifact2Target(element, typeKey, artifactFactory)', relative to this '.cqrs' file. Returns { module, folder } - the Maven module the artifact is generated into and the folder inside it. Applies to this project's own output only."
 		},
 		"constraintMappings": {
 			"type": "array",
 			"items": { "type": "string" },
 			"description": "Mappings of DSL constraints to Java validation annotations."
-		},
-		"types": {
-			"type": "array",
-			"items": { "$ref": "#/$defs/type" }
-		}
-	},
-	"$defs": {
-		"type": {
-			"type": "object",
-			"additionalProperties": false,
-			"required": [ "name" ],
-			"properties": {
-				"name": { "type": "string", "minLength": 1, "description": "Fully qualified DSL model type name, e.g. 'org.fuin.dsl.cqrs.cqrsDsl.ValueObject'." },
-				"module": { "type": "string", "description": "Module the type belongs to." },
-				"group": { "type": "string", "description": "Group the type belongs to." },
-				"artifacts": {
-					"type": "array",
-					"items": { "$ref": "#/$defs/artifact" }
-				}
-			}
-		},
-		"artifact": {
-			"type": "object",
-			"additionalProperties": false,
-			"required": [ "artifactFactory" ],
-			"properties": {
-				"artifactFactory": { "type": "string", "minLength": 1, "description": "Fully qualified artifact factory class name." },
-				"folder": { "type": "string", "description": "Target folder the output is written to." },
-				"module": { "type": "string", "description": "Optional module override for this artifact." },
-				"group": { "type": "string", "description": "Optional group override for this artifact." }
-			}
 		}
 	}
 }

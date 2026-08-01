@@ -24,6 +24,7 @@ import org.fuin.srcgen4j.commons.GeneratedArtifact
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -66,7 +67,7 @@ class ProcessManagerGeneratorTest {
     private def List<GeneratedArtifact> generate(AbstractSource<?> factory, String factoryClassName, String runtime, EObject el) {
         val Map<String, Object> context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("p.x.m.UserCreatedEvent", "com.example.UserCreatedEvent")
+        refReg.putReference(TypeKeys.refKey("p.x.m.UserCreatedEvent", TypeKeys.JAVA_EVENT), "com.example.UserCreatedEvent")
 
         val config = new ArtifactFactoryConfig("artifact", factoryClassName, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))

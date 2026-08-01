@@ -18,7 +18,7 @@ class SrcThrowsExceptions implements CodeSnippet {
         this.exceptions = exceptions
         if (exceptions !== null) {
             for (Exception exception : exceptions) {
-                ctx.requiresReference(exception.uniqueName)
+                ctx.requiresReference(TypeKeys.refKey(exception))
             }
         }
     }

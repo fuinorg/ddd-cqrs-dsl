@@ -40,10 +40,10 @@ class SrcValidationAnnotation implements CodeSnippet {
                 ctx.requiresReference(name)
             }
         } else {
-            ctx.requiresReference(constraint.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(constraint))
             if (vars !== null) {
                 for (Attribute v : vars) {
-                    ctx.requiresReference(v.type.uniqueName)
+                    ctx.requiresReference(TypeKeys.refKey(v.type))
                 }
             }
         }
