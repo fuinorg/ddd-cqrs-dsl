@@ -350,6 +350,60 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
+   * A context may be split across files, and a dependency declared on it applies to all of them: the
+   * 'dependency' sits in one file, the module importing the artifact's types in another.
+   */
+  @Test
+  public void contextDependencyAppliesToTheOtherFilesOfTheContext() {
+    try {
+      final Path root = Files.createTempDirectory("remote-scope-split");
+      String _string = RemoteScopeResolutionTest.REMOTE_BILLING.toString();
+      Pair<String, String> _mappedTo = Pair.<String, String>of("model/money.cqrs", _string);
+      this.installResolver(root, Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo)));
+      final XtextResourceSet resourceSet = this.resourceSetProvider.get();
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("context consumer {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("dependency \"");
+      _builder.append(RemoteScopeResolutionTest.COORDINATE, "\t");
+      _builder.append("\"");
+      _builder.newLineIfNotEmpty();
+      _builder.append("}");
+      _builder.newLine();
+      this.parseHelper.parse(_builder, URI.createFileURI(root.resolve("aaa.cqrs").toString()), resourceSet);
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("context consumer {");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("module com.acme.sales {");
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("import remote.com.acme.billing.*");
+      _builder_1.newLine();
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("value-object Price {");
+      _builder_1.newLine();
+      _builder_1.append("\t\t\t");
+      _builder_1.append("Money amount");
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("}");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("}");
+      _builder_1.newLine();
+      _builder_1.append("}");
+      _builder_1.newLine();
+      final DomainModel model = this.parseHelper.parse(_builder_1, URI.createFileURI(root.resolve("sales.cqrs").toString()), resourceSet);
+      this.assertResolves(model, "Money");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
    * Without a dependency the artifact's types stay unresolved.
    */
   @Test

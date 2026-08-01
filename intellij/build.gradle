@@ -149,6 +149,17 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.23.1</b> &ndash; A <code>dependency</code> declared on a <code>context</code> now applies
+        to every file of that context, as it already did in the SrcGen4J build. Until now the editor
+        only saw a <code>dependency</code> written in the same file, so a context split across files
+        &ndash; the dependency in one, the modules importing its types in the others &ndash; had every
+        one of those imports reported as <code>does not match any context, module or type</code> while
+        code generation resolved them fine. A <code>local</code> directory is resolved relative to the file
+        that declares the dependency.<br>
+        Code completion after <code>import</code> now offers the contexts, modules and types a
+        dependency provides. Completion runs on a non-physical copy of the edited file, and that copy
+        has no location on disk, so the dependencies were dropped and only what the project itself
+        declares was proposed.</li>
     <li><b>1.23.0</b> &ndash; <b>Breaking:</b> the model has two levels instead of three.
         <code>project</code> is gone and the inner block is a <code>module</code>:
         <code>project P { context C { namespace N { X } } }</code> becomes

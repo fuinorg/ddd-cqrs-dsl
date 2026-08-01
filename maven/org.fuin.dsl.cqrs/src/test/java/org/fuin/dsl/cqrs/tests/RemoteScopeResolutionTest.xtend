@@ -194,6 +194,36 @@ class RemoteScopeResolutionTest {
 		'''), "Money")
 	}
 
+	/**
+	 * A context may be split across files, and a dependency declared on it applies to all of them: the
+	 * 'dependency' sits in one file, the module importing the artifact's types in another.
+	 */
+	@Test
+	def void contextDependencyAppliesToTheOtherFilesOfTheContext() {
+		val root = Files.createTempDirectory("remote-scope-split")
+		installResolver(root, #{"model/money.cqrs" -> REMOTE_BILLING.toString})
+
+		val resourceSet = resourceSetProvider.get
+		parseHelper.parse('''
+			context consumer {
+				dependency "«COORDINATE»"
+			}
+		''', URI.createFileURI(root.resolve("aaa.cqrs").toString), resourceSet)
+		val model = parseHelper.parse('''
+			context consumer {
+				module com.acme.sales {
+					import remote.com.acme.billing.*
+
+					value-object Price {
+						Money amount
+					}
+				}
+			}
+		''', URI.createFileURI(root.resolve("sales.cqrs").toString), resourceSet)
+
+		assertResolves(model, "Money")
+	}
+
 	/** Without a dependency the artifact's types stay unresolved. */
 	@Test
 	def void fallsBackWithoutDependency() {
