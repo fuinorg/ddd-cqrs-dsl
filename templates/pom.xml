@@ -83,6 +83,21 @@
 			<groupId>org.fuin.dsl</groupId>
 			<artifactId>ddd-cqrs-dsl</artifactId>
 			<version>${ddd-cqrs-dsl.version}</version>
+			<exclusions>
+				<!--
+					These templates only ever run inside a Maven build, where the DSL cannot resolve
+					through MIMA anyway (Maven's classes and this jar's collide in the plugin realm) and
+					takes a dependency from the local repository instead. Keeping the HTTP transport out
+					keeps HttpClient out of the plugin realm with it - otherwise Maven's own resolver
+					picks those classes up for the *next* module of the reactor and fails with
+					"BasicAuthCache cannot be cast to AuthCache". The console keeps the transport: it
+					depends on the DSL directly and does resolve remotely.
+				-->
+				<exclusion>
+					<groupId>org.apache.maven.resolver</groupId>
+					<artifactId>maven-resolver-transport-http</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--
