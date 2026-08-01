@@ -19,7 +19,6 @@ package p.shared.domain.x.enumobject;
 
 import java.util.List;
 import org.jspecify.annotations.Nullable;
-import p.x.enumobject.AbstractEnumD;
 
 /** Enumeration type D - With integer base type. */
 public final class EnumD extends AbstractEnumD {

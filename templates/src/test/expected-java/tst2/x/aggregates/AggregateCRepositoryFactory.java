@@ -20,7 +20,6 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.esc.api.EventStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import p.x.aggregates.AggregateCRepository;
 
 /**
  * Creates a AggregateCRepository.

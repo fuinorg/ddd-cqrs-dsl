@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -32,9 +33,9 @@ class SrcAbstractHandleEventMethodsTest {
     def void testCreate() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.x.a.DidSomethingEvent", "a.b.c.DidSomethingEvent")
-        refReg.putReference("p.x.a.SomethingHappenedEvent", "a.b.c.SomethingHappenedEvent")
+        val refReg = new ComputingCodeReferenceRegistry()
+        refReg.putReference(TypeKeys.refKey("p.x.a.DidSomethingEvent", TypeKeys.JAVA_EVENT), "a.b.c.DidSomethingEvent")
+        refReg.putReference(TypeKeys.refKey("p.x.a.SomethingHappenedEvent", TypeKeys.JAVA_EVENT), "a.b.c.SomethingHappenedEvent")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Aggregate aggregate = model().find(Aggregate, "MyAggregate")
         val SrcAbstractHandleEventMethods testee = new SrcAbstractHandleEventMethods(ctx, aggregate.allEvents)

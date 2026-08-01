@@ -6,6 +6,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GenerateException
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 /**
@@ -34,6 +35,10 @@ class CombinedValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
     override getModelType() {
         typeof(ValueObject)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_VALUE_OBJECT
     }
 
     override init(ArtifactFactoryConfig config) {

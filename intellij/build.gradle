@@ -149,6 +149,15 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.24.0</b> &ndash; <b>Breaking:</b> the <code>SrcGen4J</code> hint no longer describes where
+        generated code goes with a <code>package</code> pattern and a <code>types</code> table. Two
+        JavaScript functions decide instead, named by the hint and written next to the model:
+        <code>model2JavaPackage(element, typeKey)</code> returns the Java package of a generated type,
+        <code>artifact2Target(element, typeKey, artifactFactory)</code> the Maven module and folder its
+        file is written to. A model that declares neither uses the mapping shipped with the templates,
+        so most models need no hint at all. The two old keys are now rejected by the hint's JSON schema,
+        which is what this release changes for the editor - an unmigrated model is reported here rather
+        than generating into the wrong packages later.</li>
     <li><b>1.23.1</b> &ndash; A <code>dependency</code> declared on a <code>context</code> now applies
         to every file of that context, as it already did in the SrcGen4J build. Until now the editor
         only saw a <code>dependency</code> written in the same file, so a context split across files

@@ -23,7 +23,6 @@ import org.fuin.ddd4j.core.HasEntityTypeConstant;
 import org.fuin.objects4j.common.HasPublicStaticIsValidMethod;
 import org.fuin.objects4j.common.HasPublicStaticValueOfMethod;
 import org.jspecify.annotations.Nullable;
-import p.x.aggregateid.AbstractMy4AggregateId;
 
 /**
  * Aggregate ID multiple attribute and without base.

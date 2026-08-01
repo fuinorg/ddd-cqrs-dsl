@@ -65,10 +65,7 @@ class EventTestArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
-        refReg.putReference("p.x.ev." + eventName, "p.x.ev." + eventName)
         refReg.putReference("XEntityIdFactory", "p.x.ev.XEntityIdFactory")
-        refReg.putReference("p.x.ev.MyString", "p.x.ev.MyString")
         val EventTestArtifactFactory testee = createTestee(true, true, true)
         val Event event = model.find(typeof(Event), eventName)
 

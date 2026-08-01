@@ -13,12 +13,17 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ServiceArtifactFactory extends AbstractSource<Service> {
 
     override getModelType() {
         typeof(Service)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_SERVICE
     }
 
     override create(Service service, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -35,7 +40,7 @@ class ServiceArtifactFactory extends AbstractSource<Service> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(service.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(service), fqn)
 
         if (preparationRun) {
 

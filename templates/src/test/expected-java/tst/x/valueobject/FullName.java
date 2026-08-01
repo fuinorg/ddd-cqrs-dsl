@@ -22,7 +22,6 @@ import org.fuin.objects4j.ui.Examples;
 import org.fuin.objects4j.ui.Label;
 import org.fuin.objects4j.ui.ShortLabel;
 import org.fuin.objects4j.ui.Tooltip;
-import p.x.valueobject.AbstractFullName;
 
 /**
  * A person's full nomenclature, also known as a personal name.

@@ -27,7 +27,6 @@ import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.common.ValueObject;
 import org.fuin.objects4j.core.AbstractStringValueObject;
 import org.jspecify.annotations.Nullable;
-import p.x.aggregateid.MyAggregate3IdConverter;
 
 /**
  * Aggregate ID multiple attributes and base.

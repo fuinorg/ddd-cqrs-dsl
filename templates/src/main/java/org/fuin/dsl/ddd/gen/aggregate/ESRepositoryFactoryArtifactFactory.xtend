@@ -13,12 +13,17 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> implements ArtifactFactory<Aggregate> {
 
     override getModelType() {
         return typeof(Aggregate)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_REPOSITORY_FACTORY
     }
 
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -30,7 +35,7 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregate.uniqueName + "RepositoryFactory", fqn)
+        refReg.putReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_REPOSITORY_FACTORY), fqn)
 
         if (preparationRun) {
 
@@ -59,7 +64,7 @@ class ESRepositoryFactoryArtifactFactory extends AbstractSource<Aggregate> imple
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
-        ctx.requiresReference(aggregate.uniqueName + "Repository")
+        ctx.requiresReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_REPOSITORY))
     }
 
     def create(SimpleCodeSnippetContext ctx, Aggregate aggregate, String pkg, String className, String repositoryName) {

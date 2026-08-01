@@ -30,7 +30,7 @@ import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
-import p.x.cmd.CustomerId;
+import p.shared.domain.x.cmd.CustomerId;
 
 /**
  * Command E - Targets an aggregate method, so its attributes are the method's parameters rather than its own. That is a different path through the generator.

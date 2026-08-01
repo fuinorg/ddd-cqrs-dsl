@@ -30,8 +30,6 @@ import org.fuin.esc.api.SerializedDataType;
 import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
-import p.x.ev.CustomerId;
-import p.x.ev.MyString;
 
 /**
  * Event H - Copies the operation's parameters and declares an attribute of its own on top. The generated event has to carry both: the parameters first, then the extra attribute. Its message renders one of each, so an attribute silently dropped here would leave a placeholder nothing supplies.

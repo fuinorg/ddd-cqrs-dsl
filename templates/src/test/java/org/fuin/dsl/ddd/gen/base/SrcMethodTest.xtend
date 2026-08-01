@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -31,10 +32,10 @@ class SrcMethodTest {
     def void testCreate() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.x.a.MyAggregateId", "a.b.c.MyAggregateId")
-        refReg.putReference("p.x.a.MyValueObject", "a.b.c.MyValueObject")
-        refReg.putReference("p.x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
+        val refReg = new ComputingCodeReferenceRegistry()
+        refReg.putReference(TypeKeys.refKey("p.x.a.MyAggregateId", TypeKeys.JAVA_AGGREGATE_ID), "a.b.c.MyAggregateId")
+        refReg.putReference(TypeKeys.refKey("p.x.a.MyValueObject", TypeKeys.JAVA_VALUE_OBJECT), "a.b.c.MyValueObject")
+        refReg.putReference(TypeKeys.refKey("p.x.a.ConstraintViolatedException", TypeKeys.JAVA_EXCEPTION), "a.b.c.ConstraintViolatedException")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Aggregate aggregate = model().find(Aggregate, "MyAggregate")
         val method = aggregate.methods.get(0)
@@ -70,10 +71,10 @@ class SrcMethodTest {
     def void testCreateAbstract() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.x.a.MyAggregateId", "a.b.c.MyAggregateId")
-        refReg.putReference("p.x.a.MyValueObject", "a.b.c.MyValueObject")
-        refReg.putReference("p.x.a.ConstraintViolatedException", "a.b.c.ConstraintViolatedException")
+        val refReg = new ComputingCodeReferenceRegistry()
+        refReg.putReference(TypeKeys.refKey("p.x.a.MyAggregateId", TypeKeys.JAVA_AGGREGATE_ID), "a.b.c.MyAggregateId")
+        refReg.putReference(TypeKeys.refKey("p.x.a.MyValueObject", TypeKeys.JAVA_VALUE_OBJECT), "a.b.c.MyValueObject")
+        refReg.putReference(TypeKeys.refKey("p.x.a.ConstraintViolatedException", TypeKeys.JAVA_EXCEPTION), "a.b.c.ConstraintViolatedException")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val Aggregate aggregate = model().find(Aggregate, "MyAggregate")
         val method = aggregate.methods.get(0)

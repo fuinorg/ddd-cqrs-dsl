@@ -1,6 +1,7 @@
 package org.fuin.dsl.ddd.gen.view
 
 import org.fuin.dsl.cqrs.cqrsDsl.View
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.AbstractJpaTableArtifactFactory
 
 /**
@@ -13,6 +14,10 @@ class JpaViewTableArtifactFactory extends AbstractJpaTableArtifactFactory<View> 
 
     override getModelType() {
         typeof(View)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_VIEW_JPA_TABLE
     }
 
     override protected jpaHints(View view) {

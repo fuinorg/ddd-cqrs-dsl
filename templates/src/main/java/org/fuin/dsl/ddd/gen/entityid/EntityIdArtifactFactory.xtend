@@ -22,12 +22,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityIdExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class EntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     override getModelType() {
         typeof(EntityId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_ENTITY_ID
     }
 
     override create(EntityId entityId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -38,7 +43,7 @@ class EntityIdArtifactFactory extends AbstractSource<EntityId> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(entityId.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(entityId), fqn)
 
         if (preparationRun) {
 
@@ -68,7 +73,7 @@ class EntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     def addReferences(CodeSnippetContext ctx, EntityId entityId) {
         if (entityId.base !== null) {
-            ctx.requiresReference(entityId.uniqueName + "Converter")        
+            // The "Converter" is a nested class of the generated id itself - no import needed.
         }
     }
 

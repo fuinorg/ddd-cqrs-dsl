@@ -11,6 +11,7 @@ import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.cqrs.cqrsDsl.Event
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
 import org.fuin.dsl.ddd.gen.base.SrcBuilderSetters
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 /**
  * Creates a builder snippet for a event.
@@ -35,7 +36,7 @@ class SrcEventBuilder implements CodeSnippet {
             ctx.requiresImport("org.fuin.ddd4j.jackson.AbstractDomainEvent")        
         }
         
-        ctx.requiresReference(event.entityIdType.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(event.entityIdType))
         
     }
 

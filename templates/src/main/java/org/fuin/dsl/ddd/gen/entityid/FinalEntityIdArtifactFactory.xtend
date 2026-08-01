@@ -18,12 +18,17 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     override getModelType() {
         typeof(EntityId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_ENTITY_ID
     }
 
     override create(EntityId entityId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -35,7 +40,7 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(entityId.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(entityId), fqn)
 
         if (preparationRun) {
 
@@ -61,9 +66,9 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     def addReferences(CodeSnippetContext ctx, EntityId entityId) {
         if (entityId.base !== null && options.jaxb) {
-            ctx.requiresReference(entityId.uniqueName + "Converter")
+            // The "Converter" is a nested class of the generated id itself - no import needed.
         }
-        ctx.requiresReference(entityId.uniqueAbstractName)
+        ctx.requiresReference(TypeKeys.refKey(entityId, TypeKeys.JAVA_ENTITY_ID_ABSTRACT))
     }
 
     def create(SimpleCodeSnippetContext ctx, EntityId id, String pkg, String className, String abstractClassName) {

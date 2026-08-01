@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.ArrayList
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ class SrcInvokeMethodTest {
     def void testEmpty() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val names = new ArrayList<String>()
         val testee = new SrcInvokeMethod(ctx, "super", names)
@@ -30,7 +30,7 @@ class SrcInvokeMethodTest {
     def void testOne() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val names = new ArrayList<String>()
         names.add("a")
@@ -48,7 +48,7 @@ class SrcInvokeMethodTest {
     def void testMultiple() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val names = new ArrayList<String>()
         names.add("a")

@@ -24,6 +24,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcMethods
 
 /**
@@ -35,6 +36,10 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
         return typeof(Aggregate)
     }
 
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_ABSTRACT
+    }
+
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val className = aggregate.abstractName
@@ -43,7 +48,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregate.uniqueAbstractName, fqn)
+        refReg.putReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_ABSTRACT), fqn)
         // A service declared inline in a constructor or method is generated as a nested interface of
         // this class (see SrcServices below), and ServiceArtifactFactory deliberately creates no
         // top-level file for it. An operation referencing such a service takes it as a parameter, and
@@ -51,7 +56,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
         // in scope by its simple name. It is therefore registered unqualified: no import is possible
         // (nor needed), and SrcImports drops a reference without a package.
         for (service : aggregate.services.nullSafe) {
-            refReg.putReference(service.uniqueName, service.name)
+            refReg.putReference(TypeKeys.refKey(service), service.name)
         }
 
         if (preparationRun) {
@@ -75,7 +80,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
-        ctx.requiresReference(aggregate.idTypeNullsafe.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(aggregate.idTypeNullsafe))
     }
 
     /**

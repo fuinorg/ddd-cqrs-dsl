@@ -20,8 +20,8 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
-import p.x.aggregates.AggregateCCreatedEvent;
-import p.x.aggregates.AggregateCId;
+import p.shared.domain.x.aggregates.AggregateCCreatedEvent;
+import p.shared.domain.x.aggregates.AggregateCId;
 
 /**
  * Aggregate C - With constructor, constraint and event.

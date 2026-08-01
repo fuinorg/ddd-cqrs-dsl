@@ -50,7 +50,6 @@ class SimpleStringValueObjectArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.constr.Length", "p.x.constr.Length")
         refReg.putReference("p.x.valueobject." + name + "Converter",
             "p.x.valueobject." + name + "Converter")
 

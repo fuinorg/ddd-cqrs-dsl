@@ -73,15 +73,10 @@ class AbstractAggregateArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.aggregates." + aggregateName + "Id", "p.x.aggregates." + aggregateName + "Id")
-        refReg.putReference("p.x.aggregates." + aggregateName + "CreatedEvent", "p.x.aggregates." + aggregateName + "CreatedEvent")
-        refReg.putReference("p.x.aggregates." + aggregateName + "ChangedEvent", "p.x.aggregates." + aggregateName + "ChangedEvent")
-        refReg.putReference("p.x.aggregates." + aggregateName + "RenamedEvent", "p.x.aggregates." + aggregateName + "RenamedEvent")
         // A service declared outside the operation is a top-level interface, registered by
         // ServiceArtifactFactory and imported like any other type. The inline ones need no entry here:
         // the factory under test registers those itself, unqualified, because they end up nested in the
         // class it generates.
-        refReg.putReference("p.x.aggregates.SharedService", "p.x.aggregates.SharedService")
 
         val AbstractAggregateArtifactFactory testee = createTestee()
         val Aggregate aggregate = model.find(typeof(Aggregate), aggregateName)

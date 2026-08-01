@@ -42,7 +42,6 @@ class ESRepositoryFactoryArtifactFactoryTest {
         val className = repoClassName + "Factory"
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("p.x.aggregates." + repoClassName, "p.x.aggregates." + repoClassName)
         refReg.putReference("p.XEventRegistry", "p.x.resourceset.XEventRegistry")
 
         val ESRepositoryFactoryArtifactFactory testee = createTestee()

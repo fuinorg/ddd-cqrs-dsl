@@ -67,6 +67,11 @@ class CtxExternalTypes extends AbstractSource<ResourceSet> {
         typeof(ResourceSet)
     }
 
+    /** Registers external type mappings only - nothing is generated, so there is no artifact kind. */
+    override getTypeKey() {
+        null
+    }
+
     override isIncremental() {
         false
     }

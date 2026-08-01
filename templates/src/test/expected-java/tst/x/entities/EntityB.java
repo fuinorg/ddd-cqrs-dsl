@@ -17,9 +17,7 @@
  */
 package p.command.core.domain.x.entities;
 
-import p.x.entities.AbstractEntityB;
-import p.x.entities.AggregateX;
-import p.x.entities.EntityBId;
+import p.shared.domain.x.entities.EntityBId;
 
 /**
  * Entity B - With variables.

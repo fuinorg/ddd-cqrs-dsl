@@ -9,10 +9,11 @@ import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -34,9 +35,9 @@ class SrcParamDeclTest {
     def void testCreateNotNullWithConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.y.types.String", "java.lang.String")
-        refReg.putReference("p.y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        refReg.putReference(TypeKeys.refKey("p.y.a.NoArgConstraint", TypeKeys.JAVA_CONSTRAINT), "a.b.c.NoArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -56,9 +57,9 @@ class SrcParamDeclTest {
     def void testCreateNullableWithConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.y.types.String", "java.lang.String")
-        refReg.putReference("p.y.a.NoArgConstraint", "a.b.c.NoArgConstraint")
+        refReg.putReference(TypeKeys.refKey("p.y.a.NoArgConstraint", TypeKeys.JAVA_CONSTRAINT), "a.b.c.NoArgConstraint")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
         val ValueObject valueObject = createModel().find(ValueObject, "MyValueObject")
@@ -78,7 +79,7 @@ class SrcParamDeclTest {
     def void testCreateNotNullWithoutConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.y.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 
@@ -99,7 +100,7 @@ class SrcParamDeclTest {
     def void testCreateNullableWithoutConstraint() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.y.types.String", "java.lang.String")
         val ctx = new SimpleCodeSnippetContext(refReg)
 

@@ -19,7 +19,6 @@ package p.shared.domain.x.valueobject;
 
 import java.io.Serial;
 import org.jspecify.annotations.Nullable;
-import p.x.valueobject.AbstractMyValueObject;
 
 /**
  * Value object single attribute and base.

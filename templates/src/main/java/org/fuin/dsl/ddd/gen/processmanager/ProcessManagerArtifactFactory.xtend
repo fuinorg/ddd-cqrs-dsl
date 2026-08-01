@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -26,6 +27,10 @@ class ProcessManagerArtifactFactory extends AbstractSource<ProcessManager> {
 
     override getModelType() {
         typeof(ProcessManager)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_PROCESS_MANAGER
     }
 
     override create(ProcessManager pm, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -71,7 +76,7 @@ class ProcessManagerArtifactFactory extends AbstractSource<ProcessManager> {
         ctx.requiresImport("org.fuin.cqrs4j.core.CommandOutbox")
         ctx.requiresImport("org.fuin.objects4j.common.ThreadSafe")
         for (event : events) {
-            ctx.requiresReference(event.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(event))
         }
         val classAnnotations = if (runtime == "quarkus") {
                 ctx.requiresImport("jakarta.enterprise.context.Dependent")

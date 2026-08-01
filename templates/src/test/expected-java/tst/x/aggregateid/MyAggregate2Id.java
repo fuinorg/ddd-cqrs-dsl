@@ -19,7 +19,6 @@ package p.shared.domain.x.aggregateid;
 
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
-import p.x.aggregateid.AbstractMy2AggregateId;
 
 /**
  * Aggregate ID single attribute and without base.

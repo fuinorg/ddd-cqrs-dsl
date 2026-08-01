@@ -3,22 +3,21 @@ package org.fuin.dsl.ddd.gen.base
 import java.util.ArrayList
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
-import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
-import org.fuin.dsl.cqrs.cqrsDsl.Hint
 import org.fuin.dsl.cqrs.cqrsDsl.Module
+import org.fuin.dsl.ddd.gen.script.CqrsScripts
 import org.fuin.srcgen4j.commons.ArtifactFactory
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.GeneratedArtifact
+import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.PrimaryResources
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 
 abstract class AbstractSource<T> implements ArtifactFactory<T> {
 
     String artifactName;
 
-    String factoryClassName;
+    protected String factoryClassName;
 
     String module;
 
@@ -66,25 +65,33 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     /**
-     * Creates a generated artifact, taking the target module and folder from the project's "SrcGen4J"
-     * generator hint when a matching type entry exists: the hint type's "module" becomes the target
-     * module and the matching artifact's "folder" becomes the target folder. When there is no matching
-     * hint, the module and folder from the {@link ArtifactFactoryConfig} are used as a fallback.
+     * Creates a generated artifact, asking the model's <code>artifact2Target</code> script where it
+     * belongs: it answers with the target Maven module and the folder inside it.
      *
      * @param filename Relative path and filename to write the source code to.
      * @param data Generated data.
-     * @param ns Module the generated element belongs to (drives the hint lookup).
+     * @param el Element the artifact is generated for.
      *
      * @return New generated artifact.
      */
     protected def GeneratedArtifact newArtifact(String filename, byte[] data, EObject el) {
-        var String mod = module
-        val type = matchingType(srcGen4JHint(el))
-        val effMod = effectiveModule(type)
-        if (effMod !== null) {
-            mod = effMod
-        }
-        return newArtifact(filename, data, mod, targetFolder(el))
+        return newArtifact(filename, data, el, getTypeKey())
+    }
+
+    /**
+     * Creates a generated artifact of a kind other than this factory's own, for a factory that emits
+     * more than one.
+     *
+     * @param filename Relative path and filename to write the source code to.
+     * @param data Generated data.
+     * @param el Element the artifact is generated for.
+     * @param typeKey Kind of artifact - see {@link TypeKeys}.
+     *
+     * @return New generated artifact.
+     */
+    protected def GeneratedArtifact newArtifact(String filename, byte[] data, EObject el, String typeKey) {
+        val target = CqrsScripts.artifact2Target(el, typeKey, factoryClassName)
+        return newArtifact(filename, data, target.module, target.folder)
     }
 
     /**
@@ -103,23 +110,51 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
     }
 
     /**
-     * Determines the target folder for artifacts of this factory: the folder of the matching hint artifact
-     * entry, or the folder from the {@link ArtifactFactoryConfig} as a fallback.
+     * Determines the target folder for artifacts of this factory, asking the model's
+     * <code>artifact2Target</code> script.
      *
-     * @param ns Module the generated element belongs to (drives the hint lookup).
+     * @param el Element the artifact is generated for.
      *
      * @return Folder name.
      */
     protected def String targetFolder(EObject el) {
-        val artifact = matchingArtifact(matchingType(srcGen4JHint(el)))
-        if (artifact !== null && artifact.folder !== null) {
-            return artifact.folder
-        }
-        return folder
+        return CqrsScripts.artifact2Target(el, getTypeKey(), factoryClassName).folder
     }
+
+    /**
+     * The kind of artifact this factory creates, as one of the keys of {@link TypeKeys}. It selects the
+     * package (<code>model2JavaPackage</code>) and the target (<code>artifact2Target</code>) of
+     * everything the factory emits, and names the type in the code reference registry.
+     *
+     * @return Type key, or <code>null</code> for a factory that emits nothing of its own.
+     */
+    def String getTypeKey()
 
     override isIncremental() {
         true
+    }
+
+    /**
+     * The fully qualified name a type was registered under, failing when nothing is registered.
+     * <p>
+     * {@link org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext} answers an unknown key with the key
+     * itself, which turns a missing registration into an import of the model's own unique name - a
+     * silently wrong import that nothing reports. Everything that must resolve goes through here
+     * instead.
+     *
+     * @param refReg Registry to look the key up in.
+     * @param refKey Key built with {@link TypeKeys#refKey(String, String)}.
+     *
+     * @return Fully qualified name, never <code>null</code>.
+     */
+    protected def String requiredReference(CodeReferenceRegistry refReg, String refKey) {
+        val fqn = refReg.getReference(refKey)
+        if (fqn === null) {
+            throw new IllegalStateException("Nothing is registered under '" + refKey +
+                "'. Either the artifact factory creating that type is not configured, or the type key " +
+                "used to reference it differs from the one it was registered with.")
+        }
+        return fqn
     }
 
     /**
@@ -154,254 +189,31 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         return str
     }
 
-    def String asPackage(EObject el) {
-        // Primary path: derive the package from the "SrcGen4J" generator hint of the context the
-        // element belongs to (this handles dependency and local elements the same way).
-        var String pkg = hintPackage(el)
-        if (pkg === null) {
-            // Fallback (no matching SrcGen4J hint for this factory/type): the same for primary and
-            // dependency resolved elements - context.module.
-            pkg = joinPackage(el.context?.name, el.module?.name)
-        }
-        return pkg
-    }
-
     /**
-     * Builds the package from the "SrcGen4J" generator hint of the project the given module belongs
-     * to. The type entry whose name matches this factory's model type ({@link #getModelType}) and whose
-     * artifacts contain this factory's class supplies the "module" and "group"; the hint's "package"
-     * pattern is then expanded by replacing the variables with the current project/context/module
-     * names and that type's module/group.
-     *
-     * @param ns Module to build the package for.
-     *
-     * @return Package name, or <code>null</code> if there is no project, no "SrcGen4J" hint, or no type
-     *         entry matching both this factory's model type and its class (caller falls back).
-     */
-    protected def String hintPackage(EObject el) {
-        val hint = srcGen4JHint(el)
-        val type = matchingType(hint)
-        if (type === null) {
-            return null
-        }
-        return expandPackage(hint, type, el)
-    }
-
-    /**
-     * Expands the hint's "package" pattern for the given type entry and element. The type entry supplies
-     * the target Maven module ("mvnModule") and the "group", the element the context and DSL module names.
+     * The Java package this factory's artifact for the given element is generated into.
      * <p>
-     * Note the two distinct notions of "module": <code>${mvnModule}</code> is the Maven module an artifact
-     * is generated into, <code>${module}</code> the DSL <code>module</code> block an element lives in.
+     * The answer comes from the <code>model2JavaPackage</code> script of the context the element belongs
+     * to - this project's for a locally declared element, the one shipped inside the jar for an imported
+     * one, which is how a reference to an imported type gets the package its producer generated it into.
      *
-     * @param hint Effective hint that provides the pattern.
-     * @param type Type entry that supplies "mvnModule" and "group".
      * @param el Element to build the package for.
      *
-     * @return Package name.
+     * @return Package name, never <code>null</code>.
      */
-    protected def String expandPackage(SrcGen4JHint hint, SrcGen4JType type, EObject el) {
-        val values = newLinkedHashMap(
-            "context" -> (el.context?.name ?: ""),
-            "mvnModule" -> (effectiveModule(type) ?: ""),
-            "group" -> (effectiveGroup(type) ?: ""),
-            "module" -> (el.module?.name ?: "")
-        )
-        return expandPattern(hint.packagePattern, values)
+    def String asPackage(EObject el) {
+        return asPackage(el, getTypeKey())
     }
 
     /**
-     * Expands a package pattern. Each <code>${var}</code> placeholder is replaced with its value
-     * from the given map. A group wrapped in square brackets - e.g. <code>[.${module}]</code> -
-     * is optional: it is removed entirely (including the leading separator inside the brackets) when
-     * any placeholder inside it resolves to an empty value, otherwise the brackets are dropped and
-     * the content is kept. This lets the optional module segment disappear for elements that are
-     * declared directly in a context.
+     * The Java package of a type of a kind other than this factory's own.
      *
-     * @param pattern Package pattern, possibly containing <code>${var}</code> placeholders and
-     *                optional <code>[...]</code> groups.
-     * @param values Placeholder values by name (a missing or empty value drops its optional group).
+     * @param el Element to build the package for.
+     * @param typeKey Kind of artifact - see {@link TypeKeys}.
      *
-     * @return Expanded package name.
+     * @return Package name, never <code>null</code>.
      */
-    protected def String expandPattern(String pattern, Map<String, String> values) {
-        // 1. Resolve optional "[ ... ]" groups: drop a group when any placeholder inside is empty.
-        var String result = pattern
-        var int open = result.indexOf("[")
-        while (open >= 0) {
-            val close = result.indexOf("]", open)
-            if (close < 0) {
-                open = -1 // Unbalanced bracket: leave the remainder untouched.
-            } else {
-                val group = result.substring(open + 1, close)
-                val replacement = if (groupHasEmptyValue(group, values)) "" else group
-                result = result.substring(0, open) + replacement + result.substring(close + 1)
-                open = result.indexOf("[")
-            }
-        }
-        // 2. Substitute the remaining "${var}" placeholders.
-        for (e : values.entrySet) {
-            result = result.replace("${" + e.key + "}", e.value ?: "")
-        }
-        // 3. Anything left is a variable this generator does not know. Failing here is essential:
-        // an unexpanded "${project}" would otherwise be taken for a package segment and quietly
-        // generate into a directory literally named "${project}".
-        if (result.contains("${")) {
-            throw new IllegalStateException(
-                "Unknown variable in the 'package' pattern of the \"SrcGen4J\" hint: '" + pattern +
-                "' expanded to '" + result + "'. Known variables are " + values.keySet.sort + ".")
-        }
-        return result
-    }
-
-    /** TRUE if the given pattern fragment references a placeholder whose value is null or empty. */
-    private def boolean groupHasEmptyValue(String group, Map<String, String> values) {
-        for (e : values.entrySet) {
-            if (group.contains("${" + e.key + "}") && (e.value === null || e.value.empty)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * Finds the hint type entry that describes the given model element. A model's own hint entries are
-     * merged in front of the preset's (see {@link SrcGen4JHint#merge}), so an override wins.
-     *
-     * @param hint Effective hint.
-     * @param element Model element to look up.
-     *
-     * @return Type entry, or <code>null</code> if the hint has no entry for the element's type.
-     */
-    protected def SrcGen4JType typeForElement(SrcGen4JHint hint, EObject element) {
-        if (hint === null || element === null) {
-            return null
-        }
-        val typeName = element.eClass.instanceTypeName
-        return hint.types.findFirst[name == typeName]
-    }
-
-    /** Lazily loaded "srcgen4j-default.json" preset, shared by all factory instances. */
-    static SrcGen4JHint defaultHint
-
-    /**
-     * Returns the "srcgen4j-default.json" preset, loading it from the classpath on first use.
-     *
-     * @return Default preset (never <code>null</code>; an empty hint if the resource is missing).
-     */
-    private def static synchronized SrcGen4JHint defaultHint() {
-        if (defaultHint === null) {
-            defaultHint = SrcGen4JHint.loadDefault()
-        }
-        return defaultHint
-    }
-
-    /**
-     * Resolves the effective "SrcGen4J" hint for the project the given module belongs to. The
-     * "srcgen4j-default.json" preset is always used as the base; when the project defines its own
-     * "SrcGen4J" hint, that hint is merged on top so its values overwrite the preset's (see
-     * {@link SrcGen4JHint#merge}).
-     *
-     * @param ns Module (may be <code>null</code>).
-     *
-     * @return Effective hint - the preset alone when there is no project or no model hint, otherwise the
-     *         preset with the model hint merged on top.
-     */
-    static def SrcGen4JHint srcGen4JHint(EObject el) {
-        val preset = defaultHint()
-        val hint = modelHint(el)
-        if (hint === null) {
-            return preset
-        }
-        return SrcGen4JHint.merge(preset, SrcGen4JHint.parse(hint))
-    }
-
-    /**
-     * Finds the "SrcGen4J" hint that applies to the given element. A context - like a module - may
-     * be split across several ".cqrs" files; all blocks with the same name denote the same logical
-     * context, so the hint may be declared in any of them. The lookup therefore searches every
-     * same-named context in the resource set, not only the context block the element is physically
-     * nested in.
-     *
-     * @param el Element (may be <code>null</code>).
-     *
-     * @return The "SrcGen4J" hint, or <code>null</code> if there is no enclosing context or no such hint.
-     */
-    private static def Hint modelHint(EObject el) {
-        val context = el?.context
-        if (context === null) {
-            return null
-        }
-        val rs = el.eResource?.resourceSet
-        if (rs === null) {
-            return context.hints.findFirst[name == "SrcGen4J"]
-        }
-        val contextName = context.name
-        return rs.resources
-            .map[contents].flatten
-            .filter(DomainModel)
-            .map[contexts].flatten
-            .filter[name == contextName]
-            .map[hints].flatten
-            .findFirst[name == "SrcGen4J"]
-    }
-
-    /**
-     * Finds the hint type entry whose name matches this factory's model type ({@link #getModelType})
-     * and whose artifacts contain this factory's class.
-     *
-     * @param hint Parsed "SrcGen4J" hint (may be <code>null</code>).
-     *
-     * @return Matching type entry, or <code>null</code> if the hint is null or nothing matches.
-     */
-    private def SrcGen4JType matchingType(SrcGen4JHint hint) {
-        if (hint === null) {
-            return null
-        }
-        val modelTypeName = getModelType.name
-        val factoryName = factoryClassName
-        return hint.types.findFirst [ t |
-            t.name == modelTypeName && t.artifacts.exists[artifactFactory == factoryName]
-        ]
-    }
-
-    /**
-     * Finds this factory's artifact entry within the given type (matched by this factory's class name).
-     *
-     * @param type Type entry (may be <code>null</code>).
-     *
-     * @return Artifact entry, or <code>null</code> if the type is null or has no entry for this factory.
-     */
-    private def SrcGen4JArtifact matchingArtifact(SrcGen4JType type) {
-        if (type === null) {
-            return null
-        }
-        val factoryName = factoryClassName
-        return type.artifacts.findFirst[artifactFactory == factoryName]
-    }
-
-    /**
-     * Module for this factory's artifact: the artifact-level "module" override, or the type's "module"
-     * as the default when the artifact does not set one.
-     *
-     * @param type Type entry (may be <code>null</code>).
-     *
-     * @return Effective module, or <code>null</code> if neither level sets it.
-     */
-    private def String effectiveModule(SrcGen4JType type) {
-        matchingArtifact(type)?.module ?: type?.module
-    }
-
-    /**
-     * Group for this factory's artifact: the artifact-level "group" override, or the type's "group" as
-     * the default when the artifact does not set one.
-     *
-     * @param type Type entry (may be <code>null</code>).
-     *
-     * @return Effective group, or <code>null</code> if neither level sets it.
-     */
-    private def String effectiveGroup(SrcGen4JType type) {
-        matchingArtifact(type)?.group ?: type?.group
+    def String asPackage(EObject el, String typeKey) {
+        return CqrsScripts.model2JavaPackage(el, typeKey)
     }
 
     /**

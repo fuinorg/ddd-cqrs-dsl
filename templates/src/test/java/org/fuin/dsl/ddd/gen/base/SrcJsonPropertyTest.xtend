@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.base
 
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ class SrcJsonPropertyTest {
     def void testCreate() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val variable = CqrsDslFactory.eINSTANCE.createVariable
         variable.setName("AbcDefGhi")

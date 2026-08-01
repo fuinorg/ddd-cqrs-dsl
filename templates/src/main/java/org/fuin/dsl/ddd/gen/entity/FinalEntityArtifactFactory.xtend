@@ -29,12 +29,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.OperationContextExtensions.*
 
 class FinalEntityArtifactFactory extends AbstractSource<Entity> {
 
     override getModelType() {
         typeof(Entity)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_ENTITY
     }
 
     override create(Entity entity, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -45,7 +50,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(entity.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(entity), fqn)
 
         if (preparationRun) {
 
@@ -65,7 +70,7 @@ class FinalEntityArtifactFactory extends AbstractSource<Entity> {
     }
 
     def addReferences(CodeSnippetContext ctx, Entity entity) {
-        ctx.requiresReference(entity.uniqueAbstractName)
+        ctx.requiresReference(TypeKeys.refKey(entity, TypeKeys.JAVA_ENTITY_ABSTRACT))
     }
 
     def create(SimpleCodeSnippetContext ctx, Entity entity, String pkg, String className) {

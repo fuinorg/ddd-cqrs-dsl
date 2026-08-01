@@ -16,6 +16,7 @@ import org.fuin.srcgen4j.commons.DefaultContext
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -40,8 +41,6 @@ class FinalEntityIdArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.entityid.MyEntityIdConverter", "p.x.entityid.MyEntityIdConverter")
-        refReg.putReference("p.x.entityid.AbstractMyEntityId", "p.x.entityid.AbstractMyEntityId")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntityId")
@@ -80,8 +79,6 @@ class FinalEntityIdArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.entityid.MyEntity3IdConverter", "p.x.entityid.MyEntity3IdConverter")
-        refReg.putReference("p.x.entityid.AbstractMyEntity3Id", "p.x.entityid.AbstractMyEntity3Id")
 
         val FinalEntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity3Id")

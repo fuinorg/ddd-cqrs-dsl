@@ -42,7 +42,7 @@ import org.fuin.objects4j.common.ValueObjectWithBaseType;
 import org.fuin.objects4j.core.Validators;
 import org.fuin.objects4j.ui.Examples;
 import org.jspecify.annotations.Nullable;
-import p.x.constr.Length;
+import p.shared.domain.x.constr.Length;
 
 /**
  * Simple value object with an invariant that restricts the value.

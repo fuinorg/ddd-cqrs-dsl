@@ -19,8 +19,6 @@ package p.shared.domain.x.constr;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import p.x.constr.ConstraintG;
-import p.x.constr.GException;
 
 /** Constraint G - External type target - With exception - No variables */
 // CHECKSTYLE:OFF:LineLength

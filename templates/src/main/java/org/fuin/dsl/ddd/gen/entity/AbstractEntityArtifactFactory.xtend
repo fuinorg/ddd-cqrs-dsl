@@ -34,12 +34,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcMethods
 
 class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
 
     override getModelType() {
         typeof(Entity)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_ENTITY_ABSTRACT
     }
 
     override create(Entity entity, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -50,7 +55,7 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(entity.uniqueAbstractName, fqn)
+        refReg.putReference(TypeKeys.refKey(entity, TypeKeys.JAVA_ENTITY_ABSTRACT), fqn)
         // A service declared inline in a constructor or method is generated as a nested interface of
         // this class (see SrcServices below), and ServiceArtifactFactory deliberately creates no
         // top-level file for it. An operation referencing such a service takes it as a parameter, and
@@ -58,7 +63,7 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
         // in scope by its simple name. It is therefore registered unqualified: no import is possible
         // (nor needed), and SrcImports drops a reference without a package.
         for (service : entity.services.nullSafe) {
-            refReg.putReference(service.uniqueName, service.name)
+            refReg.putReference(TypeKeys.refKey(service), service.name)
         }
 
         if (preparationRun) {
@@ -83,9 +88,9 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
     }
 
     def addReferences(CodeSnippetContext ctx, Entity entity) {
-        ctx.requiresReference(entity.idTypeNullsafe.uniqueName)
-        ctx.requiresReference(entity.rootNullsafe.uniqueName)
-        ctx.requiresReference(entity.rootNullsafe.idTypeNullsafe.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(entity.idTypeNullsafe))
+        ctx.requiresReference(TypeKeys.refKey(entity.rootNullsafe))
+        ctx.requiresReference(TypeKeys.refKey(entity.rootNullsafe.idTypeNullsafe))
     }
 
     def create(SimpleCodeSnippetContext ctx, Entity entity, String pkg, String className, Attribute idVar) {

@@ -29,7 +29,6 @@ import org.fuin.objects4j.common.Contract;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 import org.fuin.objects4j.ui.Examples;
-import x.ev.MyString;
 
 /**
  * Event E - Independent of an aggregate with value object reference.

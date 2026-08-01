@@ -22,12 +22,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractVOExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
 
     override getModelType() {
         typeof(ValueObject)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_VALUE_OBJECT_ABSTRACT
     }
 
     override create(ValueObject valueObject, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -38,7 +43,7 @@ class AbstractValueObjectArtifactFactory extends AbstractSource<ValueObject> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(valueObject.uniqueAbstractName, fqn)
+        refReg.putReference(TypeKeys.refKey(valueObject, TypeKeys.JAVA_VALUE_OBJECT_ABSTRACT), fqn)
 
         if (preparationRun) {
 

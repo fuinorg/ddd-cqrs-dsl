@@ -11,7 +11,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
@@ -32,7 +32,7 @@ class SrcInvokeGetterTest {
     def void testNullObjName() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val codeSnippetContext = new SimpleCodeSnippetContext(refReg);
         val SrcInvokeGetter testee = createTestee(codeSnippetContext, "ctx", "ns", "MyValueObject", null, "a")
 
@@ -49,7 +49,7 @@ class SrcInvokeGetterTest {
     def void testWithObjName() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val codeSnippetContext = new SimpleCodeSnippetContext(refReg);
         val SrcInvokeGetter testee = createTestee(codeSnippetContext, "ctx", "ns", "MyValueObject", "x", "a")
 

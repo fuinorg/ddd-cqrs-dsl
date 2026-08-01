@@ -2,7 +2,7 @@ package org.fuin.dsl.ddd.gen.extensions
 
 import java.util.Map
 import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 
 /**
  * Provides extension methods for Map.
@@ -21,7 +21,7 @@ class MapExtensions {
     def static CodeReferenceRegistry getCodeReferenceRegistry(Map<String, Object> map) {
         var CodeReferenceRegistry reg = map.get(CODE_REFERENCE_REGISTRY_KEY) as CodeReferenceRegistry
         if (reg === null) {
-            reg = new SimpleCodeReferenceRegistry()
+            reg = new ComputingCodeReferenceRegistry()
             map.put(CODE_REFERENCE_REGISTRY_KEY, reg)
         }
         return reg

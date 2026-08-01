@@ -35,8 +35,8 @@ class SrcAbstractChildEntityLocatorMethod implements CodeSnippet {
             "Unique identifier of the child entity to find.", entity.idTypeNullsafe, entity.idTypeNullsafe.name.toFirstLower, false)
         this.parameters = #[parameter]
 
-        ctx.requiresReference(entity.uniqueName)
-        ctx.requiresReference(entity.idTypeNullsafe.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(entity))
+        ctx.requiresReference(TypeKeys.refKey(entity.idTypeNullsafe))
     }
 
     override toString() {

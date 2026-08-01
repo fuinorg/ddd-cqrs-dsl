@@ -24,11 +24,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import p.shared.domain.x.m.PersonListItem;
+import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
 import p.x.m.List;
-import p.x.m.PersonListItem;
 import p.x.m.String;
-import p.x.m.UserId;
 
 /**
  * REST contract for the "PersonList" view: a MicroProfile REST Client interface, also

@@ -31,12 +31,17 @@ import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import java.io.Serial
 import java.time.ZonedDateTime
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 
 class CommandArtifactFactory extends AbstractSource<Command> {
 
     override getModelType() {
         typeof(Command)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_COMMAND
     }
 
     override create(Command command, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -51,7 +56,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(command.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(command), fqn)
 
         if (preparationRun) {
 
@@ -118,7 +123,7 @@ class CommandArtifactFactory extends AbstractSource<Command> {
 
     def addReferences(CodeSnippetContext ctx, Command command) {    	
         if (command.aggregate !== null) {
-            ctx.requiresReference(command.entityIdType.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(command.entityIdType))
         }
     }
 

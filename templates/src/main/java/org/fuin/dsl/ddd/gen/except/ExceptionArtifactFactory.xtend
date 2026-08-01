@@ -21,12 +21,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ExceptionArtifactFactory extends AbstractSource<Exception> {
 
     override getModelType() {
         typeof(Exception)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_EXCEPTION
     }
 
     override create(Exception ex, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -37,7 +42,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(ex.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(ex), fqn)
 
         if (preparationRun) {
 
@@ -65,7 +70,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
 
     def addReferences(CodeSnippetContext ctx, Exception ex) {
         for (v : ex.attributes) {
-            ctx.requiresReference(v.type.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(v.type))
         }
     }
 

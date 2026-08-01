@@ -29,6 +29,7 @@ import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 import java.io.Serial
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.time.ZonedDateTime
 
 class EventArtifactFactory extends AbstractSource<Event> {
@@ -38,6 +39,10 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
     override getModelType() {
         typeof(Event)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_EVENT
     }
 
     override create(Event event, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -52,7 +57,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(event.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(event), fqn)
 
         if (preparationRun) {
 
@@ -139,7 +144,7 @@ class EventArtifactFactory extends AbstractSource<Event> {
 
     def addReferences(CodeSnippetContext ctx, Event event) {    	
         if (event.entity !== null) {
-            ctx.requiresReference(event.entityIdType.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(event.entityIdType))
         }
     }
 

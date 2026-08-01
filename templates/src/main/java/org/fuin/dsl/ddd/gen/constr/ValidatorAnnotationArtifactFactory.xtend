@@ -15,12 +15,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsVariableExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ValidatorAnnotationArtifactFactory extends AbstractSource<Constraint> {
 
     override getModelType() {
         typeof(Constraint)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_CONSTRAINT
     }
 
     override create(Constraint constraint, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -40,7 +45,7 @@ class ValidatorAnnotationArtifactFactory extends AbstractSource<Constraint> {
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(constraint.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(constraint), fqn)
 
         if (preparationRun) {
 
@@ -71,7 +76,7 @@ class ValidatorAnnotationArtifactFactory extends AbstractSource<Constraint> {
     }
 
     def addReferences(CodeSnippetContext ctx, Constraint constraint) {
-        ctx.requiresReference(constraint.uniqueName + "Validator")
+        ctx.requiresReference(TypeKeys.refKey(constraint, TypeKeys.JAVA_CONSTRAINT_VALIDATOR))
     }
 
     def String replaceValidatedValue(String msg) {

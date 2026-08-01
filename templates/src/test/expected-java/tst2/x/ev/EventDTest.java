@@ -24,7 +24,6 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.eclipse.yasson.FieldAccessStrategy;
 import org.fuin.ddd4j.jsonb.EventIdJsonbAdapter;
 import org.junit.jupiter.api.Test;
-import p.x.ev.EventD;
 import static org.assertj.core.api.Assertions.*;
 import static org.fuin.utils4j.Utils4J.deserialize;
 import static org.fuin.utils4j.Utils4J.serialize;

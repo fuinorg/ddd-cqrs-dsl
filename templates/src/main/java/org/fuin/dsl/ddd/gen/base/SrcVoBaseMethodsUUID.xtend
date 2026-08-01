@@ -28,7 +28,7 @@ class SrcVoBaseMethodsUUID implements CodeSnippet {
             throw new IllegalArgumentException("vo.base cannot be null")
         }
         this.typeName = vo.name
-        ctx.requiresReference(vo.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(vo))
         ctx.requiresImport("java.util.UUID")
         ctx.requiresImport("org.fuin.objects4j.core.UUIDStrValidator")
         ctx.requiresImport("org.jspecify.annotations.Nullable")

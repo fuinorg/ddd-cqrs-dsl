@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.command
 import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
@@ -35,8 +36,8 @@ class SrcCommandBuilder implements CodeSnippet {
             ctx.requiresImport("org.fuin.cqrs4j.jackson.AbstractAggregateCommand")        
         }
         
-        ctx.requiresReference(command.aggregateIdType.uniqueName)
-        ctx.requiresReference(command.entityIdType.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(command.aggregateIdType))
+        ctx.requiresReference(TypeKeys.refKey(command.entityIdType))
 
     }
 

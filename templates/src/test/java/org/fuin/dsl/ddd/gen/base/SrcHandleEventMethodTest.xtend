@@ -8,10 +8,11 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.Event
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -31,8 +32,8 @@ class SrcHandleEventMethodTest {
     def void testCreate() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
-        refReg.putReference("p.x.a.DidSomethingEvent", "a.b.c.DidSomethingEvent")
+        val refReg = new ComputingCodeReferenceRegistry()
+        refReg.putReference(TypeKeys.refKey("p.x.a.DidSomethingEvent", TypeKeys.JAVA_EVENT), "a.b.c.DidSomethingEvent")
         val ctx = new SimpleCodeSnippetContext(refReg)
         val event = model().find(Event, "DidSomethingEvent")
         val SrcHandleEventMethod testee = new SrcHandleEventMethod(ctx, event)

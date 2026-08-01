@@ -41,7 +41,6 @@ class EventArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
 
         testCreate(context, "EventA")
 
@@ -55,7 +54,6 @@ class EventArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
 
         testCreate(context, "EventB")
 
@@ -70,7 +68,6 @@ class EventArtifactFactoryTest {
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
         refReg.putReference("p.x.types.Integer", "java.lang.Integer")
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
 
         testCreate(context, "EventC")
 
@@ -104,7 +101,6 @@ class EventArtifactFactoryTest {
 
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
 
         testCreate(context, "EventF")
 
@@ -128,7 +124,6 @@ class EventArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.ev.CustomerId", "p.x.ev.CustomerId")
 
         testCreate(context, "EventH")
 

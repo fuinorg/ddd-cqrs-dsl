@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.base
 
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ class SrcVoBaseOptionalExtendsTest {
     def void testString() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val base = CqrsDslFactory.eINSTANCE.createExternalType
         base.setName("String")
@@ -33,7 +33,7 @@ class SrcVoBaseOptionalExtendsTest {
     def void testUUID() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val base = CqrsDslFactory.eINSTANCE.createExternalType
         base.setName("UUID")
@@ -53,7 +53,7 @@ class SrcVoBaseOptionalExtendsTest {
     def void testInteger() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val base = CqrsDslFactory.eINSTANCE.createExternalType
         base.setName("Integer")
@@ -73,7 +73,7 @@ class SrcVoBaseOptionalExtendsTest {
     def void testLong() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         val ctx = new SimpleCodeSnippetContext(refReg)
         val base = CqrsDslFactory.eINSTANCE.createExternalType
         base.setName("Long")

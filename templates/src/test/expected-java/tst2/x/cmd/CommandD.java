@@ -30,7 +30,7 @@ import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 import org.fuin.objects4j.ui.Examples;
 import org.jspecify.annotations.Nullable;
-import x.cmd.MyString;
+import p.shared.domain.x.cmd.MyString;
 
 /**
  * Command D - Attributes are value objects rather than plain types.

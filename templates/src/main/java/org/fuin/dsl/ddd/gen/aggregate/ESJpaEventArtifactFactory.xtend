@@ -15,12 +15,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensio
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements ArtifactFactory<Aggregate> {
 
     override getModelType() {
         return typeof(Aggregate)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_JPA_EVENT
     }
 
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -31,7 +36,7 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
         val filename = fqn.replace('.', '/') + ".java";
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregate.uniqueName + "Event", fqn)
+        refReg.putReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_JPA_EVENT), fqn)
 
         if (preparationRun) {
 
@@ -60,8 +65,8 @@ class ESJpaEventArtifactFactory extends AbstractSource<Aggregate> implements Art
     }
 
     def addReferences(CodeSnippetContext ctx, Aggregate aggregate) {
-        ctx.requiresReference(aggregate.idTypeNullsafe.uniqueName)
-        ctx.requiresReference(aggregate.uniqueName + "Id")
+        ctx.requiresReference(TypeKeys.refKey(aggregate.idTypeNullsafe))
+        ctx.requiresReference(TypeKeys.refKey(aggregate, TypeKeys.JAVA_AGGREGATE_JPA_EVENT_ID))
     }
 
     def create(SimpleCodeSnippetContext ctx, Aggregate aggregate, String pkg, String className) {

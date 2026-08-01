@@ -17,12 +17,17 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateIdExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
 
 class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
 
     override getModelType() {
         typeof(AggregateId)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_AGGREGATE_ID
     }
 
     override create(AggregateId aggregateId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -38,7 +43,7 @@ class SimpleAggregateIdArtifactFactory extends AbstractSource<AggregateId> {
         val fqn = pkg + "." + className
         val filename = fqn.replace('.', '/') + ".java";
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(aggregateId.uniqueName, fqn)
+        refReg.putReference(TypeKeys.refKey(aggregateId), fqn)
 
         if (preparationRun) {
 

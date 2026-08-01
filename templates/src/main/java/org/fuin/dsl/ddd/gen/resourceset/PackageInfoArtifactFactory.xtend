@@ -13,7 +13,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.GenerateException
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GeneratedArtifact
+import org.fuin.dsl.ddd.gen.script.CqrsScripts
 
 /**
  * Creates a "package-info.java" annotated with JSpecify's {@code @NullMarked} for every package a
@@ -28,6 +30,10 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
 
     override getModelType() {
         typeof(ResourceSet)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_PACKAGE_INFO
     }
 
     override isIncremental() {
@@ -91,16 +97,13 @@ class PackageInfoArtifactFactory extends AbstractSource<ResourceSet> {
      */
     private def Map<String, String> targetPackages(EObject container) {
         val Map<String, String> result = new LinkedHashMap<String, String>()
-        val hint = srcGen4JHint(container)
-        if (hint === null) {
-            return result
-        }
         for (element : container.elements) {
-            if (!(element instanceof ExternalType)) {
-                val type = typeForElement(hint, element)
-                if (type !== null && type.module !== null) {
-                    result.putIfAbsent(type.module, expandPackage(hint, type, container))
-                }
+            val typeKey = TypeKeys.primaryTypeKey(element)
+            if (typeKey !== null) {
+                // The element itself answers where its own type goes; the target module comes from the
+                // same script that places the element's artifacts.
+                val target = CqrsScripts.artifact2Target(element, typeKey, factoryClassName)
+                result.putIfAbsent(target.module, CqrsScripts.model2JavaPackage(element, typeKey))
             }
         }
         return result

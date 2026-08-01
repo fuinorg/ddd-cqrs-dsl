@@ -81,14 +81,11 @@ class ValidatorArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.constr." + constrName, "p.x.constr." + constrName)
-        refReg.putReference("p.x.constr." + voName, "p.x.constr." + voName)
 
         val ValidatorArtifactFactory testee = createTestee()
         val Constraint constraint = model.find(typeof(Constraint), constrName)
         if (constraint.exception !== null) {
             val constrException = constrChar + "Exception"
-            refReg.putReference("p.x.constr." + constrException, "p.x.constr." + constrException)
         }
 
         // TEST

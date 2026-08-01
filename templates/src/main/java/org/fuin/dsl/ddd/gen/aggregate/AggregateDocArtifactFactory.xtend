@@ -7,12 +7,17 @@ import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import java.util.List
 
 class AggregateDocArtifactFactory extends AbstractSource<Aggregate> {
 
     override getModelType() {
         return typeof(Aggregate)
+    }
+
+    override getTypeKey() {
+        TypeKeys.RES_AGGREGATE_DOC
     }
     
     override create(Aggregate aggregate, Map<String, Object> context, boolean preparationRun) throws GenerateException {

@@ -20,10 +20,10 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
-import p.x.aggregates.AggregateEChangedEvent;
-import p.x.aggregates.AggregateECreatedEvent;
-import p.x.aggregates.AggregateEId;
-import p.x.aggregates.AnyConstraintViolatedException;
+import p.shared.domain.x.aggregates.AggregateEChangedEvent;
+import p.shared.domain.x.aggregates.AggregateECreatedEvent;
+import p.shared.domain.x.aggregates.AggregateEId;
+import p.shared.domain.x.aggregates.AnyConstraintViolatedException;
 
 /**
  * Aggregate E - A constructor and a method that each reference a service. The referenced service is the collaborator the operation needs to verify its rule, and becomes a trailing parameter; the inline declaration itself is only the nested interface.

@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -29,6 +30,10 @@ class AbstractProcessManagerArtifactFactory extends AbstractSource<ProcessManage
         typeof(ProcessManager)
     }
 
+    override getTypeKey() {
+        TypeKeys.JAVA_PROCESS_MANAGER_ABSTRACT
+    }
+
     override create(ProcessManager pm, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
         val baseName = ArtifactNames.processManagerBaseName(pm.name)
@@ -38,7 +43,7 @@ class AbstractProcessManagerArtifactFactory extends AbstractSource<ProcessManage
         val pkg = pm.asPackage
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
-        refReg.putReference(pm.uniqueName, pkg + "." + abstractViewName)
+        refReg.putReference(TypeKeys.refKey(pm), pkg + "." + abstractViewName)
 
         if (preparationRun) {
             return null
@@ -87,7 +92,7 @@ class AbstractProcessManagerArtifactFactory extends AbstractSource<ProcessManage
         ctx.requiresImport("java.util.Set")
         ctx.requiresImport("java.util.function.Consumer")
         for (event : events) {
-            ctx.requiresReference(event.uniqueName)
+            ctx.requiresReference(TypeKeys.refKey(event))
         }
         val cron = if (pm.cron === null) "* * * * * *" else pm.cron
         val src = '''

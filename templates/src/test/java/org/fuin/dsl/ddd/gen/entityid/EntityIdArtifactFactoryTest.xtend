@@ -40,7 +40,6 @@ class EntityIdArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.entityid.MyEntityIdConverter", "p.x.entityid.MyEntityIdConverter")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntityId")
@@ -79,7 +78,6 @@ class EntityIdArtifactFactoryTest {
         val context = new HashMap<String, Object>()
         val refReg = context.codeReferenceRegistry
         refReg.putReference("p.x.types.String", "java.lang.String")
-        refReg.putReference("p.x.entityid.MyEntity3IdConverter", "p.x.entityid.MyEntity3IdConverter")
 
         val EntityIdArtifactFactory testee = createTestee()
         val EntityId entityId = model.find(typeof(EntityId), "MyEntity3Id")

@@ -14,6 +14,7 @@ import org.fuin.srcgen4j.core.emf.CodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
@@ -26,6 +27,10 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
     override getModelType() {
         typeof(View)
+    }
+
+    override getTypeKey() {
+        TypeKeys.JAVA_VIEW_REST_IMPL
     }
 
     override create(View view, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -63,7 +68,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         ctx.requiresImport("jakarta.persistence.EntityManager")
         ctx.requiresImport("org.fuin.cqrs4j.core.EventHandler")
         ctx.requiresImport("org.fuin.ddd4j.core.EventType")
-        ctx.requiresReference(event.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(event))
         val src = '''
             /**
              * Handles the {@link «event.name»} by updating the read model. TODO Implement the update.
@@ -91,7 +96,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         ctx.requiresImport("jakarta.persistence.EntityManager")
         // Both REST contract interfaces live in their own module/package and are always generated -
         // import the one belonging to this runtime.
-        ctx.requiresReference(ArtifactNames.restApiRefKey(view.uniqueName, runtime))
+        ctx.requiresReference(TypeKeys.refKey(view, if("quarkus" == runtime) TypeKeys.JAVA_VIEW_REST_API_QUARKUS else TypeKeys.JAVA_VIEW_REST_API_SPRING))
         if (runtime == "quarkus") {
             val apiName = baseName + "ResourceApi"
             ctx.requiresImport("jakarta.inject.Inject")

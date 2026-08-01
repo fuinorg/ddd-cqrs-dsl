@@ -20,11 +20,10 @@ package p.command.core.domain.x.aggregates;
 import org.fuin.ddd4j.core.AbstractAggregateRoot;
 import org.fuin.ddd4j.core.EntityType;
 import org.fuin.objects4j.common.Contract;
-import p.x.aggregates.AggregateFChangedEvent;
-import p.x.aggregates.AggregateFCreatedEvent;
-import p.x.aggregates.AggregateFId;
-import p.x.aggregates.AnyConstraintViolatedException;
-import p.x.aggregates.SharedService;
+import p.shared.domain.x.aggregates.AggregateFChangedEvent;
+import p.shared.domain.x.aggregates.AggregateFCreatedEvent;
+import p.shared.domain.x.aggregates.AggregateFId;
+import p.shared.domain.x.aggregates.AnyConstraintViolatedException;
 
 /**
  * Aggregate F - References the service declared outside the operation. It becomes the same kind of trailing parameter as an inline one, but is imported as the top-level type it is.

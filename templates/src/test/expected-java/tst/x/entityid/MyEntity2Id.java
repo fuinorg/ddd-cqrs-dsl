@@ -19,7 +19,6 @@ package p.shared.domain.x.entityid;
 
 import java.io.Serial;
 import javax.annotation.concurrent.Immutable;
-import p.x.entityid.AbstractMy2EntityId;
 
 /**
  * Entity ID single attribute and without base.

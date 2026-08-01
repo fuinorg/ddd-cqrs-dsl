@@ -16,6 +16,7 @@ import org.fuin.srcgen4j.commons.DefaultContext
 import org.fuin.srcgen4j.commons.Variable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static org.assertj.core.api.Assertions.*
 
@@ -107,9 +108,12 @@ class CombinedValueObjectArtifactFactoryTest {
         // reference - the final class can only be created later on if the abstract one is known.
         assertThat(result).isNull
         val refReg = context.codeReferenceRegistry
-        assertThat(refReg.getReference("p.x.valueobject.AbstractMyValueObject2")).
+        assertThat(
+            refReg.getReference(
+                TypeKeys.refKey("p.x.valueobject.MyValueObject2", TypeKeys.JAVA_VALUE_OBJECT_ABSTRACT))).
             isEqualTo("p.shared.domain.x.valueobject.AbstractMyValueObject2")
-        assertThat(refReg.getReference("p.x.valueobject.MyValueObject2")).
+        assertThat(
+            refReg.getReference(TypeKeys.refKey("p.x.valueobject.MyValueObject2", TypeKeys.JAVA_VALUE_OBJECT))).
             isEqualTo("p.shared.domain.x.valueobject.MyValueObject2")
 
     }

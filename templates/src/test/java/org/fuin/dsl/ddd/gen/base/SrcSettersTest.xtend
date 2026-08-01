@@ -9,7 +9,7 @@ import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
-import org.fuin.srcgen4j.core.emf.SimpleCodeReferenceRegistry
+import org.fuin.dsl.ddd.gen.base.ComputingCodeReferenceRegistry
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
@@ -30,7 +30,7 @@ class SrcSettersTest {
     def void testCreate() {
 
         // PREPARE
-        val refReg = new SimpleCodeReferenceRegistry()
+        val refReg = new ComputingCodeReferenceRegistry()
         refReg.putReference("p.ctx.types.String", "java.lang.String")
         refReg.putReference("p.ctx.types.Locale", "java.util.Locale")
         val ctx = new SimpleCodeSnippetContext(refReg);

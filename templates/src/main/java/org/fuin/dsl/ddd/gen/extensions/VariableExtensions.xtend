@@ -2,6 +2,7 @@ package org.fuin.dsl.ddd.gen.extensions
 
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
+import org.fuin.dsl.ddd.gen.base.TypeKeys
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
@@ -72,10 +73,10 @@ class VariableExtensions {
     def static void addRequiredReferences(Variable variable, CodeSnippetContext ctx) {
         if (variable.generics !== null) {
             for (arg : variable.generics.args) {
-                ctx.requiresReference(arg.uniqueName)
+                ctx.requiresReference(TypeKeys.refKey(arg))
             }
         }
-        ctx.requiresReference(variable.type.uniqueName)
+        ctx.requiresReference(TypeKeys.refKey(variable.type))
     }
 
     /**
