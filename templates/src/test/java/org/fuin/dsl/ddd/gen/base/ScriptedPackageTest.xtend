@@ -199,6 +199,51 @@ class ScriptedPackageTest {
         assertThat(target.module).isEqualTo("shared")
     }
 
+    /**
+     * A dependency that declares no "model2JavaPackage" is an error, not a silent fall back to this
+     * project's preset: that would put an imported type in a package it was never generated into.
+     * A model published before the mapping became a script looks exactly like this.
+     */
+    @Test
+    def void testDependencyWithoutItsOwnPackageMappingFails() {
+
+        val dir = Files.createTempDirectory("scripted-unmigrated-dependency")
+        val resourceSet = resourceSetProvider.get
+
+        val dependency = parser.parse('''
+            context dep {
+                module d.a {
+                    value-object DepValueObject {
+                        String value
+                    }
+                }
+            }
+        ''', URI.createFileURI(dir.resolve("dependency.cqrs").toString), resourceSet)
+
+        val local = parser.parse('''
+            context p {
+                module x.a {
+                    value-object MyValueObject {
+                        String value
+                    }
+                }
+            }
+        ''', URI.createFileURI(dir.resolve("local.cqrs").toString), resourceSet)
+
+        PrimaryResources.install(resourceSet, #{local.eResource.URI})
+
+        // The local model still gets the preset ...
+        val localVo = local.contexts.head.modules.head.elements.filter(ValueObject).head
+        assertThat(CqrsScripts.model2JavaPackage(localVo, TypeKeys.JAVA_VALUE_OBJECT)).
+            isEqualTo("p.shared.domain.x.a")
+
+        // ... the dependency's type does not.
+        val depVo = dependency.contexts.head.modules.head.elements.filter(ValueObject).head
+        assertThatThrownBy[CqrsScripts.model2JavaPackage(depVo, TypeKeys.JAVA_VALUE_OBJECT)].
+            hasMessageContaining("declares no 'model2JavaPackage'").
+            hasMessageContaining("dep")
+    }
+
     /** A type key the script does not know is an error - there is no declarative mapping left. */
     @Test
     def void testUnknownTypeKeyFails() {
