@@ -17,10 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Turns a <code>dependency</code> into the <code>.cqrs</code> files it provides.
  *
- * <p>A Maven dependency is resolved to its jar in the local repository and the models are then read
- * <em>inside</em> that jar through {@link JarFileSystem} - nothing is unpacked, and because the
- * entries are real {@link VirtualFile}s the usual PSI, navigation and find-usages all work on them.
- * Only entries below {@code model/} count, taken recursively so a model may sit in a sub folder.</p>
+ * <p>A Maven dependency is resolved to its zip in the local repository and the models are then read
+ * <em>inside</em> that archive through {@link JarFileSystem}, which mounts a zip like any other one -
+ * nothing is unpacked, and because the entries are real {@link VirtualFile}s the usual PSI, navigation
+ * and find-usages all work on them. Only entries below {@code model/} count, taken recursively so a
+ * model may sit in a sub folder.</p>
  *
  * <p>A dependency with a <code>local</code> clause skips resolution entirely and reads a directory of
  * <code>.cqrs</code> files, relative to the model that declares it.</p>
@@ -39,7 +40,7 @@ public class CqrsModelArchives {
 
     private final Project project;
 
-    /** Jar of an artifact, keyed by {@link RemoteScopeEntry#getSourceId}. */
+    /** Archive of an artifact, keyed by {@link RemoteScopeEntry#getSourceId}. */
     private final Map<String, Path> resolved = new ConcurrentHashMap<>();
 
     /** Why an artifact could not be resolved, keyed by {@link RemoteScopeEntry#getSourceId}. */
@@ -67,8 +68,8 @@ public class CqrsModelArchives {
         if (entry.getLocal() != null && !entry.getLocal().isEmpty()) {
             return localFiles(modelDir, entry);
         }
-        final Path jar = jarOf(entry, allowResolve);
-        return jar == null ? List.of() : entriesOf(jar);
+        final Path archive = archiveOf(entry, allowResolve);
+        return archive == null ? List.of() : entriesOf(entry, archive);
     }
 
     /**
@@ -93,7 +94,7 @@ public class CqrsModelArchives {
         problems.clear();
     }
 
-    private @Nullable Path jarOf(RemoteScopeEntry entry, boolean allowResolve) {
+    private @Nullable Path archiveOf(RemoteScopeEntry entry, boolean allowResolve) {
         final String key = entry.getSourceId();
         if (key == null) {
             return null;
@@ -106,10 +107,10 @@ public class CqrsModelArchives {
             return null;
         }
         try {
-            final Path jar = resolveArtifact(entry);
-            resolved.put(key, jar);
+            final Path archive = resolveArtifact(entry);
+            resolved.put(key, archive);
             problems.remove(key);
-            return jar;
+            return archive;
         } catch (Exception ex) {
             final String message = message(ex);
             LOG.warn("Could not resolve dependency '" + key + "': " + message, ex);
@@ -119,8 +120,8 @@ public class CqrsModelArchives {
     }
 
     /**
-     * Resolves the artifact through the IDE's Maven. Overridable so a test can supply a jar of its own
-     * without an embedder.
+     * Resolves the artifact through the IDE's Maven. Overridable so a test can supply an archive of its
+     * own without an embedder.
      *
      * @param entry Dependency to resolve.
      *
@@ -133,23 +134,45 @@ public class CqrsModelArchives {
                 .resolve(entry.getGroupId(), entry.getArtifactId(), entry.getVersion());
     }
 
-    /** Every {@code .cqrs} below {@code model/} in the jar, as a virtual file. */
-    private @NotNull List<VirtualFile> entriesOf(Path jar) {
-        final VirtualFile local = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(jar);
+    /**
+     * Every {@code .cqrs} below {@code model/} in the archive, as a virtual file.
+     *
+     * <p>Anything that goes wrong here is recorded as a problem of the dependency rather than answered
+     * with a silent empty list: the artifact was resolved, so the only symptom left would be every type
+     * it provides failing to resolve. {@link JarFileSystem} mounts what the IDE knows as an archive, and
+     * a user who re-assigned {@code *.zip} to another file type in <i>Settings | Editor | File Types</i>
+     * takes that knowledge away.</p>
+     */
+    private @NotNull List<VirtualFile> entriesOf(RemoteScopeEntry entry, Path archive) {
+        final VirtualFile local = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(archive);
         if (local == null) {
-            return List.of();
+            return recordProblem(entry, "the artifact is not visible to the IDE: " + archive);
         }
         final VirtualFile root = JarFileSystem.getInstance().getJarRootForLocalFile(local);
         if (root == null) {
-            return List.of();
+            return recordProblem(entry, "the artifact could not be opened as an archive - is '"
+                    + archive.getFileName() + "' still associated with 'Archive' in the file type settings?");
         }
         final VirtualFile models = root.findChild(MODEL_DIR);
         if (models == null) {
-            return List.of();
+            return recordProblem(entry, "the artifact holds no '" + MODEL_DIR + "/' folder");
         }
         final List<VirtualFile> result = new ArrayList<>();
         collect(models, result);
+        if (result.isEmpty()) {
+            return recordProblem(entry, "the artifact holds no '" + CQRS_EXTENSION + "' files below '"
+                    + MODEL_DIR + "/'");
+        }
         return result;
+    }
+
+    /** Records why the models of a resolved artifact cannot be read, and answers with none. */
+    private @NotNull List<VirtualFile> recordProblem(RemoteScopeEntry entry, String message) {
+        final String key = entry.getSourceId();
+        if (key != null) {
+            problems.put(key, message);
+        }
+        return List.of();
     }
 
     private static void collect(VirtualFile dir, List<VirtualFile> target) {

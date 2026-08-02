@@ -35,7 +35,7 @@ class MimaArtifactResolverTest {
 		Assertions.assertTrue(Files.isRegularFile(resolved), "must resolve to a file: " + resolved)
 		Assertions.assertTrue(resolved.startsWith(root.resolve("local-repo")),
 			"must land in the local repository: " + resolved)
-		Assertions.assertEquals("cqrs-model-1.0.0.jar", resolved.fileName.toString)
+		Assertions.assertEquals("cqrs-model-1.0.0.zip", resolved.fileName.toString)
 	}
 
 	/** A coordinate that is not in the repository fails with Maven's own diagnosis. */
@@ -65,11 +65,11 @@ class MimaArtifactResolverTest {
 
 		val bytes = new ByteArrayOutputStream
 		val zip = new ZipOutputStream(bytes)
-		zip.putNextEntry(new ZipEntry("model/types.cqrs"))
+		zip.putNextEntry(new ZipEntry("model/public/types.cqrs"))
 		zip.write("context r { module m { type Money } }".getBytes(StandardCharsets.UTF_8))
 		zip.closeEntry
 		zip.close
-		Files.write(dir.resolve("cqrs-model-" + version + ".jar"), bytes.toByteArray)
+		Files.write(dir.resolve("cqrs-model-" + version + ".zip"), bytes.toByteArray)
 
 		Files.writeString(dir.resolve("cqrs-model-" + version + ".pom"), '''
 			<project>

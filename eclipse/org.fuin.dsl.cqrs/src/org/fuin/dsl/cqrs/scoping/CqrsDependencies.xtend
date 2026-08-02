@@ -97,7 +97,7 @@ class CqrsDependencies {
 
 	/**
 	 * URIs of every <code>.cqrs</code> model the resource's dependencies provide - entries inside the
-	 * artifact's jar in the local repository, or files of a <code>local</code> directory. A malformed
+	 * artifact's zip in the local repository, or files of a <code>local</code> directory. A malformed
 	 * coordinate contributes nothing (the validator reports it); a failing dependency is skipped so
 	 * the rest still resolve.
 	 */

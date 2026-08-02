@@ -40,7 +40,7 @@ public class MimaArtifactResolverTest {
       Assertions.assertTrue(Files.isRegularFile(resolved), ("must resolve to a file: " + resolved));
       Assertions.assertTrue(resolved.startsWith(root.resolve("local-repo")), 
         ("must land in the local repository: " + resolved));
-      Assertions.assertEquals("cqrs-model-1.0.0.jar", resolved.getFileName().toString());
+      Assertions.assertEquals("cqrs-model-1.0.0.zip", resolved.getFileName().toString());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -83,12 +83,12 @@ public class MimaArtifactResolverTest {
         root.resolve(("remote-repo/org/fuin/test/cqrs-model/" + version)));
       final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
       final ZipOutputStream zip = new ZipOutputStream(bytes);
-      ZipEntry _zipEntry = new ZipEntry("model/types.cqrs");
+      ZipEntry _zipEntry = new ZipEntry("model/public/types.cqrs");
       zip.putNextEntry(_zipEntry);
       zip.write("context r { module m { type Money } }".getBytes(StandardCharsets.UTF_8));
       zip.closeEntry();
       zip.close();
-      Files.write(dir.resolve((("cqrs-model-" + version) + ".jar")), bytes.toByteArray());
+      Files.write(dir.resolve((("cqrs-model-" + version) + ".zip")), bytes.toByteArray());
       Path _resolve = dir.resolve((("cqrs-model-" + version) + ".pom"));
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("<project>");

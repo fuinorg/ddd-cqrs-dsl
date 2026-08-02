@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.scoping.CqrsArtifactResolver;
 import org.fuin.srcgen4j.core.emf.PrimaryResources;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
@@ -32,18 +33,23 @@ import org.mozilla.javascript.Undefined;
  * <p>
  * The package function is resolved <b>per declaring context</b>: the package of an element always comes
  * from the script of the context that element belongs to. For a locally declared type that is this
- * project's script, for an imported type the one shipped inside the dependency's jar - which is how a
- * consumer names an imported type the way its producer generated it.
+ * project's script, for an imported type the one shipped inside the dependency's archive - which is how
+ * a consumer names an imported type the way its producer generated it. It is therefore the only script a
+ * published model has to carry.
  * <p>
  * The target function is resolved <b>from this build's own models</b> instead. A module name only means
  * something to the generator configuration of the project doing the generating, so taking it from a
- * dependency would name modules this build never declared.
+ * dependency would name modules this build never declared. A model may keep that script out of what it
+ * publishes.
  * <p>
- * A script path is written relative to the ".cqrs" file that declares the hint and is read through the
- * resource set's URI converter, so <code>file:</code> and
- * <code>archive:file:/....jar!/model/scripts/x.js</code> are handled identically - a script inside a
- * dependency jar is read in place, exactly as its models are. When a model declares no "SrcGen4J" hint
- * (or not the field in question), the preset shipped with these templates is used.
+ * A script path is written against the innermost "model" folder the declaring ".cqrs" file lies in, so
+ * it names the script the same way whatever the depth below that folder - "public/model2JavaPackage.js"
+ * for a script next to the models of a published artifact. A model that lies in no such folder writes
+ * the path relative to itself. Either way it is read through the resource set's URI converter, so
+ * <code>file:</code> and <code>archive:file:/....zip!/model/public/x.js</code> are handled identically -
+ * a script inside a dependency's archive is read in place, exactly as its models are. When a model
+ * declares no "SrcGen4J" hint (or not the field in question), the preset shipped with these templates is
+ * used.
  * <p>
  * Scripts are compiled once per source and cached; the two functions are called for every generated
  * element, so re-evaluating per call is not an option.
@@ -198,8 +204,29 @@ public final class CqrsScripts {
             throw new IllegalStateException("The \"" + HINT_NAME + "\" hint declaring '" + field + "' = '" + path
                     + "' has no location on disk, so the script cannot be found");
         }
-        final URI uri = URI.createURI(path).resolve(base);
+        final URI anchor = anchor(base);
+        final URI uri = URI.createURI(path).resolve(anchor == null ? base : anchor);
         return new Source(uri.toString(), uri, resource.getResourceSet());
+    }
+
+    /**
+     * The folder a script path is written against: the innermost <code>model</code> folder the given
+     * model file lies in, or <code>null</code> when it lies in none.
+     * <p>
+     * A model that keeps its files below such a folder - as a published artifact does - therefore names
+     * a script from there, so the path is the same wherever the model is read from and whatever its
+     * depth below that folder. The returned URI ends in a separator, without which resolving a relative
+     * path against it would drop the folder itself.
+     */
+    private static URI anchor(final URI base) {
+        final String[] segments = base.segments();
+        // The last segment is the model file, so it cannot be the folder looked for
+        for (int i = segments.length - 2; i >= 0; i--) {
+            if (CqrsArtifactResolver.MODEL_DIR.equals(segments[i])) {
+                return base.trimSegments(segments.length - 1 - i).appendSegment("");
+            }
+        }
+        return null;
     }
 
     /**

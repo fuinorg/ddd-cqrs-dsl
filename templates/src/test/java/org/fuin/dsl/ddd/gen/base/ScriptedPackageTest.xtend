@@ -2,7 +2,12 @@ package org.fuin.dsl.ddd.gen.base
 
 import com.google.inject.Provider
 import jakarta.inject.Inject
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Path
+import java.util.Map
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
@@ -285,6 +290,112 @@ class ScriptedPackageTest {
         val vo = model.contexts.head.modules.head.elements.filter(ValueObject).head
         assertThatThrownBy[CqrsScripts.model2JavaPackage(vo, TypeKeys.JAVA_VALUE_OBJECT)].
             hasMessageContaining("not-there.js")
+    }
+
+    /**
+     * A model below a "model" folder writes its script path from there, so one and the same path serves
+     * every ".cqrs" of that model whatever its depth - which is what lets a published model name the
+     * folder its script sits in.
+     */
+    @Test
+    def void testScriptPathIsAnchoredAtTheModelFolder() {
+
+        val dir = Files.createTempDirectory("scripted-anchor")
+        Files.createDirectories(dir.resolve("model/public/sub"))
+        Files.writeString(dir.resolve("model/public/model2JavaPackage.js"), '''
+            function model2JavaPackage(element, typeKey) {
+                return 'com.acme.anchored';
+            }
+        ''')
+
+        val resourceSet = resourceSetProvider.get
+        val top = parser.parse('''
+            context p {
+                hint SrcGen4J {
+                    "model2JavaPackage": "public/model2JavaPackage.js"
+                }
+                module x.a {
+                    value-object TopValueObject {
+                        String value
+                    }
+                }
+            }
+        ''', URI.createFileURI(dir.resolve("model/public/main.cqrs").toString), resourceSet)
+
+        val deep = parser.parse('''
+            context q {
+                hint SrcGen4J {
+                    "model2JavaPackage": "public/model2JavaPackage.js"
+                }
+                module y.b {
+                    value-object DeepValueObject {
+                        String value
+                    }
+                }
+            }
+        ''', URI.createFileURI(dir.resolve("model/public/sub/deep.cqrs").toString), resourceSet)
+
+        assertThat(CqrsScripts.model2JavaPackage(
+            top.contexts.head.modules.head.elements.filter(ValueObject).head, TypeKeys.JAVA_VALUE_OBJECT)).
+            isEqualTo("com.acme.anchored")
+
+        // The very same path from one folder deeper: it is not relative to the ".cqrs" that wrote it
+        assertThat(CqrsScripts.model2JavaPackage(
+            deep.contexts.head.modules.head.elements.filter(ValueObject).head, TypeKeys.JAVA_VALUE_OBJECT)).
+            isEqualTo("com.acme.anchored")
+    }
+
+    /**
+     * The script of a dependency is read in place, out of the archive that carries its models - the
+     * "model" folder inside the zip anchors the path exactly as a directory on disk does.
+     */
+    @Test
+    def void testScriptOfADependencyIsReadFromItsArchive() {
+
+        val dir = Files.createTempDirectory("scripted-archive")
+        val zip = dir.resolve("cqrs-model-1.0.0.zip")
+        writeZip(zip, #{
+            "model/public/dependency.cqrs" -> '''
+                context dep {
+                    hint SrcGen4J {
+                        "model2JavaPackage": "public/model2JavaPackage.js"
+                    }
+                    module d.a {
+                        value-object DepValueObject {
+                            String value
+                        }
+                    }
+                }
+            ''',
+            "model/public/model2JavaPackage.js" -> '''
+                function model2JavaPackage(element, typeKey) {
+                    return 'com.acme.from.archive';
+                }
+            '''
+        })
+
+        val resourceSet = resourceSetProvider.get
+        val resource = resourceSet.getResource(
+            URI.createURI("archive:" + URI.createFileURI(zip.toString) + "!/model/public/dependency.cqrs"), true)
+        val dependency = resource.contents.head as DomainModel
+
+        val depVo = dependency.contexts.head.modules.head.elements.filter(ValueObject).head
+        assertThat(CqrsScripts.model2JavaPackage(depVo, TypeKeys.JAVA_VALUE_OBJECT)).
+            isEqualTo("com.acme.from.archive")
+    }
+
+    /** Writes a zip holding the given entries, the way a published model artifact looks. */
+    private def void writeZip(Path zip, Map<String, String> entries) {
+        val out = new ZipOutputStream(Files.newOutputStream(zip))
+        try {
+            for (entry : entries.entrySet) {
+                out.putNextEntry(new ZipEntry(entry.key))
+                out.write(entry.value.getBytes(StandardCharsets.UTF_8))
+                out.closeEntry
+            }
+        } finally {
+            out.close
+        }
     }
 
 }

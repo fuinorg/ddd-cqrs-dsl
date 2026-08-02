@@ -5,11 +5,10 @@ package org.fuin.dsl.cqrs.intellij.remote;
  * dependency live</em>, selected by a <code>type</code> discriminator.
  *
  * <p>Only the <b>maven</b> type is supported: a Maven artifact ({@link #getGroupId() groupId}/
- * {@link #getArtifactId() artifactId}/{@link #getVersion() version}) with classifier
- * <code>cqrs</code> and type <code>tar.gz</code> whose archive contains one or more
- * <code>.cqrs</code> files at the top level. As an override, {@link #getLocal() local} may point at a
- * local directory of <code>.cqrs</code> files that is read directly instead of downloading the
- * artifact.</p>
+ * {@link #getArtifactId() artifactId}/{@link #getVersion() version}) - a plain zip, no classifier -
+ * holding one or more <code>.cqrs</code> files below <code>model/</code>. As an override,
+ * {@link #getLocal() local} may point at a local directory of <code>.cqrs</code> files that is read
+ * directly instead of downloading the artifact.</p>
  *
  * <p>This class is plain JDK code (no Gson, EMF or IntelliJ types) so the same source can be shared
  * verbatim by the Maven, Eclipse and IntelliJ projects.</p>
@@ -96,8 +95,8 @@ public final class RemoteScopeEntry {
     }
 
     /**
-     * A canonical identity for the source, used as the cache key (a directory named after its SHA-1)
-     * and stored in the cache index. Returns <code>null</code> for an unknown type.
+     * A canonical identity for the source, used as the key under which what an artifact resolved to is
+     * remembered. Returns <code>null</code> for an unknown type.
      */
     public String getSourceId() {
         if (TYPE_MAVEN.equals(type)) {

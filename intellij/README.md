@@ -140,8 +140,8 @@ context de.fuin.melkheftken {
 }
 ```
 
-- The coordinate is `groupId:artifactId:version` and identifies an ordinary Maven artifact — a jar,
-  no classifier — holding the `.cqrs` files under `model/`. It is resolved by **the IDE's own Maven**
+- The coordinate is `groupId:artifactId:version` and identifies a Maven artifact — a plain zip, no
+  classifier — holding the `.cqrs` files under `model/`. It is resolved by **the IDE's own Maven**
   (the bundled Maven plugin), so your `settings.xml` — local repository, remote repositories, mirrors,
   servers and proxies — applies exactly as it does for a Maven project. Every module the artifact
   declares becomes importable.
@@ -149,10 +149,12 @@ context de.fuin.melkheftken {
   dependency when not absolute. Those files are read **directly** instead of downloading the
   artifact — handy while developing a model that is not published yet.
 
-**Nothing is unpacked.** The models are read in place, out of the jar in the local repository: the
-artifact is mounted with the IDE's `JarFileSystem`, so the entries below `model/` are real virtual
-files — go-to-definition lands inside the jar, and find-usages works on them. Only `model/` counts,
-taken recursively; anything else in the jar is ignored. There is no `.dependencies-cache/` any more.
+**Nothing is unpacked.** The models are read in place, out of the zip in the local repository: the
+artifact is mounted with the IDE's `JarFileSystem` — which takes a zip like any other archive — so the
+entries below `model/` are real virtual files; go-to-definition lands inside the archive, and
+find-usages works on them. Only `model/` counts, taken recursively, so a producer may keep its models
+in folders of its own below it; anything outside is ignored. There is no `.dependencies-cache/` any
+more.
 
 The local repository is the only cache. What a coordinate resolved to — and why it failed — is
 remembered for the session, so a bad coordinate is attempted once rather than on every keystroke; an

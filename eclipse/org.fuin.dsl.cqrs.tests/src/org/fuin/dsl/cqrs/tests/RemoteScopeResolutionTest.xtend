@@ -28,10 +28,10 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 /**
  * Verifies that cross-references resolve against the models of a declared {@code dependency}: an
- * artifact resolved by Maven and read <em>inside</em> its jar in the local repository, and a
+ * artifact resolved by Maven and read <em>inside</em> its zip in the local repository, and a
  * {@code local} directory read directly.
  *
- * <p>The artifact is a jar written by the test and handed over by a stub resolver, so this covers the
+ * <p>The artifact is a zip written by the test and handed over by a stub resolver, so this covers the
  * reading half only - that {@code MimaArtifactResolverTest} really resolves through Maven is verified
  * separately.</p>
  */
@@ -64,7 +64,7 @@ class RemoteScopeResolutionTest {
 	/**
 	 * What an artifact resolved to is remembered for the session, and every test here publishes the
 	 * same coordinate into a temp repository of its own - so the memory has to be dropped in between,
-	 * or the second test would see the first one's jar.
+	 * or the second test would see the first one's archive.
 	 */
 	@BeforeEach
 	def void forgetPreviousResolutions() {
@@ -77,15 +77,17 @@ class RemoteScopeResolutionTest {
 	}
 
 	/**
-	 * The artifact is resolved by Maven and its models are read straight out of the jar - the URIs of
-	 * the resolved types point <em>inside</em> the archive, nothing is unpacked.
+	 * The artifact is resolved by Maven and its models are read straight out of the zip - the URIs of
+	 * the resolved types point <em>inside</em> the archive, nothing is unpacked. The script an artifact
+	 * ships next to its models is not a model and must not be picked up as one.
 	 */
 	@Test
-	def void resolvesFromInsideTheArtifactJar() {
+	def void resolvesFromInsideTheArtifactArchive() {
 		val root = Files.createTempDirectory("remote-scope-maven")
 		installResolver(root, #{
-			"model/money.cqrs" -> REMOTE_BILLING.toString,
-			"model/sub/sku.cqrs" -> REMOTE_CATALOG.toString
+			"model/public/money.cqrs" -> REMOTE_BILLING.toString,
+			"model/public/sub/sku.cqrs" -> REMOTE_CATALOG.toString,
+			"model/public/model2JavaPackage.js" -> "function model2JavaPackage() { return 'x'; }"
 		})
 
 		val model = parse(root, '''
@@ -112,24 +114,26 @@ class RemoteScopeResolutionTest {
 			"both types of the artifact must be resolved")
 		Assertions.assertEquals(#["Money", "Sku"], attributeTypes.map[name].sort)
 
-		// The decisive assertion: read in place, out of the jar in the local repository.
+		// The decisive assertion: read in place, out of the archive in the local repository.
 		for (type : attributeTypes) {
 			val uri = type.eResource.URI.toString
 			Assertions.assertTrue(uri.startsWith("archive:"),
-				"a model of a dependency must be read from inside the jar, but was: " + uri)
+				"a model of a dependency must be read from inside the archive, but was: " + uri)
 			Assertions.assertTrue(uri.contains("!/model/"),
 				"only models below 'model/' are read, but was: " + uri)
+			Assertions.assertTrue(uri.endsWith(".cqrs"),
+				"a script shipped next to the models is not a model, but was: " + uri)
 		}
 
 		Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")),
 			"nothing may be unpacked next to the model any more")
 	}
 
-	/** A model in a sub folder of the jar is found too - entries are read recursively. */
+	/** A model in a sub folder of the archive is found too - entries are read recursively. */
 	@Test
-	def void readsModelsFromSubFoldersOfTheJar() {
+	def void readsModelsFromSubFoldersOfTheArchive() {
 		val root = Files.createTempDirectory("remote-scope-nested")
-		installResolver(root, #{"model/sub/sku.cqrs" -> REMOTE_CATALOG.toString})
+		installResolver(root, #{"model/public/sub/sku.cqrs" -> REMOTE_CATALOG.toString})
 
 		assertResolves(parse(root, '''
 			context consumer {
@@ -215,20 +219,20 @@ class RemoteScopeResolutionTest {
 	// ---- helpers ---------------------------------------------------------
 
 	/**
-	 * Writes a jar with the given entries and installs a resolver that answers with it.
+	 * Writes a zip with the given entries and installs a resolver that answers with it.
 	 *
 	 * <p>Which Maven does the resolving is beside the point here - that is
 	 * {@code MimaArtifactResolverTest} - so a stub keeps this test free of any environment and lets the
 	 * Eclipse tests bundle, which resolves through m2e, run exactly the same code.</p>
 	 */
 	private def void installResolver(Path root, Map<String, String> entries) {
-		val jar = root.resolve("cqrs-model-1.0.0.jar")
-		Files.write(jar, jar(entries))
-		CqrsArtifactResolvers.set([ groupId, artifactId, version | jar ])
+		val archive = root.resolve("cqrs-model-1.0.0.zip")
+		Files.write(archive, zip(entries))
+		CqrsArtifactResolvers.set([ groupId, artifactId, version | archive ])
 	}
 
-	/** A jar holding the given entries (path inside the archive to content). */
-	private def byte[] jar(Map<String, String> entries) {
+	/** A zip holding the given entries (path inside the archive to content). */
+	private def byte[] zip(Map<String, String> entries) {
 		val bytes = new ByteArrayOutputStream
 		val zip = new ZipOutputStream(bytes)
 		for (entry : entries.entrySet) {

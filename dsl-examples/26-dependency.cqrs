@@ -1,10 +1,11 @@
-// A "dependency" is how a model reaches types that another project publishes. It names an ordinary
-// Maven artifact - a jar, no classifier - holding ".cqrs" files under "model/". It makes those models
-// resolvable; which of their types are actually visible is decided by an "import" (see 27-import).
+// A "dependency" is how a model reaches types that another project publishes. It names a Maven
+// artifact - a plain zip, no classifier - holding ".cqrs" files under "model/", in folders of its own
+// if the producer wants to. It makes those models resolvable; which of their types are actually
+// visible is decided by an "import" (see 27-import).
 //
 // Resolution is Maven's: the editor or build uses the Maven it already has (m2e in Eclipse, the IDE's
 // Maven plugin in IntelliJ, MIMA elsewhere), so the repositories, mirrors, servers and proxies of
-// your "settings.xml" all apply. The models are then read straight out of the jar in the local
+// your "settings.xml" all apply. The models are then read straight out of the zip in the local
 // repository - nothing is ever unpacked. A coordinate that resolves to nothing is an error on the
 // coordinate itself - otherwise the only symptom would be every type it provides failing to resolve,
 // which points at the models instead of at the declaration that is wrong.

@@ -193,7 +193,7 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
      * The Java package this factory's artifact for the given element is generated into.
      * <p>
      * The answer comes from the <code>model2JavaPackage</code> script of the context the element belongs
-     * to - this project's for a locally declared element, the one shipped inside the jar for an imported
+     * to - this project's for a locally declared element, the one shipped inside the archive for an imported
      * one, which is how a reference to an imported type gets the package its producer generated it into.
      *
      * @param el Element to build the package for.

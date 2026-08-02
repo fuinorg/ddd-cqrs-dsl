@@ -27,7 +27,7 @@ public final class M2eArtifactResolver implements CqrsArtifactResolver {
     @Override
     public Path resolve(String groupId, String artifactId, String version) throws Exception {
         final IMaven maven = MavenPlugin.getMaven();
-        // No classifier: a model artifact is an ordinary jar.
+        // No classifier: a model artifact is a plain zip.
         final org.apache.maven.artifact.Artifact artifact = maven.resolve(groupId, artifactId, version,
                 CqrsArtifactResolver.EXTENSION, null, maven.getArtifactRepositories(), new NullProgressMonitor());
         if (artifact == null) {

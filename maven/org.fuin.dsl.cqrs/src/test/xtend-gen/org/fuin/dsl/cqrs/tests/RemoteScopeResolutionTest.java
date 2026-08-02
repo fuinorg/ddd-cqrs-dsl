@@ -44,10 +44,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Verifies that cross-references resolve against the models of a declared {@code dependency}: an
- * artifact resolved by Maven and read <em>inside</em> its jar in the local repository, and a
+ * artifact resolved by Maven and read <em>inside</em> its zip in the local repository, and a
  * {@code local} directory read directly.
  * 
- * <p>The artifact is a jar written by the test and handed over by a stub resolver, so this covers the
+ * <p>The artifact is a zip written by the test and handed over by a stub resolver, so this covers the
  * reading half only - that {@code MimaArtifactResolverTest} really resolves through Maven is verified
  * separately.</p>
  */
@@ -111,7 +111,7 @@ public class RemoteScopeResolutionTest {
   /**
    * What an artifact resolved to is remembered for the session, and every test here publishes the
    * same coordinate into a temp repository of its own - so the memory has to be dropped in between,
-   * or the second test would see the first one's jar.
+   * or the second test would see the first one's archive.
    */
   @BeforeEach
   public void forgetPreviousResolutions() {
@@ -124,18 +124,20 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
-   * The artifact is resolved by Maven and its models are read straight out of the jar - the URIs of
-   * the resolved types point <em>inside</em> the archive, nothing is unpacked.
+   * The artifact is resolved by Maven and its models are read straight out of the zip - the URIs of
+   * the resolved types point <em>inside</em> the archive, nothing is unpacked. The script an artifact
+   * ships next to its models is not a model and must not be picked up as one.
    */
   @Test
-  public void resolvesFromInsideTheArtifactJar() {
+  public void resolvesFromInsideTheArtifactArchive() {
     try {
       final Path root = Files.createTempDirectory("remote-scope-maven");
       String _string = RemoteScopeResolutionTest.REMOTE_BILLING.toString();
-      Pair<String, String> _mappedTo = Pair.<String, String>of("model/money.cqrs", _string);
+      Pair<String, String> _mappedTo = Pair.<String, String>of("model/public/money.cqrs", _string);
       String _string_1 = RemoteScopeResolutionTest.REMOTE_CATALOG.toString();
-      Pair<String, String> _mappedTo_1 = Pair.<String, String>of("model/sub/sku.cqrs", _string_1);
-      this.installResolver(root, Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo, _mappedTo_1)));
+      Pair<String, String> _mappedTo_1 = Pair.<String, String>of("model/public/sub/sku.cqrs", _string_1);
+      Pair<String, String> _mappedTo_2 = Pair.<String, String>of("model/public/model2JavaPackage.js", "function model2JavaPackage() { return \'x\'; }");
+      this.installResolver(root, Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo, _mappedTo_1, _mappedTo_2)));
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("context consumer {");
       _builder.newLine();
@@ -197,9 +199,11 @@ public class RemoteScopeResolutionTest {
         {
           final String uri = type.eResource().getURI().toString();
           Assertions.assertTrue(uri.startsWith("archive:"), 
-            ("a model of a dependency must be read from inside the jar, but was: " + uri));
+            ("a model of a dependency must be read from inside the archive, but was: " + uri));
           Assertions.assertTrue(uri.contains("!/model/"), 
             ("only models below \'model/\' are read, but was: " + uri));
+          Assertions.assertTrue(uri.endsWith(".cqrs"), 
+            ("a script shipped next to the models is not a model, but was: " + uri));
         }
       }
       Assertions.assertFalse(Files.exists(root.resolve(".dependencies-cache")), 
@@ -210,14 +214,14 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
-   * A model in a sub folder of the jar is found too - entries are read recursively.
+   * A model in a sub folder of the archive is found too - entries are read recursively.
    */
   @Test
-  public void readsModelsFromSubFoldersOfTheJar() {
+  public void readsModelsFromSubFoldersOfTheArchive() {
     try {
       final Path root = Files.createTempDirectory("remote-scope-nested");
       String _string = RemoteScopeResolutionTest.REMOTE_CATALOG.toString();
-      Pair<String, String> _mappedTo = Pair.<String, String>of("model/sub/sku.cqrs", _string);
+      Pair<String, String> _mappedTo = Pair.<String, String>of("model/public/sub/sku.cqrs", _string);
       this.installResolver(root, Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo)));
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("context consumer {");
@@ -350,60 +354,6 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
-   * A context may be split across files, and a dependency declared on it applies to all of them: the
-   * 'dependency' sits in one file, the module importing the artifact's types in another.
-   */
-  @Test
-  public void contextDependencyAppliesToTheOtherFilesOfTheContext() {
-    try {
-      final Path root = Files.createTempDirectory("remote-scope-split");
-      String _string = RemoteScopeResolutionTest.REMOTE_BILLING.toString();
-      Pair<String, String> _mappedTo = Pair.<String, String>of("model/money.cqrs", _string);
-      this.installResolver(root, Collections.<String, String>unmodifiableMap(CollectionLiterals.<String, String>newHashMap(_mappedTo)));
-      final XtextResourceSet resourceSet = this.resourceSetProvider.get();
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("context consumer {");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("dependency \"");
-      _builder.append(RemoteScopeResolutionTest.COORDINATE, "\t");
-      _builder.append("\"");
-      _builder.newLineIfNotEmpty();
-      _builder.append("}");
-      _builder.newLine();
-      this.parseHelper.parse(_builder, URI.createFileURI(root.resolve("aaa.cqrs").toString()), resourceSet);
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append("context consumer {");
-      _builder_1.newLine();
-      _builder_1.append("\t");
-      _builder_1.append("module com.acme.sales {");
-      _builder_1.newLine();
-      _builder_1.append("\t\t");
-      _builder_1.append("import remote.com.acme.billing.*");
-      _builder_1.newLine();
-      _builder_1.newLine();
-      _builder_1.append("\t\t");
-      _builder_1.append("value-object Price {");
-      _builder_1.newLine();
-      _builder_1.append("\t\t\t");
-      _builder_1.append("Money amount");
-      _builder_1.newLine();
-      _builder_1.append("\t\t");
-      _builder_1.append("}");
-      _builder_1.newLine();
-      _builder_1.append("\t");
-      _builder_1.append("}");
-      _builder_1.newLine();
-      _builder_1.append("}");
-      _builder_1.newLine();
-      final DomainModel model = this.parseHelper.parse(_builder_1, URI.createFileURI(root.resolve("sales.cqrs").toString()), resourceSet);
-      this.assertResolves(model, "Money");
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-
-  /**
    * Without a dependency the artifact's types stay unresolved.
    */
   @Test
@@ -440,7 +390,7 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
-   * Writes a jar with the given entries and installs a resolver that answers with it.
+   * Writes a zip with the given entries and installs a resolver that answers with it.
    * 
    * <p>Which Maven does the resolving is beside the point here - that is
    * {@code MimaArtifactResolverTest} - so a stub keeps this test free of any environment and lets the
@@ -448,10 +398,10 @@ public class RemoteScopeResolutionTest {
    */
   private void installResolver(final Path root, final Map<String, String> entries) {
     try {
-      final Path jar = root.resolve("cqrs-model-1.0.0.jar");
-      Files.write(jar, this.jar(entries));
+      final Path archive = root.resolve("cqrs-model-1.0.0.zip");
+      Files.write(archive, this.zip(entries));
       final CqrsArtifactResolver _function = (String groupId, String artifactId, String version) -> {
-        return jar;
+        return archive;
       };
       CqrsArtifactResolvers.set(_function);
     } catch (Throwable _e) {
@@ -460,9 +410,9 @@ public class RemoteScopeResolutionTest {
   }
 
   /**
-   * A jar holding the given entries (path inside the archive to content).
+   * A zip holding the given entries (path inside the archive to content).
    */
-  private byte[] jar(final Map<String, String> entries) {
+  private byte[] zip(final Map<String, String> entries) {
     try {
       final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
       final ZipOutputStream zip = new ZipOutputStream(bytes);

@@ -198,7 +198,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cLocalSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cLocalAssignment_2_1.eContents().get(0);
 		
 		///**
-		// * A Maven artifact (classifier "cqrs", type "tar.gz") that provides further '.cqrs' models. It makes
+		// * A Maven artifact (a zip, no classifier) that provides further '.cqrs' models. It makes
 		// * those models resolvable; an 'import' still decides which of their types are actually visible. A
 		// * dependency declared on the context applies to all of its modules. The optional 'local' clause
 		// * reads the models straight from a directory instead of resolving the artifact, which is handy for
@@ -5495,7 +5495,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	///**
-	// * A Maven artifact (classifier "cqrs", type "tar.gz") that provides further '.cqrs' models. It makes
+	// * A Maven artifact (a zip, no classifier) that provides further '.cqrs' models. It makes
 	// * those models resolvable; an 'import' still decides which of their types are actually visible. A
 	// * dependency declared on the context applies to all of its modules. The optional 'local' clause
 	// * reads the models straight from a directory instead of resolving the artifact, which is handy for

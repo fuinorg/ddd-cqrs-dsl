@@ -5,7 +5,7 @@ package org.fuin.dsl.cqrs.scoping;
  * dependency live</em>, selected by a <code>type</code> discriminator.
  *
  * <p>Only the <b>maven</b> type is supported: a Maven artifact ({@link #getGroupId() groupId}/
- * {@link #getArtifactId() artifactId}/{@link #getVersion() version}) - an ordinary jar, no classifier -
+ * {@link #getArtifactId() artifactId}/{@link #getVersion() version}) - a plain zip, no classifier -
  * holding one or more <code>.cqrs</code> files below <code>model/</code>. As an override,
  * {@link #getLocal() local} may point at a local directory of <code>.cqrs</code> files that is read
  * directly instead of resolving the artifact.</p>

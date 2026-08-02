@@ -147,11 +147,18 @@ they cannot disagree about what a model depends on:
     So `settings.xml` (mirrors, servers, proxies, local repository) applies everywhere. The two IDE
     implementations are kept out of each other's tree by the exclude list of
     `mirror-eclipse-sources-to-maven.sh` — neither would compile in the other's.
-  - **Nothing is unpacked.** The artifact is an ordinary jar (no classifier) with the models under
-    `model/`, read in place from the local repository: EMF gets
-    `archive:file:/…/x.jar!/model/types.cqrs`, IntelliJ mounts it with `JarFileSystem`. The last
-    segment still ends in `.cqrs`, so the resource factory applies as usual. Entries are taken
-    **recursively** below `model/` and everything outside it is ignored.
+  - **Nothing is unpacked.** The artifact is a plain **zip** (no classifier, `CqrsArtifactResolver.
+    EXTENSION`) with the models under `model/`, read in place from the local repository: EMF gets
+    `archive:file:/…/x.zip!/model/public/types.cqrs`, IntelliJ mounts it with `JarFileSystem`, which
+    takes a zip like any other archive. A zip and not a jar because the models are data — nothing in
+    there ever belongs on a classpath. The last segment still ends in `.cqrs`, so the resource factory
+    applies as usual. Entries are taken **recursively** below `model/` and everything outside it is
+    ignored, which is what lets a producer split its models into folders of its own (`model/public/…`)
+    and ship a script next to them.
+  - A model may name a JavaScript in its `SrcGen4J` hint, and the path is written **from the enclosing
+    `model` folder**, not relative to the `.cqrs` that declares it (`CqrsScripts.anchor`). That is what
+    makes one and the same string work on disk and inside the archive, whatever the depth. A model that
+    lies in no `model` folder keeps the old relative behaviour.
   - A dependency model therefore has an `archive:` URI and can never be mistaken for a source model —
     the old `.dependencies-cache/` inside the source dir, and the "is it under the cache?" origin
     test, are both gone.

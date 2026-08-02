@@ -73,5 +73,5 @@ the report can be captured cleanly (`... > report.txt`).
   containing directory.
 - **Externally provided models** (e.g. `org.fuin.dsl.cqrs.common.*`) are resolved through the
   `dependency` declarations of the model itself, which are materialized under a
-  local Maven repository and read straight out of that jar; references that cannot be resolved are reported as
+  local Maven repository and read straight out of that zip; references that cannot be resolved are reported as
   errors.

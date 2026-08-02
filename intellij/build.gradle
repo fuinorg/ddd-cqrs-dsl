@@ -141,9 +141,9 @@ commands, exceptions and more.
     <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
     <li>Code folding for <code>{ }</code> blocks and multi-line comments.</li>
     <li>Structure view of the domain model.</li>
-    <li>Resolution of references into models a declared <code>dependency</code> provides &ndash; from
-        a Maven <code>tar.gz</code> artifact (or a <code>local</code> directory) &ndash; interoperable
-        with the Eclipse plugin's <code>.dependencies-cache</code>.</li>
+    <li>Resolution of references into models a declared <code>dependency</code> provides &ndash; read
+        in place out of a Maven <code>zip</code> artifact, or from a <code>local</code> directory
+        &ndash; exactly as the Eclipse plugin and the SrcGen4J build do it.</li>
 </ul>
 Licensed under LGPL v3.'''
 
@@ -157,7 +157,14 @@ ext.pluginChangeNotes = '''\
         file is written to. A model that declares neither uses the mapping shipped with the templates,
         so most models need no hint at all. The two old keys are now rejected by the hint's JSON schema,
         which is what this release changes for the editor - an unmigrated model is reported here rather
-        than generating into the wrong packages later.</li>
+        than generating into the wrong packages later.<br>
+        <b>Breaking:</b> the artifact a <code>dependency</code> names is now resolved as a plain
+        <code>zip</code> instead of a jar (still no classifier, still holding the <code>.cqrs</code>
+        files below <code>model/</code>): the models are data and nothing in there belongs on a
+        classpath. Re-publish a model artifact as a zip, otherwise its coordinate is reported as
+        unresolvable. An artifact that resolves but cannot be read - not an archive as far as the IDE
+        is concerned, or holding no models below <code>model/</code> - now says so on the coordinate
+        instead of leaving every type it provides unresolved.</li>
     <li><b>1.23.1</b> &ndash; A <code>dependency</code> declared on a <code>context</code> now applies
         to every file of that context, as it already did in the SrcGen4J build. Until now the editor
         only saw a <code>dependency</code> written in the same file, so a context split across files

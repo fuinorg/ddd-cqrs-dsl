@@ -1,5 +1,5 @@
 context p_dependency {
-	// A dependency names the Maven artifact (a plain jar with the models under "model/") whose contexts
+	// A dependency names the Maven artifact (a plain zip with the models under "model/") whose contexts
 	// become visible. Declared on the project it applies to every context below.
 	dependency "org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT"
 

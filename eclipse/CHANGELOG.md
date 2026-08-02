@@ -2,6 +2,17 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.21.0
+- **Breaking:** the artifact a `dependency` names is resolved as a plain `zip` instead of a jar - still
+  no classifier, still holding the `.cqrs` files below `model/`, still read in place. The models are
+  data: nothing in that artifact ever belongs on a classpath. Re-publish a model artifact as a zip,
+  otherwise its coordinate is reported as unresolvable.
+- A `SrcGen4J` script path is now written **from the enclosing `model` folder** rather than relative to
+  the `.cqrs` file that declares the hint, so one and the same path works on disk and inside the
+  artifact, whatever the depth of the model below that folder - which is what lets a published model
+  say `public/model2JavaPackage.js` and ship the script next to its models. A model that lies in no
+  `model` folder keeps the previous relative behaviour.
+
 ## 1.20.0
 - **Breaking:** the model has two levels instead of three. `project` is gone and the inner block is a
   `module`: `project P { context C { namespace N { X } } }` becomes `context P { module C.N { X } }`.

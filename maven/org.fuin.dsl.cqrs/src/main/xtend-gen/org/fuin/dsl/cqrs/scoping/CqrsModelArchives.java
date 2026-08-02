@@ -25,11 +25,11 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 /**
  * Turns a <code>dependency</code> into the URIs of the <code>.cqrs</code> models it provides.
  * 
- * <p>A Maven dependency is resolved to its jar in the local repository by the
+ * <p>A Maven dependency is resolved to its zip in the local repository by the
  * {@link CqrsArtifactResolver} of the environment, and the models are then addressed
- * <em>inside</em> that jar:</p>
+ * <em>inside</em> that archive:</p>
  * 
- * <pre>archive:file:/home/me/.m2/repository/.../cqrs-common-model-0.1.0-SNAPSHOT.jar!/model/types.cqrs</pre>
+ * <pre>archive:file:/home/me/.m2/repository/.../cqrs-common-model-0.1.0-SNAPSHOT.zip!/model/public/types.cqrs</pre>
  * 
  * <p>Nothing is ever unpacked. EMF resolves an <code>archive:</code> URI out of the box, the last
  * segment still ends in <code>.cqrs</code> so Xtext's resource factory applies as usual, and the local
@@ -134,12 +134,12 @@ public class CqrsModelArchives {
       return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
     }
     try {
-      final Path jar = CqrsArtifactResolvers.get().resolve(entry.getGroupId(), entry.getArtifactId(), entry.getVersion());
-      if (((jar == null) || (!jar.toFile().isFile()))) {
+      final Path archive = CqrsArtifactResolvers.get().resolve(entry.getGroupId(), entry.getArtifactId(), entry.getVersion());
+      if (((archive == null) || (!archive.toFile().isFile()))) {
         this.problems.put(key, "the artifact was not found in the local repository");
         return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
       }
-      final List<URI> uris = this.entriesOf(jar.toFile());
+      final List<URI> uris = this.entriesOf(archive.toFile());
       boolean _isEmpty = uris.isEmpty();
       if (_isEmpty) {
         this.problems.put(key, 
@@ -164,12 +164,12 @@ public class CqrsModelArchives {
   /**
    * Every <code>.cqrs</code> below <code>model/</code>, as an <code>archive:</code> URI.
    */
-  private List<URI> entriesOf(final File jar) {
+  private List<URI> entriesOf(final File archive) {
     try {
       final String prefix = (CqrsArtifactResolver.MODEL_DIR + "/");
-      final URI jarUri = URI.createFileURI(jar.getAbsolutePath());
+      final URI archiveUri = URI.createFileURI(archive.getAbsolutePath());
       final ArrayList<URI> result = CollectionLiterals.<URI>newArrayList();
-      final ZipFile zip = new ZipFile(jar);
+      final ZipFile zip = new ZipFile(archive);
       try {
         final Enumeration<? extends ZipEntry> entries = zip.entries();
         while (entries.hasMoreElements()) {
@@ -177,7 +177,7 @@ public class CqrsModelArchives {
             final ZipEntry entry = entries.nextElement();
             final String name = entry.getName();
             if ((((!entry.isDirectory()) && name.startsWith(prefix)) && name.endsWith(".cqrs"))) {
-              result.add(URI.createURI(((("archive:" + jarUri) + "!/") + name)));
+              result.add(URI.createURI(((("archive:" + archiveUri) + "!/") + name)));
             }
           }
         }

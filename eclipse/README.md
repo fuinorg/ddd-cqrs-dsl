@@ -136,7 +136,7 @@ scoping* — split across these classes in
 |-------|----------------|
 | `CqrsDependencies`          | Collects the `dependency` declarations that apply to a resource and resolves them to `.cqrs` files. Shared by the global and local scope providers, so the two can never disagree. |
 | `RemoteScopeEntry`          | A parsed coordinate (`parse("groupId:artifactId:version", local)`); `null` when malformed. Plain JDK, shared verbatim with the IntelliJ plugin. |
-| `CqrsModelArchives`         | Turns a dependency into model URIs: the entries below `model/` **inside** the resolved jar (`archive:file:/…/x.jar!/model/types.cqrs`), or the files of a `local` directory. Remembers per session what resolved and what failed. |
+| `CqrsModelArchives`         | Turns a dependency into model URIs: the entries below `model/` **inside** the resolved zip (`archive:file:/…/x.zip!/model/public/types.cqrs`), or the files of a `local` directory. Remembers per session what resolved and what failed. |
 | `CqrsArtifactResolver` / `CqrsArtifactResolvers` | Resolves the artifact. In Eclipse that is **m2e** (`IMaven.resolve`), so the IDE's `settings.xml` — repositories, mirrors, servers, proxies, local repository — applies. `M2eArtifactResolver` lives in the **UI** plugin and is registered with `CqrsArtifactResolvers.set(...)`; outside an IDE the resolver is found on the class path. |
 | `CqrsDslGlobalScopeProvider`| The `IGlobalScopeProvider`. Loads the models of every declared dependency and adds their elements to the global scope. |
 
@@ -172,10 +172,10 @@ degrades to the local scope, so editing and generation never break.
 
 ### Nothing is unpacked
 
-The models are read **in place, out of the jar in the local Maven repository**:
+The models are read **in place, out of the zip in the local Maven repository**:
 
 ```
-archive:file:/home/me/.m2/repository/org/fuin/…/cqrs-common-model-0.1.0-SNAPSHOT.jar!/model/types.cqrs
+archive:file:/home/me/.m2/repository/org/fuin/…/cqrs-common-model-0.1.0-SNAPSHOT.zip!/model/public/types.cqrs
 ```
 
 EMF resolves an `archive:` URI out of the box and the last segment still ends in `.cqrs`, so Xtext's
@@ -214,7 +214,7 @@ after a restart.
 ### Worked example
 
 Model published as the Maven artifact
-`org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT` (a plain jar with the models under `model/`),
+`org.fuin.dsl.cqrs.contexts:cqrs-common-model:0.1.0-SNAPSHOT` (a plain zip with the models under `model/`),
 bundling a `billing.cqrs`:
 
 ```

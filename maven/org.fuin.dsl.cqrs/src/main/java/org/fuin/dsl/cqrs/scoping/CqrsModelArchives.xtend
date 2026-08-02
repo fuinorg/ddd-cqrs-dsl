@@ -13,11 +13,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 /**
  * Turns a <code>dependency</code> into the URIs of the <code>.cqrs</code> models it provides.
  *
- * <p>A Maven dependency is resolved to its jar in the local repository by the
+ * <p>A Maven dependency is resolved to its zip in the local repository by the
  * {@link CqrsArtifactResolver} of the environment, and the models are then addressed
- * <em>inside</em> that jar:</p>
+ * <em>inside</em> that archive:</p>
  *
- * <pre>archive:file:/home/me/.m2/repository/.../cqrs-common-model-0.1.0-SNAPSHOT.jar!/model/types.cqrs</pre>
+ * <pre>archive:file:/home/me/.m2/repository/.../cqrs-common-model-0.1.0-SNAPSHOT.zip!/model/public/types.cqrs</pre>
  *
  * <p>Nothing is ever unpacked. EMF resolves an <code>archive:</code> URI out of the box, the last
  * segment still ends in <code>.cqrs</code> so Xtext's resource factory applies as usual, and the local
@@ -94,12 +94,12 @@ class CqrsModelArchives {
 		if(problems.containsKey(key)) return #[]
 
 		try {
-			val jar = CqrsArtifactResolvers.get.resolve(entry.groupId, entry.artifactId, entry.version)
-			if (jar === null || !jar.toFile.isFile) {
+			val archive = CqrsArtifactResolvers.get.resolve(entry.groupId, entry.artifactId, entry.version)
+			if (archive === null || !archive.toFile.isFile) {
 				problems.put(key, "the artifact was not found in the local repository")
 				return #[]
 			}
-			val uris = entriesOf(jar.toFile)
+			val uris = entriesOf(archive.toFile)
 			if (uris.empty) {
 				problems.put(key,
 					"the artifact holds no '.cqrs' files below '" + CqrsArtifactResolver.MODEL_DIR + "/'")
@@ -116,18 +116,18 @@ class CqrsModelArchives {
 	}
 
 	/** Every <code>.cqrs</code> below <code>model/</code>, as an <code>archive:</code> URI. */
-	private def List<URI> entriesOf(File jar) {
+	private def List<URI> entriesOf(File archive) {
 		val prefix = CqrsArtifactResolver.MODEL_DIR + "/"
-		val jarUri = URI.createFileURI(jar.absolutePath)
+		val archiveUri = URI.createFileURI(archive.absolutePath)
 		val result = <URI>newArrayList
-		val zip = new ZipFile(jar)
+		val zip = new ZipFile(archive)
 		try {
 			val entries = zip.entries
 			while (entries.hasMoreElements) {
 				val entry = entries.nextElement
 				val name = entry.name
 				if (!entry.directory && name.startsWith(prefix) && name.endsWith(".cqrs")) {
-					result.add(URI.createURI("archive:" + jarUri + "!/" + name))
+					result.add(URI.createURI("archive:" + archiveUri + "!/" + name))
 				}
 			}
 		} finally {

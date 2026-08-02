@@ -22,7 +22,7 @@ import java.util.List;
  * which is why the plugin borrows the bundled Maven plugin instead of shipping a second Maven. It is
  * the IntelliJ counterpart of the Eclipse plugin's use of m2e.</p>
  *
- * <p>The artifact is an ordinary jar with no classifier; the models live inside it under
+ * <p>The artifact is a plain zip with no classifier; the models live inside it under
  * <code>model/</code> and are never unpacked (see {@link CqrsModelArchives}).</p>
  *
  * <p><b>Threading:</b> this contacts the Maven server and may download, so it must only be called from
@@ -31,7 +31,7 @@ import java.util.List;
 public final class MavenArtifactResolver {
 
     /** Packaging of a model artifact. It carries no classifier. */
-    public static final String EXTENSION = "jar";
+    public static final String EXTENSION = "zip";
 
     private final Project project;
 
@@ -56,7 +56,7 @@ public final class MavenArtifactResolver {
         final MavenEmbedderWrapper embedder = manager.getEmbeddersManager()
                 .getEmbedder(MavenEmbeddersManager.FOR_DEPENDENCIES_RESOLVE, project.getBasePath());
         try {
-            // No classifier - the models are the jar itself.
+            // No classifier - the models are the archive itself.
             final MavenArtifact artifact = embedder.resolve(
                     new MavenArtifactInfo(groupId, artifactId, version, EXTENSION, null), repositories);
             if (artifact == null) {

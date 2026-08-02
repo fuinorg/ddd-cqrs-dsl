@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * The models of a dependency are read <em>inside</em> the artifact jar, and a {@code local} directory
+ * The models of a dependency are read <em>inside</em> the artifact zip, and a {@code local} directory
  * is read directly. Nothing is ever unpacked.
  */
 public class CqrsModelArchivesTest extends BasePlatformTestCase {
@@ -40,24 +40,45 @@ public class CqrsModelArchivesTest extends BasePlatformTestCase {
         }
     }
 
-    /** Entries below 'model/' are read from inside the jar - recursively, and nothing else. */
-    public void testReadsModelsFromInsideTheJar() throws Exception {
-        Path jar = writeJar(Map.of(
-                "model/types.cqrs", "context r { module a { type Money } }",
-                "model/sub/more.cqrs", "context r { module b { type Sku } }",
+    /**
+     * Entries below 'model/' are read from inside the zip - recursively, and nothing else. A zip mounts
+     * exactly like the jar it replaces, which is what this proves; the URL protocol stays 'jar' because
+     * that is what IntelliJ calls its archive file system, whatever the extension.
+     */
+    public void testReadsModelsFromInsideTheArchive() throws Exception {
+        Path archive = writeZip(Map.of(
+                "model/public/types.cqrs", "context r { module a { type Money } }",
+                "model/public/sub/more.cqrs", "context r { module b { type Sku } }",
+                "model/public/model2JavaPackage.js", "function model2JavaPackage() { return 'x'; }",
                 "other/ignored.cqrs", "context r { module c { type Nope } }",
                 "model/notamodel.txt", "ignored"));
 
-        List<VirtualFile> models = archivesFor(jar).modelFiles(null,
-                RemoteScopeEntry.parse("g:a:1", null), true);
+        CqrsModelArchives archives = archivesFor(archive);
+        List<VirtualFile> models = archives.modelFiles(null, RemoteScopeEntry.parse("g:a:1", null), true);
 
         assertEquals("only the two '.cqrs' below 'model/': " + names(models), 2, models.size());
-        assertTrue("must be read inside the jar: " + models.get(0).getUrl(),
+        assertTrue("must be read inside the archive: " + models.get(0).getUrl(),
                 models.get(0).getUrl().startsWith("jar://"));
         assertTrue("nested entry must be found: " + names(models),
                 names(models).contains("more.cqrs"));
         assertFalse("an entry outside 'model/' must be ignored: " + names(models),
                 names(models).contains("ignored.cqrs"));
+        assertFalse("a script shipped next to the models is not a model: " + names(models),
+                names(models).contains("model2JavaPackage.js"));
+        assertNull("an artifact that reads must not be reported",
+                archives.problem(null, RemoteScopeEntry.parse("g:a:1", null)));
+    }
+
+    /** An artifact that resolves but holds no models says so, instead of failing silently. */
+    public void testArchiveWithoutModelsIsReported() throws Exception {
+        Path archive = writeZip(Map.of("other/ignored.cqrs", "context r { module c { type Nope } }"));
+
+        CqrsModelArchives archives = archivesFor(archive);
+        assertTrue(archives.modelFiles(null, RemoteScopeEntry.parse("g:a:1", null), true).isEmpty());
+
+        String problem = archives.problem(null, RemoteScopeEntry.parse("g:a:1", null));
+        assertNotNull("an artifact without models must be reported", problem);
+        assertTrue("message must name the folder looked in: " + problem, problem.contains("model/"));
     }
 
     /** A 'local' directory bypasses resolution completely. */
@@ -97,18 +118,18 @@ public class CqrsModelArchivesTest extends BasePlatformTestCase {
 
     // ---- helpers ---------------------------------------------------------
 
-    /** Archives that resolve every coordinate to the given jar, so no Maven is involved. */
-    private CqrsModelArchives archivesFor(Path jar) {
+    /** Archives that resolve every coordinate to the given file, so no Maven is involved. */
+    private CqrsModelArchives archivesFor(Path archive) {
         return new CqrsModelArchives(getProject()) {
             @Override
             Path resolveArtifact(RemoteScopeEntry entry) {
-                return jar;
+                return archive;
             }
         };
     }
 
-    private Path writeJar(Map<String, String> entries) throws Exception {
-        Path jar = workDir.resolve("provider-1.0.0.jar");
+    private Path writeZip(Map<String, String> entries) throws Exception {
+        Path archive = workDir.resolve("provider-1.0.0.zip");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ZipOutputStream zip = new ZipOutputStream(bytes)) {
             for (Map.Entry<String, String> entry : entries.entrySet()) {
@@ -117,9 +138,9 @@ public class CqrsModelArchivesTest extends BasePlatformTestCase {
                 zip.closeEntry();
             }
         }
-        Files.write(jar, bytes.toByteArray());
-        LocalFileSystem.getInstance().refreshAndFindFileByNioFile(jar);
-        return jar;
+        Files.write(archive, bytes.toByteArray());
+        LocalFileSystem.getInstance().refreshAndFindFileByNioFile(archive);
+        return archive;
     }
 
     private static List<String> names(List<VirtualFile> files) {

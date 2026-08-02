@@ -5,9 +5,11 @@ import java.nio.file.Path;
 /**
  * Resolves the Maven artifact that carries the models of a <code>dependency</code>.
  *
- * <p>The artifact is an ordinary jar - no classifier - whose <code>model/</code> folder holds the
- * <code>.cqrs</code> files. It is <em>not</em> unpacked: the models are read in place, straight out of
- * the jar in the local repository, so this only has to answer <em>where that jar is</em>.</p>
+ * <p>The artifact is a plain zip - no classifier - whose <code>model/</code> folder holds the
+ * <code>.cqrs</code> files, in sub folders of its own if it wants to. It is <em>not</em> unpacked: the
+ * models are read in place, straight out of the archive in the local repository, so this only has to
+ * answer <em>where that archive is</em>. A zip and not a jar because the models are data: nothing in
+ * there ever belongs on a classpath.</p>
  *
  * <p>There is one implementation per environment, because each of them already has a Maven:
  * {@code M2eArtifactResolver} in the Eclipse plugin and {@code MimaArtifactResolver} in the Maven jar
@@ -19,7 +21,7 @@ import java.nio.file.Path;
 public interface CqrsArtifactResolver {
 
     /** Packaging of a model artifact. It carries no classifier. */
-    String EXTENSION = "jar";
+    String EXTENSION = "zip";
 
     /** Folder inside the artifact that holds the <code>.cqrs</code> files. */
     String MODEL_DIR = "model";
