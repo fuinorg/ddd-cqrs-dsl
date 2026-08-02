@@ -57,7 +57,15 @@ the Eclipse editor and the headless generator share — so they behave identical
 ### A module is the unit of visibility
 
 A `module` sees only what it declares itself. A module may be split across several `.cqrs` files; all
-blocks with the same name are one logical block, so "same module" does not mean "same file".
+blocks with the same name are one logical block, so "same module" does not mean "same file". A model
+that publishes only part of itself is split exactly this way — the aggregates in the private half,
+what they fire in the public one — so the split has to be free of side effects: an aggregate still
+owns the events it `fires` from another file, and generated code does not change.
+
+The one thing it does change is a name the module declares itself **and** imports from elsewhere.
+Inside one file the module's own declaration shadows the imported one; across files the two are
+equally close, so the simple name becomes ambiguous and resolves to nothing. Write it fully
+qualified there — a fully qualified reference always resolves through the global scope.
 
 Everything else needs an `import` — a sibling module of the very same context included:
 

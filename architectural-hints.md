@@ -159,6 +159,15 @@ they cannot disagree about what a model depends on:
     `model` folder**, not relative to the `.cqrs` that declares it (`CqrsScripts.anchor`). That is what
     makes one and the same string work on disk and inside the archive, whatever the depth. A model that
     lies in no `model` folder keeps the old relative behaviour.
+  - **Publishing only part of a model splits a module across files**, so anything that walks the model
+    has to walk the *resource set*, not the resource. `CqrsEventExtensions.getFiringEntity` did the
+    latter and silently turned every event bound to its aggregate by a bare `fires` clause into a
+    plain one — a change in generated Java, not just in scoping. Iterate a **copy** of
+    `resourceSet.resources`: comparing the fired events resolves cross references, which may load
+    further resources into the set being iterated. What the split legitimately does change is a name
+    the module declares itself *and* imports — within one file the own declaration shadows the import,
+    across files the two sit at the same level (`CqrsDslLocalScopeProvider` adds both as normalizers)
+    and the simple name resolves to nothing, so it has to be written fully qualified.
   - A dependency model therefore has an `archive:` URI and can never be mistaken for a source model —
     the old `.dependencies-cache/` inside the source dir, and the "is it under the cache?" origin
     test, are both gone.

@@ -1,6 +1,9 @@
 package org.fuin.dsl.cqrs.extensions
 
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.Event
 
@@ -74,21 +77,39 @@ class CqrsEventExtensions {
 	 */
 	private def static AbstractEntity getFiringEntity(Event event) {
 		var AbstractEntity found = null
-		// Only the model the event itself lives in is searched - an aggregate firing an event that is
-		// declared in another file is not resolved this way.
-		val iter = event.root.eAllContents
-		while (iter.hasNext) {
-			val obj = iter.next
-			if (obj instanceof AbstractEntity) {
-				if (obj.fires(event)) {
-					if (found !== null && found !== obj) {
-						return null
+		// Every model read so far is searched, not only the one the event lives in: a module may be
+		// split across files - a model that publishes only part of itself has to be - so the aggregate
+		// firing an event is not necessarily beside it. A copy is iterated because comparing the fired
+		// events resolves cross references, which may load further resources into the very set being
+		// iterated.
+		for (resource : event.resources) {
+			val iter = resource.allContents
+			while (iter.hasNext) {
+				val obj = iter.next
+				if (obj instanceof AbstractEntity) {
+					if (obj.fires(event)) {
+						if (found !== null && found !== obj) {
+							return null
+						}
+						found = obj
 					}
-					found = obj
 				}
 			}
 		}
 		return found
+	}
+
+	/** Every model to search for the given element, its own included. */
+	private def static List<Resource> getResources(EObject obj) {
+		val resource = obj.eResource
+		if (resource === null) {
+			return emptyList
+		}
+		val resourceSet = resource.resourceSet
+		if (resourceSet === null) {
+			return #[resource]
+		}
+		return new ArrayList(resourceSet.resources)
 	}
 
 	/** Returns TRUE if any of the entity's constructors or methods declares "fires &lt;event&gt;". */

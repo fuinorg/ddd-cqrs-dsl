@@ -2,6 +2,11 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.22.0
+- The aggregate an event belongs to is looked for in **every model read**, not only in the event's own
+  file. An event bound to its aggregate by a bare `fires` clause used to lose that binding - and the
+  aggregate id it carries - once the two sat in different files of the same module.
+
 ## 1.21.0
 - **Breaking:** the artifact a `dependency` names is resolved as a plain `zip` instead of a jar - still
   no classifier, still holding the `.cqrs` files below `model/`, still read in place. The models are

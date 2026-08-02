@@ -1,8 +1,14 @@
 package org.fuin.dsl.cqrs.extensions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
@@ -78,22 +84,43 @@ public class CqrsEventExtensions {
    */
   private static AbstractEntity getFiringEntity(final Event event) {
     AbstractEntity found = null;
-    final TreeIterator<EObject> iter = CqrsEObjectExtensions.getRoot(event).eAllContents();
-    while (iter.hasNext()) {
+    List<Resource> _resources = CqrsEventExtensions.getResources(event);
+    for (final Resource resource : _resources) {
       {
-        final EObject obj = iter.next();
-        if ((obj instanceof AbstractEntity)) {
-          boolean _fires = CqrsEventExtensions.fires(((AbstractEntity)obj), event);
-          if (_fires) {
-            if (((found != null) && (found != obj))) {
-              return null;
+        final TreeIterator<EObject> iter = resource.getAllContents();
+        while (iter.hasNext()) {
+          {
+            final EObject obj = iter.next();
+            if ((obj instanceof AbstractEntity)) {
+              boolean _fires = CqrsEventExtensions.fires(((AbstractEntity)obj), event);
+              if (_fires) {
+                if (((found != null) && (found != obj))) {
+                  return null;
+                }
+                found = ((AbstractEntity)obj);
+              }
             }
-            found = ((AbstractEntity)obj);
           }
         }
       }
     }
     return found;
+  }
+
+  /**
+   * Every model to search for the given element, its own included.
+   */
+  private static List<Resource> getResources(final EObject obj) {
+    final Resource resource = obj.eResource();
+    if ((resource == null)) {
+      return CollectionLiterals.<Resource>emptyList();
+    }
+    final ResourceSet resourceSet = resource.getResourceSet();
+    if ((resourceSet == null)) {
+      return Collections.<Resource>unmodifiableList(CollectionLiterals.<Resource>newArrayList(resource));
+    }
+    EList<Resource> _resources = resourceSet.getResources();
+    return new ArrayList<Resource>(_resources);
   }
 
   /**
