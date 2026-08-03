@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -385,6 +386,104 @@ public class CqrsDslModuleVisibilityTest {
     Assertions.assertFalse(resolved.eIsProxy(), "TaxRate must resolve");
     Assertions.assertSame(receipts, resolved.eContainer(), 
       "an unqualified name must resolve to the declaration of its own module, not the imported one");
+  }
+
+  /**
+   * The same, with the module spread over two files: its own declaration must still win over the
+   * imported one of the same name.
+   * 
+   * <p>A module may be split across files - a model that publishes only part of itself has to be -
+   * and the half that uses a name is not necessarily the half that declares it. Resolving the two
+   * halves against each other only works if the module's own elements shadow its imports no matter
+   * which file either of them sits in.</p>
+   */
+  @Test
+  public void ownDeclarationShadowsImportedOneAcrossFiles() {
+    try {
+      final Path root = Files.createTempDirectory("module-visibility-split");
+      final XtextResourceSet resourceSet = this.resourceSetProvider.get();
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("context p {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module journal {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("type String");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object TaxRate base String {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("String value");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("module receipts {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("type String");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("value-object TaxRate base String {");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("String value");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      this.parseHelper.parse(_builder, URI.createFileURI(root.resolve("public.cqrs").toString()), resourceSet);
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("context p {");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("module receipts {");
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("import p.journal.*");
+      _builder_1.newLine();
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("value-object Uses {");
+      _builder_1.newLine();
+      _builder_1.append("\t\t\t");
+      _builder_1.append("TaxRate rate");
+      _builder_1.newLine();
+      _builder_1.append("\t\t");
+      _builder_1.append("}");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("}");
+      _builder_1.newLine();
+      _builder_1.append("}");
+      _builder_1.newLine();
+      final DomainModel other = this.parseHelper.parse(_builder_1, URI.createFileURI(root.resolve("private.cqrs").toString()), resourceSet);
+      EcoreUtil.resolveAll(resourceSet);
+      final Function1<ValueObject, Boolean> _function = (ValueObject it) -> {
+        String _name = it.getName();
+        return Boolean.valueOf(Objects.equals(_name, "Uses"));
+      };
+      final ValueObject uses = IterableExtensions.<ValueObject>findFirst(Iterables.<ValueObject>filter(IterableExtensions.<org.fuin.dsl.cqrs.cqrsDsl.Module>head(IterableExtensions.<Context>head(other.getContexts()).getModules()).getElements(), ValueObject.class), _function);
+      final Type resolved = IterableExtensions.<Attribute>head(uses.getAttributes()).getType();
+      Assertions.assertFalse(resolved.eIsProxy(), 
+        "TaxRate must resolve although the module is split over two files");
+      EObject _eContainer = resolved.eContainer();
+      Assertions.assertEquals("receipts", ((org.fuin.dsl.cqrs.cqrsDsl.Module) _eContainer).getName(), 
+        "an unqualified name must resolve to the declaration of its own module, not the imported one");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
 
   private DomainModel parse(final CharSequence text) {

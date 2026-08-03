@@ -10,10 +10,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -75,6 +77,7 @@ import org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions;
 import org.fuin.dsl.cqrs.scoping.CqrsDependencies;
+import org.fuin.dsl.cqrs.scoping.CqrsModelArchives;
 import org.fuin.dsl.cqrs.scoping.RemoteScopeEntry;
 
 /**
@@ -406,17 +409,67 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       return Boolean.valueOf(this.covers(imported, it));
     };
     boolean _exists = IterableExtensions.<String>exists(this.referencedNames(container), _function);
-    boolean _not_1 = (!_exists);
-    if (_not_1) {
-      this.warning((("Import \'" + imported) + "\' is not used"), imp, 
-        CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_UNUSED);
+    if (_exists) {
+      return;
     }
+    boolean _hasUnresolvedReference = this.hasUnresolvedReference(container);
+    if (_hasUnresolvedReference) {
+      return;
+    }
+    this.warning((("Import \'" + imported) + "\' is not used"), imp, 
+      CqrsDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE, CqrsDslValidator.IMPORT_UNUSED);
+  }
+
+  /**
+   * Whether anything inside the given block points at something that could not be resolved. Only
+   * asked when an import is about to be reported as unused, which is rare enough for a second walk.
+   */
+  private boolean hasUnresolvedReference(final EObject container) {
+    final TreeIterator<EObject> contents = container.eAllContents();
+    while (contents.hasNext()) {
+      {
+        final EObject obj = contents.next();
+        final Function1<EReference, Boolean> _function = (EReference it) -> {
+          return Boolean.valueOf(((!it.isContainment()) && (!it.isDerived())));
+        };
+        Iterable<EReference> _filter = IterableExtensions.<EReference>filter(obj.eClass().getEAllReferences(), _function);
+        for (final EReference reference : _filter) {
+          {
+            final Object value = obj.eGet(reference, false);
+            List<?> _xifexpression = null;
+            boolean _isMany = reference.isMany();
+            if (_isMany) {
+              _xifexpression = ((List<?>) value);
+            } else {
+              _xifexpression = Collections.<Object>singletonList(value);
+            }
+            final List<?> targets = _xifexpression;
+            Iterable<?> _filterNull = IterableExtensions.filterNull(targets);
+            for (final Object target : _filterNull) {
+              if ((target instanceof EObject)) {
+                boolean _eIsProxy = ((EObject)target).eIsProxy();
+                if (_eIsProxy) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   /**
    * The qualified names of everything the cross references inside the given block resolve to. A
    * context is asked for its own references and for those of all of its modules, because a context
    * level import serves them all.
+   * 
+   * <p>The references are <em>resolved</em> rather than read as they lie. Xtext links lazily: until
+   * somebody asks for the target, the feature still holds a proxy, and a proxy would be read here as
+   * "this name refers to nothing" - which turns into "the import providing it is unused". Whether the
+   * editor happened to have resolved a name already, because a hover or a Ctrl-click asked for it,
+   * must not decide whether its import is reported.</p>
    */
   private Iterable<String> referencedNames(final EObject container) {
     final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
@@ -430,7 +483,7 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         Iterable<EReference> _filter = IterableExtensions.<EReference>filter(obj.eClass().getEAllReferences(), _function);
         for (final EReference reference : _filter) {
           {
-            final Object value = obj.eGet(reference, false);
+            final Object value = obj.eGet(reference, true);
             List<?> _xifexpression = null;
             boolean _isMany = reference.isMany();
             if (_isMany) {
@@ -474,7 +527,15 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   }
 
   /**
-   * Whether anything visible in the index matches the imported name.
+   * Whether anything the resource can address matches the imported name: what the index holds, and
+   * what the declared dependencies provide.
+   * 
+   * <p>The second half is not a shortcut for the first. In an IDE the index is the workspace
+   * builder state, which knows the project's files and never a model read out of a dependency's
+   * zip - while the scope such an import feeds does see them, through
+   * {@link CqrsDslGlobalScopeProvider}. Asking both is what keeps this check from reporting an
+   * import whose types resolve perfectly well. Headless the two overlap, because there the index
+   * <em>is</em> the resource set the dependency models are loaded into.</p>
    */
   private boolean importMatchesAnything(final Import imp, final String imported) {
     final Resource resource = imp.eResource();
@@ -498,7 +559,32 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         }
       }
     }
-    return false;
+    final Function1<QualifiedName, Boolean> _function = (QualifiedName it) -> {
+      return Boolean.valueOf(this.covers(imported, it.toString()));
+    };
+    return IterableExtensions.<QualifiedName>exists(this.dependencies.providedNames(resource), _function);
+  }
+
+  /**
+   * A model read out of a dependency's archive is not reported on. It is opened read-only, it
+   * belongs to another project, and whoever authored it has validated it there - a marker on it
+   * would name a problem the reader cannot fix. This mirrors what the IntelliJ plugin does for a
+   * file outside the project.
+   */
+  @Override
+  protected boolean isResponsible(final Map<Object, Object> context, final EObject eObject) {
+    boolean _isResponsible = super.isResponsible(context, eObject);
+    boolean _not = (!_isResponsible);
+    if (_not) {
+      return false;
+    }
+    Resource _eResource = eObject.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    return (!_isArchived);
   }
 
   @Check

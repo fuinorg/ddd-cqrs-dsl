@@ -3,11 +3,13 @@ package org.fuin.dsl.cqrs.scoping;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
@@ -23,10 +25,10 @@ import com.google.inject.Singleton;
  * The names that may follow an <code>import</code>: every reachable context and module as a wildcard,
  * plus every single type.
  * <p>
- * Everything is taken from the Xtext index, so models of another file - and those a
- * <code>dependency</code> unpacked into the <code>.dependencies-cache</code> - are included. The
- * module the import is written in is left out (importing it would be redundant), as is anything it
- * already imports.
+ * Two sources, the same two the scope resolves against: the Xtext index, so models of another file
+ * are included, and whatever the declared dependencies provide - an IDE index never holds those,
+ * because they are read out of an artifact's zip. The module the import is written in is left out
+ * (importing it would be redundant), as is anything it already imports.
  */
 @Singleton
 public class CqrsImportProposals {
@@ -36,6 +38,9 @@ public class CqrsImportProposals {
 
     @Inject
     private IContainer.Manager containerManager;
+
+    @Inject
+    private CqrsDependencies dependencies;
 
     /**
      * Proposals for an import written at the given place, alphabetically.
@@ -56,27 +61,41 @@ public class CqrsImportProposals {
         IResourceDescriptions descriptions = resourceDescriptionsProvider
                 .getResourceDescriptions(resource.getResourceSet());
         IResourceDescription self = descriptions.getResourceDescription(resource.getURI());
-        if (self == null) {
-            return new ArrayList<>(result);
-        }
 
-        List<IEObjectDescription> elements = new ArrayList<>();
+        List<String> elements = new ArrayList<>();
         Set<String> modules = new LinkedHashSet<>();
-        for (IContainer container : containerManager.getVisibleContainers(self, descriptions)) {
-            for (IEObjectDescription description : container.getExportedObjects()) {
-                if (description.getName() == null) {
-                    continue;
+        if (self != null) {
+            for (IContainer container : containerManager.getVisibleContainers(self, descriptions)) {
+                for (IEObjectDescription description : container.getExportedObjects()) {
+                    if (description.getName() == null) {
+                        continue;
+                    }
+                    String name = description.getName().toString();
+                    // Kept on the description: resolving the proxy would load every model in the index.
+                    if (isModuleDescription(description)) {
+                        result.add(name + ".*");
+                        modules.add(name);
+                    } else if (isContextDescription(description)) {
+                        result.add(name + ".*");
+                    } else {
+                        elements.add(name);
+                    }
                 }
-                String name = description.getName().toString();
-                // Kept on the description: resolving the proxy would load every model in the index.
-                if (isModuleDescription(description)) {
-                    result.add(name + ".*");
-                    modules.add(name);
-                } else if (isContextDescription(description)) {
-                    result.add(name + ".*");
-                } else {
-                    elements.add(description);
-                }
+            }
+        }
+        // What the declared dependencies provide. The index cannot answer for those in an IDE - it
+        // holds workspace files and never a model read out of an artifact's zip - so without this a
+        // dependency's types would simply never be proposed.
+        for (Map.Entry<QualifiedName, EObject> provided : dependencies.providedElements(resource).entrySet()) {
+            String name = provided.getKey().toString();
+            EObject element = provided.getValue();
+            if (element instanceof Module) {
+                result.add(name + ".*");
+                modules.add(name);
+            } else if (element instanceof Context) {
+                result.add(name + ".*");
+            } else {
+                elements.add(name);
             }
         }
 
@@ -84,8 +103,7 @@ public class CqrsImportProposals {
         if (ownModule != null) {
             result.remove(ownModule + ".*");
         }
-        for (IEObjectDescription element : elements) {
-            String name = element.getName().toString();
+        for (String name : elements) {
             if (!owningModule(name, modules).equals(nullToEmpty(ownModule))) {
                 result.add(name);
             }

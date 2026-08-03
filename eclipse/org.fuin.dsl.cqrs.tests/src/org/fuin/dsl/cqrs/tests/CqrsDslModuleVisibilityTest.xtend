@@ -10,6 +10,7 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
+import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -186,6 +187,61 @@ class CqrsDslModuleVisibilityTest {
 		val resolved = uses.attributes.head.type
 		Assertions.assertFalse(resolved.eIsProxy, "TaxRate must resolve")
 		Assertions.assertSame(receipts, resolved.eContainer,
+			"an unqualified name must resolve to the declaration of its own module, not the imported one")
+	}
+
+	/**
+	 * The same, with the module spread over two files: its own declaration must still win over the
+	 * imported one of the same name.
+	 *
+	 * <p>A module may be split across files - a model that publishes only part of itself has to be -
+	 * and the half that uses a name is not necessarily the half that declares it. Resolving the two
+	 * halves against each other only works if the module's own elements shadow its imports no matter
+	 * which file either of them sits in.</p>
+	 */
+	@Test
+	def void ownDeclarationShadowsImportedOneAcrossFiles() {
+		val root = Files.createTempDirectory("module-visibility-split")
+		val resourceSet = resourceSetProvider.get
+
+		// Declares "receipts.TaxRate" - and the "journal" module declaring one of the same name
+		parseHelper.parse('''
+			context p {
+				module journal {
+					type String
+					value-object TaxRate base String {
+						String value
+					}
+				}
+				module receipts {
+					type String
+					value-object TaxRate base String {
+						String value
+					}
+				}
+			}
+		''', URI.createFileURI(root.resolve("public.cqrs").toString), resourceSet)
+
+		// Uses it, from the other half of the very same module
+		val other = parseHelper.parse('''
+			context p {
+				module receipts {
+					import p.journal.*
+
+					value-object Uses {
+						TaxRate rate
+					}
+				}
+			}
+		''', URI.createFileURI(root.resolve("private.cqrs").toString), resourceSet)
+
+		EcoreUtil.resolveAll(resourceSet)
+
+		val uses = other.contexts.head.modules.head.elements.filter(ValueObject).findFirst[name == "Uses"]
+		val resolved = uses.attributes.head.type
+		Assertions.assertFalse(resolved.eIsProxy,
+			"TaxRate must resolve although the module is split over two files")
+		Assertions.assertEquals("receipts", (resolved.eContainer as Module).name,
 			"an unqualified name must resolve to the declaration of its own module, not the imported one")
 	}
 

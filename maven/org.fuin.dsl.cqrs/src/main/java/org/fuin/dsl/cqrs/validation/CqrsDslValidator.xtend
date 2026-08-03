@@ -7,6 +7,7 @@ import com.google.inject.Inject
 import java.util.HashSet
 import java.util.Iterator
 import java.util.List
+import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -40,6 +41,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.scoping.CqrsDependencies
+import org.fuin.dsl.cqrs.scoping.CqrsModelArchives
 import org.fuin.dsl.cqrs.scoping.RemoteScopeEntry
 
 import org.eclipse.emf.common.util.EList
@@ -319,16 +321,48 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		// An unresolvable import is reported by checkImportResolves - do not pile a second marker on it.
 		if(!importMatchesAnything(imp, imported)) return;
 
-		if (!referencedNames(container).exists[covers(imported, it)]) {
-			warning("Import '" + imported + "' is not used", imp,
-				CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_UNUSED)
+		if(referencedNames(container).exists[covers(imported, it)]) return;
+
+		// Nothing here refers to it - as far as could be seen. A name that did not resolve belongs to
+		// no import in particular, and it may well be the one this import was written for, so there is
+		// no honest way to call the import dead weight while it is around.
+		if(hasUnresolvedReference(container)) return;
+
+		warning("Import '" + imported + "' is not used", imp,
+			CqrsDslPackage.Literals::IMPORT__IMPORTED_NAMESPACE, IMPORT_UNUSED)
+	}
+
+	/**
+	 * Whether anything inside the given block points at something that could not be resolved. Only
+	 * asked when an import is about to be reported as unused, which is rare enough for a second walk.
+	 */
+	private def boolean hasUnresolvedReference(EObject container) {
+		val contents = container.eAllContents
+		while (contents.hasNext) {
+			val EObject obj = contents.next
+			for (reference : obj.eClass.EAllReferences.filter[!containment && !derived]) {
+				val value = obj.eGet(reference, false)
+				val targets = if (reference.many) value as List<?> else Collections.singletonList(value)
+				for (target : targets.filterNull) {
+					if (target instanceof EObject) {
+						if(target.eIsProxy) return true
+					}
+				}
+			}
 		}
+		return false
 	}
 
 	/**
 	 * The qualified names of everything the cross references inside the given block resolve to. A
 	 * context is asked for its own references and for those of all of its modules, because a context
 	 * level import serves them all.
+	 *
+	 * <p>The references are <em>resolved</em> rather than read as they lie. Xtext links lazily: until
+	 * somebody asks for the target, the feature still holds a proxy, and a proxy would be read here as
+	 * "this name refers to nothing" - which turns into "the import providing it is unused". Whether the
+	 * editor happened to have resolved a name already, because a hover or a Ctrl-click asked for it,
+	 * must not decide whether its import is reported.</p>
 	 */
 	private def Iterable<String> referencedNames(EObject container) {
 		val result = <String>newArrayList
@@ -336,7 +370,7 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		while (contents.hasNext) {
 			val EObject obj = contents.next
 			for (reference : obj.eClass.EAllReferences.filter[!containment && !derived]) {
-				val value = obj.eGet(reference, false)
+				val value = obj.eGet(reference, true)
 				val targets = if (reference.many) value as List<?> else Collections.singletonList(value)
 				for (target : targets.filterNull) {
 					if (target instanceof EObject) {
@@ -362,7 +396,17 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		return imported == qualifiedName
 	}
 
-	/** Whether anything visible in the index matches the imported name. */
+	/**
+	 * Whether anything the resource can address matches the imported name: what the index holds, and
+	 * what the declared dependencies provide.
+	 *
+	 * <p>The second half is not a shortcut for the first. In an IDE the index is the workspace
+	 * builder state, which knows the project's files and never a model read out of a dependency's
+	 * zip - while the scope such an import feeds does see them, through
+	 * {@link CqrsDslGlobalScopeProvider}. Asking both is what keeps this check from reporting an
+	 * import whose types resolve perfectly well. Headless the two overlap, because there the index
+	 * <em>is</em> the resource set the dependency models are loaded into.</p>
+	 */
 	private def boolean importMatchesAnything(Import imp, String imported) {
 		val resource = imp.eResource
 		if(resource === null) return true;
@@ -378,7 +422,18 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				}
 			}
 		}
-		return false
+		return dependencies.providedNames(resource).exists[covers(imported, it.toString)]
+	}
+
+	/**
+	 * A model read out of a dependency's archive is not reported on. It is opened read-only, it
+	 * belongs to another project, and whoever authored it has validated it there - a marker on it
+	 * would name a problem the reader cannot fix. This mirrors what the IntelliJ plugin does for a
+	 * file outside the project.
+	 */
+	override protected boolean isResponsible(Map<Object, Object> context, EObject eObject) {
+		if(!super.isResponsible(context, eObject)) return false
+		return !CqrsModelArchives.isArchived(eObject.eResource?.URI)
 	}
 
 	@Check

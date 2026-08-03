@@ -3,7 +3,7 @@ Automatic-Module-Name: org.fuin.dsl.cqrs
 Bundle-ManifestVersion: 2
 Bundle-Name: org.fuin.dsl.cqrs
 Bundle-Vendor: My Company
-Bundle-Version: 1.22.0.qualifier
+Bundle-Version: 1.23.0.qualifier
 Bundle-SymbolicName: org.fuin.dsl.cqrs; singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
@@ -25,6 +25,7 @@ Export-Package: org.fuin.dsl.cqrs.parser.antlr,
  org.fuin.dsl.cqrs.validation,
  org.fuin.dsl.cqrs.services,
  org.fuin.dsl.cqrs.scoping,
+ org.fuin.dsl.cqrs.extensions,
  org.fuin.dsl.cqrs.cqrsDsl.impl,
  org.fuin.dsl.cqrs.cqrsDsl.util,
  org.fuin.dsl.cqrs.parser.antlr.internal,

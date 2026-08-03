@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.25.0
+- A model opened out of a dependency's archive resolves again. Its names were looked up in the project's index only, which such a file is not part of - so every `import` and every type in it was flagged, including the ones it declares itself. A model that is read rather than authored - an entry of an archive, or a file of a `local` directory outside the project - now resolves against the neighbours it was read beside, and reports nothing: the reader cannot act on the message, and a model publishing only part of itself legitimately names types it kept to itself.
+
 ## 1.24.0
 - **Breaking:** the `SrcGen4J` hint no longer describes where generated code goes with a `package` pattern and a `types` table. Two JavaScript functions decide instead, named by the hint and written next to the model: `model2JavaPackage(element, typeKey)` returns the Java package of a generated type, `artifact2Target(element, typeKey, artifactFactory)` the Maven module and folder its file is written to. A model that declares neither uses the mapping shipped with the templates, so most models need no hint at all. The two old keys are now rejected by the hint's JSON schema, which is what this release changes for the editor - an unmigrated model is reported here rather than generating into the wrong packages later.<br> **Breaking:** the artifact a `dependency` names is now resolved as a plain `zip` instead of a jar (still no classifier, still holding the `.cqrs` files below `model/`): the models are data and nothing in there belongs on a classpath. Re-publish a model artifact as a zip, otherwise its coordinate is reported as unresolvable. An artifact that resolves but cannot be read - not an archive as far as the IDE is concerned, or holding no models below `model/` - now says so on the coordinate instead of leaving every type it provides unresolved.
 

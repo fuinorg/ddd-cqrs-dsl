@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.apache.log4j.Logger;
@@ -57,6 +58,11 @@ public class CqrsModelArchives {
    * Why an artifact could not be resolved, keyed by {@link RemoteScopeEntry#getSourceId}.
    */
   private final Map<String, String> problems = CollectionLiterals.<String, String>newHashMap();
+
+  /**
+   * Model URIs of an archive, keyed by its path - what a model inside it has beside itself.
+   */
+  private final Map<String, List<URI>> siblings = CollectionLiterals.<String, List<URI>>newHashMap();
 
   /**
    * The models the given dependency provides, or an empty list when it cannot be resolved (the
@@ -113,11 +119,110 @@ public class CqrsModelArchives {
   }
 
   /**
+   * Whether the given URI addresses a model <em>inside</em> a dependency's archive rather than a
+   * file of the project. Such a model is read, not authored: it is opened read-only and nothing is
+   * reported in it.
+   * 
+   * @param uri URI to test - may be <code>null</code>.
+   * 
+   * @return TRUE if the model is read out of an archive.
+   */
+  public static boolean isArchived(final URI uri) {
+    return ((uri != null) && Objects.equals("archive", uri.scheme()));
+  }
+
+  /**
+   * The models beside the given one when it was itself read as a dependency: every
+   * <code>.cqrs</code> of the same archive, or of the same directory, the given one included.
+   * 
+   * <p>A model of a dependency belongs to no project: it is in no index and in no scope, not even for
+   * its own neighbours. Those can therefore only be found the way the model itself was - through the
+   * archive or the directory it was read from, which exists already because the model came out of it.
+   * Without this a published model that spreads its types over several files resolves inside a
+   * headless run, where every model read happens to sit in one resource set, and not in an IDE.</p>
+   * 
+   * <p>Only ask this for a model that really is read rather than authored here (see
+   * {@code CqrsDependencies}): for a file of the project the answer is the index's, and the directory
+   * a model happens to lie in means nothing.</p>
+   * 
+   * @param uri URI of a model - may be <code>null</code>.
+   * 
+   * @return Model URIs, never <code>null</code>.
+   */
+  public List<URI> siblingModels(final URI uri) {
+    boolean _isArchived = CqrsModelArchives.isArchived(uri);
+    if (_isArchived) {
+      final File archive = this.archiveOf(uri);
+      if (((archive == null) || (!archive.isFile()))) {
+        return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+      }
+      final String key = archive.getAbsolutePath();
+      boolean _containsKey = this.siblings.containsKey(key);
+      if (_containsKey) {
+        return this.siblings.get(key);
+      }
+      try {
+        final List<URI> entries = this.entriesOf(archive);
+        this.siblings.put(key, entries);
+        return entries;
+      } catch (final Throwable _t) {
+        if (_t instanceof Exception) {
+          final Exception ex = (Exception)_t;
+          String _message = this.message(ex);
+          String _plus = ((("Could not read the archive \'" + key) + "\': ") + _message);
+          CqrsModelArchives.LOG.error(_plus, ex);
+          this.siblings.put(key, Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList()));
+          return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+        } else {
+          throw Exceptions.sneakyThrow(_t);
+        }
+      }
+    }
+    if (((uri == null) || (!uri.isFile()))) {
+      return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
+    }
+    String _fileString = uri.toFileString();
+    final File file = new File(_fileString);
+    return this.cqrsFilesOf(file.getParentFile());
+  }
+
+  /**
+   * The zip an <code>archive:</code> URI addresses an entry of.
+   */
+  private File archiveOf(final URI uri) {
+    final String authority = uri.authority();
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(authority);
+    if (_isNullOrEmpty) {
+      return null;
+    }
+    String _xifexpression = null;
+    boolean _endsWith = authority.endsWith("!");
+    if (_endsWith) {
+      int _length = authority.length();
+      int _minus = (_length - 1);
+      _xifexpression = authority.substring(0, _minus);
+    } else {
+      _xifexpression = authority;
+    }
+    final URI nested = URI.createURI(_xifexpression);
+    File _xifexpression_1 = null;
+    boolean _isFile = nested.isFile();
+    if (_isFile) {
+      String _fileString = nested.toFileString();
+      _xifexpression_1 = new File(_fileString);
+    } else {
+      _xifexpression_1 = null;
+    }
+    return _xifexpression_1;
+  }
+
+  /**
    * Forgets what was resolved, so the next call resolves again.
    */
   public void invalidate() {
     this.resolved.clear();
     this.problems.clear();
+    this.siblings.clear();
   }
 
   private List<URI> artifactModelUris(final RemoteScopeEntry entry) {
@@ -224,6 +329,18 @@ public class CqrsModelArchives {
       _xifexpression = _xblockexpression;
     }
     final File dir = _xifexpression;
+    return this.cqrsFilesOf(dir);
+  }
+
+  /**
+   * Every <code>.cqrs</code> directly in the given directory, by name.
+   * 
+   * <p>The paths are normalized, so a directory reached as <code>../provider</code> from one model and
+   * by its own path from another yields one URI rather than two spellings of it. Two would make every
+   * element the directory declares a pair of elements sharing a qualified name - and an ambiguous name
+   * resolves to nothing.</p>
+   */
+  private List<URI> cqrsFilesOf(final File dir) {
     if (((dir == null) || (!dir.isDirectory()))) {
       return Collections.<URI>unmodifiableList(CollectionLiterals.<URI>newArrayList());
     }
@@ -238,7 +355,7 @@ public class CqrsModelArchives {
     List<File> _sortBy = IterableExtensions.<File, String>sortBy(((Iterable<File>)Conversions.doWrapArray(files)), _function);
     for (final File f : _sortBy) {
       if ((f.isFile() && f.getName().endsWith(".cqrs"))) {
-        result.add(URI.createFileURI(f.getAbsolutePath()));
+        result.add(URI.createFileURI(f.toPath().normalize().toString()));
       }
     }
     return result;

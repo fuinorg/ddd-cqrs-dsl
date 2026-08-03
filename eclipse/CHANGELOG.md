@@ -2,6 +2,25 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.23.0
+- **The types a `dependency` provides resolve in the editor again** - they were all red with "Couldn't
+  resolve reference to ...". An editor's resource set holds only the open file, so a `dependency`
+  declared on the `context` in another file, and the models beside a model read as a dependency, are
+  now found through the index instead.
+- An `import` of a `dependency`'s models is no longer reported as unresolvable, and content assist
+  after `import` offers what they provide.
+- An `import` that **is** used is no longer marked yellow as unused. The check read the cross references
+  as they lay, and Xtext links lazily - a name nobody had asked for yet looked like a name referring to
+  nothing. It now resolves them, and stays silent about an import while anything in the block genuinely
+  does not resolve.
+- `F3` on a type a `dependency` provides opens that model out of the artifact's zip, read-only, the way
+  JDT opens a class file from a jar. Nothing is reported in a model opened that way.
+- A module spread over several files resolves its own names again: what the module declares itself now
+  wins over an imported name whichever file either sits in, which is what splitting a model into a
+  published and an internal half requires.
+- The `org.fuin.dsl.cqrs.extensions` package is exported, so a bundle requiring the language bundle can
+  use the model extensions instead of hitting an access restriction.
+
 ## 1.22.0
 - The aggregate an event belongs to is looked for in **every model read**, not only in the event's own
   file. An event bound to its aggregate by a bare `fires` clause used to lose that binding - and the

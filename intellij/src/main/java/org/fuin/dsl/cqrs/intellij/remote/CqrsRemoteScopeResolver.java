@@ -7,6 +7,7 @@ import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -101,6 +102,43 @@ public final class CqrsRemoteScopeResolver {
         return result;
     }
 
+    /**
+     * Declarations of the neighbourhood {@code file} itself lies in - the other entries of its
+     * archive, or the other models of its directory - and none for a file of this project.
+     *
+     * <p>A model that is only read is in no index and in no scope, not even for itself, so without
+     * this it could not resolve a single name: not one of a sibling entry, and not one of its own.
+     * Nothing is resolved here, so this is safe to call while resolving a reference.</p>
+     */
+    public @NotNull List<CqrsNamedElement> neighbourDeclarations(PsiFile psiFile) {
+        PsiFile file = physical(psiFile);
+        if (file == null || inProject(file)) {
+            return List.of();
+        }
+        List<CqrsNamedElement> result = new ArrayList<>();
+        PsiManager psiManager = PsiManager.getInstance(project);
+        for (VirtualFile vf : archives.siblingModels(file.getVirtualFile())) {
+            PsiFile neighbour = psiManager.findFile(vf);
+            if (neighbour instanceof CqrsFile) {
+                result.addAll(PsiTreeUtil.findChildrenOfType(neighbour, CqrsNamedElement.class));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Whether the file belongs to this project, i.e. whether the index answers for it. False for an
+     * entry inside an archive and for a file outside the content roots - a model that is read, not
+     * authored here.
+     */
+    public static boolean inProject(@Nullable PsiFile file) {
+        if (file == null) {
+            return false;
+        }
+        VirtualFile vf = file.getVirtualFile();
+        return vf != null && ProjectFileIndex.getInstance(file.getProject()).isInContent(vf);
+    }
+
     /** A dependency together with the directory of the file that declares it. */
     private record Declared(@Nullable Path modelDir, RemoteScopeEntry entry) {
     }
@@ -114,12 +152,12 @@ public final class CqrsRemoteScopeResolver {
      *
      * <p>A malformed coordinate is skipped &mdash; the annotator reports it.</p>
      */
-    private static List<Declared> dependencyEntries(PsiFile file) {
+    private List<Declared> dependencyEntries(PsiFile file) {
         return CachedValuesManager.getCachedValue(file, () -> CachedValueProvider.Result
                 .create(collectDependencies(file), PsiModificationTracker.MODIFICATION_COUNT));
     }
 
-    private static List<Declared> collectDependencies(PsiFile file) {
+    private List<Declared> collectDependencies(PsiFile file) {
         Map<String, Declared> entries = new LinkedHashMap<>();
         Path ownDir = parentNioPath(file);
         for (CqrsDependencyDecl decl : PsiTreeUtil.findChildrenOfType(file, CqrsDependencyDecl.class)) {
@@ -170,21 +208,34 @@ public final class CqrsRemoteScopeResolver {
         return result;
     }
 
-    /** Every {@code .cqrs} file of the project, or none while the indexes are still being built. */
-    private static List<PsiFile> cqrsFiles(PsiFile file) {
+    /**
+     * The files a context level {@code dependency} may be declared in, seen from {@code file}: every
+     * {@code .cqrs} of the project - none of them while the indexes are still being built - and, for a
+     * file that is only read, the neighbours it was read beside. A published model declares its
+     * dependencies on the context, in one entry, and they apply to every other entry just as they do
+     * across the files of this project.
+     */
+    private List<PsiFile> cqrsFiles(PsiFile file) {
         Project project = file.getProject();
-        Collection<VirtualFile> files;
-        try {
-            files = FileTypeIndex.getFiles(CqrsFileType.INSTANCE, GlobalSearchScope.allScope(project));
-        } catch (IndexNotReadyException notReady) {
-            return List.of(); // dumb mode; resolve again later
-        }
         PsiManager psiManager = PsiManager.getInstance(project);
         List<PsiFile> result = new ArrayList<>();
-        for (VirtualFile vf : files) {
-            PsiFile psiFile = psiManager.findFile(vf);
-            if (psiFile instanceof CqrsFile) {
-                result.add(psiFile);
+        try {
+            for (VirtualFile vf : FileTypeIndex.getFiles(CqrsFileType.INSTANCE,
+                    GlobalSearchScope.allScope(project))) {
+                PsiFile psiFile = psiManager.findFile(vf);
+                if (psiFile instanceof CqrsFile) {
+                    result.add(psiFile);
+                }
+            }
+        } catch (IndexNotReadyException notReady) {
+            // dumb mode; resolve again later - the neighbourhood below needs no index
+        }
+        if (!inProject(file)) {
+            for (VirtualFile vf : archives.siblingModels(file.getVirtualFile())) {
+                PsiFile neighbour = psiManager.findFile(vf);
+                if (neighbour instanceof CqrsFile) {
+                    result.add(neighbour);
+                }
             }
         }
         return result;

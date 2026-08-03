@@ -149,6 +149,13 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.25.0</b> &ndash; A model opened out of a dependency's archive resolves again. Its names were
+        looked up in the project's index only, which such a file is not part of - so every
+        <code>import</code> and every type in it was flagged, including the ones it declares itself. A
+        model that is read rather than authored - an entry of an archive, or a file of a
+        <code>local</code> directory outside the project - now resolves against the neighbours it was
+        read beside, and reports nothing: the reader cannot act on the message, and a model publishing
+        only part of itself legitimately names types it kept to itself.</li>
     <li><b>1.24.0</b> &ndash; <b>Breaking:</b> the <code>SrcGen4J</code> hint no longer describes where
         generated code goes with a <code>package</code> pattern and a <code>types</code> table. Two
         JavaScript functions decide instead, named by the hint and written next to the model:

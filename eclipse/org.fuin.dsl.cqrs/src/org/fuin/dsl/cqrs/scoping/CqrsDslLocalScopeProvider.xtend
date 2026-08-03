@@ -4,10 +4,12 @@ import com.google.inject.Inject
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.IContainer
 import org.eclipse.xtext.resource.IResourceDescriptions
+import org.eclipse.xtext.resource.ISelectable
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
@@ -47,8 +49,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.Module
  * resolver per module whose qualified name starts with that prefix is added. Those modules are read
  * from the Xtext index rather than from the resource set, so the result is complete in the Eclipse
  * editor (builder state, live shadowed for dirty editors) as well as in a headless SrcGen4J run
- * (where the index is backed by the resource set). Note that the result is memoized per resource, so
- * adding a module in one file may need the referencing file to be re-parsed before it is seen.</p>
+ * (where the index is backed by the resource set) - plus the modules a declared
+ * <code>dependency</code> provides, which no IDE index holds because they live inside an artifact's
+ * zip. Note that the result is memoized per resource, so adding a module in one file may need the
+ * referencing file to be re-parsed before it is seen.</p>
  */
 class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeProvider {
 
@@ -60,25 +64,54 @@ class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeProvider
 
 	@Inject IContainer.Manager containerManager
 
+	@Inject CqrsDependencies dependencies
+
 	override protected List<ImportNormalizer> internalGetImportedNamespaceResolvers(EObject obj,
 		boolean ignoreCase) {
 		try {
 			switch obj {
 				DomainModel: return emptyList
 				Context: return resolvers(obj.imports, obj, ignoreCase)
-				Module: {
-					val result = <ImportNormalizer>newArrayList
-					val own = qualifiedNameProvider.getFullyQualifiedName(obj)
-					if(own !== null) result.add(doCreateImportNormalizer(own, true, ignoreCase))
-					result.addAll(resolvers(obj.imports, obj, ignoreCase))
-					return result
-				}
+				// A module's own namespace is deliberately NOT added here: the inherited scope for the
+				// local elements already covers it, and it sits *inside* this one, so what the module
+				// declares itself shadows what it imports. Adding it here as well would put the two at
+				// the same level, where one simple name standing for two different qualified names is
+				// ambiguous - and an ambiguous name resolves to nothing.
+				Module: return resolvers(obj.imports, obj, ignoreCase)
 			}
 		} catch (Exception ex) {
 			// Never let scoping fail: degrade to "nothing extra is visible" instead of breaking the editor.
 			LOG.error("Could not compute imports for " + obj + ": " + ex.message, ex)
 		}
 		return emptyList
+	}
+
+	/**
+	 * What the scope of a block's own elements is read from - the index rather than the one file the
+	 * block happens to be written in.
+	 *
+	 * <p>The inherited implementation answers with the contents of {@code resource} alone, which
+	 * assumes a module lives in a single file. A module may be spread over several - a model that
+	 * publishes only part of itself has to be - and then the half using a name is not necessarily the
+	 * half declaring it. Reading from the index makes a module's own elements visible to all of its
+	 * halves, and keeps them shadowing its imports: this scope is nested inside the one carrying the
+	 * imports, so a name the module declares itself still wins over an imported one.</p>
+	 *
+	 * <p>Only for a model the index knows, though. A model read out of a dependency's archive is in no
+	 * index, and answering with one would leave it unable to see even the elements of its own file -
+	 * while offering it the names of a project it is not part of. There the inherited implementation is
+	 * the right one.</p>
+	 */
+	override protected ISelectable getAllDescriptions(Resource resource) {
+		val resourceSet = resource?.resourceSet
+		if (resourceSet === null) {
+			return super.getAllDescriptions(resource)
+		}
+		val descriptions = resourceDescriptionsProvider.getResourceDescriptions(resourceSet)
+		if (descriptions.getResourceDescription(resource.URI) === null) {
+			return super.getAllDescriptions(resource)
+		}
+		return descriptions
 	}
 
 	/** Turns every declared import of a block into its resolvers. */
@@ -116,9 +149,15 @@ class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeProvider
 	}
 
 	/**
-	 * Every module in the index whose qualified name starts with (but is not equal to) the given
-	 * prefix. This is what makes <code>context.*</code> reach the types of a module, and what covers
-	 * a module name that is itself dotted.
+	 * Every module whose qualified name starts with (but is not equal to) the given prefix. This is
+	 * what makes <code>context.*</code> reach the types of a module, and what covers a module name
+	 * that is itself dotted.
+	 *
+	 * <p>Two sources, because neither alone is complete: the index, which holds the workspace (and in
+	 * an IDE nothing else), and the modules the declared dependencies provide, which an IDE index
+	 * never holds because they are read out of an artifact's zip. A <em>module</em> level import of a
+	 * dependency happens to work without the second - the literal {@link ImportNormalizer} already
+	 * maps that one name - but a <em>context</em> level one needs the per-module resolvers.</p>
 	 */
 	private def Iterable<QualifiedName> modulesBelow(QualifiedName prefix, EObject context) {
 		val result = <QualifiedName>newLinkedHashSet
@@ -129,13 +168,17 @@ class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeProvider
 
 		val IResourceDescriptions descriptions = resourceDescriptionsProvider.getResourceDescriptions(resourceSet)
 		val self = descriptions.getResourceDescription(resource.URI)
-		if(self === null) return result
-
-		for (container : containerManager.getVisibleContainers(self, descriptions)) {
-			for (description : container.getExportedObjectsByType(CqrsDslPackage.Literals.MODULE)) {
-				val name = description.name
-				if(name !== null && name != prefix && name.startsWith(prefix)) result.add(name)
+		if (self !== null) {
+			for (container : containerManager.getVisibleContainers(self, descriptions)) {
+				for (description : container.getExportedObjectsByType(CqrsDslPackage.Literals.MODULE)) {
+					val name = description.name
+					if(name !== null && name != prefix && name.startsWith(prefix)) result.add(name)
+				}
 			}
+		}
+
+		for (name : dependencies.providedModules(resource)) {
+			if(name != prefix && name.startsWith(prefix)) result.add(name)
 		}
 		return result
 	}

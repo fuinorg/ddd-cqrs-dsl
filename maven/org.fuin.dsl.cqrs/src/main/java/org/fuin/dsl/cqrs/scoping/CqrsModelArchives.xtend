@@ -42,6 +42,9 @@ class CqrsModelArchives {
 	/** Why an artifact could not be resolved, keyed by {@link RemoteScopeEntry#getSourceId}. */
 	val Map<String, String> problems = newHashMap
 
+	/** Model URIs of an archive, keyed by its path - what a model inside it has beside itself. */
+	val Map<String, List<URI>> siblings = newHashMap
+
 	/**
 	 * The models the given dependency provides, or an empty list when it cannot be resolved (the
 	 * caller degrades to "nothing extra is visible" and the validator reports the problem).
@@ -81,10 +84,75 @@ class CqrsModelArchives {
 		return problems.get(entry.sourceId)
 	}
 
+	/**
+	 * Whether the given URI addresses a model <em>inside</em> a dependency's archive rather than a
+	 * file of the project. Such a model is read, not authored: it is opened read-only and nothing is
+	 * reported in it.
+	 *
+	 * @param uri URI to test - may be <code>null</code>.
+	 *
+	 * @return TRUE if the model is read out of an archive.
+	 */
+	def static boolean isArchived(URI uri) {
+		return uri !== null && "archive" == uri.scheme
+	}
+
+	/**
+	 * The models beside the given one when it was itself read as a dependency: every
+	 * <code>.cqrs</code> of the same archive, or of the same directory, the given one included.
+	 *
+	 * <p>A model of a dependency belongs to no project: it is in no index and in no scope, not even for
+	 * its own neighbours. Those can therefore only be found the way the model itself was - through the
+	 * archive or the directory it was read from, which exists already because the model came out of it.
+	 * Without this a published model that spreads its types over several files resolves inside a
+	 * headless run, where every model read happens to sit in one resource set, and not in an IDE.</p>
+	 *
+	 * <p>Only ask this for a model that really is read rather than authored here (see
+	 * {@code CqrsDependencies}): for a file of the project the answer is the index's, and the directory
+	 * a model happens to lie in means nothing.</p>
+	 *
+	 * @param uri URI of a model - may be <code>null</code>.
+	 *
+	 * @return Model URIs, never <code>null</code>.
+	 */
+	def List<URI> siblingModels(URI uri) {
+		if (isArchived(uri)) {
+			val archive = archiveOf(uri)
+			if(archive === null || !archive.isFile) return #[]
+			val key = archive.absolutePath
+			if(siblings.containsKey(key)) return siblings.get(key)
+			try {
+				val entries = entriesOf(archive)
+				siblings.put(key, entries)
+				return entries
+			} catch (Exception ex) {
+				LOG.error("Could not read the archive '" + key + "': " + message(ex), ex)
+				siblings.put(key, #[])
+				return #[]
+			}
+		}
+		// A 'local' directory: exactly the files a dependency declaring that directory reads. Listed
+		// afresh every time, the same way the 'local' clause itself is - such a directory is somebody's
+		// work in progress, and a model added to it has to show up without a restart.
+		if(uri === null || !uri.isFile) return #[]
+		val file = new File(uri.toFileString)
+		return cqrsFilesOf(file.parentFile)
+	}
+
+	/** The zip an <code>archive:</code> URI addresses an entry of. */
+	private def File archiveOf(URI uri) {
+		val authority = uri.authority
+		if(authority.nullOrEmpty) return null
+		val nested = URI.createURI(
+			if(authority.endsWith("!")) authority.substring(0, authority.length - 1) else authority)
+		return if(nested.isFile) new File(nested.toFileString) else null
+	}
+
 	/** Forgets what was resolved, so the next call resolves again. */
 	def void invalidate() {
 		resolved.clear
 		problems.clear
+		siblings.clear
 	}
 
 	private def List<URI> artifactModelUris(RemoteScopeEntry entry) {
@@ -146,13 +214,26 @@ class CqrsModelArchives {
 				val base = toFile(rs, modelUri?.trimSegments(1))
 				if(base === null) null else new File(base, entry.local)
 			}
-		if(dir === null || !dir.directory) return #[]
+		return cqrsFilesOf(dir)
+	}
 
+	/**
+	 * Every <code>.cqrs</code> directly in the given directory, by name.
+	 *
+	 * <p>The paths are normalized, so a directory reached as <code>../provider</code> from one model and
+	 * by its own path from another yields one URI rather than two spellings of it. Two would make every
+	 * element the directory declares a pair of elements sharing a qualified name - and an ambiguous name
+	 * resolves to nothing.</p>
+	 */
+	private def List<URI> cqrsFilesOf(File dir) {
+		if(dir === null || !dir.directory) return #[]
 		val files = dir.listFiles
 		if(files === null) return #[]
 		val result = <URI>newArrayList
 		for (f : files.sortBy[name]) {
-			if(f.isFile && f.name.endsWith(".cqrs")) result.add(URI.createFileURI(f.absolutePath))
+			if (f.isFile && f.name.endsWith(".cqrs")) {
+				result.add(URI.createFileURI(f.toPath.normalize.toString))
+			}
 		}
 		return result
 	}

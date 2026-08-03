@@ -74,6 +74,19 @@ for b in "${TEST_BUNDLES[@]}"; do
 done
 [ "${#JAVAC_SOURCES[@]}" -gt 0 ] || die "No compiled test Java found under the test bundles' src-gen/xtend-gen."
 
+# The generated Java is checked in, and the Eclipse Xtend builder overwrites it. When the .xtend
+# does not compile in the IDE - a missing Export-Package makes a type "not accessible", say - what
+# it writes is a stub that throws at runtime. That compiles cleanly here and fails as a puzzling
+# test error, so name it for what it is instead, before running anything.
+POISONED=$(grep -rl "Unresolved compilation problems" "${JAVAC_SOURCES[@]}" 2>/dev/null || true)
+if [ -n "$POISONED" ]; then
+  die "Generated Java carries an Eclipse compile error - fix it in the IDE and regenerate:
+$POISONED"
+fi
+
+# Never compile on top of an earlier run: a class of a test that has since been renamed or removed
+# would still be found and run.
+rm -rf "$TEST_CLASSES"
 javac --release 21 -encoding UTF-8 -cp "$CP" -d "$TEST_CLASSES" "${JAVAC_SOURCES[@]}" \
   || die "Compiling the test sources failed."
 

@@ -46,6 +46,9 @@ public class CqrsModelArchives {
     /** Why an artifact could not be resolved, keyed by {@link RemoteScopeEntry#getSourceId}. */
     private final Map<String, String> problems = new ConcurrentHashMap<>();
 
+    /** Models of an archive, keyed by its root URL. What a mounted archive holds never changes. */
+    private final Map<String, List<VirtualFile>> archiveModels = new ConcurrentHashMap<>();
+
     public CqrsModelArchives(@NotNull Project project) {
         this.project = project;
     }
@@ -92,6 +95,7 @@ public class CqrsModelArchives {
     public void invalidate() {
         resolved.clear();
         problems.clear();
+        archiveModels.clear();
     }
 
     private @Nullable Path archiveOf(RemoteScopeEntry entry, boolean allowResolve) {
@@ -153,16 +157,62 @@ public class CqrsModelArchives {
             return recordProblem(entry, "the artifact could not be opened as an archive - is '"
                     + archive.getFileName() + "' still associated with 'Archive' in the file type settings?");
         }
-        final VirtualFile models = root.findChild(MODEL_DIR);
-        if (models == null) {
+        if (root.findChild(MODEL_DIR) == null) {
             return recordProblem(entry, "the artifact holds no '" + MODEL_DIR + "/' folder");
         }
-        final List<VirtualFile> result = new ArrayList<>();
-        collect(models, result);
+        final List<VirtualFile> result = modelsIn(root);
         if (result.isEmpty()) {
             return recordProblem(entry, "the artifact holds no '" + CQRS_EXTENSION + "' files below '"
                     + MODEL_DIR + "/'");
         }
+        return result;
+    }
+
+    /**
+     * The models of the neighbourhood the given file itself lies in, or none when it has none.
+     *
+     * <p>Reading a model of a dependency means opening a file the project model knows nothing about:
+     * it is in no index and in no scope, not even for itself. Its neighbours can then only be found
+     * the way the file itself was - through the archive mounted around it, or through the directory
+     * holding it. Nothing is resolved and nothing is refreshed here: whatever this file came out of
+     * exists already, because the file was read from it.</p>
+     *
+     * @param file File being read - may be <code>null</code>.
+     *
+     * @return The models beside it, never <code>null</code>; empty for a file of this project, which
+     *         the index answers for.
+     */
+    public @NotNull List<VirtualFile> siblingModels(@Nullable VirtualFile file) {
+        if (file == null || !file.isValid()) {
+            return List.of();
+        }
+        final VirtualFile root = JarFileSystem.getInstance().getRootByEntry(file);
+        if (root != null) {
+            return archiveModels.computeIfAbsent(root.getUrl(), url -> modelsIn(root));
+        }
+        // A 'local' directory outside the project: its own '.cqrs' files, exactly what a dependency
+        // declaring it would read (see localFiles).
+        final VirtualFile dir = file.getParent();
+        if (dir == null || !dir.isDirectory()) {
+            return List.of();
+        }
+        final List<VirtualFile> result = new ArrayList<>();
+        for (final VirtualFile child : dir.getChildren()) {
+            if (!child.isDirectory() && child.getName().endsWith(CQRS_EXTENSION)) {
+                result.add(child);
+            }
+        }
+        return result;
+    }
+
+    /** Every {@code .cqrs} below the {@code model/} folder of an archive root. */
+    private static @NotNull List<VirtualFile> modelsIn(VirtualFile root) {
+        final VirtualFile models = root.findChild(MODEL_DIR);
+        if (models == null) {
+            return List.of();
+        }
+        final List<VirtualFile> result = new ArrayList<>();
+        collect(models, result);
         return result;
     }
 

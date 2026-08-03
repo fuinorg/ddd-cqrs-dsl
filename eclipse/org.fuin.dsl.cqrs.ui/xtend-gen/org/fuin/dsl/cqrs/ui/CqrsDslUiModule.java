@@ -4,9 +4,15 @@
 package org.fuin.dsl.cqrs.ui;
 
 import com.google.inject.Binder;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
+import org.eclipse.xtext.ui.LanguageSpecific;
+import org.eclipse.xtext.ui.editor.IURIEditorOpener;
+import org.eclipse.xtext.ui.editor.model.IResourceForEditorInputFactory;
 import org.fuin.dsl.cqrs.scoping.CqrsArtifactResolvers;
+import org.fuin.dsl.cqrs.ui.editor.CqrsArchiveEditorOpener;
+import org.fuin.dsl.cqrs.ui.editor.CqrsArchiveResourceFactory;
 import org.fuin.dsl.cqrs.ui.scoping.M2eArtifactResolver;
 
 /**
@@ -34,7 +40,30 @@ public class CqrsDslUiModule extends AbstractCqrsDslUiModule {
     super.configure(binder);
   }
 
-  public CqrsDslUiModule(final AbstractUIPlugin plugin) {
-    super(plugin);
+  /**
+   * Lets F3 follow a reference into the model of a <code>dependency</code>. Such a model is read out
+   * of the artifact's zip and has no file in the workspace, which the inherited opener needs - so
+   * without this, Ctrl-click on a type the dependency provides does nothing at all.
+   * 
+   * <p>The guard is the inherited one: there is no editor to open without a workbench.</p>
+   */
+  @Override
+  public void configureLanguageSpecificURIEditorOpener(final Binder binder) {
+    boolean _isWorkbenchRunning = PlatformUI.isWorkbenchRunning();
+    if (_isWorkbenchRunning) {
+      binder.<IURIEditorOpener>bind(IURIEditorOpener.class).annotatedWith(LanguageSpecific.class).to(CqrsArchiveEditorOpener.class);
+    }
+  }
+
+  /**
+   * Keeps the 'archive:' URI of a model opened out of an artifact, so its elements stay locatable.
+   */
+  @Override
+  public Class<? extends IResourceForEditorInputFactory> bindIResourceForEditorInputFactory() {
+    return CqrsArchiveResourceFactory.class;
+  }
+
+  public CqrsDslUiModule(final AbstractUIPlugin arg0) {
+    super(arg0);
   }
 }

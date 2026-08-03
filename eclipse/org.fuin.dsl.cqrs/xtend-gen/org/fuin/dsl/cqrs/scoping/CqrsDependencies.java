@@ -9,18 +9,26 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IContainer;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.resource.IResourceDescriptions;
+import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.fuin.dsl.cqrs.cqrsDsl.Context;
+import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 
@@ -49,6 +57,12 @@ public class CqrsDependencies {
 
   @Inject
   private IQualifiedNameProvider qualifiedNameProvider;
+
+  @Inject
+  private ResourceDescriptionsProvider resourceDescriptionsProvider;
+
+  @Inject
+  private IContainer.Manager containerManager;
 
   /**
    * All dependencies that apply to the given resource: those of every context block sharing a name
@@ -90,6 +104,7 @@ public class CqrsDependencies {
     if (_isEmpty) {
       return result.values();
     }
+    this.loadContextResources(resource, contextNames);
     EList<Resource> _resources = rs.getResources();
     ArrayList<Resource> _arrayList = new ArrayList<Resource>(_resources);
     for (final Resource other : _arrayList) {
@@ -110,6 +125,110 @@ public class CqrsDependencies {
       }
     }
     return result.values();
+  }
+
+  /**
+   * Loads every file that declares a context of one of the given names, so the walk over the
+   * resource set below sees all halves of the context.
+   * 
+   * <p>Which files those are is asked of the Xtext index, because that is the pool which is complete
+   * in an IDE - the resource set is not. A <code>dependency</code> is not in the index itself (it has
+   * no name, so nothing exports it), so the files still have to be read; the index only says
+   * <em>which</em>. Headless this finds what the resource set already holds and changes nothing.</p>
+   */
+  private void loadContextResources(final Resource resource, final Set<String> contextNames) {
+    final ResourceSet rs = resource.getResourceSet();
+    try {
+      final IResourceDescriptions descriptions = this.resourceDescriptionsProvider.getResourceDescriptions(rs);
+      final IResourceDescription self = descriptions.getResourceDescription(resource.getURI());
+      if ((self == null)) {
+        return;
+      }
+      List<IContainer> _visibleContainers = this.containerManager.getVisibleContainers(self, descriptions);
+      for (final IContainer container : _visibleContainers) {
+        Iterable<IEObjectDescription> _exportedObjectsByType = container.getExportedObjectsByType(CqrsDslPackage.Literals.CONTEXT);
+        for (final IEObjectDescription description : _exportedObjectsByType) {
+          {
+            final QualifiedName name = description.getName();
+            if (((name != null) && contextNames.contains(name.toString()))) {
+              this.load(rs, description.getEObjectURI().trimFragment(), resource.getURI());
+            }
+          }
+        }
+      }
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception ex = (Exception)_t;
+        URI _uRI = resource.getURI();
+        String _plus = ("Could not look up the context blocks of \'" + _uRI);
+        String _plus_1 = (_plus + "\': ");
+        String _message = ex.getMessage();
+        String _plus_2 = (_plus_1 + _message);
+        CqrsDependencies.LOG.error(_plus_2, ex);
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+  }
+
+  /**
+   * Whether the given model is one this project <em>reads</em> rather than one it authors - the
+   * question being who is responsible for it, not where it lies.
+   * 
+   * <p>The index is what answers that: it holds the files of the project and nothing else. A model
+   * inside an artifact is never in it; a model of a <code>local</code> directory outside the project
+   * is not either, while one inside the project is. Headless, where the index is the resource set,
+   * every model read is in it - correctly, because there they all share one resource set and already
+   * see each other.</p>
+   */
+  private boolean readNotAuthored(final Resource resource) {
+    boolean _isArchived = CqrsModelArchives.isArchived(resource.getURI());
+    if (_isArchived) {
+      return true;
+    }
+    final ResourceSet rs = resource.getResourceSet();
+    if ((rs == null)) {
+      return false;
+    }
+    try {
+      final IResourceDescriptions descriptions = this.resourceDescriptionsProvider.getResourceDescriptions(rs);
+      IResourceDescription _resourceDescription = descriptions.getResourceDescription(resource.getURI());
+      return (_resourceDescription == null);
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception ex = (Exception)_t;
+        URI _uRI = resource.getURI();
+        String _plus = ("Could not tell whether \'" + _uRI);
+        String _plus_1 = (_plus + "\' is indexed: ");
+        String _message = ex.getMessage();
+        String _plus_2 = (_plus_1 + _message);
+        CqrsDependencies.LOG.error(_plus_2, ex);
+        return false;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+  }
+
+  /**
+   * Pulls one file into the resource set. A file that cannot be read costs only itself.
+   */
+  private void load(final ResourceSet rs, final URI uri, final URI self) {
+    if (((uri == null) || Objects.equals(uri, self))) {
+      return;
+    }
+    try {
+      rs.getResource(uri, true);
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception ex = (Exception)_t;
+        String _message = ex.getMessage();
+        String _plus = ((("Could not read the model \'" + uri) + "\': ") + _message);
+        CqrsDependencies.LOG.error(_plus, ex);
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
   }
 
   private void put(final Map<String, Dependency> target, final Dependency dependency) {
@@ -151,6 +270,10 @@ public class CqrsDependencies {
    */
   public List<URI> modelUris(final Resource resource) {
     final LinkedHashSet<URI> result = CollectionLiterals.<URI>newLinkedHashSet();
+    boolean _readNotAuthored = this.readNotAuthored(resource);
+    if (_readNotAuthored) {
+      result.addAll(this.archives.siblingModels(resource.getURI()));
+    }
     Collection<Dependency> _declared = this.declared(resource);
     for (final Dependency dependency : _declared) {
       {
@@ -218,11 +341,18 @@ public class CqrsDependencies {
   }
 
   /**
-   * The <code>context.module</code> names the dependency models declare. These are the scopes a
-   * <code>dependency</code> makes implicitly visible.
+   * Everything the resource's dependencies provide, by fully qualified name - contexts, modules and
+   * the elements below them, exactly as the Xtext index would hold them if it knew these models.
+   * 
+   * <p>This is the pool that lets validation and content assist answer from the same set the scope
+   * resolves against. They cannot read it from the index in an IDE: there the index is the JDT
+   * builder state, which knows workspace files and never a model read out of an artifact's zip.
+   * The models are already loaded by then - {@link CqrsDslGlobalScopeProvider} loads exactly these
+   * URIs - so walking them again costs nothing but the walk. The first name wins when two
+   * dependencies provide the same one, which is what the scope does too.</p>
    */
-  public Iterable<QualifiedName> providedScopes(final Resource resource) {
-    final LinkedHashSet<QualifiedName> result = CollectionLiterals.<QualifiedName>newLinkedHashSet();
+  public Map<QualifiedName, EObject> providedElements(final Resource resource) {
+    final LinkedHashMap<QualifiedName, EObject> result = CollectionLiterals.<QualifiedName, EObject>newLinkedHashMap();
     final ResourceSet rs = resource.getResourceSet();
     if ((rs == null)) {
       return result;
@@ -230,17 +360,13 @@ public class CqrsDependencies {
     List<URI> _modelUris = this.modelUris(resource);
     for (final URI uri : _modelUris) {
       try {
-        final Resource remote = rs.getResource(uri, true);
-        Iterable<DomainModel> _filter = Iterables.<DomainModel>filter(remote.getContents(), DomainModel.class);
-        for (final DomainModel model : _filter) {
-          EList<Context> _contexts = model.getContexts();
-          for (final Context context : _contexts) {
-            {
-              this.add(result, context);
-              EList<org.fuin.dsl.cqrs.cqrsDsl.Module> _modules = context.getModules();
-              for (final org.fuin.dsl.cqrs.cqrsDsl.Module module : _modules) {
-                this.add(result, module);
-              }
+        final TreeIterator<EObject> contents = rs.getResource(uri, true).getAllContents();
+        while (contents.hasNext()) {
+          {
+            final EObject obj = contents.next();
+            final QualifiedName name = this.qualifiedNameProvider.getFullyQualifiedName(obj);
+            if (((name != null) && (!result.containsKey(name)))) {
+              result.put(name, obj);
             }
           }
         }
@@ -258,11 +384,28 @@ public class CqrsDependencies {
     return result;
   }
 
-  private void add(final Set<QualifiedName> target, final EObject obj) {
-    final QualifiedName name = this.qualifiedNameProvider.getFullyQualifiedName(obj);
-    if ((name != null)) {
-      target.add(name);
+  /**
+   * The fully qualified names of {@link #providedElements}.
+   */
+  public Iterable<QualifiedName> providedNames(final Resource resource) {
+    return this.providedElements(resource).keySet();
+  }
+
+  /**
+   * The <code>context.module</code> names of the modules a dependency provides. These are the ones a
+   * wildcard import has to be expanded over, the same way {@code CqrsDslLocalScopeProvider} expands
+   * it over the modules of the index.
+   */
+  public Iterable<QualifiedName> providedModules(final Resource resource) {
+    final LinkedHashSet<QualifiedName> result = CollectionLiterals.<QualifiedName>newLinkedHashSet();
+    Set<Map.Entry<QualifiedName, EObject>> _entrySet = this.providedElements(resource).entrySet();
+    for (final Map.Entry<QualifiedName, EObject> entry : _entrySet) {
+      EObject _value = entry.getValue();
+      if ((_value instanceof org.fuin.dsl.cqrs.cqrsDsl.Module)) {
+        result.add(entry.getKey());
+      }
     }
+    return result;
   }
 
   /**

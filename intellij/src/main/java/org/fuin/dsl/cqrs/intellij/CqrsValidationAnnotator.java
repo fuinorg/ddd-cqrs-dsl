@@ -87,6 +87,11 @@ public final class CqrsValidationAnnotator implements Annotator {
 
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+        // A model that is only read - an entry of a dependency's archive, or a file of a 'local'
+        // directory outside the project - is reported on by whoever authors it, not here.
+        if (!CqrsRemoteScopeResolver.inProject(element.getContainingFile())) {
+            return;
+        }
         if (element instanceof CqrsValueObject) {
             checkValueObjectBase((CqrsValueObject) element, holder);
         } else if (element instanceof CqrsAttribute) {

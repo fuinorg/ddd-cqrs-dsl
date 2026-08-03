@@ -15,6 +15,7 @@ import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
+import org.eclipse.xtext.resource.ISelectable;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider;
@@ -56,8 +57,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.Import;
  * resolver per module whose qualified name starts with that prefix is added. Those modules are read
  * from the Xtext index rather than from the resource set, so the result is complete in the Eclipse
  * editor (builder state, live shadowed for dirty editors) as well as in a headless SrcGen4J run
- * (where the index is backed by the resource set). Note that the result is memoized per resource, so
- * adding a module in one file may need the referencing file to be re-parsed before it is seen.</p>
+ * (where the index is backed by the resource set) - plus the modules a declared
+ * <code>dependency</code> provides, which no IDE index holds because they live inside an artifact's
+ * zip. Note that the result is memoized per resource, so adding a module in one file may need the
+ * referencing file to be re-parsed before it is seen.</p>
  */
 @SuppressWarnings("all")
 public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeProvider {
@@ -71,6 +74,9 @@ public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeP
 
   @Inject
   private IContainer.Manager containerManager;
+
+  @Inject
+  private CqrsDependencies dependencies;
 
   @Override
   protected List<ImportNormalizer> internalGetImportedNamespaceResolvers(final EObject obj, final boolean ignoreCase) {
@@ -89,13 +95,7 @@ public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeP
       if (!_matched) {
         if (obj instanceof org.fuin.dsl.cqrs.cqrsDsl.Module) {
           _matched=true;
-          final ArrayList<ImportNormalizer> result = CollectionLiterals.<ImportNormalizer>newArrayList();
-          final QualifiedName own = this.qualifiedNameProvider.getFullyQualifiedName(obj);
-          if ((own != null)) {
-            result.add(this.doCreateImportNormalizer(own, true, ignoreCase));
-          }
-          result.addAll(this.resolvers(((org.fuin.dsl.cqrs.cqrsDsl.Module)obj).getImports(), obj, ignoreCase));
-          return result;
+          return this.resolvers(((org.fuin.dsl.cqrs.cqrsDsl.Module)obj).getImports(), obj, ignoreCase);
         }
       }
     } catch (final Throwable _t) {
@@ -109,6 +109,41 @@ public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeP
       }
     }
     return CollectionLiterals.<ImportNormalizer>emptyList();
+  }
+
+  /**
+   * What the scope of a block's own elements is read from - the index rather than the one file the
+   * block happens to be written in.
+   * 
+   * <p>The inherited implementation answers with the contents of {@code resource} alone, which
+   * assumes a module lives in a single file. A module may be spread over several - a model that
+   * publishes only part of itself has to be - and then the half using a name is not necessarily the
+   * half declaring it. Reading from the index makes a module's own elements visible to all of its
+   * halves, and keeps them shadowing its imports: this scope is nested inside the one carrying the
+   * imports, so a name the module declares itself still wins over an imported one.</p>
+   * 
+   * <p>Only for a model the index knows, though. A model read out of a dependency's archive is in no
+   * index, and answering with one would leave it unable to see even the elements of its own file -
+   * while offering it the names of a project it is not part of. There the inherited implementation is
+   * the right one.</p>
+   */
+  @Override
+  protected ISelectable getAllDescriptions(final Resource resource) {
+    ResourceSet _resourceSet = null;
+    if (resource!=null) {
+      _resourceSet=resource.getResourceSet();
+    }
+    final ResourceSet resourceSet = _resourceSet;
+    if ((resourceSet == null)) {
+      return super.getAllDescriptions(resource);
+    }
+    final IResourceDescriptions descriptions = this.resourceDescriptionsProvider.getResourceDescriptions(resourceSet);
+    IResourceDescription _resourceDescription = descriptions.getResourceDescription(resource.getURI());
+    boolean _tripleEquals = (_resourceDescription == null);
+    if (_tripleEquals) {
+      return super.getAllDescriptions(resource);
+    }
+    return descriptions;
   }
 
   /**
@@ -151,9 +186,15 @@ public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeP
   }
 
   /**
-   * Every module in the index whose qualified name starts with (but is not equal to) the given
-   * prefix. This is what makes <code>context.*</code> reach the types of a module, and what covers
-   * a module name that is itself dotted.
+   * Every module whose qualified name starts with (but is not equal to) the given prefix. This is
+   * what makes <code>context.*</code> reach the types of a module, and what covers a module name
+   * that is itself dotted.
+   * 
+   * <p>Two sources, because neither alone is complete: the index, which holds the workspace (and in
+   * an IDE nothing else), and the modules the declared dependencies provide, which an IDE index
+   * never holds because they are read out of an artifact's zip. A <em>module</em> level import of a
+   * dependency happens to work without the second - the literal {@link ImportNormalizer} already
+   * maps that one name - but a <em>context</em> level one needs the per-module resolvers.</p>
    */
   private Iterable<QualifiedName> modulesBelow(final QualifiedName prefix, final EObject context) {
     final LinkedHashSet<QualifiedName> result = CollectionLiterals.<QualifiedName>newLinkedHashSet();
@@ -168,19 +209,24 @@ public class CqrsDslLocalScopeProvider extends ImportedNamespaceAwareLocalScopeP
     }
     final IResourceDescriptions descriptions = this.resourceDescriptionsProvider.getResourceDescriptions(resourceSet);
     final IResourceDescription self = descriptions.getResourceDescription(resource.getURI());
-    if ((self == null)) {
-      return result;
-    }
-    List<IContainer> _visibleContainers = this.containerManager.getVisibleContainers(self, descriptions);
-    for (final IContainer container : _visibleContainers) {
-      Iterable<IEObjectDescription> _exportedObjectsByType = container.getExportedObjectsByType(CqrsDslPackage.Literals.MODULE);
-      for (final IEObjectDescription description : _exportedObjectsByType) {
-        {
-          final QualifiedName name = description.getName();
-          if ((((name != null) && (!Objects.equals(name, prefix))) && name.startsWith(prefix))) {
-            result.add(name);
+    if ((self != null)) {
+      List<IContainer> _visibleContainers = this.containerManager.getVisibleContainers(self, descriptions);
+      for (final IContainer container : _visibleContainers) {
+        Iterable<IEObjectDescription> _exportedObjectsByType = container.getExportedObjectsByType(CqrsDslPackage.Literals.MODULE);
+        for (final IEObjectDescription description : _exportedObjectsByType) {
+          {
+            final QualifiedName name = description.getName();
+            if ((((name != null) && (!Objects.equals(name, prefix))) && name.startsWith(prefix))) {
+              result.add(name);
+            }
           }
         }
+      }
+    }
+    Iterable<QualifiedName> _providedModules = this.dependencies.providedModules(resource);
+    for (final QualifiedName name : _providedModules) {
+      if (((!Objects.equals(name, prefix)) && name.startsWith(prefix))) {
+        result.add(name);
       }
     }
     return result;

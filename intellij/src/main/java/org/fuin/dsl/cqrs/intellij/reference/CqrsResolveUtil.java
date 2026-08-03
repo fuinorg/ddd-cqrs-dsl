@@ -119,13 +119,15 @@ public final class CqrsResolveUtil {
     }
 
     /**
-     * Everything that could possibly be addressed from {@code element}: project-local declarations
+     * Everything that could possibly be addressed from {@code element}: project-local declarations,
+     * those of the neighbourhood the file itself is read from when it is not one of the project's,
      * plus those of its dependencies. This is the pool a <em>fully qualified</em> reference resolves
      * against; it is deliberately not narrowed by the imports.
      */
     public static List<CqrsNamedElement> resolvableDeclarations(PsiElement element) {
         Project project = element.getProject();
         List<CqrsNamedElement> all = new ArrayList<>(allDeclarations(project));
+        all.addAll(neighbourDeclarations(element));
         all.addAll(dependencyDeclarations(element));
         return dedupByLocation(all);
     }
@@ -220,6 +222,16 @@ public final class CqrsResolveUtil {
     private static List<CqrsNamedElement> dependencyDeclarations(PsiElement element) {
         return CqrsRemoteScopeResolver.getInstance(element.getProject())
                 .remoteDeclarations(element.getContainingFile());
+    }
+
+    /**
+     * Declarations of the neighbourhood a file that is only read lies in - the other entries of its
+     * archive, or the other models of its directory. Empty for a file of this project, which the
+     * index answers for.
+     */
+    private static List<CqrsNamedElement> neighbourDeclarations(PsiElement element) {
+        return CqrsRemoteScopeResolver.getInstance(element.getProject())
+                .neighbourDeclarations(element.getContainingFile());
     }
 
     /**
