@@ -1,20 +1,55 @@
-context shop {
-    /** A hint for the SrcGen4J code generation. */
+context p_22_hint {
+
+    /*
+     * A "hint" is a named block of JSON attached to a model element. Its name decides what it means
+     * and which JSON schema it is validated against - an unknown key is an error, so a hint cannot
+     * quietly stop having an effect.
+     *
+     * "SrcGen4J" configures the code generation and belongs on the context. It does not say which
+     * artifacts are generated - that stays in the generator configuration - only where what is
+     * generated ends up, and how a constraint is expressed in Java.
+     */
     hint SrcGen4J {
-        "package": "${context}.${mvnModule}.${group}.${module}",
-        "types": [
-            {
-                "name": "org.fuin.dsl.cqrs.cqrsDsl.ValueObject",
-                "module": "shared",
-                "group": "domain",
-                "artifacts": [
-                    { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.AbstractValueObjectArtifactFactory", "folder": "genMainJava" },
-                    { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.CombinedValueObjectArtifactFactory", "folder": "genMainJava" },
-                    { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.FinalValueObjectArtifactFactory", "folder": "mainJava" },
-                    { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectArtifactFactory", "folder": "genMainJava" },
-                    { "artifactFactory": "org.fuin.dsl.ddd.gen.valueobject.SimpleStringValueObjectTestArtifactFactory", "folder": "testJava" }
-                ]
-            }
+
+        // Path of a script exporting "model2JavaPackage(element, typeKey)", relative to this file.
+        // It answers with the Java package for a kind of generated type. Resolved per *declaring*
+        // context, so a type coming from a dependency is packaged the way its producer packaged it -
+        // which is why this script is shipped alongside the models rather than configured by whoever
+        // uses them.
+        "model2JavaPackage": "22-hint-scripts/model2JavaPackage.js",
+
+        // Path of a script exporting "artifact2Target(element, typeKey, artifactFactory)". It answers
+        // with { module, folder } - the Maven module a file is written into and the folder inside it.
+        // Unlike the package, this applies to this project's own output only.
+        "artifact2Target": "22-hint-scripts/artifact2Target.js",
+
+        // Maps a DSL constraint onto an existing Java validation annotation, written as "DSL=JAVA".
+        // The parentheses name the constraint's attributes and the annotation's, so a value declared
+        // in the model is handed over to the annotation. A mapped constraint generates no validator
+        // of its own - the annotation already does the work.
+        "constraintMappings": [
+            "p_22_hint.ordering.MaxLength(max)=jakarta.validation.constraints.Size(max=max)"
         ]
     }
+
+    module ordering {
+        type String
+        type Integer
+
+        /** Rejects a text longer than the given number of characters. */
+        constraint MaxLength input String {
+            Integer max
+            message "Must not be longer than ${max} characters"
+        }
+
+        /** What the two scripts and the mapping above apply to. */
+        value-object OrderName base String {
+            String value invariants MaxLength(50)
+        }
+    }
+
+    /*
+     * Declaring no hint at all is the normal case: the preset scripts shipped with ddd-templates then
+     * decide the layout. Declare it to deviate from that.
+     */
 }

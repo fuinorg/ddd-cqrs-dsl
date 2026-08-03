@@ -1,49 +1,86 @@
 package org.fuin.dsl.cqrs.tests
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
+import java.util.ArrayList
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
-import org.eclipse.xtext.testing.util.ParseHelper
-import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
+import org.eclipse.xtext.util.CancelIndicator
+import org.eclipse.xtext.validation.CheckMode
+import org.eclipse.xtext.validation.IResourceValidator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 /**
- * Parses every <code>*.cqrs</code> file in the repository's <code>dsl-examples</code> directory and
- * asserts the parser produces no errors. Nothing else is asserted.
+ * Loads every <code>*.cqrs</code> file below the repository's <code>dsl-examples</code> directory and
+ * asserts that none of them has anything to report - no parse error, no unresolved reference, and no
+ * validation issue either.
+ *
+ * <p>Parsing alone is not enough. An example is documentation meant to be copied, so one the language
+ * itself rejects is worse than no example: it teaches something that does not work. That is not
+ * hypothetical - the <code>SrcGen4J</code> hint kept the shape it had before the generator was
+ * configured by scripts, and nothing noticed until somebody read the file.</p>
+ *
+ * <p>The files are loaded the way the console verifier loads them - all of them into one resource set,
+ * addressed by their real path - because they are not independent: one declares a
+ * <code>dependency</code> on the models beside it, and a script a hint points at is resolved relative
+ * to the file declaring it.</p>
  */
 @ExtendWith(InjectionExtension)
 @InjectWith(CqrsDslInjectorProvider)
 class DslExamplesParsingTest {
 
-	@Inject
-	ParseHelper<DomainModel> parseHelper
+	@Inject Provider<XtextResourceSet> resourceSetProvider
+
+	@Inject IResourceValidator validator
 
 	@Test
-	def void allExamplesParseWithoutErrors() {
+	def void allExamplesAreFreeOfIssues() {
 		val dir = findExamplesDir()
-		val files = dir.listFiles[file|file.name.endsWith(".cqrs")].sortBy[name]
-		Assertions.assertFalse(files.empty, '''No .cqrs files found in «dir»''')
+		val files = collectExamples(dir)
+		Assertions.assertFalse(files.empty, '''No .cqrs files found below «dir»''')
+
+		val resourceSet = resourceSetProvider.get
+		val resources = <Resource>newArrayList
+		for (file : files) {
+			resources.add(resourceSet.getResource(URI.createFileURI(file.absolutePath), true))
+		}
+		EcoreUtil.resolveAll(resourceSet)
 
 		val problems = new StringBuilder
-		for (file : files) {
-			val content = new String(Files.readAllBytes(file.toPath), StandardCharsets.UTF_8)
-			val result = parseHelper.parse(content)
-			if (result === null) {
-				problems.append(file.name).append(": could not be parsed").append("\n")
-			} else {
-				val errors = result.eResource.errors
-				if (!errors.empty) {
-					problems.append(file.name).append(": ").append(errors.join(", ")).append("\n")
-				}
+		for (resource : resources) {
+			val name = new File(resource.URI.toFileString).name
+			for (error : resource.errors) {
+				problems.append(name).append(": ").append(error.message).append("\n")
+			}
+			for (issue : validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl)) {
+				problems.append(name).append(":").append(issue.lineNumber).append(" ").append(issue.severity).append(
+					" ").append(issue.message).append("\n")
 			}
 		}
-		Assertions.assertTrue(problems.length == 0, '''Parse errors in dsl-examples:
+		Assertions.assertTrue(problems.length == 0, '''Issues in dsl-examples:
 «problems»''')
+	}
+
+	/** Every {@code .cqrs} below the given directory, sub directories included, by path. */
+	private def static Iterable<File> collectExamples(File dir) {
+		val result = new ArrayList<File>
+		val children = dir.listFiles
+		if(children === null) return result
+		for (child : children.sortBy[name]) {
+			if (child.directory) {
+				result.addAll(collectExamples(child))
+			} else if (child.name.endsWith(".cqrs")) {
+				result.add(child)
+			}
+		}
+		return result
 	}
 
 	/** Locates the {@code dsl-examples} directory by walking up from the working directory. */

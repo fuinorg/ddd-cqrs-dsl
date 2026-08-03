@@ -1,81 +1,121 @@
 package org.fuin.dsl.cqrs.tests;
 
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import java.io.File;
-import java.io.FileFilter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.extensions.InjectionExtension;
-import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.validation.CheckMode;
+import org.eclipse.xtext.validation.IResourceValidator;
+import org.eclipse.xtext.validation.Issue;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Parses every <code>*.cqrs</code> file in the repository's <code>dsl-examples</code> directory and
- * asserts the parser produces no errors. Nothing else is asserted.
+ * Loads every <code>*.cqrs</code> file below the repository's <code>dsl-examples</code> directory and
+ * asserts that none of them has anything to report - no parse error, no unresolved reference, and no
+ * validation issue either.
+ * 
+ * <p>Parsing alone is not enough. An example is documentation meant to be copied, so one the language
+ * itself rejects is worse than no example: it teaches something that does not work. That is not
+ * hypothetical - the <code>SrcGen4J</code> hint kept the shape it had before the generator was
+ * configured by scripts, and nothing noticed until somebody read the file.</p>
+ * 
+ * <p>The files are loaded the way the console verifier loads them - all of them into one resource set,
+ * addressed by their real path - because they are not independent: one declares a
+ * <code>dependency</code> on the models beside it, and a script a hint points at is resolved relative
+ * to the file declaring it.</p>
  */
 @ExtendWith(InjectionExtension.class)
 @InjectWith(CqrsDslInjectorProvider.class)
 @SuppressWarnings("all")
 public class DslExamplesParsingTest {
   @Inject
-  private ParseHelper<DomainModel> parseHelper;
+  private Provider<XtextResourceSet> resourceSetProvider;
+
+  @Inject
+  private IResourceValidator validator;
 
   @Test
-  public void allExamplesParseWithoutErrors() {
-    try {
-      final File dir = DslExamplesParsingTest.findExamplesDir();
-      final FileFilter _function = (File file) -> {
-        return file.getName().endsWith(".cqrs");
-      };
-      final Function1<File, String> _function_1 = (File it) -> {
-        return it.getName();
-      };
-      final List<File> files = IterableExtensions.<File, String>sortBy(((Iterable<File>)Conversions.doWrapArray(dir.listFiles(_function))), _function_1);
-      boolean _isEmpty = files.isEmpty();
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("No .cqrs files found in ");
-      _builder.append(dir);
-      Assertions.assertFalse(_isEmpty, _builder.toString());
-      final StringBuilder problems = new StringBuilder();
-      for (final File file : files) {
-        {
-          byte[] _readAllBytes = Files.readAllBytes(file.toPath());
-          final String content = new String(_readAllBytes, StandardCharsets.UTF_8);
-          final DomainModel result = this.parseHelper.parse(content);
-          if ((result == null)) {
-            problems.append(file.getName()).append(": could not be parsed").append("\n");
-          } else {
-            final EList<Resource.Diagnostic> errors = result.eResource().getErrors();
-            boolean _isEmpty_1 = errors.isEmpty();
-            boolean _not = (!_isEmpty_1);
-            if (_not) {
-              problems.append(file.getName()).append(": ").append(IterableExtensions.join(errors, ", ")).append("\n");
-            }
-          }
+  public void allExamplesAreFreeOfIssues() {
+    final File dir = DslExamplesParsingTest.findExamplesDir();
+    final Iterable<File> files = DslExamplesParsingTest.collectExamples(dir);
+    boolean _isEmpty = IterableExtensions.isEmpty(files);
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("No .cqrs files found below ");
+    _builder.append(dir);
+    Assertions.assertFalse(_isEmpty, _builder.toString());
+    final XtextResourceSet resourceSet = this.resourceSetProvider.get();
+    final ArrayList<Resource> resources = CollectionLiterals.<Resource>newArrayList();
+    for (final File file : files) {
+      resources.add(resourceSet.getResource(URI.createFileURI(file.getAbsolutePath()), true));
+    }
+    EcoreUtil.resolveAll(resourceSet);
+    final StringBuilder problems = new StringBuilder();
+    for (final Resource resource : resources) {
+      {
+        String _fileString = resource.getURI().toFileString();
+        final String name = new File(_fileString).getName();
+        EList<Resource.Diagnostic> _errors = resource.getErrors();
+        for (final Resource.Diagnostic error : _errors) {
+          problems.append(name).append(": ").append(error.getMessage()).append("\n");
+        }
+        List<Issue> _validate = this.validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
+        for (final Issue issue : _validate) {
+          problems.append(name).append(":").append(issue.getLineNumber()).append(" ").append(issue.getSeverity()).append(
+            " ").append(issue.getMessage()).append("\n");
         }
       }
-      int _length = problems.length();
-      boolean _equals = (_length == 0);
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append("Parse errors in dsl-examples:");
-      _builder_1.newLine();
-      _builder_1.append(problems);
-      Assertions.assertTrue(_equals, _builder_1.toString());
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
     }
+    int _length = problems.length();
+    boolean _equals = (_length == 0);
+    StringConcatenation _builder_1 = new StringConcatenation();
+    _builder_1.append("Issues in dsl-examples:");
+    _builder_1.newLine();
+    _builder_1.append(problems);
+    Assertions.assertTrue(_equals, _builder_1.toString());
+  }
+
+  /**
+   * Every {@code .cqrs} below the given directory, sub directories included, by path.
+   */
+  private static Iterable<File> collectExamples(final File dir) {
+    final ArrayList<File> result = new ArrayList<File>();
+    final File[] children = dir.listFiles();
+    if ((children == null)) {
+      return result;
+    }
+    final Function1<File, String> _function = (File it) -> {
+      return it.getName();
+    };
+    List<File> _sortBy = IterableExtensions.<File, String>sortBy(((Iterable<File>)Conversions.doWrapArray(children)), _function);
+    for (final File child : _sortBy) {
+      boolean _isDirectory = child.isDirectory();
+      if (_isDirectory) {
+        Iterables.<File>addAll(result, DslExamplesParsingTest.collectExamples(child));
+      } else {
+        boolean _endsWith = child.getName().endsWith(".cqrs");
+        if (_endsWith) {
+          result.add(child);
+        }
+      }
+    }
+    return result;
   }
 
   /**

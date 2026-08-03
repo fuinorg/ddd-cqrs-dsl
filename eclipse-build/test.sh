@@ -58,6 +58,11 @@ while IFS= read -r j; do CP="$CP:$j"; done < <(
 )
 # The plugins under test.
 while IFS= read -r j; do CP="$CP:$j"; done < <(find "$REPO_OUT/plugins" -maxdepth 1 -name '*.jar')
+# Third-party libraries a bundle carries on its own Bundle-ClassPath (json-sKema, snakeyaml, ...).
+# They sit *inside* the built plugin jar, where a plain "java -cp" cannot see them - only an OSGi
+# class loader can - so they are taken from the source tree instead. Without them anything reaching
+# such a library dies with a NoClassDefFoundError that surfaces as "Error executing EValidator".
+while IFS= read -r j; do CP="$CP:$j"; done < <(find "$REPO_ROOT/eclipse" -path '*/lib/*.jar' | sort)
 CP="${CP#:}"
 
 # --- 2. Compile the test bundle(s) -------------------------------------------------------
