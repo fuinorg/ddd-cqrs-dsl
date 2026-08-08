@@ -117,6 +117,16 @@ class EventArtifactFactoryTest {
     }
 
     @Test
+    def void testCreateEventI() {
+
+        val context = new HashMap<String, Object>()
+        context.codeReferenceRegistry
+
+        testCreate(context, "EventI")
+
+    }
+
+    @Test
     def void testCreateEventH() {
 
         // Copies the operation's parameters AND declares an attribute of its own - both have to be

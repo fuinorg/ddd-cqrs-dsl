@@ -35,7 +35,7 @@ import java.time.ZonedDateTime
 class EventArtifactFactory extends AbstractSource<Event> {
 
     /** DSL annotations that map to an equally named marker interface in "org.fuin.ddd4j.core". */
-    static val EVENT_CATEGORY_ANNOTATIONS = #["GenesisEvent", "ExileEvent", "ExodusEvent"]
+    static val EVENT_CATEGORY_ANNOTATIONS = #["GenesisEvent", "ExileEvent", "ReturnFromExileEvent", "ExodusEvent"]
 
     override getModelType() {
         typeof(Event)

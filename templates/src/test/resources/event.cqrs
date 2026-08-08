@@ -17,6 +17,10 @@ context p {
 		annotation ExileEvent {
 		}
 
+		/** Marks a domain event that recalls an entity from exile. */
+		annotation ReturnFromExileEvent {
+		}
+
 		/** Marks a domain event that hard-deletes an entity. */
 		annotation ExodusEvent {
 		}
@@ -103,6 +107,12 @@ context p {
 		/** Event G - Independent of an aggregate and annotated. */
 		@ExileEvent
 		event EventG {
+			message "Something interesting happened!"
+		}
+
+		/** Event I - The recall that undoes the soft delete EventG records. */
+		@ReturnFromExileEvent
+		event EventI {
 			message "Something interesting happened!"
 		}
 
