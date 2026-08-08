@@ -65,7 +65,7 @@ public abstract class AbstractMyEntityId extends AbstractStringValueObject imple
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyEntity");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_ENTITY");
     
     @Override
     public final EntityType getType() {

@@ -66,7 +66,7 @@ public abstract class AbstractMyAggregate6Id extends AbstractUuidValueObject imp
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyAggregate6");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_AGGREGATE6");
     
     @Override
     public final EntityType getType() {

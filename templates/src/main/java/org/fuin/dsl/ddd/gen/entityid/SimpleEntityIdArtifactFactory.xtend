@@ -19,6 +19,7 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import java.util.List
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
+import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
 
 class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
@@ -112,7 +113,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                 private static final long serialVersionUID = 1000L;
 
                 /** Unique name of the aggregate this identifier refers to. */
-                public static final EntityType TYPE = new StringBasedEntityType("«id.entityNullsafe.name»");
+                public static final EntityType TYPE = new StringBasedEntityType("«id.entityNullsafe.name.asEntityTypeConstant»");
             
                 private static final int MIN = 1;
             

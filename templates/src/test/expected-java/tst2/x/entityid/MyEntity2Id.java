@@ -66,7 +66,7 @@ public final class MyEntity2Id implements EntityId, ValueObject {
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyEntity2");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_ENTITY2");
     
     @Override
     public final EntityType getType() {

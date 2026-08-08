@@ -84,7 +84,7 @@ public abstract class AbstractMyAggregate2Id implements AggregateRootId, ValueOb
         return Objects.equals(id, other.id);
     }
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyAggregate2");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_AGGREGATE2");
     
     @Override
     public final EntityType getType() {

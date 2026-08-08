@@ -67,7 +67,7 @@ public final class EntityAId extends AbstractStringValueObject implements Entity
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("EntityA");
+    public static final EntityType TYPE = new StringBasedEntityType("ENTITY_A");
     
     @Override
     public final EntityType getType() {

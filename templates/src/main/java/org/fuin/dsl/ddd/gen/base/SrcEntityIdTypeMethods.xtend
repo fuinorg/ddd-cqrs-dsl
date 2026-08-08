@@ -3,6 +3,7 @@ package org.fuin.dsl.ddd.gen.base
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
+import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
 
 /**
  * Creates source code for the type related methods from 'org.fuin.ddd4j.core.EntityId'.
@@ -25,7 +26,7 @@ class SrcEntityIdTypeMethods implements CodeSnippet {
     override toString() {
         '''    
         /** Name that identifies the entity uniquely within the context. */    
-        public static final EntityType TYPE = new StringBasedEntityType("«entityName»");
+        public static final EntityType TYPE = new StringBasedEntityType("«entityName.asEntityTypeConstant»");
 
         @Override
         public final EntityType getType() {

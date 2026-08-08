@@ -79,7 +79,7 @@ public abstract class AbstractMyEntity3Id extends AbstractStringValueObject impl
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyEntity3");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_ENTITY3");
     
     @Override
     public final EntityType getType() {

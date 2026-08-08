@@ -66,7 +66,7 @@ private static final long serialVersionUID = 1000L;
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyAggregate2");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_AGGREGATE2");
     
     @Override
     public final EntityType getType() {

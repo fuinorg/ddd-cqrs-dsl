@@ -57,7 +57,7 @@ public final class MyEntity5Id extends IntegerEntityId {
     private static final long serialVersionUID = 1000L;
 
     /** Unique name of the aggregate this identifier refers to. */
-    public static final EntityType TYPE = new StringBasedEntityType("MyEntity5");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_ENTITY5");
 
     private static final int MIN = 1;
 

@@ -80,7 +80,7 @@ public final class MyEntity4Id implements EntityId, ValueObject {
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyEntity4");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_ENTITY4");
     
     @Override
     public final EntityType getType() {

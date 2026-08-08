@@ -191,7 +191,7 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
             && !parts[1].isEmpty();
     }
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyAggregate4");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_AGGREGATE4");
     
     @Override
     public final EntityType getType() {

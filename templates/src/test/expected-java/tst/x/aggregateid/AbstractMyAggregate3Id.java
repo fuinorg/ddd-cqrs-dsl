@@ -79,7 +79,7 @@ public abstract class AbstractMyAggregate3Id extends AbstractStringValueObject i
     }
     
     /** Name that identifies the entity uniquely within the context. */    
-    public static final EntityType TYPE = new StringBasedEntityType("MyAggregate3");
+    public static final EntityType TYPE = new StringBasedEntityType("MY_AGGREGATE3");
     
     @Override
     public final EntityType getType() {
