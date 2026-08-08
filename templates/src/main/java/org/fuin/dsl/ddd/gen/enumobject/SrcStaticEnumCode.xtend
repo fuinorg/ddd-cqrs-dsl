@@ -39,6 +39,11 @@ class SrcStaticEnumCode implements CodeSnippet {
         ctx.requiresImport(List.name)
     }
     
+    /*
+     * "isValid" and "valueOf" compare from the parameter rather than from the getter: the parameter is
+     * the wrapper type and is known to be non-null at that point, whereas the getter may return a
+     * primitive - and a non-optional "int" has no "equals" to call.
+     */
     override toString() {
         '''    
         /** All instances. */
@@ -72,7 +77,7 @@ class SrcStaticEnumCode implements CodeSnippet {
                 return true;
             }
             for (final «className» v : ALL) {
-                if («new SrcInvokeGetter(ctx, "v", baseVar)».equals(value)) {
+                if (value.equals(«new SrcInvokeGetter(ctx, "v", baseVar)»)) {
                     return true;
                 }
             }
@@ -94,7 +99,7 @@ class SrcStaticEnumCode implements CodeSnippet {
                 return null;
             }
             for (final «className» v : ALL) {
-                if («new SrcInvokeGetter(ctx, "v", baseVar)».equals(value)) {
+                if (value.equals(«new SrcInvokeGetter(ctx, "v", baseVar)»)) {
                     return v;
                 }
             }

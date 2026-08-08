@@ -3,7 +3,6 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,8 +13,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getDoc <em>Doc</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}</li>
  * </ul>
@@ -24,52 +21,8 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface BusinessRule extends EObject
+public interface BusinessRule extends AbstractElement
 {
-  /**
-   * Returns the value of the '<em><b>Doc</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Doc</em>' attribute.
-   * @see #setDoc(String)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRule_Doc()
-   * @model
-   * @generated
-   */
-  String getDoc();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getDoc <em>Doc</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Doc</em>' attribute.
-   * @see #getDoc()
-   * @generated
-   */
-  void setDoc(String value);
-
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRule_Name()
-   * @model
-   * @generated
-   */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
-
   /**
    * Returns the value of the '<em><b>Exception</b></em>' reference.
    * <!-- begin-user-doc -->

@@ -2,6 +2,16 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.24.0
+- **A `business-rule` may now be declared at module level**, not only inside an entity or an aggregate.
+  A rule that means the same thing everywhere - "the entity must not be deleted" - is stated once and
+  imported like any other type, so its name, its exception and its consistency classification cannot
+  drift apart across contexts. An aggregate may still declare its own rules, and one it declares itself
+  still wins over an imported rule of the same name.
+- A rule written inside an aggregate is no longer reported as an illegal nested element. Rules became
+  model elements with the change above, and the check that restricts what an aggregate may nest looked
+  at every element it contained - including the aggregate's own rules.
+
 ## 1.23.0
 - **The types a `dependency` provides resolve in the editor again** - they were all red with "Couldn't
   resolve reference to ...". An editor's resource set holds only the open file, so a `dependency`

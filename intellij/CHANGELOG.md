@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.26.0
+- A `business-rule` may now be declared at module level, not only inside an entity or an aggregate. A rule that means the same thing everywhere - "the entity must not be deleted" - is stated once and imported like any other type, so its name, its exception and its consistency classification cannot drift apart across contexts. An aggregate may still declare its own rules, and one it declares itself still wins over an imported rule of the same name; a rule written inside an aggregate is no longer flagged as an illegal nested element.
+
 ## 1.25.0
 - A model opened out of a dependency's archive resolves again. Its names were looked up in the project's index only, which such a file is not part of - so every `import` and every type in it was flagged, including the ones it declares itself. A model that is read rather than authored - an entry of an archive, or a file of a `local` directory outside the project - now resolves against the neighbours it was read beside, and reports nothing: the reader cannot act on the message, and a model publishing only part of itself legitimately names types it kept to itself.
 

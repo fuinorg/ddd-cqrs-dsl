@@ -265,6 +265,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns AggregateId
+	 *     EntityElement returns AggregateId
 	 *     Type returns AggregateId
 	 *     InternalType returns AggregateId
 	 *     AbstractVO returns AggregateId
@@ -295,6 +296,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Aggregate
+	 *     EntityElement returns Aggregate
 	 *     Type returns Aggregate
 	 *     InternalType returns Aggregate
 	 *     AbstractEntity returns Aggregate
@@ -312,7 +314,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         businessRules+=BusinessRule* 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method* 
-	 *         elements+=AbstractElement*
+	 *         elements+=EntityElement*
 	 *     )
 	 * </pre>
 	 */
@@ -339,6 +341,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Annotation
+	 *     EntityElement returns Annotation
 	 *     Annotation returns Annotation
 	 *
 	 * Constraint:
@@ -406,6 +409,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     AbstractElement returns BusinessRule
 	 *     BusinessRule returns BusinessRule
 	 *
 	 * Constraint:
@@ -414,10 +418,10 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 */
 	protected void sequence_BusinessRule(ISerializationContext context, BusinessRule semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__DOC) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__DOC));
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__NAME));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__DOC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__DOC));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME));
 			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION));
 			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__CONSISTENCY) == ValueTransient.YES)
@@ -450,6 +454,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns CommandHandler
+	 *     EntityElement returns CommandHandler
 	 *     CommandHandler returns CommandHandler
 	 *
 	 * Constraint:
@@ -465,6 +470,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Command
+	 *     EntityElement returns Command
 	 *     Command returns Command
 	 *
 	 * Constraint:
@@ -515,6 +521,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Constraint
+	 *     EntityElement returns Constraint
 	 *     Constraint returns Constraint
 	 *
 	 * Constraint:
@@ -596,6 +603,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns DataProtection
+	 *     EntityElement returns DataProtection
 	 *     DataProtection returns DataProtection
 	 *
 	 * Constraint:
@@ -672,6 +680,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns EntityId
+	 *     EntityElement returns EntityId
 	 *     Type returns EntityId
 	 *     InternalType returns EntityId
 	 *     AbstractVO returns EntityId
@@ -702,6 +711,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Entity
+	 *     EntityElement returns Entity
 	 *     Type returns Entity
 	 *     InternalType returns Entity
 	 *     AbstractEntity returns Entity
@@ -720,7 +730,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         businessRules+=BusinessRule* 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method* 
-	 *         elements+=AbstractElement*
+	 *         elements+=EntityElement*
 	 *     )
 	 * </pre>
 	 */
@@ -747,6 +757,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns EnumObject
+	 *     EntityElement returns EnumObject
 	 *     Type returns EnumObject
 	 *     InternalType returns EnumObject
 	 *     EnumObject returns EnumObject
@@ -773,6 +784,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Event
+	 *     EntityElement returns Event
 	 *     Event returns Event
 	 *
 	 * Constraint:
@@ -795,6 +807,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Exception
+	 *     EntityElement returns Exception
 	 *     Exception returns Exception
 	 *
 	 * Constraint:
@@ -810,6 +823,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns ExternalType
+	 *     EntityElement returns ExternalType
 	 *     Type returns ExternalType
 	 *     ExternalType returns ExternalType
 	 *
@@ -1149,6 +1163,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns ProcessManager
+	 *     EntityElement returns ProcessManager
 	 *     ProcessManager returns ProcessManager
 	 *
 	 * Constraint:
@@ -1208,6 +1223,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Projection
+	 *     EntityElement returns Projection
 	 *     Projection returns Projection
 	 *
 	 * Constraint:
@@ -1237,6 +1253,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns Service
+	 *     EntityElement returns Service
 	 *     Type returns Service
 	 *     Service returns Service
 	 *
@@ -1288,6 +1305,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns ValueObject
+	 *     EntityElement returns ValueObject
 	 *     Type returns ValueObject
 	 *     InternalType returns ValueObject
 	 *     AbstractVO returns ValueObject
@@ -1317,6 +1335,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * <pre>
 	 * Contexts:
 	 *     AbstractElement returns View
+	 *     EntityElement returns View
 	 *     View returns View
 	 *
 	 * Constraint:

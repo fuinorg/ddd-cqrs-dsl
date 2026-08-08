@@ -19,7 +19,7 @@ comment explaining what it shows. They follow the grammar in
 | [10-invariants](10-invariants.cqrs) | `invariants` on a type and on an attribute (with parameters) |
 | [11-aggregate](11-aggregate.cqrs) | `aggregate` + `aggregate-id` (`identifies` / `identifier`) and a `constructor` that `fires` an event |
 | [12-entity](12-entity.cqrs) | `entity` + `entity-id` with `root` pointing at the owning aggregate |
-| [13-business-rule-consistency](13-business-rule-consistency.cqrs) | `business-rule`, `strong` vs. `weak` `consistency` (`acceptable` / `detection` / `resolution`), and `business-rules` usage |
+| [13-business-rule-consistency](13-business-rule-consistency.cqrs) | `business-rule` in an aggregate and at module level (shared, imported), `strong` vs. `weak` `consistency` (`acceptable` / `detection` / `resolution`), and `business-rules` usage |
 | [14-constructor](14-constructor.cqrs) | `constructor` parameters, `fires`, and an inline `event` |
 | [15-method](15-method.cqrs) | `method` with `returns`, `fires`, parameter `preconditions`, and `ref` |
 | [16-service](16-service.cqrs) | `service` grouping methods and a business rule |

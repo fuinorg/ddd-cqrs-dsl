@@ -319,6 +319,69 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cAnnotationParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		private final RuleCall cTypeParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		private final RuleCall cExceptionParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
+		private final RuleCall cBusinessRuleParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
+		private final RuleCall cEventParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
+		private final RuleCall cCommandParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
+		private final RuleCall cCommandHandlerParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
+		private final RuleCall cProjectionParserRuleCall_8 = (RuleCall)cAlternatives.eContents().get(8);
+		private final RuleCall cViewParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
+		private final RuleCall cProcessManagerParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
+		private final RuleCall cDataProtectionParserRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
+		
+		///**
+		// * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
+		// * part of it so a rule that applies across contexts can be declared once at module level.
+		// */
+		//AbstractElement:
+		//    Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//Constraint
+		public RuleCall getConstraintParserRuleCall_0() { return cConstraintParserRuleCall_0; }
+		
+		//Annotation
+		public RuleCall getAnnotationParserRuleCall_1() { return cAnnotationParserRuleCall_1; }
+		
+		//Type
+		public RuleCall getTypeParserRuleCall_2() { return cTypeParserRuleCall_2; }
+		
+		//Exception
+		public RuleCall getExceptionParserRuleCall_3() { return cExceptionParserRuleCall_3; }
+		
+		//BusinessRule
+		public RuleCall getBusinessRuleParserRuleCall_4() { return cBusinessRuleParserRuleCall_4; }
+		
+		//Event
+		public RuleCall getEventParserRuleCall_5() { return cEventParserRuleCall_5; }
+		
+		//Command
+		public RuleCall getCommandParserRuleCall_6() { return cCommandParserRuleCall_6; }
+		
+		//CommandHandler
+		public RuleCall getCommandHandlerParserRuleCall_7() { return cCommandHandlerParserRuleCall_7; }
+		
+		//Projection
+		public RuleCall getProjectionParserRuleCall_8() { return cProjectionParserRuleCall_8; }
+		
+		//View
+		public RuleCall getViewParserRuleCall_9() { return cViewParserRuleCall_9; }
+		
+		//ProcessManager
+		public RuleCall getProcessManagerParserRuleCall_10() { return cProcessManagerParserRuleCall_10; }
+		
+		//DataProtection
+		public RuleCall getDataProtectionParserRuleCall_11() { return cDataProtectionParserRuleCall_11; }
+	}
+	public class EntityElementElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EntityElement");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cConstraintParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cAnnotationParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cTypeParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final RuleCall cExceptionParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
 		private final RuleCall cEventParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
 		private final RuleCall cCommandParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
 		private final RuleCall cCommandHandlerParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
@@ -327,8 +390,13 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cProcessManagerParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
 		private final RuleCall cDataProtectionParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
 		
-		///** Common properties of domain model elements. */
-		//AbstractElement:
+		///**
+		// * What an entity or an aggregate may hold as a nested element: everything a module may hold, except a
+		// * 'business-rule'. A rule nested in an entity belongs to its own 'businessRules' list, which is
+		// * declared ahead of the constructors - allowing it here as well would make the two indistinguishable
+		// * to the parser, and the rule would silently end up in the wrong one.
+		// */
+		//EntityElement returns AbstractElement:
 		//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -1110,7 +1178,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cConsistencyConsistencyParserRuleCall_6_0 = (RuleCall)cConsistencyAssignment_6.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
-		///** Defines a business rule that must be satisfied. */
+		///**
+		// * Defines a business rule that must be satisfied. Declared inside the entity or aggregate it belongs
+		// * to, or at module level when the same rule applies across contexts - a module level rule is imported
+		// * and referenced by its name like any other type, which is how a rule such as "the entity must not be
+		// * deleted" is stated once rather than restated per aggregate.
+		// */
 		//BusinessRule:
 		//    doc=DOC
 		//    'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
@@ -2043,7 +2116,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cMethodsAssignment_12 = (Assignment)cGroup.eContents().get(12);
 		private final RuleCall cMethodsMethodParserRuleCall_12_0 = (RuleCall)cMethodsAssignment_12.eContents().get(0);
 		private final Assignment cElementsAssignment_13 = (Assignment)cGroup.eContents().get(13);
-		private final RuleCall cElementsAbstractElementParserRuleCall_13_0 = (RuleCall)cElementsAssignment_13.eContents().get(0);
+		private final RuleCall cElementsEntityElementParserRuleCall_13_0 = (RuleCall)cElementsAssignment_13.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
 		
 		///* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
@@ -2055,7 +2128,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//        businessRules+=BusinessRule*
 		//        constructors+=Constructor*
 		//        methods+=Method*
-		//        elements+=AbstractElement*
+		//        elements+=EntityElement*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -2066,7 +2139,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//    businessRules+=BusinessRule*
 		//    constructors+=Constructor*
 		//    methods+=Method*
-		//    elements+=AbstractElement*
+		//    elements+=EntityElement*
 		//'}'
 		public Group getGroup() { return cGroup; }
 		
@@ -2160,11 +2233,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Method
 		public RuleCall getMethodsMethodParserRuleCall_12_0() { return cMethodsMethodParserRuleCall_12_0; }
 		
-		//elements+=AbstractElement*
+		//elements+=EntityElement*
 		public Assignment getElementsAssignment_13() { return cElementsAssignment_13; }
 		
-		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_13_0() { return cElementsAbstractElementParserRuleCall_13_0; }
+		//EntityElement
+		public RuleCall getElementsEntityElementParserRuleCall_13_0() { return cElementsEntityElementParserRuleCall_13_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
@@ -2198,7 +2271,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
 		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
 		private final Assignment cElementsAssignment_12 = (Assignment)cGroup.eContents().get(12);
-		private final RuleCall cElementsAbstractElementParserRuleCall_12_0 = (RuleCall)cElementsAssignment_12.eContents().get(0);
+		private final RuleCall cElementsEntityElementParserRuleCall_12_0 = (RuleCall)cElementsAssignment_12.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		
 		///**
@@ -2214,7 +2287,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//        businessRules+=BusinessRule*
 		//        constructors+=Constructor*
 		//        methods+=Method*
-		//        elements+=AbstractElement*
+		//        elements+=EntityElement*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -2225,7 +2298,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//    businessRules+=BusinessRule*
 		//    constructors+=Constructor*
 		//    methods+=Method*
-		//    elements+=AbstractElement*
+		//    elements+=EntityElement*
 		//'}'
 		public Group getGroup() { return cGroup; }
 		
@@ -2304,11 +2377,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Method
 		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
-		//elements+=AbstractElement*
+		//elements+=EntityElement*
 		public Assignment getElementsAssignment_12() { return cElementsAssignment_12; }
 		
-		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_12_0() { return cElementsAbstractElementParserRuleCall_12_0; }
+		//EntityElement
+		public RuleCall getElementsEntityElementParserRuleCall_12_0() { return cElementsEntityElementParserRuleCall_12_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
@@ -5247,6 +5320,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final ImportElements pImport;
 	private final HintElements pHint;
 	private final AbstractElementElements pAbstractElement;
+	private final EntityElementElements pEntityElement;
 	private final TypeElements pType;
 	private final InternalTypeElements pInternalType;
 	private final AbstractVOElements pAbstractVO;
@@ -5340,6 +5414,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pImport = new ImportElements();
 		this.pHint = new HintElements();
 		this.pAbstractElement = new AbstractElementElements();
+		this.pEntityElement = new EntityElementElements();
 		this.pType = new TypeElements();
 		this.pInternalType = new InternalTypeElements();
 		this.pAbstractVO = new AbstractVOElements();
@@ -5540,15 +5615,34 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getHintAccess().getRule();
 	}
 	
-	///** Common properties of domain model elements. */
+	///**
+	// * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
+	// * part of it so a rule that applies across contexts can be declared once at module level.
+	// */
 	//AbstractElement:
-	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+	//    Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 	public AbstractElementElements getAbstractElementAccess() {
 		return pAbstractElement;
 	}
 	
 	public ParserRule getAbstractElementRule() {
 		return getAbstractElementAccess().getRule();
+	}
+	
+	///**
+	// * What an entity or an aggregate may hold as a nested element: everything a module may hold, except a
+	// * 'business-rule'. A rule nested in an entity belongs to its own 'businessRules' list, which is
+	// * declared ahead of the constructors - allowing it here as well would make the two indistinguishable
+	// * to the parser, and the rule would silently end up in the wrong one.
+	// */
+	//EntityElement returns AbstractElement:
+	//    Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+	public EntityElementElements getEntityElementAccess() {
+		return pEntityElement;
+	}
+	
+	public ParserRule getEntityElementRule() {
+		return getEntityElementAccess().getRule();
 	}
 	
 	///** Common properties of all types. */
@@ -5839,7 +5933,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getConstraintAccess().getRule();
 	}
 	
-	///** Defines a business rule that must be satisfied. */
+	///**
+	// * Defines a business rule that must be satisfied. Declared inside the entity or aggregate it belongs
+	// * to, or at module level when the same rule applies across contexts - a module level rule is imported
+	// * and referenced by its name like any other type, which is how a rule such as "the entity must not be
+	// * deleted" is stated once rather than restated per aggregate.
+	// */
 	//BusinessRule:
 	//    doc=DOC
 	//    'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
@@ -5987,7 +6086,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//        businessRules+=BusinessRule*
 	//        constructors+=Constructor*
 	//        methods+=Method*
-	//        elements+=AbstractElement*
+	//        elements+=EntityElement*
 	//    '}';
 	public EntityElements getEntityAccess() {
 		return pEntity;
@@ -6010,7 +6109,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//        businessRules+=BusinessRule*
 	//        constructors+=Constructor*
 	//        methods+=Method*
-	//        elements+=AbstractElement*
+	//        elements+=EntityElement*
 	//    '}';
 	public AggregateElements getAggregateAccess() {
 		return pAggregate;

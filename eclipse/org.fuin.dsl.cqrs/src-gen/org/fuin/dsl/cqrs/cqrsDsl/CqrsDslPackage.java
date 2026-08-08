@@ -1255,7 +1255,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__DOC = 0;
+  int BUSINESS_RULE__DOC = ABSTRACT_ELEMENT__DOC;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1264,7 +1264,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__NAME = 1;
+  int BUSINESS_RULE__NAME = ABSTRACT_ELEMENT__NAME;
 
   /**
    * The feature id for the '<em><b>Exception</b></em>' reference.
@@ -1273,7 +1273,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__EXCEPTION = 2;
+  int BUSINESS_RULE__EXCEPTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Consistency</b></em>' containment reference.
@@ -1282,7 +1282,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__CONSISTENCY = 3;
+  int BUSINESS_RULE__CONSISTENCY = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Business Rule</em>' class.
@@ -1291,7 +1291,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE_FEATURE_COUNT = 4;
+  int BUSINESS_RULE_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AnnotationImpl <em>Annotation</em>}' class.
@@ -4964,28 +4964,6 @@ public interface CqrsDslPackage extends EPackage
   EClass getBusinessRule();
 
   /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getDoc <em>Doc</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Doc</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getDoc()
-   * @see #getBusinessRule()
-   * @generated
-   */
-  EAttribute getBusinessRule_Doc();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getName()
-   * @see #getBusinessRule()
-   * @generated
-   */
-  EAttribute getBusinessRule_Name();
-
-  /**
    * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7348,22 +7326,6 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EClass BUSINESS_RULE = eINSTANCE.getBusinessRule();
-
-    /**
-     * The meta object literal for the '<em><b>Doc</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute BUSINESS_RULE__DOC = eINSTANCE.getBusinessRule_Doc();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute BUSINESS_RULE__NAME = eINSTANCE.getBusinessRule_Name();
 
     /**
      * The meta object literal for the '<em><b>Exception</b></em>' reference feature.

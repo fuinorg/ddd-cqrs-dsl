@@ -10,7 +10,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
@@ -24,56 +23,14 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getDoc <em>Doc</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getException <em>Exception</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getConsistency <em>Consistency</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements BusinessRule
+public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRule
 {
-  /**
-   * The default value of the '{@link #getDoc() <em>Doc</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDoc()
-   * @generated
-   * @ordered
-   */
-  protected static final String DOC_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDoc() <em>Doc</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDoc()
-   * @generated
-   * @ordered
-   */
-  protected String doc = DOC_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected static final String NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected String name = NAME_EDEFAULT;
-
   /**
    * The cached value of the '{@link #getException() <em>Exception</em>}' reference.
    * <!-- begin-user-doc -->
@@ -113,56 +70,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   protected EClass eStaticClass()
   {
     return CqrsDslPackage.Literals.BUSINESS_RULE;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getDoc()
-  {
-    return doc;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setDoc(String newDoc)
-  {
-    String oldDoc = doc;
-    doc = newDoc;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__DOC, oldDoc, doc));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getName()
-  {
-    return name;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setName(String newName)
-  {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__NAME, oldName, name));
   }
 
   /**
@@ -286,10 +193,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__DOC:
-        return getDoc();
-      case CqrsDslPackage.BUSINESS_RULE__NAME:
-        return getName();
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         if (resolve) return getException();
         return basicGetException();
@@ -309,12 +212,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__DOC:
-        setDoc((String)newValue);
-        return;
-      case CqrsDslPackage.BUSINESS_RULE__NAME:
-        setName((String)newValue);
-        return;
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)newValue);
         return;
@@ -335,12 +232,6 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__DOC:
-        setDoc(DOC_EDEFAULT);
-        return;
-      case CqrsDslPackage.BUSINESS_RULE__NAME:
-        setName(NAME_EDEFAULT);
-        return;
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)null);
         return;
@@ -361,35 +252,12 @@ public class BusinessRuleImpl extends MinimalEObjectImpl.Container implements Bu
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__DOC:
-        return DOC_EDEFAULT == null ? doc != null : !DOC_EDEFAULT.equals(doc);
-      case CqrsDslPackage.BUSINESS_RULE__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         return exception != null;
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return consistency != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (doc: ");
-    result.append(doc);
-    result.append(", name: ");
-    result.append(name);
-    result.append(')');
-    return result.toString();
   }
 
 } //BusinessRuleImpl

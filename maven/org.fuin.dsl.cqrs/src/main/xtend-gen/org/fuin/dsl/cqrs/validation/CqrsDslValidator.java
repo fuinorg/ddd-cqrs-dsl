@@ -1067,9 +1067,14 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     }
   }
 
+  /**
+   * Restricts what an aggregate may hold as a nested element. Only the 'elements' list is meant: an
+   * aggregate's own 'business-rule' is an AbstractElement too - so that a shared rule can be a module
+   * element - but it lives in 'businessRules' and is not one of the nested elements this rule is about.
+   */
   @Check
   public void checkAllowedAggregateElements(final AbstractElement el) {
-    if (((el.eContainer() instanceof Aggregate) && 
+    if ((((el.eContainer() instanceof Aggregate) && (el.eContainingFeature() == CqrsDslPackage.Literals.ABSTRACT_ENTITY__ELEMENTS)) && 
       (!(((((el instanceof AggregateId) || (el instanceof Entity)) || (el instanceof Event)) || (el instanceof Command)) || (el instanceof ValueObject))))) {
       this.error(
         "Allowed elements in an aggregate are: \'aggregate-id\', \'entity\', \'event\', \'command\' and \'value-object\'", el, 
@@ -1090,9 +1095,12 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     }
   }
 
+  /**
+   * The same for an entity: its own 'business-rule' is not one of its nested elements.
+   */
   @Check
   public void checkAllowedEntityElements(final AbstractElement el) {
-    if (((el.eContainer() instanceof Entity) && 
+    if ((((el.eContainer() instanceof Entity) && (el.eContainingFeature() == CqrsDslPackage.Literals.ABSTRACT_ENTITY__ELEMENTS)) && 
       (!(((el instanceof EntityId) || (el instanceof Event)) || (el instanceof ValueObject))))) {
       this.error(
         "Allowed elements in an entity are: \'entity-id\', \'event\' and \'value-object\'", el, 

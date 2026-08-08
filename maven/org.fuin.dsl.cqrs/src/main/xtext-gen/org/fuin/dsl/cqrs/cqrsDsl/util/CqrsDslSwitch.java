@@ -292,6 +292,7 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         BusinessRule businessRule = (BusinessRule)theEObject;
         T result = caseBusinessRule(businessRule);
+        if (result == null) result = caseAbstractElement(businessRule);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }

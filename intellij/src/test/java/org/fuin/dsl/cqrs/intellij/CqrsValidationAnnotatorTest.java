@@ -346,4 +346,60 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 }
                 """.formatted(consistency);
     }
+
+    // --- business rules --------------------------------------------------------------------------
+
+    /**
+     * A rule the aggregate declares itself is not one of its nested elements, so the check that
+     * restricts those must not fire on it. Making 'business-rule' a module element is what put the two
+     * within reach of each other.
+     */
+    public void testAggregatesOwnBusinessRuleIsNoIllegalNestedElement() {
+        check("""
+                context p {
+                  module c.n {
+                    type String
+                    exception Boom {
+                      String id
+                      message "Boom ${id}"
+                    }
+                    aggregate-id OrderId identifies Order base String {
+                      slabel "OID"
+                      label "Order ID"
+                      tooltip "Unique identifier of the order"
+                      examples "4711"
+                    }
+                    /** An order. */
+                    aggregate Order identifier OrderId {
+                      /** A rule of its own. */
+                      business-rule MustNotBeShipped exception Boom {
+                        consistency strong
+                      }
+                      /** Cancels the order. */
+                      method cancel business-rules MustNotBeShipped {
+                      }
+                    }
+                  }
+                }
+                """);
+    }
+
+    /** A rule at module level is an element like any other and needs no aggregate around it. */
+    public void testModuleLevelBusinessRuleIsValid() {
+        check("""
+                context p {
+                  module c.n {
+                    type String
+                    exception Boom {
+                      String id
+                      message "Boom ${id}"
+                    }
+                    /** Makes sure the entity was not deleted yet. */
+                    business-rule EntityMustNotBeDeletedRule exception Boom {
+                      consistency strong
+                    }
+                  }
+                }
+                """);
+    }
 }

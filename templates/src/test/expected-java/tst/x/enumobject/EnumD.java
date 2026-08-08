@@ -61,7 +61,7 @@ public final class EnumD extends AbstractEnumD {
             return true;
         }
         for (final EnumD v : ALL) {
-            if (v.getId().equals(value)) {
+            if (value.equals(v.getId())) {
                 return true;
             }
         }
@@ -83,7 +83,7 @@ public final class EnumD extends AbstractEnumD {
             return null;
         }
         for (final EnumD v : ALL) {
-            if (v.getId().equals(value)) {
+            if (value.equals(v.getId())) {
                 return v;
             }
         }

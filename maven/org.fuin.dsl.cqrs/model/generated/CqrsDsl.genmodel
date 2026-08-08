@@ -161,8 +161,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Constraint/message"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//BusinessRule">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//BusinessRule/doc"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//BusinessRule/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/exception"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/consistency"/>
     </genClasses>

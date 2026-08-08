@@ -57,8 +57,20 @@ Hint:
 	doc=DOC?
 	'hint' name=FQN json=JSON;
 
-/** Common properties of domain model elements. */
+/**
+ * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
+ * part of it so a rule that applies across contexts can be declared once at module level.
+ */
 AbstractElement:
+	Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+
+/**
+ * What an entity or an aggregate may hold as a nested element: everything a module may hold, except a
+ * 'business-rule'. A rule nested in an entity belongs to its own 'businessRules' list, which is
+ * declared ahead of the constructors - allowing it here as well would make the two indistinguishable
+ * to the parser, and the rule would silently end up in the wrong one.
+ */
+EntityElement returns AbstractElement:
 	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 
 /** Common properties of all types. */
@@ -216,7 +228,12 @@ Constraint:
 		('message' message=STRING)?
 	'}';
 
-/** Defines a business rule that must be satisfied. */
+/**
+ * Defines a business rule that must be satisfied. Declared inside the entity or aggregate it belongs
+ * to, or at module level when the same rule applies across contexts - a module level rule is imported
+ * and referenced by its name like any other type, which is how a rule such as "the entity must not be
+ * deleted" is stated once rather than restated per aggregate.
+ */
 BusinessRule:
 	doc=DOC
 	'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
@@ -301,7 +318,7 @@ Entity:
 		businessRules+=BusinessRule*
 		constructors+=Constructor*
 		methods+=Method*		
-		elements+=AbstractElement*
+		elements+=EntityElement*
 	'}';
 
 /** 
@@ -317,7 +334,7 @@ Aggregate:
 		businessRules+=BusinessRule*
 		constructors+=Constructor*
 		methods+=Method*
-		elements+=AbstractElement*
+		elements+=EntityElement*
 	'}';
 
 /** Common properties of methods. */

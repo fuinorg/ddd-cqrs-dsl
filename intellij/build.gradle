@@ -149,6 +149,12 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.26.0</b> &ndash; A <code>business-rule</code> may now be declared at module level, not only
+        inside an entity or an aggregate. A rule that means the same thing everywhere - "the entity must
+        not be deleted" - is stated once and imported like any other type, so its name, its exception and
+        its consistency classification cannot drift apart across contexts. An aggregate may still declare
+        its own rules, and one it declares itself still wins over an imported rule of the same name; a
+        rule written inside an aggregate is no longer flagged as an illegal nested element.</li>
     <li><b>1.25.0</b> &ndash; A model opened out of a dependency's archive resolves again. Its names were
         looked up in the project's index only, which such a file is not part of - so every
         <code>import</code> and every type in it was flagged, including the ones it declares itself. A

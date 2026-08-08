@@ -235,6 +235,32 @@ element ::= constraint_def
           | entity_def
           | aggregate_def
           | exception_def
+          | business_rule
+          | event_def
+          | command_def
+          | command_handler
+          | projection_def
+          | view_def
+          | process_manager
+          | data_protection_def {
+  recoverWhile=element_recover
+}
+
+// What an entity or an aggregate may nest: everything a module may hold, except a 'business-rule'.
+// A rule written inside an entity belongs to its own 'business_rule*' list, which is matched ahead of
+// the constructors - listing it here as well would make the two indistinguishable, exactly as it did
+// in the Xtext grammar.
+entity_element ::= constraint_def
+          | annotation_def
+          | external_type
+          | service_def
+          | value_object
+          | entity_id
+          | aggregate_id
+          | enum_object
+          | entity_def
+          | aggregate_def
+          | exception_def
           | event_def
           | command_def
           | command_handler
@@ -249,7 +275,7 @@ private element_recover ::= !(RBRACE | element_start)
 // 'AT' (@) starts an annotation instance prefixing a value-object/event, so it must end recovery.
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
           | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
-          | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
+          | KW_BUSINESS_RULE | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
           | KW_MODULE | KW_IMPORT
 
 external_type ::= KW_TYPE KW_ELEMENT? ID (KW_GENERICS NUMBER)? {
@@ -311,13 +337,13 @@ event_def ::= annotation_instance* KW_EVENT ID (KW_COPIES_ATTRIBUTES_OF type_ref
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* element* RBRACE {
+aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

@@ -18,6 +18,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsDependencyDecl;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
@@ -456,7 +457,7 @@ public final class CqrsValidationAnnotator implements Annotator {
 
     private void checkAggregate(@NotNull CqrsAggregateDef aggregate, @NotNull AnnotationHolder holder) {
         List<CqrsAggregateId> ids = new ArrayList<>();
-        for (CqrsElement element : aggregate.getElementList()) {
+        for (CqrsEntityElement element : aggregate.getEntityElementList()) {
             if (element.getAggregateId() != null) {
                 ids.add(element.getAggregateId());
             } else if (!isAllowedInAggregate(element)) {
@@ -478,7 +479,7 @@ public final class CqrsValidationAnnotator implements Annotator {
         }
     }
 
-    private static boolean isAllowedInAggregate(@NotNull CqrsElement element) {
+    private static boolean isAllowedInAggregate(@NotNull CqrsEntityElement element) {
         return element.getAggregateId() != null
                 || element.getEntityDef() != null
                 || element.getEventDef() != null
@@ -488,7 +489,7 @@ public final class CqrsValidationAnnotator implements Annotator {
 
     private void checkEntity(@NotNull CqrsEntityDef entity, @NotNull AnnotationHolder holder) {
         List<CqrsEntityId> ids = new ArrayList<>();
-        for (CqrsElement element : entity.getElementList()) {
+        for (CqrsEntityElement element : entity.getEntityElementList()) {
             if (element.getEntityId() != null) {
                 ids.add(element.getEntityId());
             } else if (!isAllowedInEntity(element)) {
@@ -510,7 +511,7 @@ public final class CqrsValidationAnnotator implements Annotator {
         }
     }
 
-    private static boolean isAllowedInEntity(@NotNull CqrsElement element) {
+    private static boolean isAllowedInEntity(@NotNull CqrsEntityElement element) {
         return element.getEntityId() != null
                 || element.getEventDef() != null
                 || element.getValueObject() != null;

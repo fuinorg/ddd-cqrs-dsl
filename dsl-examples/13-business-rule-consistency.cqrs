@@ -1,6 +1,8 @@
 context p_13_business_rule_consistency {
 
     module banking.m {
+        import p_13_business_rule_consistency.common.rules.*
+
         type String
 
         exception OverdrawnException { message "Overdrawn" }
@@ -37,9 +39,23 @@ context p_13_business_rule_consistency {
                 }
             }
 
-            method withdraw business-rules NotOverdrawn {
+            method withdraw business-rules NotOverdrawn, EntityMustNotBeDeletedRule {
             }
 
+        }
+    }
+
+    // A rule that means the same thing in every aggregate is declared once, at module level, and
+    // imported like any other type. Only the placement differs - the syntax is identical, and an
+    // aggregate may still declare its own rules alongside the ones it imports.
+    module common.rules {
+        type String
+
+        exception InStateDeletedException { message "Already deleted" }
+
+        /** Makes sure the entity was not (soft) deleted yet. */
+        business-rule EntityMustNotBeDeletedRule exception InStateDeletedException {
+            consistency strong
         }
     }
 }

@@ -33,6 +33,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 		private static void init(ImmutableMap.Builder<AbstractElement, String> builder, CqrsDslGrammarAccess grammarAccess) {
 			builder.put(grammarAccess.getImportAccess().getImportedNamespaceAlternatives_1_0(), "rule__Import__ImportedNamespaceAlternatives_1_0");
 			builder.put(grammarAccess.getAbstractElementAccess().getAlternatives(), "rule__AbstractElement__Alternatives");
+			builder.put(grammarAccess.getEntityElementAccess().getAlternatives(), "rule__EntityElement__Alternatives");
 			builder.put(grammarAccess.getTypeAccess().getAlternatives(), "rule__Type__Alternatives");
 			builder.put(grammarAccess.getInternalTypeAccess().getAlternatives(), "rule__InternalType__Alternatives");
 			builder.put(grammarAccess.getAbstractVOAccess().getAlternatives(), "rule__AbstractVO__Alternatives");

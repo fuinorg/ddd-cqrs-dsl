@@ -1,0 +1,54 @@
+context p_shared_business_rules {
+
+	module common.rules {
+		/**
+		 * Expected the entity to be in normal state, but was already (soft) deleted.
+		 */
+		exception EntityInStateDeletedException cid 1002 {
+			EntityIdPath entityIdPath
+		    message "Expected the entity to be in normal state, but was 'deleted': ${entityIdPath}"
+		}
+
+		/**
+		 * Makes sure the entity was not (soft) deleted yet. Declared at module level, because it is
+		 * the same rule in every aggregate that has a soft delete.
+		 */
+		business-rule EntityMustNotBeDeletedRule exception EntityInStateDeletedException {
+			consistency strong
+		}
+	}
+
+	module orders {
+		import p_shared_business_rules.common.rules.*
+
+		/**
+		 * Uniquely identifies an order.
+		 */
+		aggregate-id OrderId identifies Order base String {
+			slabel "OID"
+			label "Order ID"
+			tooltip "Unique identifier of the order"
+			examples "4711"
+		}
+
+		/**
+		 * An order.
+		 */
+		aggregate Order identifier OrderId {
+
+			/**
+			 * A rule the aggregate declares itself, next to the imported one.
+			 */
+			business-rule MustNotBeShipped exception EntityInStateDeletedException {
+				consistency strong
+			}
+
+			/**
+			 * Cancels the order.
+			 */
+			method cancel business-rules EntityMustNotBeDeletedRule, MustNotBeShipped {
+			}
+
+		}
+	}
+}

@@ -127,6 +127,14 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("context_mixed_modules_and_elements");
     }
 
+    /**
+     * A 'business-rule' may sit at module level, so a rule that applies across contexts is stated
+     * once and imported - and an aggregate may still declare its own alongside the imported one.
+     */
+    public void testSharedBusinessRules() {
+        assertNoErrors("shared_business_rules");
+    }
+
     private void assertNoErrors(String name) {
         String text;
         try {

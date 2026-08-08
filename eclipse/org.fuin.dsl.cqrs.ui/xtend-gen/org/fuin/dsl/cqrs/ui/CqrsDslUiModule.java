@@ -63,7 +63,7 @@ public class CqrsDslUiModule extends AbstractCqrsDslUiModule {
     return CqrsArchiveResourceFactory.class;
   }
 
-  public CqrsDslUiModule(final AbstractUIPlugin arg0) {
-    super(arg0);
+  public CqrsDslUiModule(final AbstractUIPlugin plugin) {
+    super(plugin);
   }
 }
