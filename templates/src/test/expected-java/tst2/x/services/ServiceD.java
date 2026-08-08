@@ -32,7 +32,7 @@ public interface ServiceD {
      *
      * @return Value, if there is one.
      */
-    public Optional<String> find(final Integer a);
+    public Optional<String> find(final int a);
     
     /**
      * Lists something that may not exist.
@@ -41,6 +41,6 @@ public interface ServiceD {
      *
      * @return Values, if there are any.
      */
-    public Optional<List<String>> list(final Integer a);
+    public Optional<List<String>> list(final int a);
     
 }

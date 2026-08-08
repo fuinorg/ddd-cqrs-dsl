@@ -57,11 +57,9 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
     @SuppressWarnings("NullAway.Init")
     private String a;
     
-    @NotNull
     @JsonbProperty("b")
     @Examples(value = { "123" })
-    @SuppressWarnings("NullAway.Init")
-    private Integer b;
+    private int b;
     
 
     /**
@@ -91,7 +89,7 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
      *
      * @return Current value.
      */
-    public Integer getB() {
+    public int getB() {
         return b;
     }
     
@@ -144,7 +142,7 @@ public final class EventC extends AbstractDomainEvent<CustomerId> {
          * @param b Value to set.
          * @return This builder.
          */
-        public Builder b(final Integer b) {
+        public Builder b(final int b) {
             Contract.requireArgNotNull("b", b);
             delegate.b = b;
             return this;

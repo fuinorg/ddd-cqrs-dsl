@@ -35,7 +35,7 @@ public enum EnumD {
 
     ;
 
-    private Integer id;
+    private int id;
 
     /** All instances. */
     public static final EnumD[] ALL = new EnumD[] { A, B, C };
@@ -90,7 +90,7 @@ public enum EnumD {
         throw new IllegalArgumentException("Unknown value: " + value);
     }
 
-    private EnumD(final Integer id) {
+    private EnumD(final int id) {
         Contract.requireArgNotNull("id", id);
 
         this.id = id;

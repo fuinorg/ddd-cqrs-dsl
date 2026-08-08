@@ -3,14 +3,14 @@ package p.x.constr;
 public class ValueObjectC {
 
     private String a;
-    private Integer b;
+    private int b;
     private String c;
     
     public String getA() {
         return a;
     }
 
-    public Integer getB() {
+    public int getB() {
         return b;
     }
 

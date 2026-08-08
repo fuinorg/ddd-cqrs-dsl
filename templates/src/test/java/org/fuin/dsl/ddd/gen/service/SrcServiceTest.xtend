@@ -85,7 +85,7 @@ class SrcServiceTest {
                  *
                  * @return Value.
                  */
-                public String find(final Integer a);
+                public String find(final int a);
                 
             }
             '''.toString)
@@ -124,7 +124,7 @@ class SrcServiceTest {
                  *
                  * @return Values.
                  */
-                public List<String> list(final Integer a);
+                public List<String> list(final int a);
                 
             }
             '''.toString)

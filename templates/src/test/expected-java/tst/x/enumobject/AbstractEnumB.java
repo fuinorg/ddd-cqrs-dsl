@@ -22,7 +22,7 @@ import org.fuin.objects4j.common.Contract;
 /** Enumeration type B - With variables. */
 public abstract class AbstractEnumB {
     
-    private Integer id;
+    private int id;
     
     private String shortName;
     
@@ -35,7 +35,7 @@ public abstract class AbstractEnumB {
      * @param shortName Short name.
      * @param longName Long name.
      */
-    protected AbstractEnumB(final Integer id, final String shortName, final String longName) {
+    protected AbstractEnumB(final int id, final String shortName, final String longName) {
         Contract.requireArgNotNull("id", id);
         Contract.requireArgNotNull("shortName", shortName);
         Contract.requireArgNotNull("longName", longName);
@@ -50,7 +50,7 @@ public abstract class AbstractEnumB {
      *
      * @return Current value.
      */
-    public final Integer getId() {
+    public final int getId() {
         return id;
     }
     

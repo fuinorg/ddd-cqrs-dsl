@@ -44,7 +44,7 @@ public final class AggregateC extends AbstractAggregateC {
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public AggregateC(final AggregateCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
+    public AggregateC(final AggregateCId id, final String a, final int b) throws AnyConstraintViolatedException {
         super(id);
 
         // Check preconditions

@@ -3,15 +3,15 @@ package p.x.constr;
 public class ValueObjectD {
 
     private String a;
-    private Integer b;
+    private int b;
     private String c;
-    private Boolean d;
+    private boolean d;
     
     public String getA() {
         return a;
     }
 
-    public Integer getB() {
+    public int getB() {
         return b;
     }
 
@@ -19,7 +19,7 @@ public class ValueObjectD {
         return c;
     }
 
-    public Boolean getD() {
+    public boolean getD() {
         return d;
     }
     

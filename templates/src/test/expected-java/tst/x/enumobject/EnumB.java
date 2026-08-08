@@ -46,7 +46,7 @@ public final class EnumB extends AbstractEnumB {
     public static final List<EnumB> DEPRECATED = List.of(
     );
     
-    private EnumB(final Integer id, final String shortName, final String longName) {
+    private EnumB(final int id, final String shortName, final String longName) {
         super(id, shortName, longName);
     }
     

@@ -22,14 +22,14 @@ import org.fuin.objects4j.common.Contract;
 /** Enumeration type D - With integer base type. */
 public abstract class AbstractEnumD {
     
-    private Integer id;
+    private int id;
     
     /**
      * Enumeration type D - With integer base type.
      *
      * @param id Identifier.
      */
-    protected AbstractEnumD(final Integer id) {
+    protected AbstractEnumD(final int id) {
         Contract.requireArgNotNull("id", id);
         
         this.id = id;
@@ -40,7 +40,7 @@ public abstract class AbstractEnumD {
      *
      * @return Current value.
      */
-    public final Integer getId() {
+    public final int getId() {
         return id;
     }
     

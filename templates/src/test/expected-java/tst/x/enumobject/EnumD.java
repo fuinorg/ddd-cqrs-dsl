@@ -90,7 +90,7 @@ public final class EnumD extends AbstractEnumD {
         throw new IllegalArgumentException("Unknown value: " + value);
     }
     
-    private EnumD(final Integer id) {
+    private EnumD(final int id) {
         super(id);
     }
     

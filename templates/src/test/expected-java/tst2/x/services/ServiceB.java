@@ -30,6 +30,6 @@ public interface ServiceB {
      *
      * @return Value.
      */
-    public String find(final Integer a);
+    public String find(final int a);
     
 }

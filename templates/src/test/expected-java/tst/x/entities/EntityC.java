@@ -38,7 +38,7 @@ public final class EntityC extends AbstractEntityC {
      *
      * @throws AnyConstraintViolatedException The constraint was violated.
      */
-    public EntityC(final AggregateX rootAggregate, final EntityCId id, final String a, final Integer b) throws AnyConstraintViolatedException {
+    public EntityC(final AggregateX rootAggregate, final EntityCId id, final String a, final int b) throws AnyConstraintViolatedException {
         super(rootAggregate, id);
     
         // Check preconditions

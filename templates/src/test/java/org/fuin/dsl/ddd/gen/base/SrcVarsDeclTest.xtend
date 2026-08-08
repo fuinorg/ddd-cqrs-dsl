@@ -48,7 +48,7 @@ class SrcVarsDeclTest {
             '''
                 private String a;
                 
-                private Integer b;
+                private int b;
                 
                 @Nullable
                 private Boolean c;

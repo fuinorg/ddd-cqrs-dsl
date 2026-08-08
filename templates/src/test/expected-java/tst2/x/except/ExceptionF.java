@@ -34,7 +34,7 @@ public final class ExceptionF extends UniquelyNumberedException {
 
     private String a;
     
-    private Integer b;
+    private int b;
     
     /**
      * Constructs a new instance of the exception.
@@ -42,7 +42,7 @@ public final class ExceptionF extends UniquelyNumberedException {
      * @param a A.
      * @param b B.
      */
-    public ExceptionF(final String a, final Integer b) {
+    public ExceptionF(final String a, final int b) {
         super(125, Objects.requireNonNull(KeyValueEL.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -65,7 +65,7 @@ public final class ExceptionF extends UniquelyNumberedException {
      *
      * @return Current value.
      */
-    public final Integer getB() {
+    public final int getB() {
         return b;
     }
     

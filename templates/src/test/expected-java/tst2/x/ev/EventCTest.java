@@ -95,7 +95,7 @@ public final class EventCTest {
         // TODO Set test values
         final CustomerId entityId = new CustomerId("42705de0-91a1-11e4-b4a9-0800200c9a6");
         final String a = "Abc";
-        final Integer b = 123;
+        final int b = 123;
         return new EventC(new EntityIdPath(entityId), a, b);
     }
 

@@ -104,7 +104,7 @@ public abstract class AbstractAggregateE extends AbstractAggregateRoot<Aggregate
          *
          * @return Number of other users.
          */
-        public Integer countUsages(final String a);
+        public int countUsages(final String a);
         
     }
     
@@ -120,7 +120,7 @@ public abstract class AbstractAggregateE extends AbstractAggregateRoot<Aggregate
          *
          * @return Number of other users.
          */
-        public Integer countUsages(final String a);
+        public int countUsages(final String a);
         
     }
     

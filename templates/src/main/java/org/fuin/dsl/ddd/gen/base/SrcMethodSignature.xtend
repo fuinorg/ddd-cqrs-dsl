@@ -6,6 +6,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsTypeExtensions.*
 
 /**
  * Creates source code for a single method.
@@ -48,7 +49,15 @@ class SrcMethodSignature implements CodeSnippet {
             val generics = methodData.returnType.generics
             var String type
             if (generics === null) {
-                type = methodData.returnType.type.name
+                // A non-optional result the model says is always present. Rendering "Boolean" instead of
+                // "boolean" would hand every caller a wrapper it has to null-check, for a value the model
+                // already promised is there - "returns optional X" is how absence is declared, and that
+                // case is handled below.
+                type = if (methodData.returnType.optional === null) {
+                    methodData.returnType.type.asJavaPrimitive
+                } else {
+                    methodData.returnType.type.name
+                }
             } else {
                 val StringBuilder sb = new StringBuilder()
                 for (arg : generics.args) {

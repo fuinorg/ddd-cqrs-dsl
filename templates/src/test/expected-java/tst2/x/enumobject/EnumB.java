@@ -35,7 +35,7 @@ public enum EnumB {
     
     ;
     
-    private Integer id;
+    private int id;
     
     private String shortName;
     
@@ -46,7 +46,7 @@ public enum EnumB {
      *
      * @return Current value.
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
     
@@ -82,7 +82,7 @@ public enum EnumB {
     public static final List<EnumB> DEPRECATED = List.of(
     );
     
-    private EnumB(final Integer id, final String shortName, final String longName) {
+    private EnumB(final int id, final String shortName, final String longName) {
         Contract.requireArgNotNull("id", id);
         Contract.requireArgNotNull("shortName", shortName);
         Contract.requireArgNotNull("longName", longName);

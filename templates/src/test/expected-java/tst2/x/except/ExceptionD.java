@@ -33,7 +33,7 @@ public final class ExceptionD extends Exception {
 
     private String a;
     
-    private Integer b;
+    private int b;
     
     /**
      * Constructs a new instance of the exception.
@@ -41,7 +41,7 @@ public final class ExceptionD extends Exception {
      * @param a A.
      * @param b B.
      */
-    public ExceptionD(final String a, final Integer b) {
+    public ExceptionD(final String a, final int b) {
         super(Objects.requireNonNull(KeyValueEL.replace("Exception D: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
@@ -64,7 +64,7 @@ public final class ExceptionD extends Exception {
      *
      * @return Current value.
      */
-    public final Integer getB() {
+    public final int getB() {
         return b;
     }
     
