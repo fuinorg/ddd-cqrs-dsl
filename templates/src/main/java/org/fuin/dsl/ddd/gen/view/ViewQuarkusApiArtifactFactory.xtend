@@ -96,7 +96,7 @@ class ViewQuarkusApiArtifactFactory extends AbstractSource<View> {
             public interface «apiName» {
 
                 «FOR method : view.methods»
-                    «new SrcRestMethod(ctx, method, "quarkus", true).toString»
+                    «new SrcViewMethod(ctx, method, "quarkus", ViewMethodShape.REST_DECL).toString»
 
                 «ENDFOR»
             }

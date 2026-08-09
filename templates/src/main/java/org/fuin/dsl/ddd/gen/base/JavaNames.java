@@ -84,9 +84,19 @@ public final class JavaNames {
         case TypeKeys.JAVA_VIEW_REST_API_QUARKUS:
             return ArtifactNames.viewBaseName(elementName) + "ResourceApi";
 
+        case TypeKeys.JAVA_VIEW_SERVICE:
+            return ArtifactNames.viewBaseName(elementName) + "Service";
+
+        case TypeKeys.JAVA_VIEW_SERVICE_IMPL:
+            return ArtifactNames.viewBaseName(elementName) + "ServiceImpl";
+
+        case TypeKeys.JAVA_VIEW_SERVICE_REST_CLIENT:
+            return ArtifactNames.viewBaseName(elementName) + "ServiceRestClient";
+
         default:
             // package-info, the Spring configuration, the JPA tables and the non-Java artifacts have no
-            // name derivable from the element alone.
+            // name derivable from the element alone. Neither has a view's event handler: it is named
+            // after the event it handles, not after the view it belongs to.
             return null;
         }
     }

@@ -1,5 +1,7 @@
 package org.fuin.dsl.ddd.gen.service
 
+import java.util.List
+import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
@@ -11,24 +13,54 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 
 /**
- * Creates source code for a service.
+ * Creates source code for a plain Java service interface: a name, a JavaDoc comment and one method
+ * declaration per operation, with no annotations and no framework types.
+ *
+ * <p>Two things are rendered this way and must stay identical in shape: a module level
+ * {@code service} of the model, and the service contract of a {@code view} (whose name is derived from
+ * the view rather than taken from the element, which is why the name is a separate argument).
  */
 class SrcService implements CodeSnippet {
 
     val CodeSnippetContext ctx
-    val Service service
+    val String name
+    val CharSequence javaDoc
+    val List<Method> methods
 
+    /**
+     * Constructor for a module level service of the model. Its JavaDoc is the one the model declares,
+     * rendered as a single sentence.
+     *
+     * @param ctx Context.
+     * @param service Service to create the source for.
+     */
     new(CodeSnippetContext ctx, Service service) {
+        this(ctx, service.name, new SrcJavaDocType(service.doc).toString, service.methods)
+    }
+
+    /**
+     * Constructor with all mandatory data.
+     *
+     * @param ctx Context.
+     * @param name Name of the interface.
+     * @param javaDoc Fully rendered JavaDoc block of the interface, including the comment characters.
+     *            A generated contract explains a role the model does not state, which takes more than
+     *            the one line a model element's doc becomes.
+     * @param methods Operations the interface declares.
+     */
+    new(CodeSnippetContext ctx, String name, CharSequence javaDoc, List<Method> methods) {
         this.ctx = ctx
-        this.service = service
+        this.name = name
+        this.javaDoc = javaDoc
+        this.methods = methods
     }
 
     override toString() {
         '''    
-        «new SrcJavaDocType(service)»
-        public interface «service.name» {
+        «javaDoc»
+        public interface «name» {
             
-            «FOR method : service.methods.nullSafe»
+            «FOR method : methods.nullSafe»
                 «new SrcJavaDocMethod(ctx, method).toString»
                 «new SrcMethodSignature(ctx, "public", false, GenerateOptions.empty(), method).toString»;
                 

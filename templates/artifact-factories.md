@@ -51,10 +51,13 @@ to the factory's source file.
 | View | [View](src/main/java/org/fuin/dsl/ddd/gen/view/ViewArtifactFactory.xtend) | Generates the fully generated `<Base>View` (event set, dispatcher wiring, cron), annotated for the selected `runtime`. |  |
 | View | [ViewSpringApi⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewSpringApiArtifactFactory.xtend) | Generates the Spring `@HttpExchange` REST contract interface `<Base>ControllerApi`. |  |
 | View | [ViewQuarkusApi⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewQuarkusApiArtifactFactory.xtend) | Generates the JAX-RS + MicroProfile `@RegisterRestClient` REST contract interface `<Base>ResourceApi`. |  |
-| View | [FinalView⁵](src/main/java/org/fuin/dsl/ddd/gen/view/FinalViewArtifactFactory.xtend) | Generates the write-once `<Base>Controller`/`<Base>Resource` implementing the contract of the selected runtime, plus one event handler stub per projection event. |  |
+| View | [ViewServiceApi⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewServiceApiArtifactFactory.xtend) | Generates the framework-free service contract `<Base>Service` - the read model's operations as plain Java, and the contract to depend on from inside the same application. |  |
+| View | [ViewServiceRestClient⁴](src/main/java/org/fuin/dsl/ddd/gen/view/ViewServiceRestClientArtifactFactory.xtend) | Generates `<Base>ServiceRestClient`, which satisfies `<Base>Service` over HTTP by wrapping the Spring REST contract and unwrapping its `ResponseEntity`. |  |
+| View | [ViewRestDelegate](src/main/java/org/fuin/dsl/ddd/gen/view/ViewRestDelegateArtifactFactory.xtend) | Generates the `<Base>Controller`/`<Base>Resource` implementing the contract of the selected runtime. Pure delegation to `<Base>Service`, so it is regenerated rather than written once. |  |
+| View | [FinalView⁵](src/main/java/org/fuin/dsl/ddd/gen/view/FinalViewArtifactFactory.xtend) | Generates the write-once `<Base>ServiceImpl` implementing the service contract - where the queries are written - plus one event handler stub per projection event. |  |
 | View | [JpaViewTable⁶](src/main/java/org/fuin/dsl/ddd/gen/view/JpaViewTableArtifactFactory.xtend) | Generates the read-model JPA `@Entity` classes from the "JpaHint" hints in the view body. |  |
 
-**47 types total.**
+**50 types total.**
 
 ## Notes
 
@@ -72,7 +75,7 @@ to the factory's source file.
   rather than emit, and must not be configured together with their delegates.
 - ⁴ The two view API factories ignore the `runtime` option - **both** contract interfaces are generated
   for every view, normally into a separate api module whose framework dependencies are `<optional>`.
-- ⁵ `FinalView` emits **1 + n** artifacts: the controller/resource plus one handler per projection event.
+- ⁵ `FinalView` emits **1 + n** artifacts: the `<Base>ServiceImpl` plus one handler per projection event.
 - ⁶ `JpaViewTable` emits **one artifact per declared table** and only binds the `View` model type; the
   rendering lives in `base/AbstractJpaTableArtifactFactory` (a base class, not configurable on its own,
   and therefore not listed above).

@@ -15,8 +15,9 @@ The generators are implemented; the code, tests and goldens are the source of tr
   (Command), `command.core` (Aggregate/Entity/Service), `query.core` (View), `query.api` (the view's REST
   contract interface, via a per-artifact `module` override), `process.core` (ProcessManager). Set in
   `srcgen4j-default.json`; `group` is left as-is.
-- **View** (`ViewArtifactFactory` + `ViewSpringApiArtifactFactory` + `ViewQuarkusApiArtifactFactory`
-  → genMainJava, `FinalViewArtifactFactory` → mainJava):
+- **View** (`ViewArtifactFactory` + `ViewSpringApiArtifactFactory` + `ViewQuarkusApiArtifactFactory` +
+  `ViewServiceApiArtifactFactory` + `ViewServiceRestClientArtifactFactory` +
+  `ViewRestDelegateArtifactFactory` → genMainJava, `FinalViewArtifactFactory` → mainJava):
   - `<Base>View` — single fully-generated class (`implements core.View`, event set, dispatcher wiring,
     cron, DI header inlined). No abstract/final split: the view has no hand-written code. → `query.core`.
   - `<Base>ControllerApi` **and** `<Base>ResourceApi` — regenerated **REST contract interfaces**, one per
@@ -24,9 +25,18 @@ The generators are implemented; the code, tests and goldens are the source of tr
     `@HttpExchange`/`@GetExchange`, and JAX-RS + MicroProfile `@RegisterRestClient`. No JPA. The api
     module declares `spring-web`, `jakarta.ws.rs-api` and `microprofile-rest-client-api` as *optional*,
     so a consumer picks one interface and adds only its dependency.
-  - `<Base>Controller` / `<Base>Resource` — write-once server class (`query.core`) implementing the
+  - `<Base>Service` — regenerated **framework-free service contract** (`query.api`): the same operations
+    as plain Java, no annotations and no `ResponseEntity`. This is what an in-process caller depends on,
+    so the combined deployable reaches the read model by a method call rather than an HTTP round trip.
+    An `optional` result is an `Optional<X>` here and a 404 over the wire.
+  - `<Base>ServiceRestClient` — regenerated adapter (`query.api`) implementing `<Base>Service` over the
+    Spring contract, for a caller in another process. Translates 404 back into an empty result.
+  - `<Base>Controller` / `<Base>Resource` — regenerated server class (`query.core`) implementing the
     contract; imports the interface across modules, adds the **non-inherited** class annotation
-    (`@RestController` / re-declared `@Path`) and the starter `EntityManager` queries.
+    (`@RestController` / re-declared `@Path`) and forwards every operation to `<Base>Service`. It holds
+    no logic, which is why it is derived rather than write-once.
+  - `<Base>ServiceImpl` — write-once (`query.core`), implements `<Base>Service` and carries the
+    `EntityManager` queries and the read transaction. The one file a developer works in.
   - `<Event>Handler` — write-once, one per projection event (`getEventType()` + `handle()` stub).
 - **ProcessManager** (`AbstractProcessManagerArtifactFactory` → genMainJava,
   `ProcessManagerArtifactFactory` → mainJava, module `process.core`): `Abstract<Base>ProcessManagerView`
@@ -55,6 +65,10 @@ The generators are implemented; the code, tests and goldens are the source of tr
   implemented by a resource (checked against `quarkus-rest-client-deployment` 3.23.4).
 
 ## Not yet generated (remaining/optional work)
+
+- **Quarkus service REST client** — `ViewServiceRestClientArtifactFactory` emits the Spring flavour only.
+  A Quarkus consumer injects `@RestClient <Base>ResourceApi` directly, which already returns the value
+  rather than a `ResponseEntity`, so the adapter would only have to map a 404 to an empty `Optional`.
 
 - **PM wiring artifact** — currently the concrete PM view relies on `@Component`/`@Dependent`
   auto-discovery; no Spring `@Bean`+`@Import(ProcessManagerConfig)` / Quarkus CDI-producer stub.

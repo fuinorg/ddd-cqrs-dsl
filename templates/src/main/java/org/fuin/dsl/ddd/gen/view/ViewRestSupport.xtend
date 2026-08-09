@@ -13,9 +13,9 @@ import static extension org.fuin.dsl.ddd.gen.extensions.VariableExtensions.*
 
 /**
  * Shared logic for turning a view's methods into REST operations. Used by the contract interface
- * factories ({@link ViewSpringApiArtifactFactory} / {@link ViewQuarkusApiArtifactFactory}) and by
- * {@link FinalViewArtifactFactory} (the controller/resource implementing one of them) so they can never
- * drift apart.
+ * factories ({@link ViewSpringApiArtifactFactory} / {@link ViewQuarkusApiArtifactFactory}), by
+ * {@link ViewRestDelegateArtifactFactory} (the controller/resource implementing one of them) and by
+ * {@link ViewServiceRestClientArtifactFactory}, so they can never drift apart.
  */
 class ViewRestSupport {
 
@@ -90,9 +90,40 @@ class ViewRestSupport {
     }
 
     /**
+     * Determines whether the model declares the result of a method as possibly absent.
+     *
+     * @param method Method to check.
+     *
+     * @return TRUE if the model says 'returns optional'.
+     */
+    def static boolean isOptional(Method method) {
+        method.returnType !== null && method.returnType.optional !== null
+    }
+
+    /**
+     * Returns the argument list a delegating implementation passes on - the parameter names alone,
+     * without types or annotations.
+     *
+     * @param method Method to render the arguments of.
+     *
+     * @return Comma separated names - empty if the method has no parameters.
+     */
+    def static String args(Method method) {
+        val StringBuilder sb = new StringBuilder()
+        for (Parameter param : method.parameters) {
+            if (sb.length > 0) {
+                sb.append(", ")
+            }
+            sb.append(param.name)
+        }
+        sb.toString
+    }
+
+    /**
      * Returns the Java type a view method produces, including generic arguments, and registers the
      * required references. An 'optional' result is NOT wrapped: over HTTP an absent value is a 404,
-     * not an empty Optional.
+     * not an empty Optional. The service contract wraps it - see {@code SrcMethodSignature}, which is
+     * what the service shapes of {@link SrcViewMethod} render through.
      *
      * @param ctx Context to add the requirements to.
      * @param method Method to determine the return type for.

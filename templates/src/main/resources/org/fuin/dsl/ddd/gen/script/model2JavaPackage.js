@@ -38,10 +38,14 @@ function model2JavaPackage(element, typeKey) {
         case 'java-view':
         case 'java-view-rest-impl':
         case 'java-view-jpa-table':
+        case 'java-view-service-impl':
+        case 'java-view-event-handler':
             return join(ctx, 'query.core.view', mod);
 
         case 'java-view-rest-api-spring':
         case 'java-view-rest-api-quarkus':
+        case 'java-view-service':
+        case 'java-view-service-rest-client':
             return join(ctx, 'query.api.view', mod);
 
         case 'java-process-manager':

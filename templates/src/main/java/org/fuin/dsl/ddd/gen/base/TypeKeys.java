@@ -56,6 +56,9 @@ public final class TypeKeys {
     /** A <code>view</code>: <code>«Base»View</code>. */
     public static final String JAVA_VIEW = "java-view";
 
+    /** Framework-free service contract of a <code>view</code>: <code>«Base»Service</code>. */
+    public static final String JAVA_VIEW_SERVICE = "java-view-service";
+
     /** A <code>process-manager</code>: <code>«Base»ProcessManager</code>. */
     public static final String JAVA_PROCESS_MANAGER = "java-process-manager";
 
@@ -115,8 +118,24 @@ public final class TypeKeys {
     /** Quarkus REST contract of a view: <code>«Base»ResourceApi</code>. */
     public static final String JAVA_VIEW_REST_API_QUARKUS = "java-view-rest-api-quarkus";
 
-    /** Class implementing a view's REST contract: <code>«Base»Controller</code> / <code>«Base»Resource</code>. */
+    /**
+     * Class implementing a view's REST contract: <code>«Base»Controller</code> /
+     * <code>«Base»Resource</code>. It delegates to {@link #JAVA_VIEW_SERVICE} and holds no logic of its
+     * own, which is why it is regenerated rather than written once.
+     */
     public static final String JAVA_VIEW_REST_IMPL = "java-view-rest-impl";
+
+    /** Hand-written implementation of a view's service: <code>«Base»ServiceImpl</code>. */
+    public static final String JAVA_VIEW_SERVICE_IMPL = "java-view-service-impl";
+
+    /**
+     * Adapter satisfying a view's service over its Spring REST contract:
+     * <code>«Base»ServiceRestClient</code>.
+     */
+    public static final String JAVA_VIEW_SERVICE_REST_CLIENT = "java-view-service-rest-client";
+
+    /** Projection event handler of a view: <code>«Event»Handler</code>. */
+    public static final String JAVA_VIEW_EVENT_HANDLER = "java-view-event-handler";
 
     /** JPA entity of a <code>JpaHint</code> table of a view. */
     public static final String JAVA_VIEW_JPA_TABLE = "java-view-jpa-table";

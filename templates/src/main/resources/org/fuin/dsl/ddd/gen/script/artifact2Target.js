@@ -63,10 +63,14 @@ function module(typeKey) {
         case 'java-view':
         case 'java-view-rest-impl':
         case 'java-view-jpa-table':
+        case 'java-view-service-impl':
+        case 'java-view-event-handler':
             return 'query.core';
 
         case 'java-view-rest-api-spring':
         case 'java-view-rest-api-quarkus':
+        case 'java-view-service':
+        case 'java-view-service-rest-client':
             return 'query.api';
 
         case 'java-process-manager':

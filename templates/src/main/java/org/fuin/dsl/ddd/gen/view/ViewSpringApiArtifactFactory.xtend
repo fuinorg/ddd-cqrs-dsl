@@ -81,7 +81,7 @@ class ViewSpringApiArtifactFactory extends AbstractSource<View> {
             public interface «apiName» {
 
                 «FOR method : view.methods»
-                    «new SrcRestMethod(ctx, method, "spring", true).toString»
+                    «new SrcViewMethod(ctx, method, "spring", ViewMethodShape.REST_DECL).toString»
 
                 «ENDFOR»
             }

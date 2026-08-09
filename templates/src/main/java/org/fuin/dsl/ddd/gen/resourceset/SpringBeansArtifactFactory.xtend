@@ -34,9 +34,16 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
  * calls {@code beanFactory.getBean(view.getBeanName(), ...)} - and is prototype scoped. It therefore
  * gets an explicit {@code @Bean(BEAN_NAME)} method; an {@code @Import} would register it under its
  * fully qualified class name and the lookup would fail at runtime.</li>
- * <li>A <b>controller</b> or <b>repository factory</b> is only ever injected by type, so a plain
- * {@code @Import} is enough.</li>
+ * <li>A <b>controller</b>, a <b>service implementation</b> or a <b>repository factory</b> is only ever
+ * injected by type, so a plain {@code @Import} is enough.</li>
  * </ul>
+ *
+ * <p>The service implementations are imported by class although they are hand-written. That is safe by
+ * sequencing rather than by luck: the same generation run that writes this configuration writes their
+ * stubs, and the core module is built before the starter. A missing one is therefore a compile error
+ * here, naming the class - which is a better failure than a {@code NoSuchBeanDefinitionException} at
+ * the first request, and the generated controller that injects it could not have been satisfied
+ * either.
  *
  * <p>The generated configurations are routed to the {@code *.starter} modules, which is where an
  * application picks them up by depending on the starter alone.
@@ -70,6 +77,7 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
 
         val List<String> views = new ArrayList<String>()
         val List<String> controllers = new ArrayList<String>()
+        val List<String> serviceImpls = new ArrayList<String>()
         val List<String> repositoryFactories = new ArrayList<String>()
         val List<String> processManagerViews = new ArrayList<String>()
         var String project = null
@@ -84,8 +92,14 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
                         val pkg = CqrsScripts.model2JavaPackage(element, typeKey)
                         if (element instanceof View) {
                             project = container.projectName
+                            val baseName = ArtifactNames.viewBaseName(element.name)
                             views.add(pkg + "." + element.name)
-                            controllers.add(pkg + "." + ArtifactNames.viewBaseName(element.name) + "Controller")
+                            // Each through its own type key: they land in the same package today, but a
+                            // model that routes them apart still resolves.
+                            controllers.add(CqrsScripts.model2JavaPackage(element, TypeKeys.JAVA_VIEW_REST_IMPL)
+                                + "." + baseName + "Controller")
+                            serviceImpls.add(CqrsScripts.model2JavaPackage(element, TypeKeys.JAVA_VIEW_SERVICE_IMPL)
+                                + "." + baseName + "ServiceImpl")
                         } else if (element instanceof Aggregate) {
                             project = container.projectName
                             repositoryFactories.add(
@@ -105,7 +119,7 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         }
 
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        artifacts.add(queryConfig(project, views, controllers))
+        artifacts.add(queryConfig(project, views, controllers, serviceImpls))
         artifacts.add(commandConfig(project, repositoryFactories))
         artifacts.add(processConfig(project, processManagerViews))
         return artifacts
@@ -116,8 +130,12 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         container.context.name
     }
 
-    /** Creates the read side configuration: named prototype view beans plus the controllers. */
-    private def GeneratedArtifact queryConfig(String project, List<String> views, List<String> controllers) {
+    /**
+     * Creates the read side configuration: named prototype view beans, plus the controllers and the
+     * service implementations they forward to.
+     */
+    private def GeneratedArtifact queryConfig(String project, List<String> views, List<String> controllers,
+        List<String> serviceImpls) {
         val pkg = project + ".query.starter"
         val name = "QueryBeansConfiguration"
         val ctx = new SimpleCodeSnippetContext(null)
@@ -129,13 +147,20 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         ctx.requiresImport("org.springframework.context.annotation.Scope")
         views.forEach[ctx.requiresImport(it)]
         controllers.forEach[ctx.requiresImport(it)]
+        serviceImpls.forEach[ctx.requiresImport(it)]
+        val imported = new ArrayList<String>(controllers)
+        imported.addAll(serviceImpls)
         val src = '''
             /**
              * Registers the read side beans explicitly, replacing a component scan of the generated
              * packages. Regenerated on every build.
+             *
+             * <p>Each view contributes two: the generated controller exposing it over REST, and the
+             * hand-written service implementation the controller forwards to. Both are injected by
+             * type, so importing the classes is enough.
              */
             @Configuration
-            @Import({«FOR c : controllers SEPARATOR ", "»«c.simpleName».class«ENDFOR»})
+            @Import({«FOR c : imported SEPARATOR ", "»«c.simpleName».class«ENDFOR»})
             public class «name» {
 
                 «FOR v : views»

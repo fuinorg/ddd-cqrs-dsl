@@ -17,12 +17,14 @@
  */
 package p.query.core.view.x.m;
 
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
+import java.util.Objects;
 import p.query.api.view.x.m.PersonListResourceApi;
+import p.query.api.view.x.m.PersonListService;
 import p.shared.domain.x.m.PersonListItem;
 import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
@@ -30,32 +32,39 @@ import p.x.m.List;
 import p.x.m.String;
 
 /**
- * REST resource providing the PersonList read model. Implements {@link PersonListResourceApi}; the
- * class-level {@code @Path} is re-declared because JAX-RS does not inherit it from the
- * interface. This is a generate-once stub - TODO implement the queries against your read model.
+ * Exposes the PersonList read model over REST by forwarding to {@link PersonListService}.
+ * Implements {@link PersonListResourceApi}; the class-level {@code @Path} is re-declared because
+ * JAX-RS does not inherit it from the interface. Holds no logic of its own and is
+ * regenerated on every build - implement the queries in PersonListServiceImpl.
  */
+@ApplicationScoped
 @Path("/persons")
 public class PersonListResource implements PersonListResourceApi {
 
-    @Inject
-    EntityManager em;
+    private final PersonListService service;
+
+    /**
+     * Constructor with all mandatory dependencies.
+     *
+     * @param service Read model this resource exposes.
+     */
+    public PersonListResource(final PersonListService service) {
+        this.service = Objects.requireNonNull(service, "service==null");
+    }
 
     @Override
     public List<PersonListItem> listPersons(@QueryParam("search") final String search) {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement listPersons()");
+        return service.listPersons(search);
     }
 
     @Override
     public PersonListItem findPerson(@PathParam("id") final UserId id) {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement findPerson()");
+        return service.findPerson(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Integer countPersons() {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement countPersons()");
+        return service.countPersons();
     }
 
 }

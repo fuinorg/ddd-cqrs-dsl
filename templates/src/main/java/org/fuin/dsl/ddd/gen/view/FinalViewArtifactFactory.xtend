@@ -18,10 +18,15 @@ import org.fuin.dsl.ddd.gen.base.TypeKeys
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
 /**
- * Generates the write-once classes for a {@code view}: one event handler stub per projection input
- * event and the REST controller (Spring) / resource (Quarkus). The fully generated view and the
- * abstract controller come from {@link ViewArtifactFactory}. The runtime is selected by the
- * {@code runtime} generator option ({@code spring} default | {@code quarkus}).
+ * Generates the write-once classes for a {@code view} - the ones a developer owns and the generator
+ * must never overwrite: one event handler stub per projection input event, and the implementation of
+ * the view's service contract ({@code <Base>ServiceImpl}), which is where the queries against the read
+ * model are written.
+ *
+ * <p>The derived classes come from elsewhere: the view itself from {@link ViewArtifactFactory}, the
+ * service contract from {@link ViewServiceApiArtifactFactory}, and the REST class that forwards to it
+ * from {@link ViewRestDelegateArtifactFactory}. The runtime is selected by the {@code runtime}
+ * generator option ({@code spring} default | {@code quarkus}).
  */
 class FinalViewArtifactFactory extends AbstractSource<View> {
 
@@ -30,7 +35,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
     }
 
     override getTypeKey() {
-        TypeKeys.JAVA_VIEW_REST_IMPL
+        TypeKeys.JAVA_VIEW_SERVICE_IMPL
     }
 
     override create(View view, Map<String, Object> context, boolean preparationRun) throws GenerateException {
@@ -42,6 +47,7 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         val runtime = getVar("runtime", "spring")
         val baseName = ArtifactNames.viewBaseName(view.name)
         val pkg = view.asPackage
+        val handlerPkg = asPackage(view, TypeKeys.JAVA_VIEW_EVENT_HANDLER)
         val events = if (view.projection === null) newArrayList else view.projection.events
 
         val CodeReferenceRegistry refReg = context.codeReferenceRegistry
@@ -49,18 +55,20 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
 
         for (Event event : events) {
             val handlerName = event.name + "Handler"
-            artifacts.add(artifact(pkg, handlerName, createHandler(refReg, event, pkg, handlerName), view))
+            artifacts.add(artifact(handlerPkg, handlerName, createHandler(refReg, event, handlerPkg, handlerName),
+                view, TypeKeys.JAVA_VIEW_EVENT_HANDLER))
         }
 
-        val ctrlName = baseName + (if (runtime == "quarkus") "Resource" else "Controller")
-        artifacts.add(artifact(pkg, ctrlName, createController(refReg, view, pkg, baseName, ctrlName, runtime), view))
+        val implName = baseName + "ServiceImpl"
+        artifacts.add(artifact(pkg, implName, createServiceImpl(refReg, view, pkg, baseName, implName, runtime),
+            view, TypeKeys.JAVA_VIEW_SERVICE_IMPL))
 
         return artifacts
     }
 
-    private def GeneratedArtifact artifact(String pkg, String className, String src, View view) {
+    private def GeneratedArtifact artifact(String pkg, String className, String src, View view, String typeKey) {
         val filename = (pkg + "." + className).replace('.', '/') + ".java"
-        newArtifact(filename, src.getBytes("UTF-8"), view)
+        newArtifact(filename, src.getBytes("UTF-8"), view, typeKey)
     }
 
     private def String createHandler(CodeReferenceRegistry refReg, Event event, String pkg, String handlerName) {
@@ -90,59 +98,56 @@ class FinalViewArtifactFactory extends AbstractSource<View> {
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
     }
 
-    private def String createController(CodeReferenceRegistry refReg, View view, String pkg, String baseName, String ctrlName, String runtime) {
-        val restPath = if (view.restPath === null) "/" + ViewRestSupport.kebabCase(baseName) else view.restPath
+    private def String createServiceImpl(CodeReferenceRegistry refReg, View view, String pkg, String baseName,
+        String implName, String runtime) {
+
+        val serviceName = baseName + "Service"
         val ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("jakarta.persistence.EntityManager")
-        // Both REST contract interfaces live in their own module/package and are always generated -
-        // import the one belonging to this runtime.
-        ctx.requiresReference(TypeKeys.refKey(view, if("quarkus" == runtime) TypeKeys.JAVA_VIEW_REST_API_QUARKUS else TypeKeys.JAVA_VIEW_REST_API_SPRING))
+        ctx.requiresImport("java.util.Objects")
+        // The service contract lives in its own module and package.
+        ctx.requiresReference(TypeKeys.refKey(view, TypeKeys.JAVA_VIEW_SERVICE))
+
+        // The transaction belongs here rather than on the REST class: this is what touches the entity
+        // manager, and a read model row is mapped to its published form inside the same transaction.
         if (runtime == "quarkus") {
-            val apiName = baseName + "ResourceApi"
-            ctx.requiresImport("jakarta.inject.Inject")
-            ctx.requiresImport("jakarta.ws.rs.Path")
-            val src = '''
-                /**
-                 * REST resource providing the «baseName» read model. Implements {@link «apiName»}; the
-                 * class-level {@code @Path} is re-declared because JAX-RS does not inherit it from the
-                 * interface. This is a generate-once stub - TODO implement the queries against your read model.
-                 */
-                @Path("«restPath»")
-                public class «ctrlName» implements «apiName» {
-
-                    @Inject
-                    EntityManager em;
-
-                    «FOR method : view.methods»
-                        «new SrcRestMethod(ctx, method, runtime, false).toString»
-
-                    «ENDFOR»
-                }
-            '''
-            return new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
+            ctx.requiresImport("jakarta.enterprise.context.ApplicationScoped")
+            ctx.requiresImport("jakarta.transaction.Transactional")
+        } else {
+            ctx.requiresImport("org.springframework.transaction.annotation.Transactional")
         }
-        // Spring: implements the @HttpExchange contract; @RestController is required (not inherited) and
-        // the base path comes from the interface's @HttpExchange.
-        val apiName = baseName + "ControllerApi"
-        ctx.requiresImport("org.springframework.beans.factory.annotation.Autowired")
-        ctx.requiresImport("org.springframework.http.ResponseEntity")
-        ctx.requiresImport("org.springframework.transaction.annotation.Transactional")
-        ctx.requiresImport("org.springframework.web.bind.annotation.RestController")
+        val annotations = if (runtime == "quarkus") {
+                "@ApplicationScoped\n@Transactional"
+            } else {
+                "@Transactional(readOnly = true)"
+            }
+
         val src = '''
             /**
-             * REST controller providing the «baseName» read model. Implements {@link «apiName»} and adds
-             * {@code @RestController} (required - not inherited from the interface). This is a generate-once
-             * stub - TODO implement the queries against your read model.
+             * Answers the «baseName» read model's queries against the database. Implements
+             * {@link «serviceName»}, which the generated «baseName»«IF runtime == "quarkus"»Resource«ELSE»Controller«ENDIF» exposes over REST.
+             *
+             * <p>This is a generate-once stub and yours from here on - the generator will not overwrite
+             * it. TODO implement the queries against your read model.
              */
-            @RestController
-            @Transactional(readOnly = true)
-            public class «ctrlName» implements «apiName» {
+            «annotations»
+            public class «implName» implements «serviceName» {
 
-                @Autowired
-                private EntityManager em;
+                private final EntityManager em;
+
+                /**
+                 * Constructor with all mandatory dependencies. A single constructor is injected
+                 * implicitly, and it is what lets a test drive this service against an in-memory
+                 * database without starting a container.
+                 *
+                 * @param em Entity manager of the read model.
+                 */
+                public «implName»(final EntityManager em) {
+                    this.em = Objects.requireNonNull(em, "em==null");
+                }
 
                 «FOR method : view.methods»
-                    «new SrcRestMethod(ctx, method, runtime, false).toString»
+                    «new SrcViewMethod(ctx, method, runtime, ViewMethodShape.SERVICE_IMPL_STUB).toString»
 
                 «ENDFOR»
             }

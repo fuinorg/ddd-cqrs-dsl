@@ -17,14 +17,13 @@
  */
 package p.query.core.view.x.m;
 
-import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Objects;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import p.query.api.view.x.m.PersonListControllerApi;
+import p.query.api.view.x.m.PersonListService;
 import p.shared.domain.x.m.PersonListItem;
 import p.shared.domain.x.m.UserId;
 import p.x.m.Integer;
@@ -32,33 +31,40 @@ import p.x.m.List;
 import p.x.m.String;
 
 /**
- * REST controller providing the PersonList read model. Implements {@link PersonListControllerApi} and adds
- * {@code @RestController} (required - not inherited from the interface). This is a generate-once
- * stub - TODO implement the queries against your read model.
+ * Exposes the PersonList read model over REST by forwarding to {@link PersonListService}.
+ * Implements {@link PersonListControllerApi} and adds {@code @RestController} (required - not inherited
+ * from the interface). Holds no logic of its own and is regenerated on every build -
+ * implement the queries in PersonListServiceImpl.
  */
 @RestController
-@Transactional(readOnly = true)
 public class PersonListController implements PersonListControllerApi {
 
-    @Autowired
-    private EntityManager em;
+    private final PersonListService service;
+
+    /**
+     * Constructor with all mandatory dependencies. A single constructor is autowired
+     * implicitly.
+     *
+     * @param service Read model this controller exposes.
+     */
+    public PersonListController(final PersonListService service) {
+        this.service = Objects.requireNonNull(service, "service==null");
+    }
 
     @Override
     public ResponseEntity<List<PersonListItem>> listPersons(@RequestParam(value = "search", required = false) final String search) {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement listPersons()");
+        return ResponseEntity.ok(service.listPersons(search));
     }
 
     @Override
     public ResponseEntity<PersonListItem> findPerson(@PathVariable("id") final UserId id) {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement findPerson()");
+        return service.findPerson(id).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<Integer> countPersons() {
-        // TODO Implement: query the read model and return the result.
-        throw new UnsupportedOperationException("TODO: implement countPersons()");
+        return ResponseEntity.ok(service.countPersons());
     }
 
 }

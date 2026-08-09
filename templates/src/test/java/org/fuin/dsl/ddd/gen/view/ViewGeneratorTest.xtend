@@ -70,6 +70,11 @@ class ViewGeneratorTest {
         // Both contract interfaces are generated regardless of the runtime option.
         factories.add(configured(new ViewSpringApiArtifactFactory(), ViewSpringApiArtifactFactory.name, runtime))
         factories.add(configured(new ViewQuarkusApiArtifactFactory(), ViewQuarkusApiArtifactFactory.name, runtime))
+        // The service contract and its REST client are runtime independent as well.
+        factories.add(configured(new ViewServiceApiArtifactFactory(), ViewServiceApiArtifactFactory.name, runtime))
+        factories.add(
+            configured(new ViewServiceRestClientArtifactFactory(), ViewServiceRestClientArtifactFactory.name, runtime))
+        factories.add(configured(new ViewRestDelegateArtifactFactory(), ViewRestDelegateArtifactFactory.name, runtime))
         factories.add(configured(new FinalViewArtifactFactory(), FinalViewArtifactFactory.name, runtime))
 
         // Preparation pass registers cross references (e.g. the contract interface FQN).
@@ -96,10 +101,10 @@ class ViewGeneratorTest {
 
     /**
      * Compares each generated artifact against a golden at
-     * {@code src/test/expected-java/tst/x/<category>/<runtime>/<ClassName>.java}. The two REST contract
-     * interfaces are the exception: they do not depend on the {@code runtime} option (both are always
-     * generated), so they share one golden under {@code .../<category>/api/} instead of being duplicated
-     * into every runtime folder.
+     * {@code src/test/expected-java/tst/x/<category>/<runtime>/<ClassName>.java}. Everything routed to
+     * the {@code query.api} module is the exception: those artifacts do not depend on the
+     * {@code runtime} option (all of them are always generated), so they share one golden under
+     * {@code .../<category>/api/} instead of being duplicated into every runtime folder.
      */
     private def void assertGolden(String category, String runtime, List<GeneratedArtifact> artifacts) {
         // Mirror everything that was produced to target/ first, so a failing golden can be diffed
@@ -118,8 +123,12 @@ class ViewGeneratorTest {
         }
     }
 
+    /**
+     * Routes by the target module the artifact actually carries, not by its file name: the service
+     * contract and its REST client are runtime independent too, but neither is named "*Api.java".
+     */
     private def String goldenDir(GeneratedArtifact a, String runtime) {
-        if (fileName(a).endsWith("Api.java")) "api" else runtime
+        if ("query.api" == a.module) "api" else runtime
     }
 
     private def String fileName(GeneratedArtifact a) {
