@@ -46,7 +46,9 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
  * either.
  *
  * <p>The generated configurations are routed to the {@code *.starter} modules, which is where an
- * application picks them up by depending on the starter alone.
+ * application picks them up by depending on the starter alone. A side the model says nothing about -
+ * no view, no aggregate, no process manager - gets no configuration, and therefore needs no
+ * {@code *.starter} module to exist in the first place.
  */
 class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
 
@@ -118,10 +120,22 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
             return null
         }
 
+        // A side that has nothing to register gets no configuration at all. Emitting one anyway is not
+        // merely a useless empty class: the artifact names its target module, so the generator then
+        // demands a "<side>.starter" module from every project - and a project without that side has
+        // none. It fails with "Couldn't find target folder 'genMainJava' in module 'process.starter'",
+        // which reads like a misconfiguration and is in fact this factory asking for a module the model
+        // gave it no reason to write to.
         val List<GeneratedArtifact> artifacts = new ArrayList<GeneratedArtifact>()
-        artifacts.add(queryConfig(project, views, controllers, serviceImpls))
-        artifacts.add(commandConfig(project, repositoryFactories))
-        artifacts.add(processConfig(project, processManagerViews))
+        if (!views.isEmpty) {
+            artifacts.add(queryConfig(project, views, controllers, serviceImpls))
+        }
+        if (!repositoryFactories.isEmpty) {
+            artifacts.add(commandConfig(project, repositoryFactories))
+        }
+        if (!processManagerViews.isEmpty) {
+            artifacts.add(processConfig(project, processManagerViews))
+        }
         return artifacts
     }
 
