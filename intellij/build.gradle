@@ -140,7 +140,8 @@ commands, exceptions and more.
     <li>Syntax highlighting (keywords, strings, numbers, comments, doc comments).</li>
     <li>Reference-aware code completion, go-to-definition, find-usages and rename.</li>
     <li>Code folding for <code>{ }</code> blocks and multi-line comments.</li>
-    <li>Structure view of the domain model.</li>
+    <li>Structure view of the domain model, and its declarations below the file in the Project view
+        (<b>Show Members</b>).</li>
     <li>Resolution of references into models a declared <code>dependency</code> provides &ndash; read
         in place out of a Maven <code>zip</code> artifact, or from a <code>local</code> directory
         &ndash; exactly as the Eclipse plugin and the SrcGen4J build do it.</li>
@@ -149,7 +150,15 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
-    <li><b>1.27.0</b> &ndash; New action <b>Tools | Refresh CQRS Model Dependencies</b>. What a
+    <li><b>1.27.0</b> &ndash; The Project tool window now shows what a model declares. A
+        <code>.cqrs</code> file expands into its contexts and modules, then the types in them, then
+        their <code>business-rule</code>s, <code>constructor</code>s and <code>method</code>s - so a
+        model can be navigated without opening it first. The rows follow the view's own <b>Show
+        Members</b> setting, and each carries an icon saying what it is. It stops at the operation:
+        parameters, and the <code>service</code> and <code>event</code> an operation declares for its
+        own use, are how a declaration reads rather than a place to steer to, and listing them would
+        double the height of the tree. The Structure view (Alt+7) is unchanged and still shows
+        everything.<br> New action <b>Tools | Refresh CQRS Model Dependencies</b>. What a
         <code>dependency</code> resolved to was cached until the IDE was restarted, so an artifact
         rebuilt or re-resolved outside it kept answering with what was true at startup - and a stale
         archive reads as a broken <code>import</code>, because only the modules added since go red. The
