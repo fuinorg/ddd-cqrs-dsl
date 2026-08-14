@@ -64,6 +64,13 @@
         <annotator
                 language="CqrsDsl"
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsValidationAnnotator"/>
+
+        <!-- Lets a '.cqrs' file be expanded down to its declarations in the Project view when
+             "show members" is on. The platform's PsiFileNode answers with no children for an ordinary
+             file and consults no structure view, so this needs its own node - the same way Java does it
+             with ClassesTreeStructureProvider. -->
+        <treeStructureProvider
+                implementation="org.fuin.dsl.cqrs.intellij.projectview.CqrsTreeStructureProvider"/>
     </extensions>
 
     <actions>
