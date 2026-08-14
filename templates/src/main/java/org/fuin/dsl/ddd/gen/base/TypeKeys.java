@@ -146,10 +146,16 @@ public final class TypeKeys {
     /** The generated Spring <code>@Configuration</code>. */
     public static final String JAVA_SPRING_CONFIG = "java-spring-config";
 
+    /** The permission catalogue as Java constants: <code>PermissionIds</code>. */
+    public static final String JAVA_PERMISSION_IDS = "java-permission-ids";
+
     // ---- Non-Java artifacts --------------------------------------------------------------------
 
     /** Aggregate documentation: <code>«Name».html</code>. */
     public static final String RES_AGGREGATE_DOC = "res-aggregate-doc";
+
+    /** The permission catalogue as documentation: <code>PERMISSIONS.md</code>. */
+    public static final String RES_PERMISSION_CATALOGUE = "res-permission-catalogue";
 
     /** Liquibase changelog of the JPA event store of an aggregate. */
     public static final String RES_AGGREGATE_LIQUIBASE = "res-aggregate-liquibase";

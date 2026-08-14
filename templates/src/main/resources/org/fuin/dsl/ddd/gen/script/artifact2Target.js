@@ -23,7 +23,8 @@ var FINAL_PREFIX = 'Final';
 /** Factories that create a non-Java artifact. */
 var MAIN_RESOURCE_ARTIFACTS = [
     'AggregateDocArtifactFactory',
-    'ESJpaLiquibaseXmlArtifactFactory'
+    'ESJpaLiquibaseXmlArtifactFactory',
+    'PermissionCatalogueArtifactFactory'
 ];
 
 /** Leaf classes owned by the developer that are not named "Final*". */
@@ -94,6 +95,8 @@ function module(typeKey) {
         case 'java-constraint-validator':
         case 'java-package-info':
         case 'java-spring-config':
+        case 'java-permission-ids':
+        case 'res-permission-catalogue':
             return 'shared';
 
         default:
