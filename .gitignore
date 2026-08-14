@@ -19,6 +19,10 @@ test-bin/
 !.settings
 bin
 
+# Classpath dumps from `dependency:build-classpath` (see architectural-hints.md) - machine-local
+# absolute paths into ~/.m2, regenerate them instead of committing them.
+cp*.txt
+
 # Eclipse headless build outputs (see eclipse-build/)
 eclipse-build/work/
 eclipse-build/repository/
