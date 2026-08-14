@@ -41,6 +41,7 @@ to the factory's source file.
 | ProcessManager | [ProcessManager](src/main/java/org/fuin/dsl/ddd/gen/processmanager/ProcessManagerArtifactFactory.xtend) | Generates the write-once concrete process-manager view with one reaction stub per input event, annotated for the selected `runtime`. |  |
 | ResourceSet | [CtxExternalTypes¹](src/main/java/org/fuin/dsl/ddd/gen/resourceset/CtxExternalTypes.xtend) | Registers a set of external types (Byte, String, Date, UUID, …); does NOT create any source code. |  |
 | ResourceSet | [PackageInfo](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PackageInfoArtifactFactory.xtend) | Creates a `package-info.java` annotated with JSpecify's `@NullMarked` once for every generated package. |  |
+| ResourceSet | [PermissionCatalogue⁷](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PermissionCatalogueArtifactFactory.xtend) | Creates the permission catalogue - one entry per `command` and one per `method` of a `view` - as `PERMISSIONS.md` plus a `PermissionIds` constants class. |  |
 | ResourceSet | [SpringBeans](src/main/java/org/fuin/dsl/ddd/gen/resourceset/SpringBeansArtifactFactory.xtend) | Creates one Spring `@Configuration` per side registering every generated bean explicitly, so nothing has to component-scan the generated packages. |  |
 | Service | [Service](src/main/java/org/fuin/dsl/ddd/gen/service/ServiceArtifactFactory.xtend) | Generates the service interface Java class. | Rename to ServiceInterfaceArtifactFactory |
 | ValueObject | [AbstractValueObject](src/main/java/org/fuin/dsl/ddd/gen/valueobject/AbstractValueObjectArtifactFactory.xtend) | Generates an abstract base value object Java class. |  |
@@ -57,7 +58,7 @@ to the factory's source file.
 | View | [FinalView⁵](src/main/java/org/fuin/dsl/ddd/gen/view/FinalViewArtifactFactory.xtend) | Generates the write-once `<Base>ServiceImpl` implementing the service contract - where the queries are written - plus one event handler stub per projection event. |  |
 | View | [JpaViewTable⁶](src/main/java/org/fuin/dsl/ddd/gen/view/JpaViewTableArtifactFactory.xtend) | Generates the read-model JPA `@Entity` classes from the "JpaHint" hints in the view body. |  |
 
-**50 types total.**
+**51 types total.**
 
 ## Notes
 
@@ -79,6 +80,10 @@ to the factory's source file.
 - ⁶ `JpaViewTable` emits **one artifact per declared table** and only binds the `View` model type; the
   rendering lives in `base/AbstractJpaTableArtifactFactory` (a base class, not configurable on its own,
   and therefore not listed above).
+- ⁷ `PermissionCatalogue` emits **2** artifacts for the whole model (not per element): `PERMISSIONS.md`
+  into `shared`/`genMainRes` and `PermissionIds.java` into `shared`/`genMainJava`. Both targets are
+  passed explicitly, so `artifact2Target.js` is not consulted for them. It emits **0** when the model
+  declares no command and no view at all.
 - All other factories return a single-element list (`List.of(newArtifact(...))`),
   i.e. **1** artifact each (or `null`/0 during the preparation run or when
   preconditions aren't met).

@@ -163,8 +163,45 @@ Factories that run once per parsed resource set rather than per model element.
 | [CtxExternalTypes](src/main/java/org/fuin/dsl/ddd/gen/resourceset/CtxExternalTypes.xtend) | - | Registers external types (Byte, String, Date, UUID, …) so the model can reference them. Creates **no** source code. | - |
 | [PackageInfoArtifactFactory](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PackageInfoArtifactFactory.xtend) | [@NullMarked](https://jspecify.dev/) | One `package-info.java` per generated package, annotated with JSpecify's `@NullMarked`. | [package-info](src/test/expected-java/tst2/x/resourceset/package-info.java) |
 | [SpringBeansArtifactFactory](src/main/java/org/fuin/dsl/ddd/gen/resourceset/SpringBeansArtifactFactory.xtend) | - | One Spring `@Configuration` per side that registers every generated bean explicitly, so no application has to component-scan the generated packages. | - |
+| [PermissionCatalogueArtifactFactory](src/main/java/org/fuin/dsl/ddd/gen/resourceset/PermissionCatalogueArtifactFactory.xtend) | - | The permission catalogue: `PERMISSIONS.md` plus a `PermissionIds` constants class. | - |
 
 See [source code](src/main/java/org/fuin/dsl/ddd/gen/resourceset).
+
+### The permission catalogue
+
+`PermissionCatalogueArtifactFactory` publishes the model's **operation surface** as the static list an
+authorization decision can be written against:
+
+- **every `command` is one entry** (a write permission), and
+- **every `method` of a `view` is one entry** (a read permission) - the method, not the view, because one
+  projection normally carries query methods of very different sensitivity.
+
+Generating it rather than curating it by hand is the point: the catalogue is then **exhaustive by
+construction**, and an operation cannot ship without an entry. The two failure modes that prevents look
+different on each side - a command with no entry is denied and therefore dead on release day, while a view
+method with no entry is an *unchecked read*.
+
+Two artifacts, both written once for the whole model:
+
+| Artifact | Target | Purpose |
+| :------- | :----- | :------ |
+| `PERMISSIONS.md` | `shared` / `genMainRes` | The readable catalogue, grouped by context and module - what you design roles against. |
+| `PermissionIds.java` | `shared` / `genMainJava` | The same ids as constants, plus `ALL` (validate a stored role definition) and `VIEW_METHODS` (expand a whole-view grant). |
+
+A permission id is the command name (`RenameCompanyCommand`) or `«View».«method»`
+(`MasterDataView.findMasterData`) - the same string the dispatcher already uses as the command's
+`EventType`. Ids are **stable identifiers**: stored role definitions reference them by name, so renaming a
+command or a view method is a data migration (deprecate → migrate → remove), not a rename.
+
+A whole-view id (`«View».*`) is emitted **in addition**, and is listed in `VIEW_METHODS` rather than in
+`ALL`. It exists so a role can grant a view without ticking twenty-five boxes, and so methods added later
+are included automatically. It is for **assigning** only - an enforcement point always checks the single
+operation, or there are two catalogues and two answers to the same question.
+
+The factory has no opinion about authorization beyond publishing that surface. *Who* may call *what* is
+domain data and belongs in the application's own model - roles, grants and assignments as ordinary
+aggregates, entities and value objects. Nothing about it belongs in a `hint`, which is a **generator**
+directive.
 
 
 ## Service Factories
