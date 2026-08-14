@@ -149,6 +149,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.27.0</b> &ndash; New action <b>Tools | Refresh CQRS Model Dependencies</b>. What a
+        <code>dependency</code> resolved to was cached until the IDE was restarted, so an artifact
+        rebuilt or re-resolved outside it kept answering with what was true at startup - and a stale
+        archive reads as a broken <code>import</code>, because only the modules added since go red. The
+        action drops those caches and re-highlights the open files.</li>
     <li><b>1.26.0</b> &ndash; A <code>business-rule</code> may now be declared at module level, not only
         inside an entity or an aggregate. A rule that means the same thing everywhere - "the entity must
         not be deleted" - is stated once and imported like any other type, so its name, its exception and

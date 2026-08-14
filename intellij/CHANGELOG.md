@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.27.0
+- New action **Tools | Refresh CQRS Model Dependencies**. What a `dependency` resolved to was cached until the IDE was restarted, so an artifact rebuilt or re-resolved outside it kept answering with what was true at startup - and a stale archive reads as a broken `import`, because only the modules added since go red. The action drops those caches and re-highlights the open files.
+
 ## 1.26.0
 - A `business-rule` may now be declared at module level, not only inside an entity or an aggregate. A rule that means the same thing everywhere - "the entity must not be deleted" - is stated once and imported like any other type, so its name, its exception and its consistency classification cannot drift apart across contexts. An aggregate may still declare its own rules, and one it declares itself still wins over an imported rule of the same name; a rule written inside an aggregate is no longer flagged as an illegal nested element.
 
