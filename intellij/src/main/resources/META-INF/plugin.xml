@@ -66,4 +66,15 @@
                 implementationClass="org.fuin.dsl.cqrs.intellij.CqrsValidationAnnotator"/>
     </extensions>
 
+    <actions>
+        <!-- A resolved dependency is cached for the lifetime of the project, so a dependency rebuilt
+             or re-resolved outside the IDE was previously only picked up by restarting it. -->
+        <action id="Cqrs.RefreshModelDependencies"
+                class="org.fuin.dsl.cqrs.intellij.remote.RefreshModelDependenciesAction"
+                text="Refresh CQRS Model Dependencies"
+                description="Forget every resolved model dependency and re-highlight, so a dependency that changed since the IDE started is picked up.">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+
 </idea-plugin>
