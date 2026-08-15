@@ -31,6 +31,12 @@ class ViewRestDelegateArtifactFactory extends AbstractSource<View> {
     /** Name of the field the generated class forwards to. */
     static val TARGET = "service"
 
+    /** Name of the field holding the authorizer every operation consults. */
+    package static val AUTHORIZER = "authorizer"
+
+    /** Name of the field holding the provider that says who is calling. */
+    package static val CONTEXT_PROVIDER = "contextProvider"
+
     override getModelType() {
         typeof(View)
     }
@@ -63,6 +69,10 @@ class ViewRestDelegateArtifactFactory extends AbstractSource<View> {
         val serviceName = baseName + "Service"
         val ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("java.util.Objects")
+        // Both types are runtime neutral and live in the core module, so the same generated body compiles
+        // under Spring and under Quarkus. Each runtime supplies its own provider implementation.
+        ctx.requiresImport("org.fuin.cqrs4j.core.QueryAuthorizer")
+        ctx.requiresImport("org.fuin.cqrs4j.core.QueryExecutionContextProvider")
         // The service contract and the REST contract both live in their own module and package.
         ctx.requiresReference(TypeKeys.refKey(view, TypeKeys.JAVA_VIEW_SERVICE))
         ctx.requiresReference(TypeKeys.refKey(view,
@@ -85,17 +95,26 @@ class ViewRestDelegateArtifactFactory extends AbstractSource<View> {
 
                     private final «serviceName» «TARGET»;
 
+                    private final QueryAuthorizer «AUTHORIZER»;
+
+                    private final QueryExecutionContextProvider «CONTEXT_PROVIDER»;
+
                     /**
                      * Constructor with all mandatory dependencies.
                      *
                      * @param «TARGET» Read model this resource exposes.
+                     * @param «AUTHORIZER» Decides whether the caller may invoke an operation.
+                     * @param «CONTEXT_PROVIDER» Says who is calling.
                      */
-                    public «className»(final «serviceName» «TARGET») {
+                    public «className»(final «serviceName» «TARGET», final QueryAuthorizer «AUTHORIZER»,
+                            final QueryExecutionContextProvider «CONTEXT_PROVIDER») {
                         this.«TARGET» = Objects.requireNonNull(«TARGET», "«TARGET»==null");
+                        this.«AUTHORIZER» = Objects.requireNonNull(«AUTHORIZER», "«AUTHORIZER»==null");
+                        this.«CONTEXT_PROVIDER» = Objects.requireNonNull(«CONTEXT_PROVIDER», "«CONTEXT_PROVIDER»==null");
                     }
 
                     «FOR method : view.methods»
-                        «new SrcViewMethod(ctx, method, runtime, ViewMethodShape.REST_DELEGATE, TARGET).toString»
+                        «new SrcViewMethod(ctx, method, runtime, ViewMethodShape.REST_DELEGATE, TARGET, view.name).toString»
 
                     «ENDFOR»
                 }
@@ -121,18 +140,27 @@ class ViewRestDelegateArtifactFactory extends AbstractSource<View> {
 
                 private final «serviceName» «TARGET»;
 
+                private final QueryAuthorizer «AUTHORIZER»;
+
+                private final QueryExecutionContextProvider «CONTEXT_PROVIDER»;
+
                 /**
                  * Constructor with all mandatory dependencies. A single constructor is autowired
                  * implicitly.
                  *
                  * @param «TARGET» Read model this controller exposes.
+                 * @param «AUTHORIZER» Decides whether the caller may invoke an operation.
+                 * @param «CONTEXT_PROVIDER» Says who is calling.
                  */
-                public «className»(final «serviceName» «TARGET») {
+                public «className»(final «serviceName» «TARGET», final QueryAuthorizer «AUTHORIZER»,
+                        final QueryExecutionContextProvider «CONTEXT_PROVIDER») {
                     this.«TARGET» = Objects.requireNonNull(«TARGET», "«TARGET»==null");
+                    this.«AUTHORIZER» = Objects.requireNonNull(«AUTHORIZER», "«AUTHORIZER»==null");
+                    this.«CONTEXT_PROVIDER» = Objects.requireNonNull(«CONTEXT_PROVIDER», "«CONTEXT_PROVIDER»==null");
                 }
 
                 «FOR method : view.methods»
-                    «new SrcViewMethod(ctx, method, runtime, ViewMethodShape.REST_DELEGATE, TARGET).toString»
+                    «new SrcViewMethod(ctx, method, runtime, ViewMethodShape.REST_DELEGATE, TARGET, view.name).toString»
 
                 «ENDFOR»
             }
