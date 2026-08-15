@@ -745,7 +745,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     EnumInstance returns EnumInstance
 	 *
 	 * Constraint:
-	 *     (doc=DOC? deprecated='deprecated'? name=ID (params+=Literal params+=Literal*)?)
+	 *     (doc=DOC? deprecated='deprecated'? name=ID (params+=Literal params+=Literal*)? overridden=OverriddenTypeMetaInfo?)
 	 * </pre>
 	 */
 	protected void sequence_EnumInstance(ISerializationContext context, EnumInstance semanticObject) {

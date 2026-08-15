@@ -1868,13 +1868,22 @@ public interface CqrsDslPackage extends EPackage
   int ENUM_INSTANCE__PARAMS = 3;
 
   /**
+   * The feature id for the '<em><b>Overridden</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENUM_INSTANCE__OVERRIDDEN = 4;
+
+  /**
    * The number of structural features of the '<em>Enum Instance</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ENUM_INSTANCE_FEATURE_COUNT = 4;
+  int ENUM_INSTANCE_FEATURE_COUNT = 5;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EventImpl <em>Event</em>}' class.
@@ -5199,6 +5208,17 @@ public interface CqrsDslPackage extends EPackage
   EReference getEnumInstance_Params();
 
   /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getOverridden <em>Overridden</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Overridden</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getOverridden()
+   * @see #getEnumInstance()
+   * @generated
+   */
+  EReference getEnumInstance_Overridden();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.Event <em>Event</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7516,6 +7536,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EReference ENUM_INSTANCE__PARAMS = eINSTANCE.getEnumInstance_Params();
+
+    /**
+     * The meta object literal for the '<em><b>Overridden</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ENUM_INSTANCE__OVERRIDDEN = eINSTANCE.getEnumInstance_Overridden();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EventImpl <em>Event</em>}' class.

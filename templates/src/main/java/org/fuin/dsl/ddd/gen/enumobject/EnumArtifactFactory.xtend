@@ -1,10 +1,13 @@
 package org.fuin.dsl.ddd.gen.enumobject
 
 import java.util.Map
+import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
+import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
 import org.fuin.dsl.ddd.gen.base.SrcParamsAssignment
 import org.fuin.dsl.ddd.gen.base.SrcParamsDecl
 import org.fuin.dsl.ddd.gen.base.SrcVarsDecl
@@ -73,7 +76,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
                     
                     «FOR in : eo.instances SEPARATOR ','»
                     «in.doc»
-                    «in.name»
+                    «new SrcMetaAnnotations(ctx, instanceMeta(in), null, in.name)»«in.name»
                     
                     «ENDFOR»;
                     
@@ -87,7 +90,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
                 
                     «FOR in : eo.instances SEPARATOR ','»
                     «in.doc»
-                    «in.name»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»)
+                    «new SrcMetaAnnotations(ctx, instanceMeta(in), null, in.name)»«in.name»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»)
                     
                     «ENDFOR»;
                     
@@ -104,6 +107,25 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
 
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
 
+    }
+
+    /**
+     * Returns the meta information declared on an enum instance, or null when it declares none.
+     * <p>
+     * The null-safe equivalent of CqrsVariableExtensions.overriddenMeta, which only serves Variable.
+     * It lives here rather than in the shared core because only the generator reads it: the core is
+     * mirrored between the Eclipse and Maven trees and bundled into both plugins, and neither plugin
+     * would ever call this.
+     * 
+     * @param instance Enum instance.
+     * 
+     * @return Meta info or null.
+     */
+    def package static TypeMetaInfo instanceMeta(EnumInstance instance) {
+        if (instance.overridden === null) {
+            return null
+        }
+        return instance.overridden.metaInfo
     }
     
 }

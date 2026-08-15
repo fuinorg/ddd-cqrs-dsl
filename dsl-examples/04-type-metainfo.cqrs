@@ -21,5 +21,7 @@ context p_04_type_metainfo {
             String last                          // Inherits meta data from above
 
         }
+
+        // The same block attaches to an enum instance - see 06-enum.cqrs.
     }
 }

@@ -298,7 +298,7 @@ EnumObject:
 /** Named value of an enumeration. */
 EnumInstance:
 	doc=DOC?
-	(deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')?;	
+	(deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')? (overridden=OverriddenTypeMetaInfo)?;	
 
 /** A domain event describes something that happened in the past and that domain experts care about. */
 Event:

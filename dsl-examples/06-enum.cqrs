@@ -15,6 +15,30 @@ context p_06_enum {
 
         }
 
+        // An instance may carry the same UI metadata as an attribute (see 04-type-metainfo).
+        // Without it a UI has nothing to show but the constant's name, and every application
+        // ends up inventing its own "SOLID" -> "Solid" rule.
+        enum LineStyle {
+
+            instances {
+
+                SOLID {
+                    slabel "Solid"                  // Abbreviation, where a full label will not fit
+                    label "Solid line"              // Label to be shown in a UI
+                    tooltip "An unbroken line"      // Tooltip to be shown in a UI
+                }
+
+                DASHED {
+                    slabel "Dashed"
+                    label "Dashed line"
+                }
+
+                DOTTED                              // Metadata is optional, per instance
+
+            }
+
+        }
+
         // With attributes -> each instance provides values
         // The 'base' type is possibly used for persisting the
         // enumeration value (like in a database column).
@@ -25,8 +49,17 @@ context p_06_enum {
             String title
 
             instances {
-                LOW(1, "low")
-                HIGH(2, "high")
+
+                // Metadata and constructor values can be combined - the values first,
+                // then the block.
+                LOW(1, "low") {
+                    label "Low priority"
+                }
+
+                HIGH(2, "high") {
+                    label "High priority"
+                }
+
             }
 
         }

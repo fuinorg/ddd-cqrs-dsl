@@ -2,6 +2,12 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.25.0
+- **An `enum` instance may now carry UI meta information** - the same
+  `slabel`/`label`/`tooltip`/`prompt`/`examples` block an attribute takes, written after the instance
+  name. What to call a constant on screen is now something the model states rather than something each
+  application derives from the constant's name.
+
 ## 1.24.0
 - **A `business-rule` may now be declared at module level**, not only inside an entity or an aggregate.
   A rule that means the same thing everywhere - "the entity must not be deleted" - is stated once and

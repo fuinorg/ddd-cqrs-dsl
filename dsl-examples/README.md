@@ -12,7 +12,7 @@ comment explaining what it shows. They follow the grammar in
 | [03-value-object](03-value-object.cqrs) | `value-object` — wrapping a `base` type vs. grouping attributes |
 | [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) and per-attribute overrides |
 | [05-attributes-and-generics](05-attributes-and-generics.cqrs) | Attributes: `optional` and generic type arguments `<...>` |
-| [06-enum](06-enum.cqrs) | `enum` instances, instance parameters, `deprecated`, `base` |
+| [06-enum](06-enum.cqrs) | `enum` instances, instance parameters, `deprecated`, `base`, per-instance UI metadata |
 | [07-exception](07-exception.cqrs) | `exception` with `cid`, attributes and a `message` |
 | [08-constraint](08-constraint.cqrs) | `constraint` with `input` (incl. multiple via `|`), `exception` and parameters |
 | [09-annotation](09-annotation.cqrs) | `annotation` declaration and `@Name` / `@Name(args)` instances on a value-object |

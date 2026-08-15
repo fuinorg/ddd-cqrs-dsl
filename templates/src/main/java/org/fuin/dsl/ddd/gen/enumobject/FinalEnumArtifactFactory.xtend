@@ -5,6 +5,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.EnumObject
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
+import org.fuin.dsl.ddd.gen.base.SrcMetaAnnotations
 import org.fuin.dsl.ddd.gen.base.SrcInvokeMethod
 import org.fuin.dsl.ddd.gen.base.SrcParamsDecl
 import org.fuin.srcgen4j.commons.GenerateException
@@ -74,7 +75,7 @@ class FinalEnumArtifactFactory extends AbstractSource<EnumObject> {
                 
                 «FOR in : eo.instances»
                     «in.doc»
-                    public static final «className» «in.name» = new «className»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»);
+                    «new SrcMetaAnnotations(ctx, EnumArtifactFactory.instanceMeta(in), null, in.name)»public static final «className» «in.name» = new «className»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»);
                     
                 «ENDFOR»
                 «new SrcStaticEnumCode(ctx, eo)»

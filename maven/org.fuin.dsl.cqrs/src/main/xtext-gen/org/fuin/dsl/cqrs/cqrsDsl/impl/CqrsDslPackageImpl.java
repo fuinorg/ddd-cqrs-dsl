@@ -1809,6 +1809,17 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EReference getEnumInstance_Overridden()
+  {
+    return (EReference)enumInstanceEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getEvent()
   {
     return eventEClass;
@@ -3436,6 +3447,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEAttribute(enumInstanceEClass, ENUM_INSTANCE__DEPRECATED);
     createEAttribute(enumInstanceEClass, ENUM_INSTANCE__NAME);
     createEReference(enumInstanceEClass, ENUM_INSTANCE__PARAMS);
+    createEReference(enumInstanceEClass, ENUM_INSTANCE__OVERRIDDEN);
 
     eventEClass = createEClass(EVENT);
     createEReference(eventEClass, EVENT__ANNOTATIONS);
@@ -3811,6 +3823,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEAttribute(getEnumInstance_Deprecated(), ecorePackage.getEString(), "deprecated", null, 0, 1, EnumInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getEnumInstance_Name(), ecorePackage.getEString(), "name", null, 0, 1, EnumInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getEnumInstance_Params(), this.getLiteral(), null, "params", null, 0, -1, EnumInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getEnumInstance_Overridden(), this.getOverriddenTypeMetaInfo(), null, "overridden", null, 0, 1, EnumInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(eventEClass, Event.class, "Event", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getEvent_Annotations(), this.getAnnotationInstance(), null, "annotations", null, 0, -1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

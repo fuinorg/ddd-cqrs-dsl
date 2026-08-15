@@ -8070,6 +8070,7 @@ rule__EnumInstance__Group__3
 	}
 :
 	rule__EnumInstance__Group__3__Impl
+	rule__EnumInstance__Group__4
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -8084,6 +8085,32 @@ rule__EnumInstance__Group__3__Impl
 	{ before(grammarAccess.getEnumInstanceAccess().getGroup_3()); }
 	(rule__EnumInstance__Group_3__0)?
 	{ after(grammarAccess.getEnumInstanceAccess().getGroup_3()); }
+)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__EnumInstance__Group__4
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	rule__EnumInstance__Group__4__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__EnumInstance__Group__4__Impl
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+(
+	{ before(grammarAccess.getEnumInstanceAccess().getOverriddenAssignment_4()); }
+	(rule__EnumInstance__OverriddenAssignment_4)?
+	{ after(grammarAccess.getEnumInstanceAccess().getOverriddenAssignment_4()); }
 )
 ;
 finally {
@@ -18684,6 +18711,21 @@ rule__EnumInstance__ParamsAssignment_3_2_1
 		{ before(grammarAccess.getEnumInstanceAccess().getParamsLiteralParserRuleCall_3_2_1_0()); }
 		ruleLiteral
 		{ after(grammarAccess.getEnumInstanceAccess().getParamsLiteralParserRuleCall_3_2_1_0()); }
+	)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__EnumInstance__OverriddenAssignment_4
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	(
+		{ before(grammarAccess.getEnumInstanceAccess().getOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0()); }
+		ruleOverriddenTypeMetaInfo
+		{ after(grammarAccess.getEnumInstanceAccess().getOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0()); }
 	)
 ;
 finally {

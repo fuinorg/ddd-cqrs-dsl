@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getDeprecated <em>Deprecated</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getParams <em>Params</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getOverridden <em>Overridden</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getEnumInstance()
@@ -105,5 +106,27 @@ public interface EnumInstance extends EObject
    * @generated
    */
   EList<Literal> getParams();
+
+  /**
+   * Returns the value of the '<em><b>Overridden</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Overridden</em>' containment reference.
+   * @see #setOverridden(OverriddenTypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getEnumInstance_Overridden()
+   * @model containment="true"
+   * @generated
+   */
+  OverriddenTypeMetaInfo getOverridden();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.EnumInstance#getOverridden <em>Overridden</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Overridden</em>' containment reference.
+   * @see #getOverridden()
+   * @generated
+   */
+  void setOverridden(OverriddenTypeMetaInfo value);
 
 } // EnumInstance

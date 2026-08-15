@@ -190,6 +190,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//EnumInstance/deprecated"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//EnumInstance/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//EnumInstance/params"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//EnumInstance/overridden"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Event">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Event/annotations"/>

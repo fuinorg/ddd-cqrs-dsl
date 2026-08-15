@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.28.0
+- An `enum` instance may now carry UI meta information - the same `slabel`/`label`/`tooltip`/`prompt`/`examples` block an attribute takes, written after the instance name. What to call a constant on screen is now something the model states rather than something each application derives from the constant's name.
+
 ## 1.27.0
 - The Project tool window now shows what a model declares. A `.cqrs` file expands into its contexts and modules, then the types in them, then their `business-rule`s, `constructor`s and `method`s - so a model can be navigated without opening it first. The rows follow the view's own **Show Members** setting, and each carries an icon saying what it is. It stops at the operation: parameters, and the `service` and `event` an operation declares for its own use, are how a declaration reads rather than a place to steer to, and listing them would double the height of the tree. The Structure view (Alt+7) is unchanged and still shows everything.<br> New action **Tools | Refresh CQRS Model Dependencies**. What a `dependency` resolved to was cached until the IDE was restarted, so an artifact rebuilt or re-resolved outside it kept answering with what was true at startup - and a stale archive reads as a broken `import`, because only the modules added since go red. The action drops those caches and re-highlights the open files.
 

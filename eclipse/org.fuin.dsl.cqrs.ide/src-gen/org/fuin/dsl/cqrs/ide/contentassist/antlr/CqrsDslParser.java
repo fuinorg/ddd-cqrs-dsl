@@ -298,6 +298,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getEnumInstanceAccess().getNameAssignment_2(), "rule__EnumInstance__NameAssignment_2");
 			builder.put(grammarAccess.getEnumInstanceAccess().getParamsAssignment_3_1(), "rule__EnumInstance__ParamsAssignment_3_1");
 			builder.put(grammarAccess.getEnumInstanceAccess().getParamsAssignment_3_2_1(), "rule__EnumInstance__ParamsAssignment_3_2_1");
+			builder.put(grammarAccess.getEnumInstanceAccess().getOverriddenAssignment_4(), "rule__EnumInstance__OverriddenAssignment_4");
 			builder.put(grammarAccess.getEventAccess().getDocAssignment_0(), "rule__Event__DocAssignment_0");
 			builder.put(grammarAccess.getEventAccess().getAnnotationsAssignment_1(), "rule__Event__AnnotationsAssignment_1");
 			builder.put(grammarAccess.getEventAccess().getNameAssignment_3(), "rule__Event__NameAssignment_3");

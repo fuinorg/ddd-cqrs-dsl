@@ -3257,6 +3257,25 @@ ruleEnumInstance returns [EObject current=null]
 				newLeafNode(otherlv_7, grammarAccess.getEnumInstanceAccess().getRightParenthesisKeyword_3_3());
 			}
 		)?
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getEnumInstanceAccess().getOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0());
+				}
+				lv_overridden_8_0=ruleOverriddenTypeMetaInfo
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getEnumInstanceRule());
+					}
+					set(
+						$current,
+						"overridden",
+						lv_overridden_8_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.OverriddenTypeMetaInfo");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)?
 	)
 ;
 

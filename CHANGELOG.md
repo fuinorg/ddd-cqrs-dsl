@@ -6,4 +6,4 @@ The plugins have their own change notes:
 - [IntelliJ Plugin](intellij/CHANGELOG.md) 
 
 ## 1.0.0-SNAPSHOT
-Initial version
+- Initial version

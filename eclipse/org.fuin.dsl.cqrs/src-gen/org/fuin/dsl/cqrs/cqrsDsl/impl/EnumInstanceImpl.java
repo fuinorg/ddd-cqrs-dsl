@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
+import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 
 /**
  * <!-- begin-user-doc -->
@@ -35,6 +36,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Literal;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EnumInstanceImpl#getDeprecated <em>Deprecated</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EnumInstanceImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EnumInstanceImpl#getParams <em>Params</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EnumInstanceImpl#getOverridden <em>Overridden</em>}</li>
  * </ul>
  *
  * @generated
@@ -110,6 +112,16 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
    * @ordered
    */
   protected EList<Literal> params;
+
+  /**
+   * The cached value of the '{@link #getOverridden() <em>Overridden</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOverridden()
+   * @generated
+   * @ordered
+   */
+  protected OverriddenTypeMetaInfo overridden;
 
   /**
    * <!-- begin-user-doc -->
@@ -228,12 +240,64 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
    * @generated
    */
   @Override
+  public OverriddenTypeMetaInfo getOverridden()
+  {
+    return overridden;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetOverridden(OverriddenTypeMetaInfo newOverridden, NotificationChain msgs)
+  {
+    OverriddenTypeMetaInfo oldOverridden = overridden;
+    overridden = newOverridden;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN, oldOverridden, newOverridden);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setOverridden(OverriddenTypeMetaInfo newOverridden)
+  {
+    if (newOverridden != overridden)
+    {
+      NotificationChain msgs = null;
+      if (overridden != null)
+        msgs = ((InternalEObject)overridden).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN, null, msgs);
+      if (newOverridden != null)
+        msgs = ((InternalEObject)newOverridden).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN, null, msgs);
+      msgs = basicSetOverridden(newOverridden, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN, newOverridden, newOverridden));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
       case CqrsDslPackage.ENUM_INSTANCE__PARAMS:
         return ((InternalEList<?>)getParams()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN:
+        return basicSetOverridden(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -256,6 +320,8 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
         return getName();
       case CqrsDslPackage.ENUM_INSTANCE__PARAMS:
         return getParams();
+      case CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN:
+        return getOverridden();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -284,6 +350,9 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
         getParams().clear();
         getParams().addAll((Collection<? extends Literal>)newValue);
         return;
+      case CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN:
+        setOverridden((OverriddenTypeMetaInfo)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -310,6 +379,9 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
       case CqrsDslPackage.ENUM_INSTANCE__PARAMS:
         getParams().clear();
         return;
+      case CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN:
+        setOverridden((OverriddenTypeMetaInfo)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -332,6 +404,8 @@ public class EnumInstanceImpl extends MinimalEObjectImpl.Container implements En
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CqrsDslPackage.ENUM_INSTANCE__PARAMS:
         return params != null && !params.isEmpty();
+      case CqrsDslPackage.ENUM_INSTANCE__OVERRIDDEN:
+        return overridden != null;
     }
     return super.eIsSet(featureID);
   }

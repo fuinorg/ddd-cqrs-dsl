@@ -15,10 +15,18 @@ context p {
 			instances {
 
 				/** First. */
-				A
+				A {
+					slabel "1st"
+					label "First one"
+					tooltip "The first instance"
+					prompt "a"
+					examples "A" "AA"
+				}
 
 				/** Second. */
-				B
+				B {
+					label "Second one"
+				}
 
 				/** Third. */
 				C
@@ -42,7 +50,10 @@ context p {
 			instances {
 
 				/** First. */
-				A(1, "a", "First")
+				A(1, "a", "First") {
+					slabel "1st"
+					label "First one"
+				}
 
 				/** Second. */
 				B(2, "b", "Second")

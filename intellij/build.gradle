@@ -150,6 +150,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.28.0</b> &ndash; An <code>enum</code> instance may now carry UI meta information - the
+        same <code>slabel</code>/<code>label</code>/<code>tooltip</code>/<code>prompt</code>/<code>examples</code>
+        block an attribute takes, written after the instance name. What to call a constant on screen is
+        now something the model states rather than something each application derives from the
+        constant's name.</li>
     <li><b>1.27.0</b> &ndash; The Project tool window now shows what a model declares. A
         <code>.cqrs</code> file expands into its contexts and modules, then the types in them, then
         their <code>business-rule</code>s, <code>constructor</code>s and <code>method</code>s - so a

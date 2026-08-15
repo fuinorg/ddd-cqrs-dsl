@@ -11,8 +11,16 @@ context p_enumobject {
 
 		enum EnumA {
 			instances {
-				A
-				B
+				A {
+					slabel "1st"
+					label "First one"
+					tooltip "The first instance"
+					prompt "a"
+					examples "A" "AA"
+				}
+				B {
+					label "Second one"
+				}
 				C
 			}
 		}
@@ -23,7 +31,10 @@ context p_enumobject {
 			String longName
 
 			instances {
-				A(1, "a", "First")
+				A(1, "a", "First") {
+					slabel "1st"
+					label "First one"
+				}
 				B(2, "b", "Second")
 				C(3, "c", "Third")
 			}

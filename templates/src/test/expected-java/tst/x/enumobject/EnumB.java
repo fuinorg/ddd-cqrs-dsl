@@ -18,12 +18,16 @@
 package p.shared.domain.x.enumobject;
 
 import java.util.List;
+import org.fuin.objects4j.ui.Label;
+import org.fuin.objects4j.ui.ShortLabel;
 import org.jspecify.annotations.Nullable;
 
 /** Enumeration type B - With variables. */
 public final class EnumB extends AbstractEnumB {
     
     /** First. */
+    @ShortLabel(key = "A.slabel", value = "1st")
+    @Label(key = "A.label", value = "First one")
     public static final EnumB A = new EnumB(1, "a", "First");
     
     /** Second. */

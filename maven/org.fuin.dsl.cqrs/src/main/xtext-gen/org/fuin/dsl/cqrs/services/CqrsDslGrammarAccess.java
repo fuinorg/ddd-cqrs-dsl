@@ -1924,15 +1924,17 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cParamsAssignment_3_2_1 = (Assignment)cGroup_3_2.eContents().get(1);
 		private final RuleCall cParamsLiteralParserRuleCall_3_2_1_0 = (RuleCall)cParamsAssignment_3_2_1.eContents().get(0);
 		private final Keyword cRightParenthesisKeyword_3_3 = (Keyword)cGroup_3.eContents().get(3);
+		private final Assignment cOverriddenAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0 = (RuleCall)cOverriddenAssignment_4.eContents().get(0);
 		
 		///** Named value of an enumeration. */
 		//EnumInstance:
 		//    doc=DOC?
-		//    (deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')?;
+		//    (deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')? (overridden=OverriddenTypeMetaInfo)?;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//(deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')?
+		//(deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')? (overridden=OverriddenTypeMetaInfo)?
 		public Group getGroup() { return cGroup; }
 		
 		//doc=DOC?
@@ -1979,6 +1981,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//')'
 		public Keyword getRightParenthesisKeyword_3_3() { return cRightParenthesisKeyword_3_3; }
+		
+		//(overridden=OverriddenTypeMetaInfo)?
+		public Assignment getOverriddenAssignment_4() { return cOverriddenAssignment_4; }
+		
+		//OverriddenTypeMetaInfo
+		public RuleCall getOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0() { return cOverriddenOverriddenTypeMetaInfoParserRuleCall_4_0; }
 	}
 	public class EventElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Event");
@@ -6052,7 +6060,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Named value of an enumeration. */
 	//EnumInstance:
 	//    doc=DOC?
-	//    (deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')?;
+	//    (deprecated='deprecated')? name=ID ('(' params+=Literal (',' params+=Literal)* ')')? (overridden=OverriddenTypeMetaInfo)?;
 	public EnumInstanceElements getEnumInstanceAccess() {
 		return pEnumInstance;
 	}

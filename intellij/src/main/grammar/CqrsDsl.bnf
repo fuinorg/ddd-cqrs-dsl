@@ -326,7 +326,7 @@ enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? data_protection_insta
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-enum_instance ::= KW_DEPRECATED? ID (LPAREN literal (COMMA literal)* RPAREN)? {
+enum_instance ::= KW_DEPRECATED? ID (LPAREN literal (COMMA literal)* RPAREN)? overridden_meta? {
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
