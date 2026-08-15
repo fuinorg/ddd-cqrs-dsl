@@ -30,6 +30,7 @@ class SrcViewMethod implements CodeSnippet {
     val String runtime
     val ViewMethodShape shape
     val String target
+    val String viewName
 
     /**
      * Constructor for a shape that needs no delegation target.
@@ -40,7 +41,20 @@ class SrcViewMethod implements CodeSnippet {
      * @param shape Form to render.
      */
     new(CodeSnippetContext ctx, Method method, String runtime, ViewMethodShape shape) {
-        this(ctx, method, runtime, shape, null)
+        this(ctx, method, runtime, shape, null, null)
+    }
+
+    /**
+     * Constructor for a delegating shape that needs no permission id.
+     *
+     * @param ctx Context.
+     * @param method Method to create the source for.
+     * @param runtime Either "quarkus" or "spring" - ignored by the service shapes.
+     * @param shape Form to render.
+     * @param target Name of the field a delegating shape forwards to.
+     */
+    new(CodeSnippetContext ctx, Method method, String runtime, ViewMethodShape shape, String target) {
+        this(ctx, method, runtime, shape, target, null)
     }
 
     /**
@@ -51,13 +65,17 @@ class SrcViewMethod implements CodeSnippet {
      * @param runtime Either "quarkus" or "spring" - ignored by the service shapes.
      * @param shape Form to render.
      * @param target Name of the field a delegating shape forwards to.
+     * @param viewName Name of the owning view as the model spells it (e.g. {@code PersonListView}), used
+     *                 to build the permission id. Required by {@link ViewMethodShape#REST_DELEGATE}.
      */
-    new(CodeSnippetContext ctx, Method method, String runtime, ViewMethodShape shape, String target) {
+    new(CodeSnippetContext ctx, Method method, String runtime, ViewMethodShape shape, String target,
+        String viewName) {
         this.ctx = ctx
         this.method = method
         this.runtime = runtime
         this.shape = shape
         this.target = target
+        this.viewName = viewName
     }
 
     /** The type the REST operation produces - the value itself for JAX-RS, wrapped for Spring. */
@@ -127,9 +145,32 @@ class SrcViewMethod implements CodeSnippet {
         '''
             @Override
             public «restReturnType» «method.name»(«params») {
+                «authorizationCheck»
                 «restDelegateBody(args)»
             }
         '''.toString
+    }
+
+    /**
+     * The authorization check that opens every generated view operation.
+     *
+     * <p>It is generated rather than left to the developer because there is no choke point on the query
+     * side: commands all pass through one dispatcher, while queries get one controller method per view
+     * method. A view method somebody forgets to guard is an unchecked read, and it looks exactly like a
+     * working one.
+     *
+     * <p>The permission id is a compile-time literal, built the same way the permission catalogue builds
+     * it - {@code «View».«method»} - so the two cannot drift and the generated source can be grepped
+     * against {@code PERMISSIONS.md}.
+     */
+    private def String authorizationCheck() {
+        if (viewName === null) {
+            throw new IllegalStateException(
+                "A REST_DELEGATE needs the view name to build the permission id, but none was given for '"
+                    + method.name + "'. Leaving the check out would generate an unchecked read.")
+        }
+        ctx.requiresImport("org.fuin.cqrs4j.core.QueryAuthorization")
+        '''QueryAuthorization.require(«ViewRestDelegateArtifactFactory.AUTHORIZER», "«viewName».«method.name»", «ViewRestDelegateArtifactFactory.CONTEXT_PROVIDER».current());'''
     }
 
     private def String restDelegateBody(String args) {

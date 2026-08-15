@@ -23,6 +23,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import java.util.Objects;
+import org.fuin.cqrs4j.core.QueryAuthorization;
+import org.fuin.cqrs4j.core.QueryAuthorizer;
+import org.fuin.cqrs4j.core.QueryExecutionContextProvider;
 import p.query.api.view.x.m.PersonListResourceApi;
 import p.query.api.view.x.m.PersonListService;
 import p.shared.domain.x.m.PersonListItem;
@@ -43,27 +46,39 @@ public class PersonListResource implements PersonListResourceApi {
 
     private final PersonListService service;
 
+    private final QueryAuthorizer authorizer;
+
+    private final QueryExecutionContextProvider contextProvider;
+
     /**
      * Constructor with all mandatory dependencies.
      *
      * @param service Read model this resource exposes.
+     * @param authorizer Decides whether the caller may invoke an operation.
+     * @param contextProvider Says who is calling.
      */
-    public PersonListResource(final PersonListService service) {
+    public PersonListResource(final PersonListService service, final QueryAuthorizer authorizer,
+            final QueryExecutionContextProvider contextProvider) {
         this.service = Objects.requireNonNull(service, "service==null");
+        this.authorizer = Objects.requireNonNull(authorizer, "authorizer==null");
+        this.contextProvider = Objects.requireNonNull(contextProvider, "contextProvider==null");
     }
 
     @Override
     public List<PersonListItem> listPersons(@QueryParam("search") final String search) {
+        QueryAuthorization.require(authorizer, "PersonListView.listPersons", contextProvider.current());
         return service.listPersons(search);
     }
 
     @Override
     public PersonListItem findPerson(@PathParam("id") final UserId id) {
+        QueryAuthorization.require(authorizer, "PersonListView.findPerson", contextProvider.current());
         return service.findPerson(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Integer countPersons() {
+        QueryAuthorization.require(authorizer, "PersonListView.countPersons", contextProvider.current());
         return service.countPersons();
     }
 
