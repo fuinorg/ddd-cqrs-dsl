@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.28.1
+- Build only: the plugin is now built with IntelliJ Platform Gradle Plugin 2.18.1, and Grammar-Kit generation moved to its `grammarkit` subplugin - the standalone one was archived. No change to what the plugin does.
+
 ## 1.28.0
 - An `enum` instance may now carry UI meta information - the same `slabel`/`label`/`tooltip`/`prompt`/`examples` block an attribute takes, written after the instance name. What to call a constant on screen is now something the model states rather than something each application derives from the constant's name.
 

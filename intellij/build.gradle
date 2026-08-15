@@ -1,11 +1,14 @@
-import org.jetbrains.grammarkit.tasks.GenerateLexerTask
-import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateParserTask
 
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij.platform' version '2.16.0'
-    id 'org.jetbrains.grammarkit' version '2022.3.2.2'
+    id 'org.jetbrains.intellij.platform' version '2.18.1'
+    // GrammarKit support now ships with the IntelliJ Platform Gradle Plugin. The standalone
+    // org.jetbrains.grammarkit plugin was archived in August 2026 (2023.3.0.4 was its last release)
+    // and its README points here.
+    id 'org.jetbrains.intellij.platform.grammarkit' version '2.18.1'
 }
 
 group = providers.gradleProperty('pluginGroup').get()
@@ -14,10 +17,6 @@ version = providers.gradleProperty('pluginVersion').get()
 repositories {
     mavenLocal()
     mavenCentral()
-    // Grammar-Kit generator tool + its IntelliJ-core (223) dependencies, including the
-    // transitive ai.grazie.* artifacts pulled in by the 223 platform used for code generation.
-    maven { url = 'https://cache-redirector.jetbrains.com/intellij-dependencies' }
-    maven { url = 'https://cache-redirector.jetbrains.com/packages.jetbrains.team/maven/p/grazi/grazie-platform-public' }
     intellijPlatform {
         defaultRepositories()
     }
@@ -55,47 +54,35 @@ java {
 
 // ---------------------------------------------------------------------------
 // Grammar-Kit: generate the lexer (JFlex) and the parser/PSI (BNF).
-// Both are emitted under build/generated/sources/grammarkit, which is added to
-// the main source set below.
 // ---------------------------------------------------------------------------
-// The Grammar-Kit generator's LightPsi bootstrap needs a 2022.3 (build 223) IntelliJ core on its
-// classpath (it is not self-contained). Rather than pull the whole platform via intellijRelease
-// (which drags in unresolvable transitive deps), add just the minimal core artifact. This only
-// affects code generation — the compiled plugin targets 2026.1.
-dependencies {
-    grammarKitClassPath 'org.jetbrains:grammar-kit:2022.3.2'
-    grammarKitClassPath 'org.jetbrains.intellij.deps.jflex:jflex:1.9.2'
-    grammarKitClassPath 'com.jetbrains.intellij.platform:core-impl:223.8836.41'
-    grammarKitClassPath 'com.jetbrains.intellij.platform:lang:223.8836.41'
-    grammarKitClassPath 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4'
-    // Grammar-Kit reads PSI method signatures via ASM; without it the reflection fallback throws
-    // a ClassCastException that aborts PSI-impl generation.
-    grammarKitClassPath 'org.jetbrains.intellij.deps:asm-all:9.2'
-}
-
-def generatedRoot = layout.buildDirectory.dir('generated/sources/grammarkit')
-
-// The 223 core predates JDK 25; pin the generation tasks to a Java 21 toolchain.
-def generatorLauncher = javaToolchains.launcherFor {
-    languageVersion = JavaLanguageVersion.of(21)
-}
+// The generator tooling comes from the org.jetbrains.intellij.platform.grammarkit subplugin, which
+// resolves Grammar-Kit and JFlex itself. The standalone plugin needed a 2022.3 (build 223) IntelliJ
+// core pinned onto a 'grammarKitClassPath' configuration - and a Java 21 toolchain, because that
+// core predates JDK 25. None of that is needed any more.
+//
+// The two generators write to separate roots. They used to share one, and because the parser purges
+// its output root, the lexer had to be ordered after it or its file was deleted. Separate roots are
+// the subplugin's own default and remove the ordering constraint along with the reason for it.
+def generatedParserRoot = layout.buildDirectory.dir('generated/sources/grammarkit-parser/java/main')
+def generatedLexerRoot = layout.buildDirectory.dir('generated/sources/grammarkit-lexer/java/main')
 
 def generateCqrsParser = tasks.register('generateCqrsParser', GenerateParserTask) {
     sourceFile = file('src/main/grammar/CqrsDsl.bnf')
-    targetRootOutputDir = generatedRoot
+    targetRootOutputDir = generatedParserRoot
     pathToParser = 'org/fuin/dsl/cqrs/intellij/parser/CqrsParser.java'
     pathToPsiRoot = 'org/fuin/dsl/cqrs/intellij/psi'
     purgeOldFiles = true
-    javaLauncher = generatorLauncher
 }
 
 def generateCqrsLexer = tasks.register('generateCqrsLexer', GenerateLexerTask) {
     sourceFile = file('src/main/grammar/CqrsDsl.flex')
-    // JFlex writes <class>.java directly into this directory, so it must match the package path.
-    targetOutputDir = generatedRoot.map { it.dir('org/fuin/dsl/cqrs/intellij/lexer') }
+    // The package subdirectory no longer has to be spelled out: the task reads the 'package'
+    // declaration at the top of CqrsDsl.flex and generates below it.
+    targetRootOutputDir = generatedLexerRoot
+    // What purgeOldFiles is allowed to delete. Without it the task warns and purges nothing, which
+    // is the safe half of the behaviour the shared-output-root fix introduced.
+    pathToClass = 'org/fuin/dsl/cqrs/intellij/lexer/_CqrsDslLexer.java'
     purgeOldFiles = true
-    javaLauncher = generatorLauncher
-    dependsOn generateCqrsParser
 }
 
 // The JSON schemas live in the Eclipse core bundle (single source of truth); copy them into the
@@ -113,7 +100,8 @@ def copyHintSchemas = tasks.register('copyHintSchemas', Copy) {
 sourceSets {
     main {
         java {
-            srcDir generatedRoot
+            srcDir generatedParserRoot
+            srcDir generatedLexerRoot
         }
         resources {
             srcDir schemaGeneratedRoot
@@ -150,6 +138,9 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.28.1</b> &ndash; Build only: the plugin is now built with IntelliJ Platform Gradle Plugin
+        2.18.1, and Grammar-Kit generation moved to its <code>grammarkit</code> subplugin - the
+        standalone one was archived. No change to what the plugin does.</li>
     <li><b>1.28.0</b> &ndash; An <code>enum</code> instance may now carry UI meta information - the
         same <code>slabel</code>/<code>label</code>/<code>tooltip</code>/<code>prompt</code>/<code>examples</code>
         block an attribute takes, written after the instance name. What to call a constant on screen is
