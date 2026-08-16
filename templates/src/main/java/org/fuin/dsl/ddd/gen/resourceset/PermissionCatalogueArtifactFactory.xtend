@@ -136,6 +136,7 @@ class PermissionCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
         entry.module = module.name
         entry.id = command.name
         entry.target = targetOf(command)
+        entry.owner = ownerOf(command)
         entry.doc = command.doc.docText
         return entry
     }
@@ -174,6 +175,24 @@ class PermissionCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
             return target.name
         }
         return owner.name + "." + target.name
+    }
+
+    /**
+     * The aggregate or entity a command acts on - the owner of the method it targets.
+     * <p>
+     * Empty when the command declares no target, or when that target has no owner: the grammar allows
+     * both, and neither can be grouped under anything.
+     */
+    private def String ownerOf(Command command) {
+        val target = command.target
+        if (target === null) {
+            return ""
+        }
+        val owner = target.eContainer
+        if (owner === null) {
+            return ""
+        }
+        return owner.name
     }
 
     /**
@@ -366,6 +385,22 @@ class PermissionCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
                     «ENDFOR»
                 );
 
+                /**
+                 * What each command acts on, keyed by command id - the aggregate or entity that owns the
+                 * method the command targets. A view method needs no such entry: its id already names the
+                 * view it belongs to.
+                 *
+                 * Presentation only, and deliberately so: this is what lets an editor group seventy flat
+                 * identifiers under the thing they act on, which is the difference between a usable list
+                 * and one nobody reads. Nothing checks it - a permission check is always against a single
+                 * id. A command declared without a target has no entry.
+                 */
+                public static final Map<String, String> COMMAND_TARGETS = Map.ofEntries(
+                    «FOR c : commands.filter[!owner.nullOrEmpty] SEPARATOR ","»
+                        Map.entry(«c.constant», "«c.owner»")
+                    «ENDFOR»
+                );
+
                 private «CLASS_NAME»() {
                     throw new UnsupportedOperationException("It's not allowed to create an instance of this utility class");
                 }
@@ -407,6 +442,8 @@ class PermissionCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
         public String module
         public String id
         public String target
+
+        public String owner
         public String doc
         public String constant
     }
