@@ -61,6 +61,13 @@ class SpringBeansArtifactFactoryTest {
 
         // The view itself is looked up by name, so it stays an explicit prototype scoped bean.
         assertThat(src).contains("@Bean(PersonListView.BEAN_NAME)")
+
+        // The read model's entity manager is asked for by name, not by type: an application may hold the
+        // read model in a different database from the rest of its persistence, and a bare EntityManager
+        // would not say which one is meant. The query starter declares the bean, so a single-datasource
+        // application is unaffected.
+        assertThat(src).contains("import org.springframework.beans.factory.annotation.Qualifier;")
+        assertThat(src).contains("@Qualifier(\"readModelEntityManager\") final EntityManager em")
     }
 
     @Test

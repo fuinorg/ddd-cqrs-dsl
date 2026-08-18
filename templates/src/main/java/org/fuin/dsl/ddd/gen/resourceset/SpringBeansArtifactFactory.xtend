@@ -154,6 +154,7 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
         val name = "QueryBeansConfiguration"
         val ctx = new SimpleCodeSnippetContext(null)
         ctx.requiresImport("jakarta.persistence.EntityManager")
+        ctx.requiresImport("org.springframework.beans.factory.annotation.Qualifier")
         ctx.requiresImport("org.springframework.beans.factory.config.BeanDefinition")
         ctx.requiresImport("org.springframework.context.annotation.Bean")
         ctx.requiresImport("org.springframework.context.annotation.Configuration")
@@ -183,13 +184,20 @@ class SpringBeansArtifactFactory extends AbstractSource<ResourceSet> {
                      * name the view reports, and creates one instance per projection run, hence the
                      * prototype scope.
                      *
-                     * @param em Entity manager used to store the read model.
+                     * @param em Entity manager used to store the read model. Asked for by name rather
+                     *           than by type, because an application may keep the read model in a different
+                     *           database from the rest of its persistence - an in-memory one rebuilt from
+                     *           the event store at every start, for instance - and then a bare
+                     *           {@code EntityManager} does not say which of the two is meant. The query
+                     *           starter declares this bean, so an application with one datasource needs to
+                     *           do nothing.
                      *
                      * @return New view instance.
                      */
                     @Bean(«v.simpleName».BEAN_NAME)
                     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-                    public «v.simpleName» «v.simpleName.decapitalize»(final EntityManager em) {
+                    public «v.simpleName» «v.simpleName.decapitalize»(
+                            @Qualifier("readModelEntityManager") final EntityManager em) {
                         return new «v.simpleName»(em);
                     }
 
