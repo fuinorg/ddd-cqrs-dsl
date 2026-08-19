@@ -1,0 +1,70 @@
+context p {
+
+    // A module that states its wording, holding a view that states its own.
+    module x.receipts {
+
+        slabel "Receipts"
+        label "Receipts and invoices"
+        tooltip "Documents issued to customers and received from suppliers"
+
+        type String
+
+        type Integer
+
+        type List generics 1
+
+        value-object ReceiptListItem {
+            String name
+        }
+
+        aggregate-id ReceiptId identifies Receipt {}
+
+        aggregate Receipt identifier ReceiptId {
+            constructor create fires ReceiptCreatedEvent {
+                String name
+                event ReceiptCreatedEvent { message "created" }
+            }
+        }
+
+        projection Receipts input Receipt.create.ReceiptCreatedEvent
+
+        view ReceiptView uses Receipts rest-path "/receipts" {
+
+            slabel "List"
+            label "Receipt list"
+            tooltip "Every receipt, newest first"
+
+            /** Returns the receipts matching the optional filter. */
+            method listReceipts {
+
+                slabel "All"
+                label "All receipts"
+                tooltip "Every receipt this installation holds"
+
+                optional String search
+                returns List<ReceiptListItem>
+            }
+
+            /** A method that states nothing - it must not appear in the catalogue. */
+            method countReceipts {
+                returns Integer
+            }
+
+        }
+
+    }
+
+    // A module that states nothing, but declares a view - it belongs in the grouping and nowhere else.
+    module x.unnamed {
+        import p.x.receipts.*
+
+        projection Others
+
+        view OtherView uses Others {
+            method countOthers {
+                returns Integer
+            }
+        }
+    }
+
+}

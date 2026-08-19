@@ -1,7 +1,16 @@
 context p_04_type_metainfo {
 
+    // The same block attaches to a module, and it is the only place a user interface can learn what
+    // to call one: a module name is a single lowercase identifier, so "businesspartners" cannot be
+    // turned into "Business partners" by any rule a client could write.
     module meta.m {
+
+        slabel "Meta"                            // For a tab or a bottom bar, where space is tight
+        label "Meta data"                        // For a menu or a navigation rail
+        tooltip "Demonstrates the UI meta data"  // To explain the module where it is offered
+
         type String
+        type Integer
 
         value-object FullName {
 
@@ -23,5 +32,27 @@ context p_04_type_metainfo {
         }
 
         // The same block attaches to an enum instance - see 06-enum.cqrs.
+
+        projection FullNames
+
+        // A view and each of its methods carry it too, so a screen and its tabs can be captioned
+        // from the model rather than from the type name.
+        view FullNameView uses FullNames {
+
+            slabel "Names"
+            label "Full names"
+            tooltip "Everybody recorded here"
+
+            method countNames {
+
+                slabel "Count"
+                label "Number of names"
+                tooltip "How many people are recorded"
+
+                returns Integer
+            }
+
+        }
+
     }
 }

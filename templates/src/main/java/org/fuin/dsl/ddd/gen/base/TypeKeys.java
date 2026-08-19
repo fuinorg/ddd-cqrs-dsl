@@ -149,6 +149,9 @@ public final class TypeKeys {
     /** The permission catalogue as Java constants: <code>PermissionIds</code>. */
     public static final String JAVA_PERMISSION_IDS = "java-permission-ids";
 
+    /** The UI catalogue as Java constants: <code>UiCatalogue</code>. */
+    public static final String JAVA_UI_CATALOGUE = "java-ui-catalogue";
+
     // ---- Non-Java artifacts --------------------------------------------------------------------
 
     /** Aggregate documentation: <code>«Name».html</code>. */

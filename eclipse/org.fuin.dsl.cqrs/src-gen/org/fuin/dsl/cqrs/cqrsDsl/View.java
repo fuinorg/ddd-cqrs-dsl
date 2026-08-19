@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getProjection <em>Projection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.View#getBusinessRules <em>Business Rules</em>}</li>
@@ -71,6 +72,28 @@ public interface View extends AbstractElement
    * @generated
    */
   void setRestPath(String value);
+
+  /**
+   * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Meta Info</em>' containment reference.
+   * @see #setMetaInfo(TypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getView_MetaInfo()
+   * @model containment="true"
+   * @generated
+   */
+  TypeMetaInfo getMetaInfo();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMetaInfo <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Meta Info</em>' containment reference.
+   * @see #getMetaInfo()
+   * @generated
+   */
+  void setMetaInfo(TypeMetaInfo value);
 
   /**
    * Returns the value of the '<em><b>Hints</b></em>' containment reference list.

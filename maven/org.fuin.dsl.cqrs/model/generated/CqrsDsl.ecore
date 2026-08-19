@@ -18,6 +18,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Module">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
         eType="#//Dependency" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
@@ -261,6 +263,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Method" eSuperTypes="#//AbstractMethod">
     <eStructuralFeatures xsi:type="ecore:EReference" name="refMethod" eType="#//Method"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="restPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ReturnType"
         containment="true"/>
   </eClassifiers>
@@ -356,6 +360,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="View" eSuperTypes="#//AbstractElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="projection" eType="#//Projection"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="restPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
         eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cron" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

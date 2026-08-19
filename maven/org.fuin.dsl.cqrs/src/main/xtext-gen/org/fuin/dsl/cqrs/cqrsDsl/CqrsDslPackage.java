@@ -170,13 +170,22 @@ public interface CqrsDslPackage extends EPackage
   int MODULE__NAME = 0;
 
   /**
+   * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODULE__META_INFO = 1;
+
+  /**
    * The feature id for the '<em><b>Dependencies</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODULE__DEPENDENCIES = 1;
+  int MODULE__DEPENDENCIES = 2;
 
   /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
@@ -185,7 +194,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE__IMPORTS = 2;
+  int MODULE__IMPORTS = 3;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -194,7 +203,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE__ELEMENTS = 3;
+  int MODULE__ELEMENTS = 4;
 
   /**
    * The number of structural features of the '<em>Module</em>' class.
@@ -203,7 +212,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_FEATURE_COUNT = 4;
+  int MODULE_FEATURE_COUNT = 5;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.DependencyImpl <em>Dependency</em>}' class.
@@ -2568,13 +2577,22 @@ public interface CqrsDslPackage extends EPackage
   int METHOD__REST_PATH = ABSTRACT_METHOD_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int METHOD__META_INFO = ABSTRACT_METHOD_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Return Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int METHOD__RETURN_TYPE = ABSTRACT_METHOD_FEATURE_COUNT + 2;
+  int METHOD__RETURN_TYPE = ABSTRACT_METHOD_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Method</em>' class.
@@ -2583,7 +2601,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int METHOD_FEATURE_COUNT = ABSTRACT_METHOD_FEATURE_COUNT + 3;
+  int METHOD_FEATURE_COUNT = ABSTRACT_METHOD_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.TypeMetaInfoImpl <em>Type Meta Info</em>}' class.
@@ -3431,13 +3449,22 @@ public interface CqrsDslPackage extends EPackage
   int VIEW__REST_PATH = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VIEW__META_INFO = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Hints</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VIEW__HINTS = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+  int VIEW__HINTS = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Cron</b></em>' attribute.
@@ -3446,7 +3473,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
+  int VIEW__CRON = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Business Rules</b></em>' containment reference list.
@@ -3455,7 +3482,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__BUSINESS_RULES = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
+  int VIEW__BUSINESS_RULES = ABSTRACT_ELEMENT_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Methods</b></em>' containment reference list.
@@ -3464,7 +3491,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW__METHODS = ABSTRACT_ELEMENT_FEATURE_COUNT + 5;
+  int VIEW__METHODS = ABSTRACT_ELEMENT_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>View</em>' class.
@@ -3473,7 +3500,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 6;
+  int VIEW_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 7;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ProcessManagerImpl <em>Process Manager</em>}' class.
@@ -4218,6 +4245,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EAttribute getModule_Name();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getMetaInfo <em>Meta Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Meta Info</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Module#getMetaInfo()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_MetaInfo();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getDependencies <em>Dependencies</em>}'.
@@ -5531,6 +5569,17 @@ public interface CqrsDslPackage extends EPackage
   EAttribute getMethod_RestPath();
 
   /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getMetaInfo <em>Meta Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Meta Info</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Method#getMetaInfo()
+   * @see #getMethod()
+   * @generated
+   */
+  EReference getMethod_MetaInfo();
+
+  /**
    * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getReturnType <em>Return Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6117,6 +6166,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EAttribute getView_RestPath();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getMetaInfo <em>Meta Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Meta Info</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.View#getMetaInfo()
+   * @see #getView()
+   * @generated
+   */
+  EReference getView_MetaInfo();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.View#getHints <em>Hints</em>}'.
@@ -6752,6 +6812,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EAttribute MODULE__NAME = eINSTANCE.getModule_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Meta Info</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference MODULE__META_INFO = eINSTANCE.getModule_MetaInfo();
 
     /**
      * The meta object literal for the '<em><b>Dependencies</b></em>' containment reference list feature.
@@ -7792,6 +7860,14 @@ public interface CqrsDslPackage extends EPackage
     EAttribute METHOD__REST_PATH = eINSTANCE.getMethod_RestPath();
 
     /**
+     * The meta object literal for the '<em><b>Meta Info</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference METHOD__META_INFO = eINSTANCE.getMethod_MetaInfo();
+
+    /**
      * The meta object literal for the '<em><b>Return Type</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8264,6 +8340,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EAttribute VIEW__REST_PATH = eINSTANCE.getView_RestPath();
+
+    /**
+     * The meta object literal for the '<em><b>Meta Info</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VIEW__META_INFO = eINSTANCE.getView_MetaInfo();
 
     /**
      * The meta object literal for the '<em><b>Hints</b></em>' containment reference list feature.

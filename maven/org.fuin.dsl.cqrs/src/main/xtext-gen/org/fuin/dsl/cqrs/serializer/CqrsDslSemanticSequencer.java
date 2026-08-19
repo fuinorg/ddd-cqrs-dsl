@@ -1032,6 +1032,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         businessRules=BusinessRules? 
 	 *         (firedEvents+=[Event|FQN] firedEvents+=[Event|FQN]*)? 
 	 *         restPath=STRING? 
+	 *         metaInfo=TypeMetaInfo 
 	 *         parameters+=Parameter* 
 	 *         operationContext=[Service|FQN]? 
 	 *         returnType=ReturnType? 
@@ -1051,7 +1052,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Module returns Module
 	 *
 	 * Constraint:
-	 *     (name=FQN dependencies+=Dependency* imports+=Import* elements+=AbstractElement*)
+	 *     (name=FQN metaInfo=TypeMetaInfo dependencies+=Dependency* imports+=Import* elements+=AbstractElement*)
 	 * </pre>
 	 */
 	protected void sequence_Module(ISerializationContext context, org.fuin.dsl.cqrs.cqrsDsl.Module semanticObject) {
@@ -1344,6 +1345,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         projection=[Projection|FQN] 
 	 *         restPath=STRING? 
+	 *         metaInfo=TypeMetaInfo 
 	 *         hints+=Hint* 
 	 *         cron=STRING? 
 	 *         businessRules+=BusinessRule* 

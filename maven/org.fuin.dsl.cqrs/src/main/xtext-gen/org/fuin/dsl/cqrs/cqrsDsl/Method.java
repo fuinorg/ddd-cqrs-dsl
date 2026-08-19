@@ -15,6 +15,7 @@ package org.fuin.dsl.cqrs.cqrsDsl;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRefMethod <em>Ref Method</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -67,6 +68,28 @@ public interface Method extends AbstractMethod
    * @generated
    */
   void setRestPath(String value);
+
+  /**
+   * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Meta Info</em>' containment reference.
+   * @see #setMetaInfo(TypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getMethod_MetaInfo()
+   * @model containment="true"
+   * @generated
+   */
+  TypeMetaInfo getMetaInfo();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getMetaInfo <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Meta Info</em>' containment reference.
+   * @see #getMetaInfo()
+   * @generated
+   */
+  void setMetaInfo(TypeMetaInfo value);
 
   /**
    * Returns the value of the '<em><b>Return Type</b></em>' containment reference.

@@ -138,6 +138,14 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.29.0</b> &ndash; A <code>module</code>, a <code>view</code> and a <code>method</code> may
+        now carry UI meta information - the same
+        <code>slabel</code>/<code>label</code>/<code>tooltip</code>/<code>prompt</code>/<code>examples</code>
+        block a type and an attribute take, written at the top of the block. A module name is a single
+        lowercase identifier and a view name is a type name, so neither can be turned into a caption by
+        any rule a client could write - <code>businesspartners</code> is not "Business partners". What
+        to call a module in a menu, a view on a tab and a method as a screen title is now something the
+        model states rather than something each application invents from an identifier.</li>
     <li><b>1.28.1</b> &ndash; Build only: the plugin is now built with IntelliJ Platform Gradle Plugin
         2.18.1, and Grammar-Kit generation moved to its <code>grammarkit</code> subplugin - the
         standalone one was archived. No change to what the plugin does.</li>

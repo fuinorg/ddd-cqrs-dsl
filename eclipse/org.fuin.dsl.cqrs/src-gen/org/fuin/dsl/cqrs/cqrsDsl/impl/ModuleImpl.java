@@ -23,6 +23,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,6 +34,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Import;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getElements <em>Elements</em>}</li>
@@ -61,6 +63,16 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMetaInfo()
+   * @generated
+   * @ordered
+   */
+  protected TypeMetaInfo metaInfo;
 
   /**
    * The cached value of the '{@link #getDependencies() <em>Dependencies</em>}' containment reference list.
@@ -144,6 +156,56 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
    * @generated
    */
   @Override
+  public TypeMetaInfo getMetaInfo()
+  {
+    return metaInfo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetMetaInfo(TypeMetaInfo newMetaInfo, NotificationChain msgs)
+  {
+    TypeMetaInfo oldMetaInfo = metaInfo;
+    metaInfo = newMetaInfo;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.MODULE__META_INFO, oldMetaInfo, newMetaInfo);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setMetaInfo(TypeMetaInfo newMetaInfo)
+  {
+    if (newMetaInfo != metaInfo)
+    {
+      NotificationChain msgs = null;
+      if (metaInfo != null)
+        msgs = ((InternalEObject)metaInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.MODULE__META_INFO, null, msgs);
+      if (newMetaInfo != null)
+        msgs = ((InternalEObject)newMetaInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.MODULE__META_INFO, null, msgs);
+      msgs = basicSetMetaInfo(newMetaInfo, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.MODULE__META_INFO, newMetaInfo, newMetaInfo));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Dependency> getDependencies()
   {
     if (dependencies == null)
@@ -193,6 +255,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
   {
     switch (featureID)
     {
+      case CqrsDslPackage.MODULE__META_INFO:
+        return basicSetMetaInfo(null, msgs);
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return ((InternalEList<?>)getDependencies()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.MODULE__IMPORTS:
@@ -215,6 +279,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
     {
       case CqrsDslPackage.MODULE__NAME:
         return getName();
+      case CqrsDslPackage.MODULE__META_INFO:
+        return getMetaInfo();
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return getDependencies();
       case CqrsDslPackage.MODULE__IMPORTS:
@@ -238,6 +304,9 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
     {
       case CqrsDslPackage.MODULE__NAME:
         setName((String)newValue);
+        return;
+      case CqrsDslPackage.MODULE__META_INFO:
+        setMetaInfo((TypeMetaInfo)newValue);
         return;
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         getDependencies().clear();
@@ -268,6 +337,9 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
       case CqrsDslPackage.MODULE__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case CqrsDslPackage.MODULE__META_INFO:
+        setMetaInfo((TypeMetaInfo)null);
+        return;
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         getDependencies().clear();
         return;
@@ -293,6 +365,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
     {
       case CqrsDslPackage.MODULE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case CqrsDslPackage.MODULE__META_INFO:
+        return metaInfo != null;
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return dependencies != null && !dependencies.isEmpty();
       case CqrsDslPackage.MODULE__IMPORTS:

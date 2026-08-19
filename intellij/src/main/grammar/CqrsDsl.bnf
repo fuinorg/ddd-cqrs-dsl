@@ -194,7 +194,7 @@ context_def ::= KW_CONTEXT qualified_name LBRACE dependency_decl* import_decl* h
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-module_def ::= KW_MODULE qualified_name LBRACE dependency_decl* import_decl* element* RBRACE {
+module_def ::= KW_MODULE qualified_name LBRACE type_meta_info dependency_decl* import_decl* element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -374,6 +374,7 @@ projection_def ::= KW_PROJECTION ID (KW_INPUT type_ref (COMMA type_ref)*)? {
 }
 
 view_def ::= KW_VIEW ID KW_USES type_ref (KW_REST_PATH STRING)? LBRACE
+    type_meta_info
     hint_def*
     (KW_CRON_SCHEDULE STRING)?
     business_rule* method_def* RBRACE {
@@ -424,7 +425,7 @@ constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES t
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE parameter* operation_context? return_type? service_def* event_def* RBRACE {
+method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE type_meta_info parameter* operation_context? return_type? service_def* event_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

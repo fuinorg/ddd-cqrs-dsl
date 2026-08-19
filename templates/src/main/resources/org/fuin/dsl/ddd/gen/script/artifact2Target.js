@@ -96,6 +96,7 @@ function module(typeKey) {
         case 'java-package-info':
         case 'java-spring-config':
         case 'java-permission-ids':
+        case 'java-ui-catalogue':
         case 'res-permission-catalogue':
             return 'shared';
 

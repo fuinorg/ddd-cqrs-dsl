@@ -797,7 +797,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getModule_Dependencies()
+  public EReference getModule_MetaInfo()
   {
     return (EReference)moduleEClass.getEStructuralFeatures().get(1);
   }
@@ -808,7 +808,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getModule_Imports()
+  public EReference getModule_Dependencies()
   {
     return (EReference)moduleEClass.getEStructuralFeatures().get(2);
   }
@@ -819,9 +819,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getModule_Elements()
+  public EReference getModule_Imports()
   {
     return (EReference)moduleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getModule_Elements()
+  {
+    return (EReference)moduleEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -2139,9 +2150,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getMethod_ReturnType()
+  public EReference getMethod_MetaInfo()
   {
     return (EReference)methodEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getMethod_ReturnType()
+  {
+    return (EReference)methodEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -2744,7 +2766,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getView_Hints()
+  public EReference getView_MetaInfo()
   {
     return (EReference)viewEClass.getEStructuralFeatures().get(2);
   }
@@ -2755,9 +2777,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EReference getView_Hints()
+  {
+    return (EReference)viewEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EAttribute getView_Cron()
   {
-    return (EAttribute)viewEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)viewEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -2768,7 +2801,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EReference getView_BusinessRules()
   {
-    return (EReference)viewEClass.getEStructuralFeatures().get(4);
+    return (EReference)viewEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -2779,7 +2812,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EReference getView_Methods()
   {
-    return (EReference)viewEClass.getEStructuralFeatures().get(5);
+    return (EReference)viewEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -3331,6 +3364,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     moduleEClass = createEClass(MODULE);
     createEAttribute(moduleEClass, MODULE__NAME);
+    createEReference(moduleEClass, MODULE__META_INFO);
     createEReference(moduleEClass, MODULE__DEPENDENCIES);
     createEReference(moduleEClass, MODULE__IMPORTS);
     createEReference(moduleEClass, MODULE__ELEMENTS);
@@ -3484,6 +3518,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     methodEClass = createEClass(METHOD);
     createEReference(methodEClass, METHOD__REF_METHOD);
     createEAttribute(methodEClass, METHOD__REST_PATH);
+    createEReference(methodEClass, METHOD__META_INFO);
     createEReference(methodEClass, METHOD__RETURN_TYPE);
 
     typeMetaInfoEClass = createEClass(TYPE_META_INFO);
@@ -3556,6 +3591,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     viewEClass = createEClass(VIEW);
     createEReference(viewEClass, VIEW__PROJECTION);
     createEAttribute(viewEClass, VIEW__REST_PATH);
+    createEReference(viewEClass, VIEW__META_INFO);
     createEReference(viewEClass, VIEW__HINTS);
     createEAttribute(viewEClass, VIEW__CRON);
     createEReference(viewEClass, VIEW__BUSINESS_RULES);
@@ -3707,6 +3743,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(moduleEClass, org.fuin.dsl.cqrs.cqrsDsl.Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getModule_Name(), ecorePackage.getEString(), "name", null, 0, 1, org.fuin.dsl.cqrs.cqrsDsl.Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModule_MetaInfo(), this.getTypeMetaInfo(), null, "metaInfo", null, 0, 1, org.fuin.dsl.cqrs.cqrsDsl.Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModule_Dependencies(), this.getDependency(), null, "dependencies", null, 0, -1, org.fuin.dsl.cqrs.cqrsDsl.Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModule_Imports(), this.getImport(), null, "imports", null, 0, -1, org.fuin.dsl.cqrs.cqrsDsl.Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModule_Elements(), this.getAbstractElement(), null, "elements", null, 0, -1, org.fuin.dsl.cqrs.cqrsDsl.Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3860,6 +3897,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEClass(methodEClass, Method.class, "Method", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getMethod_RefMethod(), this.getMethod(), null, "refMethod", null, 0, 1, Method.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMethod_RestPath(), ecorePackage.getEString(), "restPath", null, 0, 1, Method.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getMethod_MetaInfo(), this.getTypeMetaInfo(), null, "metaInfo", null, 0, 1, Method.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getMethod_ReturnType(), this.getReturnType(), null, "returnType", null, 0, 1, Method.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(typeMetaInfoEClass, TypeMetaInfo.class, "TypeMetaInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3932,6 +3970,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEClass(viewEClass, View.class, "View", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getView_Projection(), this.getProjection(), null, "projection", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getView_RestPath(), ecorePackage.getEString(), "restPath", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getView_MetaInfo(), this.getTypeMetaInfo(), null, "metaInfo", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getView_Hints(), this.getHint(), null, "hints", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getView_Cron(), ecorePackage.getEString(), "cron", null, 0, 1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getView_BusinessRules(), this.getBusinessRule(), null, "businessRules", null, 0, -1, View.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

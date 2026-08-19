@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getName <em>Name</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getImports <em>Imports</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getElements <em>Elements</em>}</li>
@@ -49,6 +50,28 @@ public interface Module extends EObject
    * @generated
    */
   void setName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Meta Info</em>' containment reference.
+   * @see #setMetaInfo(TypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getModule_MetaInfo()
+   * @model containment="true"
+   * @generated
+   */
+  TypeMetaInfo getMetaInfo();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getMetaInfo <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Meta Info</em>' containment reference.
+   * @see #getMetaInfo()
+   * @generated
+   */
+  void setMetaInfo(TypeMetaInfo value);
 
   /**
    * Returns the value of the '<em><b>Dependencies</b></em>' containment reference list.

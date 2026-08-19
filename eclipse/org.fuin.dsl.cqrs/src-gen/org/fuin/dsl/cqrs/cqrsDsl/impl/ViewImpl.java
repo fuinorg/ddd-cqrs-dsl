@@ -23,6 +23,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 
 /**
@@ -35,6 +36,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.View;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getProjection <em>Projection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getCron <em>Cron</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ViewImpl#getBusinessRules <em>Business Rules</em>}</li>
@@ -74,6 +76,16 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @ordered
    */
   protected String restPath = REST_PATH_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMetaInfo()
+   * @generated
+   * @ordered
+   */
+  protected TypeMetaInfo metaInfo;
 
   /**
    * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
@@ -222,6 +234,56 @@ public class ViewImpl extends AbstractElementImpl implements View
    * @generated
    */
   @Override
+  public TypeMetaInfo getMetaInfo()
+  {
+    return metaInfo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetMetaInfo(TypeMetaInfo newMetaInfo, NotificationChain msgs)
+  {
+    TypeMetaInfo oldMetaInfo = metaInfo;
+    metaInfo = newMetaInfo;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VIEW__META_INFO, oldMetaInfo, newMetaInfo);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setMetaInfo(TypeMetaInfo newMetaInfo)
+  {
+    if (newMetaInfo != metaInfo)
+    {
+      NotificationChain msgs = null;
+      if (metaInfo != null)
+        msgs = ((InternalEObject)metaInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.VIEW__META_INFO, null, msgs);
+      if (newMetaInfo != null)
+        msgs = ((InternalEObject)newMetaInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.VIEW__META_INFO, null, msgs);
+      msgs = basicSetMetaInfo(newMetaInfo, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VIEW__META_INFO, newMetaInfo, newMetaInfo));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Hint> getHints()
   {
     if (hints == null)
@@ -296,6 +358,8 @@ public class ViewImpl extends AbstractElementImpl implements View
   {
     switch (featureID)
     {
+      case CqrsDslPackage.VIEW__META_INFO:
+        return basicSetMetaInfo(null, msgs);
       case CqrsDslPackage.VIEW__HINTS:
         return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.VIEW__BUSINESS_RULES:
@@ -321,6 +385,8 @@ public class ViewImpl extends AbstractElementImpl implements View
         return basicGetProjection();
       case CqrsDslPackage.VIEW__REST_PATH:
         return getRestPath();
+      case CqrsDslPackage.VIEW__META_INFO:
+        return getMetaInfo();
       case CqrsDslPackage.VIEW__HINTS:
         return getHints();
       case CqrsDslPackage.VIEW__CRON:
@@ -349,6 +415,9 @@ public class ViewImpl extends AbstractElementImpl implements View
         return;
       case CqrsDslPackage.VIEW__REST_PATH:
         setRestPath((String)newValue);
+        return;
+      case CqrsDslPackage.VIEW__META_INFO:
+        setMetaInfo((TypeMetaInfo)newValue);
         return;
       case CqrsDslPackage.VIEW__HINTS:
         getHints().clear();
@@ -385,6 +454,9 @@ public class ViewImpl extends AbstractElementImpl implements View
       case CqrsDslPackage.VIEW__REST_PATH:
         setRestPath(REST_PATH_EDEFAULT);
         return;
+      case CqrsDslPackage.VIEW__META_INFO:
+        setMetaInfo((TypeMetaInfo)null);
+        return;
       case CqrsDslPackage.VIEW__HINTS:
         getHints().clear();
         return;
@@ -415,6 +487,8 @@ public class ViewImpl extends AbstractElementImpl implements View
         return projection != null;
       case CqrsDslPackage.VIEW__REST_PATH:
         return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
+      case CqrsDslPackage.VIEW__META_INFO:
+        return metaInfo != null;
       case CqrsDslPackage.VIEW__HINTS:
         return hints != null && !hints.isEmpty();
       case CqrsDslPackage.VIEW__CRON:

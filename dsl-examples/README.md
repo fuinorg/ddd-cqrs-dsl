@@ -10,7 +10,7 @@ comment explaining what it shows. They follow the grammar in
 | [01-context-modules](01-context-modules.cqrs) | The two levels `context` / `module` (dotted module names), and the module as the unit of visibility |
 | [02-external-types](02-external-types.cqrs) | External `type`s: plain, `element`, and `generics <n>` |
 | [03-value-object](03-value-object.cqrs) | `value-object` — wrapping a `base` type vs. grouping attributes |
-| [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) and per-attribute overrides |
+| [04-type-metainfo](04-type-metainfo.cqrs) | UI metadata (`slabel` / `label` / `tooltip` / `prompt` / `examples`) on a `module`, a type, a `view` and a `method`, and per-attribute overrides |
 | [05-attributes-and-generics](05-attributes-and-generics.cqrs) | Attributes: `optional` and generic type arguments `<...>` |
 | [06-enum](06-enum.cqrs) | `enum` instances, instance parameters, `deprecated`, `base`, per-instance UI metadata |
 | [07-exception](07-exception.cqrs) | `exception` with `cid`, attributes and a `message` |

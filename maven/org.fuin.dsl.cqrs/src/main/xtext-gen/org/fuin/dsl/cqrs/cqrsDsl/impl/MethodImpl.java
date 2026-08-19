@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,6 +26,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRefMethod <em>Ref Method</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRestPath <em>Rest Path</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -61,6 +63,16 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @ordered
    */
   protected String restPath = REST_PATH_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMetaInfo()
+   * @generated
+   * @ordered
+   */
+  protected TypeMetaInfo metaInfo;
 
   /**
    * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -169,6 +181,56 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @generated
    */
   @Override
+  public TypeMetaInfo getMetaInfo()
+  {
+    return metaInfo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetMetaInfo(TypeMetaInfo newMetaInfo, NotificationChain msgs)
+  {
+    TypeMetaInfo oldMetaInfo = metaInfo;
+    metaInfo = newMetaInfo;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.METHOD__META_INFO, oldMetaInfo, newMetaInfo);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setMetaInfo(TypeMetaInfo newMetaInfo)
+  {
+    if (newMetaInfo != metaInfo)
+    {
+      NotificationChain msgs = null;
+      if (metaInfo != null)
+        msgs = ((InternalEObject)metaInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.METHOD__META_INFO, null, msgs);
+      if (newMetaInfo != null)
+        msgs = ((InternalEObject)newMetaInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.METHOD__META_INFO, null, msgs);
+      msgs = basicSetMetaInfo(newMetaInfo, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.METHOD__META_INFO, newMetaInfo, newMetaInfo));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public ReturnType getReturnType()
   {
     return returnType;
@@ -223,6 +285,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
   {
     switch (featureID)
     {
+      case CqrsDslPackage.METHOD__META_INFO:
+        return basicSetMetaInfo(null, msgs);
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return basicSetReturnType(null, msgs);
     }
@@ -244,6 +308,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return basicGetRefMethod();
       case CqrsDslPackage.METHOD__REST_PATH:
         return getRestPath();
+      case CqrsDslPackage.METHOD__META_INFO:
+        return getMetaInfo();
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return getReturnType();
     }
@@ -265,6 +331,9 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return;
       case CqrsDslPackage.METHOD__REST_PATH:
         setRestPath((String)newValue);
+        return;
+      case CqrsDslPackage.METHOD__META_INFO:
+        setMetaInfo((TypeMetaInfo)newValue);
         return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)newValue);
@@ -289,6 +358,9 @@ public class MethodImpl extends AbstractMethodImpl implements Method
       case CqrsDslPackage.METHOD__REST_PATH:
         setRestPath(REST_PATH_EDEFAULT);
         return;
+      case CqrsDslPackage.METHOD__META_INFO:
+        setMetaInfo((TypeMetaInfo)null);
+        return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)null);
         return;
@@ -310,6 +382,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return refMethod != null;
       case CqrsDslPackage.METHOD__REST_PATH:
         return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
+      case CqrsDslPackage.METHOD__META_INFO:
+        return metaInfo != null;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return returnType != null;
     }

@@ -125,21 +125,30 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cDependenciesAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cDependenciesDependencyParserRuleCall_3_0 = (RuleCall)cDependenciesAssignment_3.eContents().get(0);
-		private final Assignment cImportsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cImportsImportParserRuleCall_4_0 = (RuleCall)cImportsAssignment_4.eContents().get(0);
-		private final Assignment cElementsAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cElementsAbstractElementParserRuleCall_5_0 = (RuleCall)cElementsAssignment_5.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cMetaInfoAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_3_0 = (RuleCall)cMetaInfoAssignment_3.eContents().get(0);
+		private final Assignment cDependenciesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cDependenciesDependencyParserRuleCall_4_0 = (RuleCall)cDependenciesAssignment_4.eContents().get(0);
+		private final Assignment cImportsAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cImportsImportParserRuleCall_5_0 = (RuleCall)cImportsAssignment_5.eContents().get(0);
+		private final Assignment cElementsAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cElementsAbstractElementParserRuleCall_6_0 = (RuleCall)cElementsAssignment_6.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		///**
 		// * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
 		// * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
 		// * unit of visibility: only its own elements are reachable without an 'import'.
+		// *
+		// * The optional meta info is what a user interface calls the module: 'slabel' where space is tight
+		// * (a tab, a bottom bar), 'label' in a menu or a navigation rail, 'tooltip' to explain it. A module
+		// * name is a single lowercase identifier, so it cannot be turned into a caption by any rule a client
+		// * could write - 'businesspartners' is not "Business partners" - which is why the wording belongs
+		// * here rather than in each client.
 		// */
 		//Module:
 		//    'module' name=FQN '{'
+		//        metaInfo=TypeMetaInfo
 		//        dependencies+=Dependency*
 		//        imports+=Import*
 		//        elements+=AbstractElement*
@@ -147,6 +156,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'module' name=FQN '{'
+		//    metaInfo=TypeMetaInfo
 		//    dependencies+=Dependency*
 		//    imports+=Import*
 		//    elements+=AbstractElement*
@@ -165,26 +175,32 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 		
+		//metaInfo=TypeMetaInfo
+		public Assignment getMetaInfoAssignment_3() { return cMetaInfoAssignment_3; }
+		
+		//TypeMetaInfo
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_3_0() { return cMetaInfoTypeMetaInfoParserRuleCall_3_0; }
+		
 		//dependencies+=Dependency*
-		public Assignment getDependenciesAssignment_3() { return cDependenciesAssignment_3; }
+		public Assignment getDependenciesAssignment_4() { return cDependenciesAssignment_4; }
 		
 		//Dependency
-		public RuleCall getDependenciesDependencyParserRuleCall_3_0() { return cDependenciesDependencyParserRuleCall_3_0; }
+		public RuleCall getDependenciesDependencyParserRuleCall_4_0() { return cDependenciesDependencyParserRuleCall_4_0; }
 		
 		//imports+=Import*
-		public Assignment getImportsAssignment_4() { return cImportsAssignment_4; }
+		public Assignment getImportsAssignment_5() { return cImportsAssignment_5; }
 		
 		//Import
-		public RuleCall getImportsImportParserRuleCall_4_0() { return cImportsImportParserRuleCall_4_0; }
+		public RuleCall getImportsImportParserRuleCall_5_0() { return cImportsImportParserRuleCall_5_0; }
 		
 		//elements+=AbstractElement*
-		public Assignment getElementsAssignment_5() { return cElementsAssignment_5; }
+		public Assignment getElementsAssignment_6() { return cElementsAssignment_6; }
 		
 		//AbstractElement
-		public RuleCall getElementsAbstractElementParserRuleCall_5_0() { return cElementsAbstractElementParserRuleCall_5_0; }
+		public RuleCall getElementsAbstractElementParserRuleCall_6_0() { return cElementsAbstractElementParserRuleCall_6_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 	public class DependencyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Dependency");
@@ -2652,25 +2668,28 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cRestPathAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
 		private final RuleCall cRestPathSTRINGTerminalRuleCall_7_1_0 = (RuleCall)cRestPathAssignment_7_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
-		private final Assignment cParametersAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cParametersParameterParserRuleCall_9_0 = (RuleCall)cParametersAssignment_9.eContents().get(0);
-		private final Group cGroup_10 = (Group)cGroup.eContents().get(10);
-		private final Keyword cOperationContextKeyword_10_0 = (Keyword)cGroup_10.eContents().get(0);
-		private final Assignment cOperationContextAssignment_10_1 = (Assignment)cGroup_10.eContents().get(1);
-		private final CrossReference cOperationContextServiceCrossReference_10_1_0 = (CrossReference)cOperationContextAssignment_10_1.eContents().get(0);
-		private final RuleCall cOperationContextServiceFQNParserRuleCall_10_1_0_1 = (RuleCall)cOperationContextServiceCrossReference_10_1_0.eContents().get(1);
-		private final Assignment cReturnTypeAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cReturnTypeReturnTypeParserRuleCall_11_0 = (RuleCall)cReturnTypeAssignment_11.eContents().get(0);
-		private final Assignment cServicesAssignment_12 = (Assignment)cGroup.eContents().get(12);
-		private final RuleCall cServicesServiceParserRuleCall_12_0 = (RuleCall)cServicesAssignment_12.eContents().get(0);
-		private final Assignment cEventsAssignment_13 = (Assignment)cGroup.eContents().get(13);
-		private final RuleCall cEventsEventParserRuleCall_13_0 = (RuleCall)cEventsAssignment_13.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Assignment cMetaInfoAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_9_0 = (RuleCall)cMetaInfoAssignment_9.eContents().get(0);
+		private final Assignment cParametersAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cParametersParameterParserRuleCall_10_0 = (RuleCall)cParametersAssignment_10.eContents().get(0);
+		private final Group cGroup_11 = (Group)cGroup.eContents().get(11);
+		private final Keyword cOperationContextKeyword_11_0 = (Keyword)cGroup_11.eContents().get(0);
+		private final Assignment cOperationContextAssignment_11_1 = (Assignment)cGroup_11.eContents().get(1);
+		private final CrossReference cOperationContextServiceCrossReference_11_1_0 = (CrossReference)cOperationContextAssignment_11_1.eContents().get(0);
+		private final RuleCall cOperationContextServiceFQNParserRuleCall_11_1_0_1 = (RuleCall)cOperationContextServiceCrossReference_11_1_0.eContents().get(1);
+		private final Assignment cReturnTypeAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cReturnTypeReturnTypeParserRuleCall_12_0 = (RuleCall)cReturnTypeAssignment_12.eContents().get(0);
+		private final Assignment cServicesAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cServicesServiceParserRuleCall_13_0 = (RuleCall)cServicesAssignment_13.eContents().get(0);
+		private final Assignment cEventsAssignment_14 = (Assignment)cGroup.eContents().get(14);
+		private final RuleCall cEventsEventParserRuleCall_14_0 = (RuleCall)cEventsAssignment_14.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_15 = (Keyword)cGroup.eContents().get(15);
 		
 		///** Defines a function of an object. */
 		//Method:
 		//    doc=DOC?
 		//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
+		//        metaInfo=TypeMetaInfo
 		//        parameters+=Parameter*
 		//        ('operation-context' operationContext=[Service|FQN])?
 		//        returnType=ReturnType?
@@ -2681,6 +2700,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC?
 		//'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
+		//    metaInfo=TypeMetaInfo
 		//    parameters+=Parameter*
 		//    ('operation-context' operationContext=[Service|FQN])?
 		//    returnType=ReturnType?
@@ -2776,47 +2796,53 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_8() { return cLeftCurlyBracketKeyword_8; }
 		
+		//metaInfo=TypeMetaInfo
+		public Assignment getMetaInfoAssignment_9() { return cMetaInfoAssignment_9; }
+		
+		//TypeMetaInfo
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_9_0() { return cMetaInfoTypeMetaInfoParserRuleCall_9_0; }
+		
 		//parameters+=Parameter*
-		public Assignment getParametersAssignment_9() { return cParametersAssignment_9; }
+		public Assignment getParametersAssignment_10() { return cParametersAssignment_10; }
 		
 		//Parameter
-		public RuleCall getParametersParameterParserRuleCall_9_0() { return cParametersParameterParserRuleCall_9_0; }
+		public RuleCall getParametersParameterParserRuleCall_10_0() { return cParametersParameterParserRuleCall_10_0; }
 		
 		//('operation-context' operationContext=[Service|FQN])?
-		public Group getGroup_10() { return cGroup_10; }
+		public Group getGroup_11() { return cGroup_11; }
 		
 		//'operation-context'
-		public Keyword getOperationContextKeyword_10_0() { return cOperationContextKeyword_10_0; }
+		public Keyword getOperationContextKeyword_11_0() { return cOperationContextKeyword_11_0; }
 		
 		//operationContext=[Service|FQN]
-		public Assignment getOperationContextAssignment_10_1() { return cOperationContextAssignment_10_1; }
+		public Assignment getOperationContextAssignment_11_1() { return cOperationContextAssignment_11_1; }
 		
 		//[Service|FQN]
-		public CrossReference getOperationContextServiceCrossReference_10_1_0() { return cOperationContextServiceCrossReference_10_1_0; }
+		public CrossReference getOperationContextServiceCrossReference_11_1_0() { return cOperationContextServiceCrossReference_11_1_0; }
 		
 		//FQN
-		public RuleCall getOperationContextServiceFQNParserRuleCall_10_1_0_1() { return cOperationContextServiceFQNParserRuleCall_10_1_0_1; }
+		public RuleCall getOperationContextServiceFQNParserRuleCall_11_1_0_1() { return cOperationContextServiceFQNParserRuleCall_11_1_0_1; }
 		
 		//returnType=ReturnType?
-		public Assignment getReturnTypeAssignment_11() { return cReturnTypeAssignment_11; }
+		public Assignment getReturnTypeAssignment_12() { return cReturnTypeAssignment_12; }
 		
 		//ReturnType
-		public RuleCall getReturnTypeReturnTypeParserRuleCall_11_0() { return cReturnTypeReturnTypeParserRuleCall_11_0; }
+		public RuleCall getReturnTypeReturnTypeParserRuleCall_12_0() { return cReturnTypeReturnTypeParserRuleCall_12_0; }
 		
 		//services+=Service*
-		public Assignment getServicesAssignment_12() { return cServicesAssignment_12; }
+		public Assignment getServicesAssignment_13() { return cServicesAssignment_13; }
 		
 		//Service
-		public RuleCall getServicesServiceParserRuleCall_12_0() { return cServicesServiceParserRuleCall_12_0; }
+		public RuleCall getServicesServiceParserRuleCall_13_0() { return cServicesServiceParserRuleCall_13_0; }
 		
 		//events+=Event*
-		public Assignment getEventsAssignment_13() { return cEventsAssignment_13; }
+		public Assignment getEventsAssignment_14() { return cEventsAssignment_14; }
 		
 		//Event
-		public RuleCall getEventsEventParserRuleCall_13_0() { return cEventsEventParserRuleCall_13_0; }
+		public RuleCall getEventsEventParserRuleCall_14_0() { return cEventsEventParserRuleCall_14_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
+		public Keyword getRightCurlyBracketKeyword_15() { return cRightCurlyBracketKeyword_15; }
 	}
 	public class TypeMetaInfoElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.TypeMetaInfo");
@@ -3893,22 +3919,25 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cRestPathAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
 		private final RuleCall cRestPathSTRINGTerminalRuleCall_5_1_0 = (RuleCall)cRestPathAssignment_5_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cHintsAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cHintsHintParserRuleCall_7_0 = (RuleCall)cHintsAssignment_7.eContents().get(0);
-		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
-		private final Keyword cCronScheduleKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
-		private final Assignment cCronAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
-		private final RuleCall cCronSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cCronAssignment_8_1.eContents().get(0);
-		private final Assignment cBusinessRulesAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_9_0 = (RuleCall)cBusinessRulesAssignment_9.eContents().get(0);
-		private final Assignment cMethodsAssignment_10 = (Assignment)cGroup.eContents().get(10);
-		private final RuleCall cMethodsMethodParserRuleCall_10_0 = (RuleCall)cMethodsAssignment_10.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cMetaInfoAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_7_0 = (RuleCall)cMetaInfoAssignment_7.eContents().get(0);
+		private final Assignment cHintsAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cHintsHintParserRuleCall_8_0 = (RuleCall)cHintsAssignment_8.eContents().get(0);
+		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
+		private final Keyword cCronScheduleKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
+		private final Assignment cCronAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
+		private final RuleCall cCronSTRINGTerminalRuleCall_9_1_0 = (RuleCall)cCronAssignment_9_1.eContents().get(0);
+		private final Assignment cBusinessRulesAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cBusinessRulesBusinessRuleParserRuleCall_10_0 = (RuleCall)cBusinessRulesAssignment_10.eContents().get(0);
+		private final Assignment cMethodsAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cMethodsMethodParserRuleCall_11_0 = (RuleCall)cMethodsAssignment_11.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
 		
 		///** Result of a projection. Like a service it may offer methods to query it. */
 		//View:
 		//    doc=DOC?
 		//    'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
+		//        metaInfo=TypeMetaInfo
 		//        hints+=Hint*
 		//        ('cron-schedule' cron=STRING)?
 		//        businessRules+=BusinessRule*
@@ -3918,6 +3947,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC?
 		//'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
+		//    metaInfo=TypeMetaInfo
 		//    hints+=Hint*
 		//    ('cron-schedule' cron=STRING)?
 		//    businessRules+=BusinessRule*
@@ -3967,38 +3997,44 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
 		
+		//metaInfo=TypeMetaInfo
+		public Assignment getMetaInfoAssignment_7() { return cMetaInfoAssignment_7; }
+		
+		//TypeMetaInfo
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_7_0() { return cMetaInfoTypeMetaInfoParserRuleCall_7_0; }
+		
 		//hints+=Hint*
-		public Assignment getHintsAssignment_7() { return cHintsAssignment_7; }
+		public Assignment getHintsAssignment_8() { return cHintsAssignment_8; }
 		
 		//Hint
-		public RuleCall getHintsHintParserRuleCall_7_0() { return cHintsHintParserRuleCall_7_0; }
+		public RuleCall getHintsHintParserRuleCall_8_0() { return cHintsHintParserRuleCall_8_0; }
 		
 		//('cron-schedule' cron=STRING)?
-		public Group getGroup_8() { return cGroup_8; }
+		public Group getGroup_9() { return cGroup_9; }
 		
 		//'cron-schedule'
-		public Keyword getCronScheduleKeyword_8_0() { return cCronScheduleKeyword_8_0; }
+		public Keyword getCronScheduleKeyword_9_0() { return cCronScheduleKeyword_9_0; }
 		
 		//cron=STRING
-		public Assignment getCronAssignment_8_1() { return cCronAssignment_8_1; }
+		public Assignment getCronAssignment_9_1() { return cCronAssignment_9_1; }
 		
 		//STRING
-		public RuleCall getCronSTRINGTerminalRuleCall_8_1_0() { return cCronSTRINGTerminalRuleCall_8_1_0; }
+		public RuleCall getCronSTRINGTerminalRuleCall_9_1_0() { return cCronSTRINGTerminalRuleCall_9_1_0; }
 		
 		//businessRules+=BusinessRule*
-		public Assignment getBusinessRulesAssignment_9() { return cBusinessRulesAssignment_9; }
+		public Assignment getBusinessRulesAssignment_10() { return cBusinessRulesAssignment_10; }
 		
 		//BusinessRule
-		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_9_0() { return cBusinessRulesBusinessRuleParserRuleCall_9_0; }
+		public RuleCall getBusinessRulesBusinessRuleParserRuleCall_10_0() { return cBusinessRulesBusinessRuleParserRuleCall_10_0; }
 		
 		//methods+=Method*
-		public Assignment getMethodsAssignment_10() { return cMethodsAssignment_10; }
+		public Assignment getMethodsAssignment_11() { return cMethodsAssignment_11; }
 		
 		//Method
-		public RuleCall getMethodsMethodParserRuleCall_10_0() { return cMethodsMethodParserRuleCall_10_0; }
+		public RuleCall getMethodsMethodParserRuleCall_11_0() { return cMethodsMethodParserRuleCall_11_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 	}
 	public class ProcessManagerElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ProcessManager");
@@ -5562,9 +5598,16 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	// * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
 	// * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
 	// * unit of visibility: only its own elements are reachable without an 'import'.
+	// *
+	// * The optional meta info is what a user interface calls the module: 'slabel' where space is tight
+	// * (a tab, a bottom bar), 'label' in a menu or a navigation rail, 'tooltip' to explain it. A module
+	// * name is a single lowercase identifier, so it cannot be turned into a caption by any rule a client
+	// * could write - 'businesspartners' is not "Business partners" - which is why the wording belongs
+	// * here rather than in each client.
 	// */
 	//Module:
 	//    'module' name=FQN '{'
+	//        metaInfo=TypeMetaInfo
 	//        dependencies+=Dependency*
 	//        imports+=Import*
 	//        elements+=AbstractElement*
@@ -6171,6 +6214,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//Method:
 	//    doc=DOC?
 	//    'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
+	//        metaInfo=TypeMetaInfo
 	//        parameters+=Parameter*
 	//        ('operation-context' operationContext=[Service|FQN])?
 	//        returnType=ReturnType?
@@ -6406,6 +6450,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//View:
 	//    doc=DOC?
 	//    'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
+	//        metaInfo=TypeMetaInfo
 	//        hints+=Hint*
 	//        ('cron-schedule' cron=STRING)?
 	//        businessRules+=BusinessRule*

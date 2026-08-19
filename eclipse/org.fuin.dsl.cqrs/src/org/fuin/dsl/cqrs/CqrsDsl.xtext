@@ -24,9 +24,16 @@ Context:
  * Structured hierarchy that allows reuse of names in different sub contexts. Every element lives in
  * a module; the name is an FQN, so a nested grouping is expressed as 'module a.b'. A module is the
  * unit of visibility: only its own elements are reachable without an 'import'.
+ *
+ * The optional meta info is what a user interface calls the module: 'slabel' where space is tight
+ * (a tab, a bottom bar), 'label' in a menu or a navigation rail, 'tooltip' to explain it. A module
+ * name is a single lowercase identifier, so it cannot be turned into a caption by any rule a client
+ * could write - 'businesspartners' is not "Business partners" - which is why the wording belongs
+ * here rather than in each client.
  */
 Module:
 	'module' name=FQN '{'
+		metaInfo=TypeMetaInfo
 		dependencies+=Dependency*
 		imports+=Import*
 		elements+=AbstractElement*
@@ -360,6 +367,7 @@ ReturnType:
 Method:
 	doc=DOC? 
 	'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
+		metaInfo=TypeMetaInfo
 		parameters+=Parameter*
 		('operation-context' operationContext=[Service|FQN])?
 		returnType=ReturnType?
@@ -476,6 +484,7 @@ Projection:
 View:
 	doc=DOC?
 	'view' name=ID 'uses' projection=[Projection|FQN] ('rest-path' restPath=STRING)? '{'
+		metaInfo=TypeMetaInfo
 		hints+=Hint*
 		('cron-schedule' cron=STRING)?
 		businessRules+=BusinessRule*

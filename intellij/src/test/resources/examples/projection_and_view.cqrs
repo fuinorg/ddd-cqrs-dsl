@@ -5,7 +5,13 @@ context p_projection_and_view {
 		type UUID
 	}
 
+	// A module may carry UI meta information, so a client knows what to call it.
 	module x.readmodel {
+
+		slabel "Users"
+		label "User read model"
+		tooltip "Everything readable about users"
+
 		import p_projection_and_view.x.types.*
 
 		exception UnknownUserException {
@@ -37,6 +43,11 @@ context p_projection_and_view {
 		// It may also set an optional REST base path and projection cron.
 		view UserListView uses UserList rest-path "/users" {
 
+			// A view carries UI meta information too - it comes before the hints.
+			slabel "Users"
+			label "User list"
+			tooltip "All known users"
+
 			// A view may carry generator hints, like a project.
 			hint SrcGen4J { "folder": "genMainJava" }
 
@@ -52,7 +63,12 @@ context p_projection_and_view {
 				returns String
 			}
 
+			// A method carries it as well, written before its parameters.
 			method countUsers {
+
+				slabel "Count"
+				label "Number of users"
+
 				returns UUID
 			}
 

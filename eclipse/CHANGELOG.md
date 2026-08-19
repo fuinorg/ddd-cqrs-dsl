@@ -2,6 +2,15 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.26.0
+- **A `module`, a `view` and a `method` may now carry UI meta information** - the same
+  `slabel`/`label`/`tooltip`/`prompt`/`examples` block a type and an attribute take, written at the top
+  of the block. A module name is a single lowercase identifier and a view name is a type name, so
+  neither can be turned into a caption by any rule a client could write - `businesspartners` is not
+  "Business partners". What to call a module in a menu, a view on a tab and a method as a screen title
+  is now something the model states rather than something each application invents from an identifier.
+  All of it stays optional, so every existing model parses unchanged.
+
 ## 1.25.0
 - **An `enum` instance may now carry UI meta information** - the same
   `slabel`/`label`/`tooltip`/`prompt`/`examples` block an attribute takes, written after the instance
