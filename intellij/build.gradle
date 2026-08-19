@@ -138,6 +138,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.30.0</b> &ndash; A dependency cycle between modules is now reported as an error, the same
+        rule the Eclipse plugin and the generator build apply. What a module depends on is read from
+        the references that actually resolve rather than from its <code>import</code> lines, so an
+        unused import no longer invents a dependency and a fully qualified reference no longer hides
+        one. The graph is cached per change, so the check costs nothing while typing.</li>
     <li><b>1.29.0</b> &ndash; A <code>module</code>, a <code>view</code> and a <code>method</code> may
         now carry UI meta information - the same
         <code>slabel</code>/<code>label</code>/<code>tooltip</code>/<code>prompt</code>/<code>examples</code>

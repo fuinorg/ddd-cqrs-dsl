@@ -40,6 +40,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ReturnType
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
+import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies
 import org.fuin.dsl.cqrs.scoping.CqrsDependencies
 import org.fuin.dsl.cqrs.scoping.CqrsModelArchives
 import org.fuin.dsl.cqrs.scoping.RemoteScopeEntry
@@ -108,6 +109,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val IMPORT_DUPLICATE = 'importDuplicate'
 
 	public static val IMPORT_UNUSED = 'importUnused'
+
+	public static val MODULE_DEPENDENCY_CYCLE = 'moduleDependencyCycle'
 
 	public static val SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents"
 
@@ -333,6 +336,37 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	}
 
 	/**
+	 * Reports a module that takes part in a dependency cycle.
+	 *
+	 * <p>A cycle means neither module can be reasoned about - or switched off - without the other, and
+	 * the generated module dependency graph would have no topological order to offer a consumer. It is
+	 * an error rather than a warning because there is no version of it that is intended.</p>
+	 *
+	 * <p><b>A module, not a bounded context.</b> The nodes are the {@code module} blocks as declared,
+	 * so a view or a process manager is a node of its own. That granularity is what keeps the seams
+	 * between contexts legal: a process manager may react to another context's events while the
+	 * context it lives beside stays independent of it. Rolling the sub-modules up into their context
+	 * is a question a consumer of the generated graph can ask; it is not what this rule enforces.</p>
+	 *
+	 * <p><b>The build is the enforcement point.</b> SrcGen4J parses the whole model into one resource
+	 * set, so a build sees every module and every edge. An editor validates one resource and reaches
+	 * the rest only through the index, so a cycle closed by a file that is not open may surface late
+	 * or not at all. That is a deliberate trade: no editor-side index walk on every keystroke, and the
+	 * build refuses regardless.</p>
+	 */
+	@Check
+	def checkModuleDependencyCycle(Module module) {
+		if(CqrsModelArchives.isArchived(module.eResource?.URI)) return;
+
+		val graph = CqrsModuleDependencies.graphOf(module.eResource?.resourceSet)
+		val cycle = CqrsModuleDependencies.cycleThrough(module.name, graph)
+		if(cycle.empty) return;
+
+		error("Module '" + module.name + "' is part of a dependency cycle: " + cycle.join(" -> "),
+			module, CqrsDslPackage.Literals::MODULE__NAME, MODULE_DEPENDENCY_CYCLE)
+	}
+
+	/**
 	 * Whether anything inside the given block points at something that could not be resolved. Only
 	 * asked when an import is about to be reported as unused, which is rare enough for a second walk.
 	 */
@@ -365,24 +399,9 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	 * must not decide whether its import is reported.</p>
 	 */
 	private def Iterable<String> referencedNames(EObject container) {
-		val result = <String>newArrayList
-		val contents = container.eAllContents
-		while (contents.hasNext) {
-			val EObject obj = contents.next
-			for (reference : obj.eClass.EAllReferences.filter[!containment && !derived]) {
-				val value = obj.eGet(reference, true)
-				val targets = if (reference.many) value as List<?> else Collections.singletonList(value)
-				for (target : targets.filterNull) {
-					if (target instanceof EObject) {
-						if (!target.eIsProxy) {
-							val name = qualifiedNameProvider.getFullyQualifiedName(target)
-							if(name !== null) result.add(name.toString)
-						}
-					}
-				}
-			}
-		}
-		return result
+		// Delegated so this and the module dependency graph can never disagree about what a block
+		// refers to - one walk, two questions asked of its answer.
+		return CqrsModuleDependencies.referencedNames(container, qualifiedNameProvider)
 	}
 
 	/**

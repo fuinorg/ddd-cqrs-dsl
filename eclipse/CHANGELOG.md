@@ -2,6 +2,15 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.27.0
+- **A dependency cycle between modules is now an error.** The modules a module depends on are read
+  from the references that actually resolve, not from its `import` lines - an unused import would
+  otherwise invent a dependency and a fully qualified reference would hide one. The nodes are the
+  `module` blocks as declared, which is what keeps the seam between two contexts legal: a process
+  manager may react to another context's events without dragging the context it lives beside into a
+  cycle. Blocks sharing a name are one module, so a context split over a public and a private file is
+  not reported as depending on itself.
+
 ## 1.26.0
 - **A `module`, a `view` and a `method` may now carry UI meta information** - the same
   `slabel`/`label`/`tooltip`/`prompt`/`examples` block a type and an attribute take, written at the top

@@ -1,0 +1,60 @@
+context p {
+
+    module types {
+        type String
+        type Integer
+    }
+
+    // A leaf: nothing outside itself.
+    module categories {
+        import p.types.*
+
+        value-object CategoryName {
+            String value
+        }
+    }
+
+    // Depends on categories. Imports bankaccounts and refers to nothing in it - reading imports as
+    // dependencies would put this module in a cycle, reading cross references does not.
+    module journal {
+        import p.types.*
+        import p.categories.*
+        import p.bankaccounts.*
+
+        value-object JournalEntryId {
+            String value
+        }
+
+        value-object JournalEntry {
+            JournalEntryId id
+            CategoryName categoryName
+        }
+    }
+
+    // The seam: a sub-module of "journal" reaching into another group. This is what makes the two
+    // groups mutually dependent while neither module sits in a cycle.
+    module journal.sync {
+        import p.types.*
+        import p.bankaccounts.*
+
+        value-object SyncMarker {
+            TransactionId transaction
+        }
+    }
+
+    // Depends on journal directly.
+    module bankaccounts {
+        import p.types.*
+        import p.journal.*
+
+        value-object TransactionId {
+            String value
+        }
+
+        value-object Transaction {
+            TransactionId id
+            JournalEntryId entry
+        }
+    }
+
+}

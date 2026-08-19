@@ -160,6 +160,9 @@ public final class TypeKeys {
     /** The permission catalogue as documentation: <code>PERMISSIONS.md</code>. */
     public static final String RES_PERMISSION_CATALOGUE = "res-permission-catalogue";
 
+    /** The module dependency graph: <code>MODULES.json</code>. */
+    public static final String RES_MODULE_DEPENDENCIES = "res-module-dependencies";
+
     /** Liquibase changelog of the JPA event store of an aggregate. */
     public static final String RES_AGGREGATE_LIQUIBASE = "res-aggregate-liquibase";
 

@@ -136,7 +136,38 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkViewCronSchedule((CqrsViewDef) element, holder);
         } else if (element instanceof CqrsHintDef) {
             checkHintJson((CqrsHintDef) element, holder);
+        } else if (element instanceof CqrsModuleDef) {
+            checkModuleDependencyCycle((CqrsModuleDef) element, holder);
         }
+    }
+
+    // --- module dependency cycle ----------------------------------------------------------------
+
+    /**
+     * Reports a module that takes part in a dependency cycle.
+     *
+     * <p>The port of the Xtext validator's {@code checkModuleDependencyCycle}, so the editor refuses
+     * what the build refuses. A cycle means neither module can be reasoned about - or switched off -
+     * without the other, and the generated module dependency graph has no topological order to offer.</p>
+     *
+     * <p><b>A module, not a bounded context.</b> The nodes are the {@code module} blocks as declared,
+     * which is what keeps the seams between contexts legal: a process manager may react to another
+     * context's events without dragging the context it lives beside into a cycle.</p>
+     *
+     * <p>Annotating the module block rather than each reference inside it keeps the project-wide graph
+     * to a handful of lookups per file, and the graph itself is cached per PSI modification.</p>
+     */
+    private void checkModuleDependencyCycle(@NotNull CqrsModuleDef module, @NotNull AnnotationHolder holder) {
+        String name = CqrsResolveUtil.getQualifiedName(module);
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+        List<String> cycle = CqrsModuleGraph.cycleThrough(name, CqrsModuleGraph.of(module.getProject()));
+        if (cycle.isEmpty()) {
+            return;
+        }
+        PsiElement range = module.getNameIdentifier() != null ? module.getNameIdentifier() : module;
+        error(holder, range, "Module '" + name + "' is part of a dependency cycle: " + String.join(" -> ", cycle));
     }
 
     // --- hint JSON ------------------------------------------------------------------------------

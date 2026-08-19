@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -28,11 +29,11 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
+import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
@@ -124,6 +125,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String IMPORT_DUPLICATE = "importDuplicate";
 
   public static final String IMPORT_UNUSED = "importUnused";
+
+  public static final String MODULE_DEPENDENCY_CYCLE = "moduleDependencyCycle";
 
   public static final String SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents";
 
@@ -421,6 +424,55 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   }
 
   /**
+   * Reports a module that takes part in a dependency cycle.
+   * 
+   * <p>A cycle means neither module can be reasoned about - or switched off - without the other, and
+   * the generated module dependency graph would have no topological order to offer a consumer. It is
+   * an error rather than a warning because there is no version of it that is intended.</p>
+   * 
+   * <p><b>A module, not a bounded context.</b> The nodes are the {@code module} blocks as declared,
+   * so a view or a process manager is a node of its own. That granularity is what keeps the seams
+   * between contexts legal: a process manager may react to another context's events while the
+   * context it lives beside stays independent of it. Rolling the sub-modules up into their context
+   * is a question a consumer of the generated graph can ask; it is not what this rule enforces.</p>
+   * 
+   * <p><b>The build is the enforcement point.</b> SrcGen4J parses the whole model into one resource
+   * set, so a build sees every module and every edge. An editor validates one resource and reaches
+   * the rest only through the index, so a cycle closed by a file that is not open may surface late
+   * or not at all. That is a deliberate trade: no editor-side index walk on every keystroke, and the
+   * build refuses regardless.</p>
+   */
+  @Check
+  public void checkModuleDependencyCycle(final org.fuin.dsl.cqrs.cqrsDsl.Module module) {
+    Resource _eResource = module.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    Resource _eResource_1 = module.eResource();
+    ResourceSet _resourceSet = null;
+    if (_eResource_1!=null) {
+      _resourceSet=_eResource_1.getResourceSet();
+    }
+    final Map<String, Set<String>> graph = CqrsModuleDependencies.graphOf(_resourceSet);
+    final List<String> cycle = CqrsModuleDependencies.cycleThrough(module.getName(), graph);
+    boolean _isEmpty = cycle.isEmpty();
+    if (_isEmpty) {
+      return;
+    }
+    String _name = module.getName();
+    String _plus = ("Module \'" + _name);
+    String _plus_1 = (_plus + "\' is part of a dependency cycle: ");
+    String _join = IterableExtensions.join(cycle, " -> ");
+    String _plus_2 = (_plus_1 + _join);
+    this.error(_plus_2, module, CqrsDslPackage.Literals.MODULE__NAME, CqrsDslValidator.MODULE_DEPENDENCY_CYCLE);
+  }
+
+  /**
    * Whether anything inside the given block points at something that could not be resolved. Only
    * asked when an import is about to be reported as unused, which is rare enough for a second walk.
    */
@@ -472,44 +524,7 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
    * must not decide whether its import is reported.</p>
    */
   private Iterable<String> referencedNames(final EObject container) {
-    final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
-    final TreeIterator<EObject> contents = container.eAllContents();
-    while (contents.hasNext()) {
-      {
-        final EObject obj = contents.next();
-        final Function1<EReference, Boolean> _function = (EReference it) -> {
-          return Boolean.valueOf(((!it.isContainment()) && (!it.isDerived())));
-        };
-        Iterable<EReference> _filter = IterableExtensions.<EReference>filter(obj.eClass().getEAllReferences(), _function);
-        for (final EReference reference : _filter) {
-          {
-            final Object value = obj.eGet(reference, true);
-            List<?> _xifexpression = null;
-            boolean _isMany = reference.isMany();
-            if (_isMany) {
-              _xifexpression = ((List<?>) value);
-            } else {
-              _xifexpression = Collections.<Object>singletonList(value);
-            }
-            final List<?> targets = _xifexpression;
-            Iterable<?> _filterNull = IterableExtensions.filterNull(targets);
-            for (final Object target : _filterNull) {
-              if ((target instanceof EObject)) {
-                boolean _eIsProxy = ((EObject)target).eIsProxy();
-                boolean _not = (!_eIsProxy);
-                if (_not) {
-                  final QualifiedName name = this.qualifiedNameProvider.getFullyQualifiedName(((EObject)target));
-                  if ((name != null)) {
-                    result.add(name.toString());
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    return result;
+    return CqrsModuleDependencies.referencedNames(container, this.qualifiedNameProvider);
   }
 
   /**

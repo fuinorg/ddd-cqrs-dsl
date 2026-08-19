@@ -24,6 +24,7 @@ var FINAL_PREFIX = 'Final';
 var MAIN_RESOURCE_ARTIFACTS = [
     'AggregateDocArtifactFactory',
     'ESJpaLiquibaseXmlArtifactFactory',
+    'ModuleDependencyArtifactFactory',
     'PermissionCatalogueArtifactFactory'
 ];
 
@@ -98,6 +99,7 @@ function module(typeKey) {
         case 'java-permission-ids':
         case 'java-ui-catalogue':
         case 'res-permission-catalogue':
+        case 'res-module-dependencies':
             return 'shared';
 
         default:
