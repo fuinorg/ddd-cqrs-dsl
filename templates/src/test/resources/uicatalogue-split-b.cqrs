@@ -1,0 +1,18 @@
+context p {
+
+    // Second half of the same module, in its own file. It states no wording of its own and adds a
+    // second view, so both maps keyed by module name would gain a duplicate entry without a merge.
+    module x.split {
+        import p.x.split.*
+
+        projection Second
+
+        view SecondView uses Second {
+            method countSecond {
+                returns Integer
+            }
+        }
+
+    }
+
+}

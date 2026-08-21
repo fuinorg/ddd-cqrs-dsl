@@ -2,6 +2,7 @@ package org.fuin.dsl.ddd.gen.resourceset
 
 import java.util.ArrayList
 import java.util.Iterator
+import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
@@ -80,7 +81,12 @@ class UiCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
             return null
         }
 
-        val List<ModuleEntry> modules = new ArrayList<ModuleEntry>()
+        // Keyed by module name, not a plain list: one module may be declared in more than one file -
+        // splitting a module over a public and a private half is an ordinary way to lay a model out -
+        // and every map below is keyed by that name. Two entries for one name is a duplicate key, which
+        // Map.ofEntries rejects at class initialization, so the catalogue would fail on first touch
+        // rather than at build time.
+        val Map<String, ModuleEntry> modules = new LinkedHashMap<String, ModuleEntry>()
         var String project = null
 
         val Iterator<EObject> it = resourceSet.allContents.filter(typeof(EObject)).filter[isPrimary(it)]
@@ -88,17 +94,23 @@ class UiCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
             val EObject container = it.next
             if (container instanceof Module) {
                 project = container.context.name
-                modules.add(moduleEntry(container))
+                val entry = moduleEntry(container)
+                val existing = modules.get(entry.name)
+                if (existing === null) {
+                    modules.put(entry.name, entry)
+                } else {
+                    existing.merge(entry)
+                }
             }
         }
 
-        if (project === null || !modules.exists[carriesText]) {
+        if (project === null || !modules.values.exists[carriesText]) {
             return null
         }
 
         // Sorted so the generated file is stable in version control: the order elements come out of the
         // resource set is not guaranteed, and a catalogue that reshuffles on every build is unreviewable.
-        val sorted = modules.sortBy[name].toList
+        val sorted = modules.values.sortBy[name].toList
         return List.of(javaConstants(project, sorted))
     }
 
@@ -323,7 +335,7 @@ class UiCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
                  * a module's tabs from this, and a view with no wording of its own still exists.
                  */
                 public static final Map<String, List<String>> MODULE_VIEWS = Map.ofEntries(
-                    «FOR m : modules.filter[!views.empty] SEPARATOR ","»
+                    «FOR m : modules.filter[!it.views.empty] SEPARATOR ","»
                         Map.entry("«m.name»", List.of(«FOR v : m.views SEPARATOR ", "»"«v.name»"«ENDFOR»))
                     «ENDFOR»
                 );
@@ -375,6 +387,24 @@ class UiCatalogueArtifactFactory extends AbstractSource<ResourceSet> {
     }
 
     /** Whether a module, one of its views, or one of their methods states any wording at all. */
+    /**
+     * Folds a second declaration of the same module into this one.
+     * <p>
+     * A module split over several files is one module to everything that reads the catalogue, so the
+     * halves have to become one entry. The views simply add up - a name can only be declared once, so
+     * they cannot collide. The wording is taken from whichever half states any, and the first half that
+     * does wins: a module captioned twice has said the same thing twice, and picking either is the same
+     * answer.
+     *
+     * @param other Further declaration of the module this entry already describes.
+     */
+    private def void merge(ModuleEntry entry, ModuleEntry other) {
+        entry.views.addAll(other.views)
+        if (!entry.text.states) {
+            entry.text = other.text
+        }
+    }
+
     private def boolean carriesText(ModuleEntry module) {
         return module.text.states || module.views.exists[text.states || methods.exists[text.states]]
     }

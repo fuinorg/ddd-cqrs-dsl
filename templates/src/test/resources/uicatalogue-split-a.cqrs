@@ -1,0 +1,25 @@
+context p {
+
+    // First half of a module that is declared in two files - the ordinary way to split a model into a
+    // public and a private part. It carries the wording and one view.
+    module x.split {
+
+        slabel "Split"
+        label "Split module"
+        tooltip "Declared in two files, and one module to everything that reads the catalogue"
+
+        type String
+
+        type Integer
+
+        projection First
+
+        view FirstView uses First {
+            method countFirst {
+                returns Integer
+            }
+        }
+
+    }
+
+}

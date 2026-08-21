@@ -140,6 +140,32 @@ class UiCatalogueArtifactFactoryTest {
     }
 
     @Test
+    def void testModuleDeclaredInTwoFilesBecomesOneEntry() {
+
+        // PREPARE
+        val testee = createTestee()
+
+        // TEST
+        val result = testee.create(model("/uicatalogue-split-a.cqrs", "/uicatalogue-split-b.cqrs"),
+            new HashMap<String, Object>(), false)
+
+        // VERIFY
+        val src = new String(artifact(result, "p/shared/domain/UiCatalogue.java").data, "UTF-8")
+
+        // Every map here is keyed by module name, and Map.ofEntries rejects a duplicate key at class
+        // initialization - so a module split over two files would compile and then fail on first touch.
+        assertThat(src.split('Map.entry\\("x.split", List.of').length - 1).isEqualTo(1)
+        assertThat(src.split('Map.entry\\("x.split", new Text').length - 1).isEqualTo(1)
+
+        // The halves add up rather than one of them winning.
+        assertThat(src).contains('Map.entry("x.split", List.of("FirstView", "SecondView"))')
+
+        // The wording is taken from the half that states it.
+        assertThat(src).contains(
+            'Map.entry("x.split", new Text("Split", "x.split", "Split", "Split module", "Declared in two files, and one module to everything that reads the catalogue"))')
+    }
+
+    @Test
     def void testNothingIsGeneratedDuringPreparation() {
         assertThat(new UiCatalogueArtifactFactory().create(model("/uicatalogue.cqrs"),
             new HashMap<String, Object>(), true)).isNull
@@ -173,6 +199,17 @@ class UiCatalogueArtifactFactoryTest {
         val DomainModel model = parser.parse(Utils.readAsString(class.getResource(resource)))
         validationTester.assertNoErrors(model)
         return model.eResource.resourceSet
+    }
+
+    /** Parses several files into one resource set, the way a model split over several files is read. */
+    private def ResourceSet model(String first, String... more) {
+        val DomainModel model = parser.parse(Utils.readAsString(class.getResource(first)))
+        validationTester.assertNoErrors(model)
+        val resourceSet = model.eResource.resourceSet
+        for (resource : more) {
+            validationTester.assertNoErrors(parser.parse(Utils.readAsString(class.getResource(resource)), resourceSet))
+        }
+        return resourceSet
     }
 
 }
