@@ -1,0 +1,248 @@
+context de.fuin.melkheftken {
+
+    module categories {
+
+        slabel "Categories"
+        label "Categories"
+        tooltip "The income and expense buckets every record is classified into"
+
+        import de.fuin.melkheftken.common.basics.*
+
+        type String
+
+        type Integer
+
+        type UUID
+
+        /** The text length must lie between the two bounds, inclusive. */
+        constraint Length input String {
+            Integer min
+            Integer max
+            message "must be between ${min} and ${max} characters"
+        }
+
+        /**
+         * The label of a category as shown in lists and pickers (e.g. "Office supplies").
+         */
+        value-object CategoryName base String {
+
+            slabel "Name"
+            label "Name"
+            tooltip "What this category is called in lists and pickers"
+            prompt "Office and administration"
+
+            String value invariants Length(1, 100) {
+                examples "Business income" "Office and administration"
+            }
+        }
+
+        /**
+         * The side of the ledger a category aggregates on, so reports can total income and expenses
+         * separately. A category's type is fixed at creation.
+         */
+        enum CategoryType {
+
+            slabel "Type"
+            label "Type"
+            tooltip "Which side of the ledger this category totals on"
+
+            instances {
+
+                /** Money coming in - totalled on the income side of every report. */
+                INCOME {
+                    slabel "Income"
+                    label "Income"
+                    tooltip "Money coming in - totalled on the income side of every report"
+                }
+
+                /** Money going out - totalled on the expense side of every report. */
+                EXPENSE {
+                    slabel "Expense"
+                    label "Expense"
+                    tooltip "Money going out - totalled on the expense side of every report"
+                }
+
+            }
+
+        }
+
+        /** Uniquely identifies a category. */
+        aggregate-id CategoryId identifies Category base UUID {
+            slabel "CATID"
+            label "Category ID"
+            tooltip "Unique identifier of the category"
+        }
+
+        /** A category name already exists for the same type. */
+        exception DuplicateCategoryNameException {
+            String name
+            CategoryType kind
+            message "A ${kind} category named '${name}' already exists"
+        }
+
+        /** A category that is still referenced was deleted. */
+        exception CategoryInUseException {
+            String name
+            message "The category '${name}' is still referenced"
+        }
+
+        aggregate Category identifier CategoryId {
+
+            /** A category name is unique per type. */
+            business-rule NameMustBeUniqueForType exception DuplicateCategoryNameException {
+                consistency strong
+            }
+
+            /** A referenced category cannot be removed. */
+            business-rule MustNotBeReferenced exception CategoryInUseException {
+                consistency strong
+            }
+
+            constructor create business-rules NameMustBeUniqueForType fires CategoryCreatedEvent {
+                CategoryName name
+                CategoryType kind
+                @GenesisEvent event CategoryCreatedEvent { message "created" }
+            }
+
+            method rename business-rules NameMustBeUniqueForType fires CategoryRenamedEvent {
+                CategoryName newName
+                event CategoryRenamedEvent { message "renamed" }
+            }
+
+            method remove business-rules MustNotBeReferenced fires CategoryRemovedEvent {
+                @ExodusEvent event CategoryRemovedEvent { message "removed" }
+            }
+
+        }
+
+        projection Categories input Category.create.CategoryCreatedEvent
+
+        /** Create a custom category. */
+        command CreateCategoryCommand target Category.create {
+            message "Create ${kind} category '${name}'"
+        }
+
+        /** Rename a custom category. */
+        command RenameCategoryCommand target Category.rename {
+            message "Rename category to '${newName}'"
+        }
+
+        /** Delete a custom category. */
+        command RemoveCategoryCommand target Category.remove {
+            message "Remove category"
+        }
+
+        /**
+         * A read-model row for the category list: the identity, the label, and the side of the
+         * ledger.
+         */
+        value-object CategoryDetails {
+
+            /** Aggregate this row was projected from and the version it reflects. */
+            VersionedEntityIdPath source
+
+            /** The category's identifier. */
+            CategoryId id
+
+            CategoryName name {
+                slabel "Name"
+                label "Name"
+                tooltip "What this category is called in lists and pickers"
+                prompt "Office and administration"
+            }
+
+            /** The ledger side the category aggregates on. */
+            CategoryType kind {
+                slabel "Type"
+                label "Type"
+                tooltip "Which side of the ledger this category totals on"
+            }
+
+        }
+
+    }
+
+    module categories.categoryview {
+
+        slabel "Categories"
+        label "Categories"
+        tooltip "Reading the categories - the whole list, or one side of the ledger"
+
+        import de.fuin.melkheftken.categories.*
+
+        type List generics 1
+
+        /**
+         * Reads the categories: the whole list for management, or only those of one type for
+         * classification.
+         */
+        view CategoryView uses Categories rest-path "/view/category" {
+
+            slabel "Categories"
+            label "Categories"
+            tooltip "Every category this book keeps, and what each one is for"
+
+            /**
+             * Returns all categories sorted by type (income before expense) and, within each
+             * type, alphabetically by name.
+             */
+            method listCategories {
+
+                slabel "All"
+                label "All categories"
+                tooltip "Every category, income first then expense, each alphabetical by name"
+
+                /** All categories, income first then expense, each alphabetical by name. */
+                returns List<CategoryDetails>
+
+            }
+
+            /**
+             * Returns only the categories of the given type, for pickers that classify a
+             * record on a known side of the ledger.
+             */
+            method listByType {
+
+                slabel "By type"
+                label "Categories of one type"
+                tooltip "Only the categories on one side of the ledger, for classifying a record"
+
+                /** The side of the ledger to list categories for. */
+                CategoryType kind {
+                    slabel "Type"
+                    label "Type"
+                    tooltip "The side of the ledger to list categories for"
+                }
+
+                /** The matching categories, alphabetical by name. */
+                returns List<CategoryDetails>
+
+            }
+
+        }
+
+    }
+
+    module common.basics {
+
+        type Integer
+
+        type String
+
+        /** The event that brings an aggregate into being. */
+        annotation GenesisEvent {
+        }
+
+        /** The event that ends one. */
+        annotation ExodusEvent {
+        }
+
+        /** Identifies the aggregate some data was derived from, and the version it reflects. */
+        value-object VersionedEntityIdPath {
+            String entityIdPath
+            optional Integer aggregateVersion
+        }
+
+    }
+
+}

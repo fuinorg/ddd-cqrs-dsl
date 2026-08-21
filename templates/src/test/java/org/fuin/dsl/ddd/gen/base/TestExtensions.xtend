@@ -28,5 +28,22 @@ class TestExtensions {
     def static loadConcreteExample(String filename) {
         Utils.readAsString("src/test/expected-java/" + EXAMPLES_CONCRETE + "/" + filename)
     }
+
+    /**
+     * Returns the content of an expected Dart file.
+     *
+     * <p>Under its own root rather than beside the Java ones, and - unlike them - <b>not</b> compiled
+     * by the test sources. What keeps these honest instead is that they are the files the Flutter
+     * client was written against and runs on: they were hand-written first, against a real backend,
+     * and copied here once they worked. See melkheftken's
+     * <code>frontend/flutter/packages/contract</code>.
+     *
+     * @param filename Path below the expected-dart root.
+     *
+     * @return File content as text.
+     */
+    def static loadDartExample(String filename) {
+        Utils.readAsString("src/test/expected-dart/" + filename)
+    }
     
 }

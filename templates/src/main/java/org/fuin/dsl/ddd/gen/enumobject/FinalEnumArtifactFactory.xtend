@@ -75,7 +75,7 @@ class FinalEnumArtifactFactory extends AbstractSource<EnumObject> {
                 
                 «FOR in : eo.instances»
                     «in.doc»
-                    «new SrcMetaAnnotations(ctx, EnumArtifactFactory.instanceMeta(in), null, in.name)»public static final «className» «in.name» = new «className»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»);
+                    «new SrcMetaAnnotations(ctx, instanceMeta(in), null, in.name)»public static final «className» «in.name» = new «className»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»);
                     
                 «ENDFOR»
                 «new SrcStaticEnumCode(ctx, eo)»

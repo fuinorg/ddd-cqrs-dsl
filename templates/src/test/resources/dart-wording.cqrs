@@ -1,0 +1,114 @@
+context test.wording {
+
+    module shop {
+
+        type String
+
+        type Integer
+
+        type Date
+
+        type List generics 1
+
+        /** The text length must lie between the two bounds, inclusive. */
+        constraint Length input String {
+            Integer min
+            Integer max
+            message "must be between ${min} and ${max} characters"
+        }
+
+        /** Personal data, so a row carrying it is declared protected. */
+        data-protection PersonalData {
+            /** A name identifies a person directly. */
+            protection personal
+        }
+
+        /** What a product is called. */
+        value-object ProductName base String {
+
+            slabel "Name"
+            label "Product name"
+            tooltip "What the type says it is called"
+
+            String value invariants Length(1, 100)
+        }
+
+        /** A named kind, to exercise a list of enums. */
+        enum Colour {
+
+            slabel "Colour"
+            label "Colour"
+            tooltip "What the type says a colour is"
+
+            instances {
+                /** Red. */
+                RED { slabel "Red" label "Red" tooltip "Red" }
+                /** Green. */
+                GREEN { slabel "Green" label "Green" tooltip "Green" }
+            }
+
+        }
+
+        /** A row whose fields differ in where their wording comes from. */
+        value-object ProductDetails {
+
+            /** Wording of its own, which must win over the type's. */
+            ProductName nickname {
+                slabel "Nick"
+                label "Nickname"
+                tooltip "What the field says it is called"
+            }
+
+            /** Optional, and with wording of its own. */
+            optional ProductName alias {
+                slabel "Alias"
+                label "Alias"
+                tooltip "An optional field states its own wording too"
+            }
+
+            /** No wording of its own, so it inherits the type's. */
+            ProductName plain
+
+            /** Several values of a type that reads itself from the wire. */
+            List<ProductName> aliases
+
+            /** Several values of a type the wire has no type for. */
+            List<Colour> colours
+
+            /** Several plain values. */
+            List<String> tags
+
+            /** Several values, and the model allows the whole list to be absent. */
+            optional List<ProductName> nicknames
+
+            /** An external type can hold no wording, so the field carries it. */
+            Date listedOn {
+                slabel "Listed"
+                label "Listed on"
+                tooltip "A field whose type can hold no wording"
+            }
+
+        }
+
+        /** The same fields again, on a row the model declares protected. */
+        value-object ProtectedDetails protected-by PersonalData {
+
+            /** Wording of its own, which must win over the type's here too. */
+            ProductName nickname {
+                slabel "Nick"
+                label "Nickname"
+                tooltip "What the field says it is called"
+            }
+
+            /** Optional, with wording of its own. */
+            optional ProductName alias {
+                slabel "Alias"
+                label "Alias"
+                tooltip "An optional field states its own wording too"
+            }
+
+        }
+
+    }
+
+}

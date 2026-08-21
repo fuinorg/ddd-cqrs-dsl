@@ -109,23 +109,4 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
 
     }
 
-    /**
-     * Returns the meta information declared on an enum instance, or null when it declares none.
-     * <p>
-     * The null-safe equivalent of CqrsVariableExtensions.overriddenMeta, which only serves Variable.
-     * It lives here rather than in the shared core because only the generator reads it: the core is
-     * mirrored between the Eclipse and Maven trees and bundled into both plugins, and neither plugin
-     * would ever call this.
-     * 
-     * @param instance Enum instance.
-     * 
-     * @return Meta info or null.
-     */
-    def package static TypeMetaInfo instanceMeta(EnumInstance instance) {
-        if (instance.overridden === null) {
-            return null
-        }
-        return instance.overridden.metaInfo
-    }
-    
 }

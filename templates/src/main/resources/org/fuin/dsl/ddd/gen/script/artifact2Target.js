@@ -13,6 +13,11 @@
  */
 
 var MAIN_JAVA = 'mainJava';
+// Dart has one destination: the contract package, whose whole "lib/src-gen" is rewritten every run.
+// There is no "written once" half of it - a descriptor cannot be usefully hand-edited, which is the
+// reason the generator emits descriptors rather than screens.
+var DART_MODULE = 'flutter.contract';
+var GEN_MAIN_DART = 'genMainDart';
 var GEN_MAIN_JAVA = 'genMainJava';
 var GEN_MAIN_RES = 'genMainRes';
 var TEST_JAVA = 'testJava';
@@ -38,6 +43,12 @@ var MAIN_JAVA_ARTIFACTS = [
 ];
 
 function artifact2Target(element, typeKey, artifactFactory) {
+    if (typeKey !== null && typeKey !== undefined && typeKey.indexOf('dart-') === 0) {
+        return { module: DART_MODULE, folder: GEN_MAIN_DART };
+    }
+    if (typeKey === 'res-dart-arb') {
+        return { module: DART_MODULE, folder: GEN_MAIN_DART };
+    }
     return { module: module(typeKey), folder: folder(artifactFactory) };
 }
 

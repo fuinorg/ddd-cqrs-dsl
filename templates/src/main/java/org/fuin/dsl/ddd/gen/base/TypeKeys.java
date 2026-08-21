@@ -152,6 +152,48 @@ public final class TypeKeys {
     /** The UI catalogue as Java constants: <code>UiCatalogue</code>. */
     public static final String JAVA_UI_CATALOGUE = "java-ui-catalogue";
 
+    // ---- Dart -------------------------------------------------------------------------------------
+    //
+    // The Flutter client's contract. A second target for the same model rather than a variant of the
+    // Java one: what it emits is Dart, and the type key is what tells a mapping script where an
+    // artifact belongs, so the two must not collide.
+
+    /** An <code>enum</code> as a Dart enum: <code>«name».dart</code>. */
+    public static final String DART_ENUM = "dart-enum";
+
+    /** An <code>aggregate-id</code> or <code>entity-id</code> as a Dart class carrying its type. */
+    public static final String DART_ENTITY_ID = "dart-entity-id";
+
+    /** A single-value <code>value-object</code> as a Dart class carrying its invariants. */
+    public static final String DART_VALUE_OBJECT = "dart-value-object";
+
+    /** A multi-attribute <code>value-object</code> - a read-model row, with its descriptor. */
+    public static final String DART_VALUE_OBJECT_ROW = "dart-value-object-row";
+
+    /** A <code>command</code> as a Dart class, with its descriptor. */
+    public static final String DART_COMMAND = "dart-command";
+
+    /** A typed client for one <code>view</code>. */
+    public static final String DART_VIEW_CLIENT = "dart-view-client";
+
+    /** The const descriptor of one <code>view</code> - what a generic renderer draws it from. */
+    public static final String DART_VIEW_DESCRIPTOR = "dart-view-descriptor";
+
+    /** The whole model's modules, views, methods and commands, as one const value. */
+    public static final String DART_MODULE_CATALOGUE = "dart-module-catalogue";
+
+    /** The one file a consumer imports: everything the package offers, re-exported. */
+    public static final String DART_LIBRARY = "dart-library";
+
+    /** Types the model uses but does not own, written into the client's own package. */
+    public static final String DART_SHARED_TYPES = "dart-shared-types";
+
+    /** Every permission id in the model, as Dart constants. */
+    public static final String DART_PERMISSION_IDS = "dart-permission-ids";
+
+    /** The model's wording as an ARB file, keyed the way the annotations are. */
+    public static final String RES_DART_ARB = "res-dart-arb";
+
     // ---- Non-Java artifacts --------------------------------------------------------------------
 
     /** Aggregate documentation: <code>«Name».html</code>. */

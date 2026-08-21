@@ -2,6 +2,7 @@ package org.fuin.dsl.cqrs.extensions
 
 import java.util.ArrayList
 import java.util.List
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.util.InternalEList
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory
@@ -13,6 +14,13 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsInvariantsExtensions.*
 
 /**
  * Provides extension methods for Attributes.
+ *
+ * <p><b>Anything containment-typed is copied here, never assigned.</b> EMF lets an object have one
+ * container, so assigning an attribute's <code>overridden</code> wording or its <code>invariants</code>
+ * to a newly built parameter does not share them - it <em>moves</em> them, and the attribute in the
+ * parsed model is left with nothing. That model is not this code's to spend: a generator reads it, and
+ * every generator that runs afterwards reads the same objects. A single caller building a parameter
+ * from an attribute would otherwise silently strip the wording off the model for everybody behind it.
  */
 class CqrsAttributeExtensions {
 
@@ -51,8 +59,8 @@ class CqrsAttributeExtensions {
 		if (attr.generics !== null && attr.generics.args !== null) {
 			newAttr.generics = copyOf(attr.generics)
 		}
-		newAttr.invariants = attr.invariants;
-		newAttr.overridden = attr.overridden;
+		newAttr.invariants = EcoreUtil.copy(attr.invariants);
+		newAttr.overridden = EcoreUtil.copy(attr.overridden);
 		return newAttr;
 	}
 	
@@ -70,7 +78,9 @@ class CqrsAttributeExtensions {
 		}
 		val param = CqrsDslFactory.eINSTANCE.createParameter
 		param.preconditions = CqrsDslFactory.eINSTANCE.createPreconditions
-		param.preconditions.constraintInstances.addAll(attr.invariants.nullSafe)
+		for (invariant : attr.invariants.nullSafe) {
+			param.preconditions.constraintInstances.add(EcoreUtil.copy(invariant))
+		}
 		param.doc = attr.doc
 		param.optional = attr.optional
 		param.type = attr.type
@@ -78,7 +88,7 @@ class CqrsAttributeExtensions {
 			param.generics = copyOf(attr.generics)
 		}
 		param.name = attr.name
-		param.overridden = attr.overridden
+		param.overridden = EcoreUtil.copy(attr.overridden)
 		return param
 	}
 	

@@ -3,6 +3,8 @@ package org.fuin.dsl.ddd.gen.base
 import java.util.ArrayList
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
+import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo
 import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.ddd.gen.script.CqrsScripts
 import org.fuin.srcgen4j.commons.ArtifactFactory
@@ -278,6 +280,27 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         }
         val idx = name.lastIndexOf('.')
         return (if(idx < 0) name else name.substring(idx + 1)).toFirstUpper
+    }
+
+    /**
+     * The wording an enum instance carries, or <code>null</code> when it states none.
+     *
+     * <p>The null-safe equivalent of <code>CqrsVariableExtensions.overriddenMeta</code>, which only
+     * serves <code>Variable</code>. It lives here rather than in the shared core because only a
+     * generator reads it - the core is mirrored between the Eclipse and Maven trees and bundled into
+     * both plugins, and neither plugin would ever call this. It lives in the *base* rather than in the
+     * Java target because both targets need it: the JVM one turns it into annotations, the Dart one
+     * into const data, and a second copy would be a second thing to keep right.
+     *
+     * @param instance Enum instance.
+     *
+     * @return Meta info, or <code>null</code>.
+     */
+    static def TypeMetaInfo instanceMeta(EnumInstance instance) {
+        if (instance?.overridden === null) {
+            return null
+        }
+        return instance.overridden.metaInfo
     }
 
     protected def String joinPackage(String... parts) {
