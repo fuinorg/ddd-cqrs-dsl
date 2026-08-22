@@ -152,9 +152,9 @@ class DartAttribute {
     }
 
     /**
-     * What the attribute is for, derived from its type so no generator switches on a name. A
-     * <code>@Key</code> overrides that, for the two cases a type cannot express: a natural key, which
-     * is shown as well as identifying, and a second id that is a reference rather than the identity.
+     * What the attribute is for, derived from its type so no generator switches on a name.
+     * <code>@Key</code> says which attribute identifies the row; whether it is shown stays a question
+     * about its type, so a surrogate is hidden and a natural key is a column.
      */
     def String role() {
         val type = attribute.type
@@ -167,7 +167,18 @@ class DartAttribute {
             return "AttributeRole.data"
         }
         if (declaredKey !== null) {
-            return if(attribute.name == declaredKey) "AttributeRole.key" else "AttributeRole.data"
+            if (attribute.name != declaredKey) {
+                // A second id on the row is a reference, not the identity - and the model gives it
+                // wording, so it is a column.
+                return "AttributeRole.data"
+            }
+            // Naming the key says which attribute identifies the row, not that it is worth reading:
+            // a surrogate stays hidden, a natural key is the content.
+            return switch (type) {
+                AggregateId: "AttributeRole.identifier"
+                EntityId: "AttributeRole.identifier"
+                default: "AttributeRole.key"
+            }
         }
         return switch (type) {
             AggregateId: "AttributeRole.identifier"

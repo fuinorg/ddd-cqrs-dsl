@@ -78,6 +78,19 @@ class DartRowArtifactFactoryTest {
     }
 
     @Test
+    def void testNamingTheKeyDoesNotMakeASurrogateAColumn() {
+        // Which attribute identifies the row and whether a user should read it are two questions. A
+        // journal entry's UUID is its key and is of no interest on screen; the reference beside it is.
+        val generated = generateFrom("/dart-child-entity.cqrs", "ShelfRow")
+
+        assertThat(generated).contains("modelType: 'BookId',\n        role: AttributeRole.identifier,")
+        assertThat(generated).doesNotContain("modelType: 'BookId',\n        role: AttributeRole.key,")
+
+        // The second id is a reference, so it stays a column - it is what the model gives wording to.
+        assertThat(generated).contains("kind: ValueKind.identifier,\n        modelType: 'ChapterId',\n        text:")
+    }
+
+    @Test
     def void testARowWithoutAKeyStillRecognisesAnIdentifierByItsType() {
         // The counterpart: nothing in dart-categories.cqrs declares a key, and CategoryDetails must
         // still identify itself. Otherwise "name the key" would quietly become "name it everywhere".
