@@ -60,6 +60,58 @@ class DartRowArtifactFactoryTest {
             new HashMap<String, Object>(), false)).isNull
     }
 
+    @Test
+    def void testARowCanNameTheAttributeThatIdentifiesIt() {
+        // Two things the attribute's type cannot say. A natural key is an ordinary value object, so the
+        // type-derived rule makes it plain data and the row has no identity at all. And a row holding a
+        // second id - a reference, not its identity - has that id hidden from the screen although the
+        // model gives it wording. Naming the key settles both.
+        val generated = generateFrom("/dart-child-entity.cqrs", "BookRow")
+
+        assertThat(generated).contains("modelType: 'Isbn',\n        role: AttributeRole.key,")
+
+        // The aggregate's own id is a reference here, so it is shown rather than taken for the identity.
+        assertThat(generated).doesNotContain("role: AttributeRole.identifier")
+
+        // And the projection's bookkeeping is still recognised by its type, key or no key.
+        assertThat(generated).contains("role: AttributeRole.source")
+    }
+
+    @Test
+    def void testARowWithoutAKeyStillRecognisesAnIdentifierByItsType() {
+        // The counterpart: nothing in dart-categories.cqrs declares a key, and CategoryDetails must
+        // still identify itself. Otherwise "name the key" would quietly become "name it everywhere".
+        assertThat(generate("CategoryDetails")).contains("role: AttributeRole.identifier")
+    }
+
+    @Test
+    def void testACompositeAttributePointsAtItsOwnDescriptor() {
+        // Declared like any other type, but it arrives as a JSON object - so a cell handed one has
+        // nothing printable and renders the map. Its own descriptor is what gives a cell the
+        // sub-attributes and their wording, and a form the fields to draw.
+        val generated = generateFrom("/dart-child-entity.cqrs", "BookRow")
+
+        assertThat(generated).contains("nested: Imprint.descriptor,")
+
+        // A wrapper around a single value has no descriptor to point at, so it must not claim one.
+        assertThat(generated).doesNotContain("nested: Isbn.descriptor")
+
+        // Nor does the projection's bookkeeping, which is a composite no screen ever draws.
+        assertThat(generated).doesNotContain("nested: VersionedEntityIdPath.descriptor")
+    }
+
+    private def String generate(String valueObject) {
+        new String(createTestee.create(model.find(typeof(ValueObject), valueObject),
+            new HashMap<String, Object>(), false).iterator.next.data, "UTF-8")
+    }
+
+    private def String generateFrom(String resource, String valueObject) {
+        val DomainModel other = parser.parse(Utils.readAsString(class.getResource(resource)))
+        validationTester.assertNoErrors(other)
+        return new String(createTestee.create(other.find(typeof(ValueObject), valueObject),
+            new HashMap<String, Object>(), false).iterator.next.data, "UTF-8")
+    }
+
     private def createTestee() {
         val factory = new DartRowArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("dartRow",

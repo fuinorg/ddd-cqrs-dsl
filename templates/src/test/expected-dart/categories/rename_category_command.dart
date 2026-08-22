@@ -8,7 +8,7 @@ import 'package:melkheftken_contract/src/descriptor/model_text.dart';
 class RenameCategoryCommand {
   /// Constructor with all data.
   const RenameCategoryCommand({
-    required this.entityIdPath,
+    required this.aggregateId,
     required this.newName,
     this.aggregateVersion,
   });
@@ -21,6 +21,8 @@ class RenameCategoryCommand {
     type: eventType,
     module: 'categories',
     target: 'Category',
+    targetType: 'CATEGORY',
+    targetOrigin: CommandTargetOrigin.row,
     kind: CommandKind.modify,
     doc: 'Rename a custom category.',
     message: r"Rename category to '${newName}'",
@@ -31,6 +33,7 @@ class RenameCategoryCommand {
       AttributeDescriptor(
         name: 'newName',
         kind: ValueKind.text,
+        modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
           key: 'newName',
@@ -45,7 +48,11 @@ class RenameCategoryCommand {
   );
 
   /// Identifier of the aggregate this is directed at.
-  final CategoryId entityIdPath;
+  final CategoryId aggregateId;
+
+  /// Path from the aggregate root down to the entity this is directed at, in the form the
+  /// wire carries: typed segments separated by a slash.
+  String get entityIdPath => aggregateId.typed;
 
   /// Version of the aggregate the change was decided on, so the write side can tell whether it
   /// is still current. Absent when the client does not know it.
@@ -55,7 +62,7 @@ class RenameCategoryCommand {
 
   /// Writes the command as the request body of `POST /cmd/RenameCategoryCommand`.
   Map<String, Object?> toJson() => <String, Object?>{
-        'entity-id-path': entityIdPath.typed,
+        'entity-id-path': entityIdPath,
         if (aggregateVersion != null) 'aggregate-version': aggregateVersion,
         'newName': newName.value,
       };

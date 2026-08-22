@@ -93,6 +93,86 @@ class DartCommandArtifactFactoryTest {
             .contains("'DuplicateCategoryNameException': 'newName'")
     }
 
+    @Test
+    def void testAnAttributeSaysWhichTypeItHolds() {
+        // A rename's newName and a row's name are both a CategoryName. That is the only statement in
+        // the model saying a form may open with the value the row already holds, because the two are
+        // not called the same thing - matching on the attribute name alone finds nothing here.
+        assertThat(generate("RenameCategoryCommand")).contains("modelType: 'CategoryName'")
+        assertThat(generate("CreateCategoryCommand")).contains("modelType: 'CategoryType'")
+    }
+
+    @Test
+    def void testACommandAddressingAChildEntityCarriesBothIds() {
+        // The wire carries the path from the root down to the entity. A command that knows only the
+        // root cannot say which chapter it means, so the generated class would be unusable for every
+        // child entity in the model - which is what it was until this test existed.
+        val generated = generateFrom("/dart-child-entity.cqrs", "RetitleChapterCommand")
+
+        assertThat(generated).contains("final BookId aggregateId;")
+        assertThat(generated).contains("final ChapterId entityId;")
+        assertThat(generated).contains(
+            "String get entityIdPath => '${aggregateId.typed}/${entityId.typed}';")
+        assertThat(generated).contains("'entity-id-path': entityIdPath,")
+
+        // Both ids have to be asked for, or one of them is silently absent from the request.
+        assertThat(generated).contains("required this.aggregateId,")
+        assertThat(generated).contains("required this.entityId,")
+
+        // And both types have to be imported, or the file does not compile where it lands.
+        assertThat(generated).contains("books/book_id.dart';")
+        assertThat(generated).contains("books/chapter_id.dart';")
+    }
+
+    @Test
+    def void testACommandSaysWhereItsIdentifierComesFrom() {
+        // Four different things are asked of a screen here, and picking the wrong one does not draw
+        // badly - it addresses the write at the wrong aggregate. None of it is derivable from the rest
+        // of the descriptor: `target` names the aggregate, not what a client is supposed to do about it.
+        assertThat(generate("CreateCategoryCommand"))
+            .contains("targetOrigin: CommandTargetOrigin.clientGenerated")
+        assertThat(generate("RenameCategoryCommand"))
+            .contains("targetOrigin: CommandTargetOrigin.row")
+        assertThat(generateFrom("/dart-child-entity.cqrs", "AddChapterCommand"))
+            .contains("targetOrigin: CommandTargetOrigin.parentOfRow")
+        assertThat(generateFrom("/dart-child-entity.cqrs", "PrintEditionCommand"))
+            .contains("targetOrigin: CommandTargetOrigin.derived")
+    }
+
+    @Test
+    def void testTheTargetTypeIsTheModelsAndNotGuessedFromAName() {
+        // The wire type of an entity is its own name in upper snake case, and that is not recoverable
+        // from the id class or the aggregate: melkheftken has an AccountTransactionId whose type is
+        // TRANSACTION. So the model states it rather than a screen inferring it.
+        assertThat(generate("CreateCategoryCommand")).contains("targetType: 'CATEGORY'")
+        assertThat(generateFrom("/dart-child-entity.cqrs", "AddChapterCommand"))
+            .contains("targetType: 'CHAPTER'")
+    }
+
+    @Test
+    def void testADateTravelsAsTheWireCarriesIt() {
+        // A bare DateTime cannot be sent at all: a JSON encoder refuses it outright, and a query string
+        // renders it '2026-08-21 00:00:00.000', which the server does not parse back. The model says it
+        // is a calendar day, so it travels as one.
+        val generated = generateFrom("/dart-child-entity.cqrs", "PublishBookCommand")
+
+        assertThat(generated).contains("'publishOn': wireDate(publishOn),")
+        assertThat(generated).doesNotContain("'publishOn': publishOn,")
+
+        // And the helper has to be reachable from where the file lands.
+        assertThat(generated).contains("src/json/json.dart';")
+    }
+
+    @Test
+    def void testACommandAddressingTheRootCarriesOneId() {
+        // The counterpart, so the child case cannot be "fixed" by giving every command two ids.
+        val generated = generate("RenameCategoryCommand")
+
+        assertThat(generated).contains("final CategoryId aggregateId;")
+        assertThat(generated).contains("String get entityIdPath => aggregateId.typed;")
+        assertThat(generated).doesNotContain("entityId;")
+    }
+
     private def void assertGenerates(String command, String expected) {
         val artifact = createTestee.create(model.find(typeof(Command), command),
             new HashMap<String, Object>(), false).iterator.next
@@ -115,8 +195,17 @@ class DartCommandArtifactFactoryTest {
         return factory
     }
 
+    private def String generateFrom(String resource, String command) {
+        new String(createTestee.create(modelOf(resource).find(typeof(Command), command),
+            new HashMap<String, Object>(), false).iterator.next.data, "UTF-8")
+    }
+
     private def model() {
-        val DomainModel model = parser.parse(Utils.readAsString(class.getResource("/dart-categories.cqrs")))
+        modelOf("/dart-categories.cqrs")
+    }
+
+    private def modelOf(String resource) {
+        val DomainModel model = parser.parse(Utils.readAsString(class.getResource(resource)))
         validationTester.assertNoErrors(model)
         return model
     }

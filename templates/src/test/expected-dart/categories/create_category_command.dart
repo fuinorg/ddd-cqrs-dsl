@@ -9,7 +9,7 @@ import 'package:melkheftken_contract/src/descriptor/model_text.dart';
 class CreateCategoryCommand {
   /// Constructor with all data.
   const CreateCategoryCommand({
-    required this.entityIdPath,
+    required this.aggregateId,
     required this.name,
     required this.kind,
   });
@@ -22,6 +22,8 @@ class CreateCategoryCommand {
     type: eventType,
     module: 'categories',
     target: 'Category',
+    targetType: 'CATEGORY',
+    targetOrigin: CommandTargetOrigin.clientGenerated,
     kind: CommandKind.create,
     doc: 'Create a custom category.',
     message: r"Create ${kind} category '${name}'",
@@ -29,6 +31,7 @@ class CreateCategoryCommand {
       AttributeDescriptor(
         name: 'name',
         kind: ValueKind.text,
+        modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
           key: 'name',
@@ -42,6 +45,7 @@ class CreateCategoryCommand {
       AttributeDescriptor(
         name: 'kind',
         kind: ValueKind.enumeration,
+        modelType: 'CategoryType',
         text: ModelText(
           bundle: 'Categories',
           key: 'kind',
@@ -55,7 +59,11 @@ class CreateCategoryCommand {
   );
 
   /// Identifier of the aggregate this is directed at.
-  final CategoryId entityIdPath;
+  final CategoryId aggregateId;
+
+  /// Path from the aggregate root down to the entity this is directed at, in the form the
+  /// wire carries: typed segments separated by a slash.
+  String get entityIdPath => aggregateId.typed;
 
   final CategoryName name;
 
@@ -63,7 +71,7 @@ class CreateCategoryCommand {
 
   /// Writes the command as the request body of `POST /cmd/CreateCategoryCommand`.
   Map<String, Object?> toJson() => <String, Object?>{
-        'entity-id-path': entityIdPath.typed,
+        'entity-id-path': entityIdPath,
         'name': name.value,
         'kind': kind.wireName,
       };

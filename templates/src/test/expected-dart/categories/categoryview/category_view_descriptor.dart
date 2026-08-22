@@ -54,6 +54,7 @@ const ViewDescriptor categoryView = ViewDescriptor(
         AttributeDescriptor(
           name: 'kind',
           kind: ValueKind.enumeration,
+          modelType: 'CategoryType',
           text: ModelText(
             bundle: 'Categoryview',
             key: 'kind',

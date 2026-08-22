@@ -106,7 +106,9 @@ class DartViewDescriptorArtifactFactory extends AbstractDartSource<View> {
         '''
         AttributeDescriptor(
           name: «dartString(p.name)»,
-          kind: «p.valueKind»,«IF p.optional»
+          kind: «p.valueKind»,«IF p.modelType !== null»
+          modelType: «dartString(p.modelType)»,«ENDIF»«IF p.nestedDescriptor !== null»
+          nested: «p.nestedDescriptor»,«ENDIF»«IF p.optional»
           optional: true,«ENDIF»«IF p.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
           text: «modelText(bundle, p.name, meta)»,«ENDIF»«IF p.constraints !== null»
@@ -169,7 +171,8 @@ class DartViewDescriptorArtifactFactory extends AbstractDartSource<View> {
                 // invariants or its instances are, and importing it otherwise is an import for a name
                 // the file never writes.
                 val referenced = p.referenced
-                if (referenced !== null && (p.constraints !== null || p.values !== null)) {
+                if (referenced !== null && (p.constraints !== null || p.values !== null
+                        || p.nestedDescriptor !== null)) {
                     out.add(importOf(referenced))
                 }
                 if (states(p.meta)) {

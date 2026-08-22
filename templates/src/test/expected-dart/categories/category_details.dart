@@ -32,11 +32,13 @@ class CategoryDetails {
       AttributeDescriptor(
         name: 'source',
         kind: ValueKind.identifier,
+        modelType: 'VersionedEntityIdPath',
         role: AttributeRole.source,
       ),
       AttributeDescriptor(
         name: 'id',
         kind: ValueKind.identifier,
+        modelType: 'CategoryId',
         role: AttributeRole.identifier,
         text: ModelText(
           bundle: 'Categories',
@@ -49,6 +51,7 @@ class CategoryDetails {
       AttributeDescriptor(
         name: 'name',
         kind: ValueKind.text,
+        modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
           key: 'name',
@@ -62,6 +65,7 @@ class CategoryDetails {
       AttributeDescriptor(
         name: 'kind',
         kind: ValueKind.enumeration,
+        modelType: 'CategoryType',
         text: ModelText(
           bundle: 'Categories',
           key: 'kind',

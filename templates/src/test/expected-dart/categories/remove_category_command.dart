@@ -5,7 +5,7 @@ import 'package:melkheftken_contract/src/descriptor/command_descriptor.dart';
 class RemoveCategoryCommand {
   /// Constructor with all data.
   const RemoveCategoryCommand({
-    required this.entityIdPath,
+    required this.aggregateId,
     this.aggregateVersion,
   });
 
@@ -17,13 +17,19 @@ class RemoveCategoryCommand {
     type: eventType,
     module: 'categories',
     target: 'Category',
+    targetType: 'CATEGORY',
+    targetOrigin: CommandTargetOrigin.row,
     kind: CommandKind.remove,
     doc: 'Delete a custom category.',
     message: 'Remove category',
   );
 
   /// Identifier of the aggregate this is directed at.
-  final CategoryId entityIdPath;
+  final CategoryId aggregateId;
+
+  /// Path from the aggregate root down to the entity this is directed at, in the form the
+  /// wire carries: typed segments separated by a slash.
+  String get entityIdPath => aggregateId.typed;
 
   /// Version of the aggregate the change was decided on, so the write side can tell whether it
   /// is still current. Absent when the client does not know it.
@@ -31,7 +37,7 @@ class RemoveCategoryCommand {
 
   /// Writes the command as the request body of `POST /cmd/RemoveCategoryCommand`.
   Map<String, Object?> toJson() => <String, Object?>{
-        'entity-id-path': entityIdPath.typed,
+        'entity-id-path': entityIdPath,
         if (aggregateVersion != null) 'aggregate-version': aggregateVersion,
       };
 }

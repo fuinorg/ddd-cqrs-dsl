@@ -5,7 +5,9 @@ import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import java.util.TreeSet
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
+import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
@@ -16,10 +18,12 @@ import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
 
 /**
  * Creates a Dart class from a <code>command</code>: what the write side accepts, and what a form has to
@@ -70,13 +74,22 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         for (Variable variable : command.commandVariables.nullSafe) {
             attributes.add(new DartAttribute(variable))
         }
-        val idType = command.aggregate?.idType?.name ?: "String"
+        val aggregate = command.aggregate
+        val entity = command.entity
+        // A command addressing a child entity needs both ids. The wire carries the path from the root
+        // down to the entity, and the root on its own cannot say which child is meant - which is what
+        // the Java side has always emitted as AbstractAggregateCommand<RootId, EntityId>.
+        val childTargeted = aggregate !== null && entity !== null && entity !== aggregate
+        val aggregateIdType = aggregate?.idType?.name ?: "String"
+        val entityIdType = if (childTargeted) entity.idType?.name else null
+        // A model without an aggregate id leaves the identifier a bare String, which has no typed form.
+        val aggregateTyped = if (aggregate?.idType === null) "aggregateId" else "aggregateId.typed"
         val bundle = bundleName(command.module)
         val versioned = !(command.target instanceof Constructor)
         val rejections = rejections(command, attributes)
 
         '''
-        «FOR imp : imports(command, attributes, idType)»
+        «FOR imp : imports(command, attributes, aggregateIdType, entityIdType)»
         import '«imp»';
         «ENDFOR»
 
@@ -84,7 +97,10 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         class «className» {
           /// Constructor with all data.
           const «className»({
-            required this.entityIdPath,
+            required this.aggregateId,
+            «IF childTargeted»
+            required this.entityId,
+            «ENDIF»
             «FOR a : attributes»
             required this.«a.name»,
             «ENDFOR»
@@ -100,7 +116,9 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
           static const CommandDescriptor descriptor = CommandDescriptor(
             type: eventType,
             module: «dartString(command.module?.name)»,
-            target: «dartString(command.aggregate?.name)»,
+            target: «dartString(command.aggregate?.name)»,«IF entity !== null»
+            targetType: «dartString(entity.name.asEntityTypeConstant)»,«ENDIF»
+            targetOrigin: «origin(command, aggregate, entity)»,
             kind: «kind(command)»,
             doc: «dartStringOrNull(docText(command.doc))»,
             message: «dartStringRaw(command.message)»,
@@ -121,7 +139,16 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
           );
 
           /// Identifier of the aggregate this is directed at.
-          final «idType» entityIdPath;
+          final «aggregateIdType» aggregateId;
+          «IF childTargeted»
+
+          /// Identifier of the entity inside that aggregate this is directed at.
+          final «entityIdType» entityId;
+          «ENDIF»
+
+          /// Path from the aggregate root down to the entity this is directed at, in the form the
+          /// wire carries: typed segments separated by a slash.
+          String get entityIdPath => «IF childTargeted»'${«aggregateTyped»}/${entityId.typed}'«ELSE»«aggregateTyped»«ENDIF»;
           «IF versioned»
 
           /// Version of the aggregate the change was decided on, so the write side can tell whether it
@@ -136,7 +163,7 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
 
           /// Writes the command as the request body of `POST /cmd/«className»`.
           Map<String, Object?> toJson() => <String, Object?>{
-                'entity-id-path': entityIdPath.typed,
+                'entity-id-path': entityIdPath,
                 «IF versioned»
                 if (aggregateVersion != null) 'aggregate-version': aggregateVersion,
                 «ENDIF»
@@ -146,6 +173,35 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
               };
         }
         '''
+    }
+
+    /**
+     * Where the client is supposed to get the <code>entity-id-path</code> from.
+     *
+     * <p>A screen cannot work this out from the rest of the descriptor, and the four cases need four
+     * different things of it: mint an identifier, take the parent's segment off the row it is creating
+     * under, take the row's own path, or send what the command's own attributes already determine.
+     * Getting it wrong is not a rendering bug - it addresses the write at the wrong aggregate.
+     *
+     * <p><b>One case the model cannot state</b>: an aggregate there is only ever one of. Nothing marks
+     * it, so its constructor reads as an ordinary client-minted create. A screen must therefore offer a
+     * create only where the type it creates matches the rows it is showing, rather than trusting this
+     * alone. See <code>todo.md</code>.
+     */
+    def private static String origin(Command command, Aggregate aggregate, AbstractEntity entity) {
+        val idType = aggregate?.idType
+        if (idType !== null && idType.base === null && !idType.attributes.nullSafe.empty) {
+            // A natural key: the identifier is the attributes, so it is neither minted nor read off a
+            // row - it follows from what the command already carries.
+            return "CommandTargetOrigin.derived"
+        }
+        if (command.target instanceof Constructor) {
+            return if (entity !== null && aggregate !== null && entity !== aggregate)
+                    "CommandTargetOrigin.parentOfRow"
+                else
+                    "CommandTargetOrigin.clientGenerated"
+        }
+        return "CommandTargetOrigin.row"
     }
 
     /** What the command does to the aggregate it targets. */
@@ -211,7 +267,9 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         '''
         AttributeDescriptor(
           name: «dartString(a.name)»,
-          kind: «a.valueKind»,«IF a.optional»
+          kind: «a.valueKind»,«IF a.modelType !== null»
+          modelType: «dartString(a.modelType)»,«ENDIF»«IF a.nestedDescriptor !== null»
+          nested: «a.nestedDescriptor»,«ENDIF»«IF a.optional»
           optional: true,«ENDIF»«IF a.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
           text: ModelText(
@@ -227,11 +285,19 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         ),'''
     }
 
-    def private imports(Command command, List<DartAttribute> attributes, String idType) {
+    def private imports(Command command, List<DartAttribute> attributes, String aggregateIdType,
+            String entityIdType) {
         val out = new TreeSet<String>()
         val aggregate = command.aggregate
         if (aggregate?.idType !== null) {
-            out.add(DartNames.importOf(packageOf(aggregate.idType), aggregate.idType.module, idType))
+            out.add(DartNames.importOf(packageOf(aggregate.idType), aggregate.idType.module,
+                aggregateIdType))
+        }
+        if (entityIdType !== null) {
+            val entityId = command.entity?.idType
+            if (entityId !== null) {
+                out.add(DartNames.importOf(packageOf(entityId), entityId.module, entityIdType))
+            }
         }
         for (a : attributes) {
             val referenced = a.referenced
@@ -240,6 +306,9 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             }
         }
         out.add(runtimeImport("src/descriptor/command_descriptor.dart"))
+        if (attributes.exists[usesWireHelper]) {
+            out.add(runtimeImport("src/json/json.dart"))
+        }
         if (!attributes.empty) {
             out.add(runtimeImport("src/descriptor/attribute_descriptor.dart"))
             if (attributes.exists[states(meta)]) {

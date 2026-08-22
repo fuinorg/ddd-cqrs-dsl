@@ -35,8 +35,25 @@ class DartAttribute {
     /** The attribute or parameter this describes. */
     public val Variable attribute
 
+    /**
+     * The attribute its owning type declares as the row's key, or <code>null</code> when it declares
+     * none. See {@link #role()}.
+     */
+    var String declaredKey
+
     new(Variable attribute) {
         this.attribute = attribute
+    }
+
+    /**
+     * Tells this attribute which one its owning type calls the key.
+     *
+     * <p>Set from the type's <code>@Key</code>, which is the only place the model can say it: an
+     * identifier is recognised by its type everywhere else, and a natural key is an ordinary value
+     * object whose type says nothing about the part it plays.
+     */
+    def void declaredKey(String name) {
+        this.declaredKey = name
     }
 
     /** Name on the wire, and the key everything else looks it up by. */
@@ -112,25 +129,85 @@ class DartAttribute {
         }
     }
 
-    /** What the attribute is for, which decides whether a screen shows it at all. */
+    /**
+     * The model's own name for what this attribute holds - the element type for a list, the declared
+     * type otherwise.
+     *
+     * <p>What it is for: telling a screen that two attributes are about the same thing when they are
+     * not called the same thing. A rename command's <code>newName</code> and a row's <code>name</code>
+     * are both a <code>CategoryName</code>, and that is the only statement in the model that says a
+     * form may open with the value the row already holds. Matching on the attribute's name instead
+     * works until the moment a model names them differently, which is most of the time.
+     */
+    def String modelType() {
+        effectiveType?.name
+    }
+
+    /**
+     * The descriptor of the composite this attribute holds, or <code>null</code> when it holds a value
+     * a cell can show on its own.
+     *
+     * <p>A composite value object is declared like any other type, so a screen handed one has a JSON
+     * object where it expected something printable and renders the map. Pointing at the type's own
+     * descriptor gives it the sub-attributes and their wording instead, which is what a cell needs to
+     * compose a line and a form needs to draw a group.
+     *
+     * <p>The condition mirrors what the row factory actually emits a descriptor for - a wrapper around
+     * a single value is a different artifact and has none - because a reference to one that was never
+     * generated does not compile.
+     *
+     * <p>The bookkeeping type is left out: it is a composite, but no screen ever draws it.
+     */
+    def String nestedDescriptor() {
+        val type = effectiveType
+        if (type instanceof ValueObject && (type as ValueObject).name != SOURCE_TYPE) {
+            val vo = type as ValueObject
+            val attributes = vo.attributes
+            if (attributes !== null && !attributes.empty
+                    && !(vo.base !== null && attributes.size === 1)) {
+                return vo.name + ".descriptor"
+            }
+        }
+        return null
+    }
+
+    /**
+     * What the attribute is for, which decides whether a screen shows it at all.
+     *
+     * <p>Derived from the attribute's type, so no generator switches on a name: an aggregate or entity
+     * id identifies the row, the one common bookkeeping type is its source, everything else is data.
+     *
+     * <p>A type that declares a <code>@Key</code> overrides that, and has to. Two cases the type alone
+     * cannot express: a natural key, which is an ordinary value object and is also the thing the user
+     * reads - so it is shown *and* identifies the row; and a row carrying a second id that is a
+     * reference rather than its identity, which the type-derived rule would hide from the screen
+     * although the model gives it wording. Naming the key says which one is the identity, and every
+     * other id is then plain data.
+     */
     def String role() {
+        val type = attribute.type
+        if (type instanceof ValueObject && (type as ValueObject).name == SOURCE_TYPE) {
+            return "AttributeRole.source"
+        }
         if (multiple) {
             // Several ids are a choice somebody made, not the identity of the thing showing them. A
             // row is identified by one id; a list of them is a field a form has to offer.
             return "AttributeRole.data"
         }
-        val type = attribute.type
+        if (declaredKey !== null) {
+            return if(attribute.name == declaredKey) "AttributeRole.key" else "AttributeRole.data"
+        }
         return switch (type) {
             AggregateId: "AttributeRole.identifier"
             EntityId: "AttributeRole.identifier"
-            ValueObject case type.name == SOURCE_TYPE: "AttributeRole.source"
             default: "AttributeRole.data"
         }
     }
 
     /** Whether a screen shows this attribute, and therefore whether it must carry wording. */
     def boolean displayed() {
-        role() == "AttributeRole.data"
+        val role = role()
+        role == "AttributeRole.data" || role == "AttributeRole.key"
     }
 
     /** How the attribute is read out of the server's JSON. */
@@ -166,6 +243,10 @@ class DartAttribute {
                 + ").toList(growable: false)"
         }
         val type = attribute.type
+        val wire = wireHelperFor(type)
+        if (wire !== null) {
+            return wire + "(" + field + ")"
+        }
         return switch (type) {
             EnumObject: field + (if(optional) "?" else "") + ".wireName"
             AggregateId: field + (if(optional) "?" else "") + ".typed"
@@ -284,6 +365,10 @@ class DartAttribute {
      * @return Expression over a local called <code>e</code>, or <code>null</code>.
      */
     def private static String elementToJson(Type type) {
+        val wire = wireHelperFor(type)
+        if (wire !== null) {
+            return wire + "(e)"
+        }
         return switch (type) {
             EnumObject: "e.wireName"
             AggregateId: "e.typed"
@@ -292,6 +377,33 @@ class DartAttribute {
             ValueObject: "e.toJson()"
             default: null
         }
+    }
+
+    /**
+     * The runtime helper that turns this attribute into what the wire carries, or <code>null</code>
+     * when the value already is what the wire carries.
+     *
+     * <p>A <code>DateTime</code> is not. Handing one to a JSON encoder fails outright, and putting one
+     * in a query string yields <code>2026-08-21 00:00:00.000</code>, which no server parses back - so
+     * both a command body and a view filter were wrong. Which of the two forms it takes is something
+     * only the model knows: a <code>Date</code> is a calendar day and a <code>Timestamp</code> is a
+     * point in time, and they read back as <code>LocalDate</code> and an instant on the other side.
+     */
+    def private static String wireHelperFor(Type type) {
+        if (type instanceof ExternalType) {
+            return switch (type.name) {
+                case "Date": "wireDate"
+                case "Time": "wireTimestamp"
+                case "Timestamp": "wireTimestamp"
+                default: null
+            }
+        }
+        return null
+    }
+
+    /** Whether {@link #toJson()} needs the runtime's wire helpers to be imported. */
+    def boolean usesWireHelper() {
+        wireHelperFor(effectiveType) !== null
     }
 
     /** Whether a block of wording states anything at all. */

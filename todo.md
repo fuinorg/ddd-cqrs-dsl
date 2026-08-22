@@ -59,3 +59,34 @@ name, which is exactly the kind of difference that goes wrong quietly.
 `DartForeignPackageTest` now covers it directly. What remains open is the *fixtures*: they still show
 only the self-contained shape, so a reader comparing them against a real application's output will find
 eleven files differing in their import lines and no note saying why.
+
+
+## The model cannot say an aggregate is a singleton
+
+`CommandDescriptor` now carries `targetOrigin`, so a screen knows where the `entity-id-path` of a
+command is supposed to come from: minted by the client, taken from the parent segment of the row being
+created under, taken from the row itself, or derived from the command's own attributes. Four cases,
+all of them derivable — and one that is not.
+
+An aggregate there is only ever one of looks exactly like an ordinary one. Nothing in the model marks
+it, so its constructor reads as `clientGenerated` and a generic screen offering that create would mint
+a second one. melkheftken has such an aggregate (`MasterData`, whose single id lives in a hand-written
+`MasterDataSingleton` on the JVM side), and it is only out of trouble because a screen matches the
+create's `targetType` against the rows it is showing, and no screen lists master data.
+
+What would settle it is the model saying so, e.g. `aggregate MasterData single identifier MasterDataId`,
+which is a grammar change. Until then, a create must never be offered on `targetOrigin` alone.
+
+
+## A composite id is declared in the model and written by hand
+
+`aggregate-id DailyRatesId identifies DailyRates { ExchangeRateProvider provider; Date date }` states
+the parts of a natural key, and the Java target emits an abstract base — but the *encoding*, the
+separator and the parse, is hand-written beside it. That works while every client shares the jar. It
+stops working the moment a client is in another language: it would have to reimplement the encoding,
+in a second language, with nothing keeping the two in step.
+
+The Dart target flattens such an id to a `String` wrapper with no composite constructor at all, which
+is honest but leaves the client unable to address the aggregate. `targetOrigin: derived` names the
+situation; what would remove it is either generating the encoding from the model on both sides, or
+commands of this shape not asking a client for an id it can only guess at.

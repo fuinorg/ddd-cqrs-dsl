@@ -1,0 +1,204 @@
+/*
+ * A command addressing a child entity rather than the aggregate root.
+ *
+ * Kept apart from dart-categories.cqrs on purpose: the catalogue and permission-id fixtures enumerate
+ * everything in their model, so adding an aggregate there would churn expectations that have nothing
+ * to do with what is being tested here.
+ */
+context de.fuin.library {
+
+    module books {
+
+        slabel "Books"
+        label "Books"
+        tooltip "The shelf, and the chapters inside each book"
+
+        import de.fuin.library.common.basics.*
+
+        type String
+
+        type Integer
+
+        type UUID
+
+        type Date
+
+        aggregate-id BookId identifies Book base UUID {
+            slabel "BID"
+            label "Book ID"
+            tooltip "Unique identifier of the book"
+        }
+
+        entity-id ChapterId identifies Chapter base Integer {
+            slabel "CHID"
+            label "Chapter ID"
+            tooltip "Position of the chapter inside its book"
+        }
+
+        /** The heading of one chapter, as it appears in the table of contents. */
+        value-object ChapterTitle base String {
+
+            slabel "Title"
+            label "Title"
+            tooltip "What this chapter is called in the table of contents"
+
+            String value
+        }
+
+        aggregate Book identifier BookId {
+
+            method publish fires BookPublishedEvent {
+                Date publishOn
+                event BookPublishedEvent { message "published" }
+            }
+
+        }
+
+        entity Chapter identifier ChapterId root Book {
+
+            constructor add fires ChapterAddedEvent {
+                ChapterTitle title
+                @GenesisEvent event ChapterAddedEvent { message "added" }
+            }
+
+            method retitle fires ChapterRetitledEvent {
+                ChapterTitle newTitle
+                event ChapterRetitledEvent { message "retitled" }
+            }
+
+        }
+
+        /**
+         * A run of one book, identified by the book and the day it was printed.
+         *
+         * <p>A natural key rather than a surrogate, so no client can mint one - the identifier follows
+         * from what the command already carries.
+         */
+        aggregate-id EditionId identifies Edition {
+            slabel "EDID"
+            label "Edition ID"
+            tooltip "The book and the day it was printed"
+
+            /** The book this run is of. */
+            BookId bookId
+
+            /** The day it came off the press. */
+            Date printedOn
+        }
+
+        aggregate Edition identifier EditionId {
+
+            constructor print fires EditionPrintedEvent {
+                @GenesisEvent event EditionPrintedEvent { message "printed" }
+            }
+
+        }
+
+        /**
+         * Give a chapter a new heading.
+         *
+         * <p>Addresses a child entity, so the wire needs the path from the book down to the chapter -
+         * the book's id on its own cannot say which chapter is meant.
+         */
+        command RetitleChapterCommand target Chapter.retitle {
+            message "Retitle chapter to '${newTitle}'"
+        }
+
+        /** Put a book on the shelf on a given day. */
+        command PublishBookCommand target Book.publish {
+            message "Publish on ${publishOn}"
+        }
+
+        /** Add a chapter to a book that already exists. */
+        command AddChapterCommand target Chapter.add {
+            message "Add chapter '${title}'"
+        }
+
+        /** Record a print run. */
+        command PrintEditionCommand target Edition.print {
+            message "Print an edition"
+        }
+
+        /** The catalogue number a reader looks a book up by. */
+        value-object Isbn base String {
+
+            slabel "ISBN"
+            label "ISBN"
+            tooltip "The catalogue number printed on the back"
+
+            String value
+        }
+
+        /**
+         * A read-model row for the shelf.
+         *
+         * <p>Its identity is the catalogue number, which is also the thing a reader reads - and it
+         * carries the aggregate's own id as well, as a reference rather than as its identity.
+         */
+        @Key("isbn")
+        value-object BookRow {
+
+            /** Aggregate this row was projected from and the version it reflects. */
+            VersionedEntityIdPath source
+
+            /** The catalogue number. */
+            Isbn isbn
+
+            /** The book this row is about. */
+            BookId bookId
+
+            /** Who published it, and where. */
+            Imprint imprint
+
+        }
+
+        /**
+         * Who published a book, and where.
+         *
+         * <p>A composite: it arrives as a JSON object, so a cell handed one has nothing printable
+         * unless it can reach the sub-attributes and their wording.
+         */
+        value-object Imprint {
+
+            slabel "Imprint"
+            label "Imprint"
+            tooltip "Who published the book, and where"
+
+            /** House that published it. */
+            String publisher
+
+            /** Where that house is. */
+            String city
+
+        }
+
+    }
+
+    module common.basics {
+
+        type Integer
+
+        type String
+
+        /** The event that brings an aggregate into being. */
+        annotation GenesisEvent {
+        }
+
+        /** The event that ends one. */
+        annotation ExodusEvent {
+        }
+
+        /** Names the attribute that identifies a row, where its type cannot say so. */
+        annotation Key {
+            String value
+        }
+
+        /** Identifies the aggregate some data was derived from, and the version it reflects. */
+        value-object VersionedEntityIdPath {
+            String entityIdPath
+            optional Integer aggregateVersion
+        }
+
+    }
+
+}

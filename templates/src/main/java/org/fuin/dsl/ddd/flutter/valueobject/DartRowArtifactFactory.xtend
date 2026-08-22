@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import java.util.TreeSet
+import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.dsl.ddd.flutter.base.DartAttribute
@@ -12,6 +13,7 @@ import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
@@ -30,6 +32,9 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
  * disagreeing about one file is a debugging session nobody needs.
  */
 class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
+
+    /** Annotation a row states its key with, naming the attribute that identifies it. */
+    static val String KEY = "Key"
 
     override getModelType() {
         typeof(ValueObject)
@@ -69,9 +74,18 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
 
     def private create(ValueObject vo) {
         val className = vo.name
+        val key = declaredKey(vo)
         val attributes = new ArrayList<DartAttribute>()
         for (attribute : vo.attributes) {
-            attributes.add(new DartAttribute(attribute))
+            val dart = new DartAttribute(attribute)
+            dart.declaredKey(key)
+            attributes.add(dart)
+        }
+        if (key !== null && !attributes.exists[name == key]) {
+            // Left to run, this shows up much later as a screen with no identity, at the far end of a
+            // release chain. The model named something that is not there; say so here.
+            throw new GenerateException("@Key(\"" + key + "\") on " + className
+                + " names an attribute it does not have")
         }
         val bundle = bundleName(vo.module)
 
@@ -217,12 +231,37 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
         return "'" + className + "[" + out.join(", ") + "]'"
     }
 
+    /**
+     * The attribute this row calls its key, as its <code>@Key</code> states it, or <code>null</code>.
+     *
+     * <p>An identifier is recognised by its type everywhere else in this target. That stops working for
+     * a natural key - an ordinary value object whose type says nothing about the part it plays - and
+     * for a row holding a second id that is a reference rather than its identity. Both are things only
+     * the model can say, and this is where it says them.
+     */
+    def private static String declaredKey(ValueObject vo) {
+        for (instance : vo.annotations.nullSafe) {
+            if (instance?.annotation?.name == KEY) {
+                val params = instance.params
+                if (params !== null && !params.empty) {
+                    val literal = params.get(0)
+                    if (literal instanceof StringLiteral) {
+                        return literal.value
+                    }
+                }
+            }
+        }
+        return null
+    }
+
     def private descriptorOf(DartAttribute a, String bundle) {
         val meta = a.meta
         '''
         AttributeDescriptor(
           name: «dartString(a.name)»,
-          kind: «a.valueKind»,«IF a.role != "AttributeRole.data"»
+          kind: «a.valueKind»,«IF a.modelType !== null»
+          modelType: «dartString(a.modelType)»,«ENDIF»«IF a.nestedDescriptor !== null»
+          nested: «a.nestedDescriptor»,«ENDIF»«IF a.role != "AttributeRole.data"»
           role: «a.role»,«ENDIF»«IF a.optional»
           optional: true,«ENDIF»«IF a.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
