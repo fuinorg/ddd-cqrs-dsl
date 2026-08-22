@@ -76,9 +76,7 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         }
         val aggregate = command.aggregate
         val entity = command.entity
-        // A command addressing a child entity needs both ids. The wire carries the path from the root
-        // down to the entity, and the root on its own cannot say which child is meant - which is what
-        // the Java side has always emitted as AbstractAggregateCommand<RootId, EntityId>.
+        // The wire carries the path from the root down, so the root alone cannot say which child.
         val childTargeted = aggregate !== null && entity !== null && entity !== aggregate
         val aggregateIdType = aggregate?.idType?.name ?: "String"
         val entityIdType = if (childTargeted) entity.idType?.name else null
@@ -176,23 +174,13 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
     }
 
     /**
-     * Where the client is supposed to get the <code>entity-id-path</code> from.
-     *
-     * <p>A screen cannot work this out from the rest of the descriptor, and the four cases need four
-     * different things of it: mint an identifier, take the parent's segment off the row it is creating
-     * under, take the row's own path, or send what the command's own attributes already determine.
-     * Getting it wrong is not a rendering bug - it addresses the write at the wrong aggregate.
-     *
-     * <p><b>One case the model cannot state</b>: an aggregate there is only ever one of. Nothing marks
-     * it, so its constructor reads as an ordinary client-minted create. A screen must therefore offer a
-     * create only where the type it creates matches the rows it is showing, rather than trusting this
-     * alone. See <code>todo.md</code>.
+     * Where the client gets the <code>entity-id-path</code> from. A singleton aggregate is not
+     * expressible - it reads as an ordinary client-minted create - see <code>todo.md</code>.
      */
     def private static String origin(Command command, Aggregate aggregate, AbstractEntity entity) {
         val idType = aggregate?.idType
         if (idType !== null && idType.base === null && !idType.attributes.nullSafe.empty) {
-            // A natural key: the identifier is the attributes, so it is neither minted nor read off a
-            // row - it follows from what the command already carries.
+            // A natural key follows from what the command already carries.
             return "CommandTargetOrigin.derived"
         }
         if (command.target instanceof Constructor) {

@@ -82,8 +82,7 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
             attributes.add(dart)
         }
         if (key !== null && !attributes.exists[name == key]) {
-            // Left to run, this shows up much later as a screen with no identity, at the far end of a
-            // release chain. The model named something that is not there; say so here.
+            // Otherwise this surfaces as a screen with no identity, at the far end of a release chain.
             throw new GenerateException("@Key(\"" + key + "\") on " + className
                 + " names an attribute it does not have")
         }
@@ -231,14 +230,7 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
         return "'" + className + "[" + out.join(", ") + "]'"
     }
 
-    /**
-     * The attribute this row calls its key, as its <code>@Key</code> states it, or <code>null</code>.
-     *
-     * <p>An identifier is recognised by its type everywhere else in this target. That stops working for
-     * a natural key - an ordinary value object whose type says nothing about the part it plays - and
-     * for a row holding a second id that is a reference rather than its identity. Both are things only
-     * the model can say, and this is where it says them.
-     */
+    /** The attribute this row calls its key, as its <code>@Key</code> states it. */
     def private static String declaredKey(ValueObject vo) {
         for (instance : vo.annotations.nullSafe) {
             if (instance?.annotation?.name == KEY) {

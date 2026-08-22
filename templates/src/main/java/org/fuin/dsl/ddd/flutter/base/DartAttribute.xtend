@@ -35,23 +35,14 @@ class DartAttribute {
     /** The attribute or parameter this describes. */
     public val Variable attribute
 
-    /**
-     * The attribute its owning type declares as the row's key, or <code>null</code> when it declares
-     * none. See {@link #role()}.
-     */
+    /** The attribute its owning type declares as the row's key. See {@link #role()}. */
     var String declaredKey
 
     new(Variable attribute) {
         this.attribute = attribute
     }
 
-    /**
-     * Tells this attribute which one its owning type calls the key.
-     *
-     * <p>Set from the type's <code>@Key</code>, which is the only place the model can say it: an
-     * identifier is recognised by its type everywhere else, and a natural key is an ordinary value
-     * object whose type says nothing about the part it plays.
-     */
+    /** Tells this attribute which one its owning type calls the key, from that type's <code>@Key</code>. */
     def void declaredKey(String name) {
         this.declaredKey = name
     }
@@ -130,19 +121,9 @@ class DartAttribute {
     }
 
     /**
-     * The model's own name for what this attribute holds - the element type for a list, the declared
-     * type otherwise.
-     *
-     * <p>What it is for: telling a screen that two attributes are about the same thing when they are
-     * not called the same thing. A rename command's <code>newName</code> and a row's <code>name</code>
-     * are both a <code>CategoryName</code>, and that is the only statement in the model that says a
-     * form may open with the value the row already holds. Matching on the attribute's name instead
-     * works until the moment a model names them differently, which is most of the time.
-     *
-     * <p><b>Only types the model declares.</b> An external type is left out, because two attributes
-     * that are both a <code>String</code> are not two attributes about the same thing - saying so
-     * would make every text field match every other one. So a name here means sameness, and its
-     * absence means the model has not claimed any.
+     * The model's own name for what this attribute holds, so a form can tell a rename's
+     * <code>newName</code> and a row's <code>name</code> are the same thing. External types are left
+     * out: two attributes that are both a <code>String</code> are not about the same thing.
      */
     def String modelType() {
         val type = effectiveType
@@ -153,19 +134,9 @@ class DartAttribute {
     }
 
     /**
-     * The descriptor of the composite this attribute holds, or <code>null</code> when it holds a value
-     * a cell can show on its own.
-     *
-     * <p>A composite value object is declared like any other type, so a screen handed one has a JSON
-     * object where it expected something printable and renders the map. Pointing at the type's own
-     * descriptor gives it the sub-attributes and their wording instead, which is what a cell needs to
-     * compose a line and a form needs to draw a group.
-     *
-     * <p>The condition mirrors what the row factory actually emits a descriptor for - a wrapper around
-     * a single value is a different artifact and has none - because a reference to one that was never
-     * generated does not compile.
-     *
-     * <p>The bookkeeping type is left out: it is a composite, but no screen ever draws it.
+     * The descriptor of the composite this attribute holds, which a cell would otherwise render as a
+     * JSON map. The condition mirrors what the row factory emits a descriptor for, or the reference
+     * would not compile; the bookkeeping type is left out because no screen draws it.
      */
     def String nestedDescriptor() {
         val type = effectiveType
@@ -181,17 +152,9 @@ class DartAttribute {
     }
 
     /**
-     * What the attribute is for, which decides whether a screen shows it at all.
-     *
-     * <p>Derived from the attribute's type, so no generator switches on a name: an aggregate or entity
-     * id identifies the row, the one common bookkeeping type is its source, everything else is data.
-     *
-     * <p>A type that declares a <code>@Key</code> overrides that, and has to. Two cases the type alone
-     * cannot express: a natural key, which is an ordinary value object and is also the thing the user
-     * reads - so it is shown *and* identifies the row; and a row carrying a second id that is a
-     * reference rather than its identity, which the type-derived rule would hide from the screen
-     * although the model gives it wording. Naming the key says which one is the identity, and every
-     * other id is then plain data.
+     * What the attribute is for, derived from its type so no generator switches on a name. A
+     * <code>@Key</code> overrides that, for the two cases a type cannot express: a natural key, which
+     * is shown as well as identifying, and a second id that is a reference rather than the identity.
      */
     def String role() {
         val type = attribute.type
@@ -389,14 +352,8 @@ class DartAttribute {
     }
 
     /**
-     * The runtime helper that turns this attribute into what the wire carries, or <code>null</code>
-     * when the value already is what the wire carries.
-     *
-     * <p>A <code>DateTime</code> is not. Handing one to a JSON encoder fails outright, and putting one
-     * in a query string yields <code>2026-08-21 00:00:00.000</code>, which no server parses back - so
-     * both a command body and a view filter were wrong. Which of the two forms it takes is something
-     * only the model knows: a <code>Date</code> is a calendar day and a <code>Timestamp</code> is a
-     * point in time, and they read back as <code>LocalDate</code> and an instant on the other side.
+     * The runtime helper that turns this attribute into what the wire carries. A <code>DateTime</code>
+     * is refused by a JSON encoder and rendered <code>2026-08-21 00:00:00.000</code> in a query string.
      */
     def private static String wireHelperFor(Type type) {
         if (type instanceof ExternalType) {
