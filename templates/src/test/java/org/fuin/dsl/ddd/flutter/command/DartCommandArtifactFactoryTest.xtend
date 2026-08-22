@@ -100,6 +100,12 @@ class DartCommandArtifactFactoryTest {
         // not called the same thing - matching on the attribute name alone finds nothing here.
         assertThat(generate("RenameCategoryCommand")).contains("modelType: 'CategoryName'")
         assertThat(generate("CreateCategoryCommand")).contains("modelType: 'CategoryType'")
+
+        // But only for types the model declares. Two attributes that are both a String are not two
+        // attributes about the same thing, and claiming otherwise makes every text field match every
+        // other one - so an external type says nothing rather than something misleading.
+        assertThat(generateFrom("/dart-child-entity.cqrs", "PublishBookCommand"))
+            .doesNotContain("modelType: 'Date'")
     }
 
     @Test

@@ -138,9 +138,18 @@ class DartAttribute {
      * are both a <code>CategoryName</code>, and that is the only statement in the model that says a
      * form may open with the value the row already holds. Matching on the attribute's name instead
      * works until the moment a model names them differently, which is most of the time.
+     *
+     * <p><b>Only types the model declares.</b> An external type is left out, because two attributes
+     * that are both a <code>String</code> are not two attributes about the same thing - saying so
+     * would make every text field match every other one. So a name here means sameness, and its
+     * absence means the model has not claimed any.
      */
     def String modelType() {
-        effectiveType?.name
+        val type = effectiveType
+        if (type === null || type instanceof ExternalType) {
+            return null
+        }
+        return type.name
     }
 
     /**
