@@ -34,6 +34,7 @@ Context:
 Module:
 	'module' name=FQN '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		dependencies+=Dependency*
 		imports+=Import*
 		elements+=AbstractElement*
@@ -244,8 +245,72 @@ Constraint:
 BusinessRule:
 	doc=DOC
 	'business-rule' name=ID 'exception' exception=[Exception|FQN] '{'
+		attributes+=Attribute*
 		consistency=Consistency
+		('requires' requires=RuleExpr)?
 	'}';
+
+/**
+ * Condition a business rule verifies, written over the rule's own attributes. Deliberately small: the
+ * rule decides, the caller fetches, so there is no property access, no arithmetic and exactly one
+ * built-in operator, '.is-empty()'. Both halves of the model render it - the JVM and a client - so
+ * nothing may be allowed here that only one of them can evaluate. Anything else stays out until a rule
+ * writes it: a membership test over enumeration values and a 'contains' over a collection were both
+ * tried and taken out again, because nothing in the corpus asked for either.
+ *
+ * The operator is spelled as a dot plus a hyphenated keyword, and neither half is accidental. One
+ * keyword beginning with a dot does not work: an ANTLR lexer commits to a keyword as soon as its first
+ * character matches and cannot back out, so a '.is-empty()' token would swallow the dot of every
+ * qualified name whose next segment starts with an 'i'. A plain 'isEmpty' does not work either,
+ * because reserving it costs a model the right to declare a method by that name, which
+ * 'dsl-examples/15-method.cqrs' already does. A hyphen cannot appear in an identifier, so the
+ * hyphenated form reserves nothing at all.
+ */
+RuleExpr:
+	RuleOr;
+
+/** Disjunction, the loosest binding operator. */
+RuleOr returns RuleExpr:
+	RuleAnd ({RuleOr.left=current} '||' right=RuleAnd)*;
+
+/** Conjunction, binding tighter than '||'. */
+RuleAnd returns RuleExpr:
+	RuleUnary ({RuleAnd.left=current} '&&' right=RuleUnary)*;
+
+/** Negation, a parenthesized expression, or a single condition. */
+RuleUnary returns RuleExpr:
+	{RuleNot} '!' expr=RuleUnary
+	| '(' RuleOr ')'
+	| RuleAtom;
+
+/**
+ * A single condition over one of the rule's attributes. A bare attribute is a Boolean; everything else
+ * compares it, tests it for membership, or asks one of the two built-in questions about a collection.
+ */
+RuleAtom returns RuleExpr:
+	{RuleAttrRef} attribute=[Attribute|ID] (
+		  {RuleComparison.left=current} op=CompareOp right=RuleOperand
+		| {RuleIsEmpty.left=current} '.' 'is-empty' '(' ')'
+	)?;
+
+/**
+ * Right hand side of a comparison - another attribute, a named value of an enumeration, or 'null'.
+ *
+ * An attribute and an enumeration value are both a bare identifier, so no amount of lookahead can tell
+ * them apart: which of the two is meant is decided by the scope, from the type of the attribute on the
+ * left. The reference is therefore declared against 'EObject' and narrowed there, rather than split
+ * into two alternatives the parser cannot choose between.
+ */
+RuleOperand:
+	{RuleRefOperand} target=[ecore::EObject|ID]
+	| {RuleNullOperand} nullValue='null';
+
+/**
+ * Comparison operator. '==' and '!=' mean value equality - every attribute here is a value object, so
+ * the generated Java is 'Objects.equals(a, b)' and never Java's own '=='.
+ */
+enum CompareOp:
+	eq='==' | ne='!=' | le='<=' | ge='>=' | lt='<' | gt='>';
 
 /** Defines an annotation. */
 Annotation:
@@ -268,7 +333,9 @@ ValueObject:
 	annotations+=AnnotationInstance*
 	'value-object' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
+		('identified-by' identifiedBy=[Attribute|ID])?
 		constructors+=Constructor*
 		methods+=Method*
 	'}';
@@ -278,6 +345,7 @@ EntityId:
 	doc=DOC?
 	'entity-id' name=ID ('identifies' entity=[Entity|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		constructors+=Constructor*
 		methods+=Method*
@@ -288,6 +356,7 @@ AggregateId:
 	doc=DOC?
 	'aggregate-id' name=ID ('identifies' aggregate=[Aggregate|FQN])? ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		constructors+=Constructor*
 		methods+=Method*
@@ -298,6 +367,7 @@ EnumObject:
 	doc=DOC?
 	'enum' name=ID ('base' base=[ExternalType|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		'instances' '{' instances+=EnumInstance+ '}'
 	'}';
@@ -319,12 +389,15 @@ Event:
 /* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
 Entity:
 	doc=DOC?
-	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
+	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (softDelete=SoftDelete)? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		businessRules+=BusinessRule*
+		keys+=Key*
+		(noKey=NoKey)?
 		constructors+=Constructor*
-		methods+=Method*		
+		methods+=Method*
 		elements+=EntityElement*
 	'}';
 
@@ -335,14 +408,61 @@ Entity:
  */
 Aggregate:
 	doc=DOC?
-	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
+	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (softDelete=SoftDelete)? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		businessRules+=BusinessRule*
+		keys+=Key*
+		(noKey=NoKey)?
 		constructors+=Constructor*
 		methods+=Method*
 		elements+=EntityElement*
 	'}';
+
+/**
+ * Marks an aggregate or entity as soft deleted rather than removed: it stays loadable from its event
+ * stream and refuses every further operation. The marker names the event that sets the flag, because
+ * that is what the generated apply handler is written from - and, where the state can be reversed, the
+ * event that clears it again.
+ */
+SoftDelete:
+	'soft-delete' deleteEvent=[Event|FQN] ('restored-by' restoreEvent=[Event|FQN])?;
+
+/**
+ * A business key: the natural key that identifies something without being a surrogate id. Its scope
+ * comes from where it is declared - on an aggregate it holds across the context, on an entity within
+ * its root - so no keyword says which. The attributes are cross references, so a renamed attribute
+ * follows and a typo is a linking error.
+ *
+ * 'display-as' carries a format rather than a label, and its presence is what says this key is the one
+ * a person recognises the thing by.
+ */
+Key:
+	doc=DOC
+	'key' name=ID ('exception' exception=[Exception|FQN])? '{'
+		'attributes' attributes+=[Attribute|ID] (',' attributes+=[Attribute|ID])*
+		'on-collision' onCollision=CollisionStrategy
+		consistency=Consistency
+		('display-as' displayAs=STRING)?
+	'}';
+
+/** What happens when a business key collides with one that already exists. */
+enum CollisionStrategy:
+	/** The operation is refused and the key's exception is thrown. */
+	refuse |
+	/** The existing record is replaced by the incoming one. */
+	overwrite |
+	/** The incoming record is silently ignored. */
+	skip;
+
+/**
+ * Says that a type has no business key on purpose. The documentation is mandatory, so the reason is
+ * stated rather than left as an omission that cannot be told apart from an oversight.
+ */
+NoKey:
+	doc=DOC
+	'no-key';
 
 /** Common properties of methods. */
 AbstractMethod:
@@ -368,6 +488,7 @@ Method:
 	doc=DOC? 
 	'method' name=ID ('ref' refMethod=[Method|FQN])? (preconditions=Preconditions)? (businessRules=BusinessRules)? ('fires' firedEvents+=[Event|FQN] (',' firedEvents+=[Event|FQN])*)? ('rest-path' restPath=STRING)? '{'
 		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		parameters+=Parameter*
 		('operation-context' operationContext=[Service|FQN])?
 		returnType=ReturnType?
@@ -438,15 +559,35 @@ BusinessRules:
 
 /** A meta information that is overridden for a sub type. */
 OverriddenTypeMetaInfo:
-	'{' metaInfo=TypeMetaInfo '}';
+	'{' metaInfo=TypeMetaInfo hints+=Hint* '}';
 
 /** Concrete usage of a constraint. */
 ConstraintInstance:
 	constraint=[Constraint|FQN] ('(' params+=Literal (',' params+=Literal)* ')')?;
 
-/** Concrete usage of a business rule. */
+/**
+ * Concrete usage of a business rule. The actuals bind the rule's attributes at the place it is
+ * carried, which is what lets one rule be used by several operations that agree on nothing: the same
+ * value may be a method parameter on one and a field on another, and the service differs too.
+ */
 BusinessRuleInstance:
-	businessRule=[BusinessRule|FQN] ('(' params+=Literal (',' params+=Literal)* ')')?;
+	businessRule=[BusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
+
+/**
+ * One actual of a business rule usage - a value the carrier holds, a service method that answers a
+ * question the carrier cannot, or a plain literal for a parameterised rule.
+ */
+RuleArgument:
+	{LiteralArgument} literal=Literal
+	| ServiceCallArgument
+	| {VariableArgument} variable=[Variable|ID];
+
+/**
+ * A service method that answers a question the carrier cannot answer itself. Only the trailing '('
+ * tells this apart from a plain value, so the decision is made by looking that far ahead.
+ */
+ServiceCallArgument:
+	=> (method=[Method|FQN] '(') (args+=[Variable|ID] (',' args+=[Variable|ID])*)? ')';
 
 /** Meta information assigned to a DSL type. */
 AnnotationInstance:
@@ -464,6 +605,8 @@ Service:
 Command:
 	doc=DOC?
 	'command' name=ID ('target' target=[AbstractMethod|FQN])? ('sla' acceptable=Duration)? '{'
+		metaInfo=TypeMetaInfo
+		hints+=Hint*
 		attributes+=Attribute*
 		('message' message=STRING)?
 	'}';

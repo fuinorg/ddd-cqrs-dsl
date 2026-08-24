@@ -26,8 +26,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.BooleanLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
+import org.fuin.dsl.cqrs.cqrsDsl.CollisionStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CommandHandler;
+import org.fuin.dsl.cqrs.cqrsDsl.CompareOp;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.Constraint;
@@ -63,9 +65,12 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
+import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -77,7 +82,20 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TimeUnit;
@@ -85,6 +103,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
+import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 import org.fuin.dsl.cqrs.cqrsDsl.WeakConsistency;
 
@@ -160,6 +179,8 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.DATA_PROTECTION_INSTANCE: return createDataProtectionInstance();
       case CqrsDslPackage.CONSTRAINT: return createConstraint();
       case CqrsDslPackage.BUSINESS_RULE: return createBusinessRule();
+      case CqrsDslPackage.RULE_EXPR: return createRuleExpr();
+      case CqrsDslPackage.RULE_OPERAND: return createRuleOperand();
       case CqrsDslPackage.ANNOTATION: return createAnnotation();
       case CqrsDslPackage.EXCEPTION: return createException();
       case CqrsDslPackage.VALUE_OBJECT: return createValueObject();
@@ -170,6 +191,9 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.EVENT: return createEvent();
       case CqrsDslPackage.ENTITY: return createEntity();
       case CqrsDslPackage.AGGREGATE: return createAggregate();
+      case CqrsDslPackage.SOFT_DELETE: return createSoftDelete();
+      case CqrsDslPackage.KEY: return createKey();
+      case CqrsDslPackage.NO_KEY: return createNoKey();
       case CqrsDslPackage.ABSTRACT_METHOD: return createAbstractMethod();
       case CqrsDslPackage.CONSTRUCTOR: return createConstructor();
       case CqrsDslPackage.RETURN_TYPE: return createReturnType();
@@ -185,6 +209,8 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.OVERRIDDEN_TYPE_META_INFO: return createOverriddenTypeMetaInfo();
       case CqrsDslPackage.CONSTRAINT_INSTANCE: return createConstraintInstance();
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE: return createBusinessRuleInstance();
+      case CqrsDslPackage.RULE_ARGUMENT: return createRuleArgument();
+      case CqrsDslPackage.SERVICE_CALL_ARGUMENT: return createServiceCallArgument();
       case CqrsDslPackage.ANNOTATION_INSTANCE: return createAnnotationInstance();
       case CqrsDslPackage.SERVICE: return createService();
       case CqrsDslPackage.COMMAND: return createCommand();
@@ -207,6 +233,16 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.NULL_LITERAL: return createNullLiteral();
       case CqrsDslPackage.NUMBER_LITERAL: return createNumberLiteral();
       case CqrsDslPackage.STRING_LITERAL: return createStringLiteral();
+      case CqrsDslPackage.RULE_OR: return createRuleOr();
+      case CqrsDslPackage.RULE_AND: return createRuleAnd();
+      case CqrsDslPackage.RULE_NOT: return createRuleNot();
+      case CqrsDslPackage.RULE_ATTR_REF: return createRuleAttrRef();
+      case CqrsDslPackage.RULE_COMPARISON: return createRuleComparison();
+      case CqrsDslPackage.RULE_IS_EMPTY: return createRuleIsEmpty();
+      case CqrsDslPackage.RULE_REF_OPERAND: return createRuleRefOperand();
+      case CqrsDslPackage.RULE_NULL_OPERAND: return createRuleNullOperand();
+      case CqrsDslPackage.LITERAL_ARGUMENT: return createLiteralArgument();
+      case CqrsDslPackage.VARIABLE_ARGUMENT: return createVariableArgument();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -238,6 +274,10 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
         return createSpecialCategoryFromString(eDataType, initialValue);
       case CqrsDslPackage.ERASURE_STRATEGY:
         return createErasureStrategyFromString(eDataType, initialValue);
+      case CqrsDslPackage.COMPARE_OP:
+        return createCompareOpFromString(eDataType, initialValue);
+      case CqrsDslPackage.COLLISION_STRATEGY:
+        return createCollisionStrategyFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -269,6 +309,10 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
         return convertSpecialCategoryToString(eDataType, instanceValue);
       case CqrsDslPackage.ERASURE_STRATEGY:
         return convertErasureStrategyToString(eDataType, instanceValue);
+      case CqrsDslPackage.COMPARE_OP:
+        return convertCompareOpToString(eDataType, instanceValue);
+      case CqrsDslPackage.COLLISION_STRATEGY:
+        return convertCollisionStrategyToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -520,6 +564,30 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
+  public RuleExpr createRuleExpr()
+  {
+    RuleExprImpl ruleExpr = new RuleExprImpl();
+    return ruleExpr;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleOperand createRuleOperand()
+  {
+    RuleOperandImpl ruleOperand = new RuleOperandImpl();
+    return ruleOperand;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Annotation createAnnotation()
   {
     AnnotationImpl annotation = new AnnotationImpl();
@@ -632,6 +700,42 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     AggregateImpl aggregate = new AggregateImpl();
     return aggregate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public SoftDelete createSoftDelete()
+  {
+    SoftDeleteImpl softDelete = new SoftDeleteImpl();
+    return softDelete;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Key createKey()
+  {
+    KeyImpl key = new KeyImpl();
+    return key;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NoKey createNoKey()
+  {
+    NoKeyImpl noKey = new NoKeyImpl();
+    return noKey;
   }
 
   /**
@@ -812,6 +916,30 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     BusinessRuleInstanceImpl businessRuleInstance = new BusinessRuleInstanceImpl();
     return businessRuleInstance;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleArgument createRuleArgument()
+  {
+    RuleArgumentImpl ruleArgument = new RuleArgumentImpl();
+    return ruleArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ServiceCallArgument createServiceCallArgument()
+  {
+    ServiceCallArgumentImpl serviceCallArgument = new ServiceCallArgumentImpl();
+    return serviceCallArgument;
   }
 
   /**
@@ -1083,6 +1211,126 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  @Override
+  public RuleOr createRuleOr()
+  {
+    RuleOrImpl ruleOr = new RuleOrImpl();
+    return ruleOr;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleAnd createRuleAnd()
+  {
+    RuleAndImpl ruleAnd = new RuleAndImpl();
+    return ruleAnd;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleNot createRuleNot()
+  {
+    RuleNotImpl ruleNot = new RuleNotImpl();
+    return ruleNot;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleAttrRef createRuleAttrRef()
+  {
+    RuleAttrRefImpl ruleAttrRef = new RuleAttrRefImpl();
+    return ruleAttrRef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleComparison createRuleComparison()
+  {
+    RuleComparisonImpl ruleComparison = new RuleComparisonImpl();
+    return ruleComparison;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleIsEmpty createRuleIsEmpty()
+  {
+    RuleIsEmptyImpl ruleIsEmpty = new RuleIsEmptyImpl();
+    return ruleIsEmpty;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleRefOperand createRuleRefOperand()
+  {
+    RuleRefOperandImpl ruleRefOperand = new RuleRefOperandImpl();
+    return ruleRefOperand;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public RuleNullOperand createRuleNullOperand()
+  {
+    RuleNullOperandImpl ruleNullOperand = new RuleNullOperandImpl();
+    return ruleNullOperand;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public LiteralArgument createLiteralArgument()
+  {
+    LiteralArgumentImpl literalArgument = new LiteralArgumentImpl();
+    return literalArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public VariableArgument createVariableArgument()
+  {
+    VariableArgumentImpl variableArgument = new VariableArgumentImpl();
+    return variableArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TimeUnit createTimeUnitFromString(EDataType eDataType, String initialValue)
   {
     TimeUnit result = TimeUnit.get(initialValue);
@@ -1250,6 +1498,50 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   public String convertErasureStrategyToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompareOp createCompareOpFromString(EDataType eDataType, String initialValue)
+  {
+    CompareOp result = CompareOp.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertCompareOpToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CollisionStrategy createCollisionStrategyFromString(EDataType eDataType, String initialValue)
+  {
+    CollisionStrategy result = CollisionStrategy.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertCollisionStrategyToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

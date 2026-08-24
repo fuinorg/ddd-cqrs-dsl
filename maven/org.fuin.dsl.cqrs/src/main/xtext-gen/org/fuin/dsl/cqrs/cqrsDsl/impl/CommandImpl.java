@@ -23,6 +23,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,6 +36,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getTarget <em>Target</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getAcceptable <em>Acceptable</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CommandImpl#getMessage <em>Message</em>}</li>
  * </ul>
@@ -61,6 +65,26 @@ public class CommandImpl extends AbstractElementImpl implements Command
    * @ordered
    */
   protected Duration acceptable;
+
+  /**
+   * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMetaInfo()
+   * @generated
+   * @ordered
+   */
+  protected TypeMetaInfo metaInfo;
+
+  /**
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHints()
+   * @generated
+   * @ordered
+   */
+  protected EList<Hint> hints;
 
   /**
    * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
@@ -214,6 +238,71 @@ public class CommandImpl extends AbstractElementImpl implements Command
    * @generated
    */
   @Override
+  public TypeMetaInfo getMetaInfo()
+  {
+    return metaInfo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetMetaInfo(TypeMetaInfo newMetaInfo, NotificationChain msgs)
+  {
+    TypeMetaInfo oldMetaInfo = metaInfo;
+    metaInfo = newMetaInfo;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.COMMAND__META_INFO, oldMetaInfo, newMetaInfo);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setMetaInfo(TypeMetaInfo newMetaInfo)
+  {
+    if (newMetaInfo != metaInfo)
+    {
+      NotificationChain msgs = null;
+      if (metaInfo != null)
+        msgs = ((InternalEObject)metaInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.COMMAND__META_INFO, null, msgs);
+      if (newMetaInfo != null)
+        msgs = ((InternalEObject)newMetaInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.COMMAND__META_INFO, null, msgs);
+      msgs = basicSetMetaInfo(newMetaInfo, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.COMMAND__META_INFO, newMetaInfo, newMetaInfo));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Hint> getHints()
+  {
+    if (hints == null)
+    {
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.COMMAND__HINTS);
+    }
+    return hints;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Attribute> getAttributes()
   {
     if (attributes == null)
@@ -260,6 +349,10 @@ public class CommandImpl extends AbstractElementImpl implements Command
     {
       case CqrsDslPackage.COMMAND__ACCEPTABLE:
         return basicSetAcceptable(null, msgs);
+      case CqrsDslPackage.COMMAND__META_INFO:
+        return basicSetMetaInfo(null, msgs);
+      case CqrsDslPackage.COMMAND__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.COMMAND__ATTRIBUTES:
         return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
     }
@@ -281,6 +374,10 @@ public class CommandImpl extends AbstractElementImpl implements Command
         return basicGetTarget();
       case CqrsDslPackage.COMMAND__ACCEPTABLE:
         return getAcceptable();
+      case CqrsDslPackage.COMMAND__META_INFO:
+        return getMetaInfo();
+      case CqrsDslPackage.COMMAND__HINTS:
+        return getHints();
       case CqrsDslPackage.COMMAND__ATTRIBUTES:
         return getAttributes();
       case CqrsDslPackage.COMMAND__MESSAGE:
@@ -305,6 +402,13 @@ public class CommandImpl extends AbstractElementImpl implements Command
         return;
       case CqrsDslPackage.COMMAND__ACCEPTABLE:
         setAcceptable((Duration)newValue);
+        return;
+      case CqrsDslPackage.COMMAND__META_INFO:
+        setMetaInfo((TypeMetaInfo)newValue);
+        return;
+      case CqrsDslPackage.COMMAND__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
       case CqrsDslPackage.COMMAND__ATTRIBUTES:
         getAttributes().clear();
@@ -333,6 +437,12 @@ public class CommandImpl extends AbstractElementImpl implements Command
       case CqrsDslPackage.COMMAND__ACCEPTABLE:
         setAcceptable((Duration)null);
         return;
+      case CqrsDslPackage.COMMAND__META_INFO:
+        setMetaInfo((TypeMetaInfo)null);
+        return;
+      case CqrsDslPackage.COMMAND__HINTS:
+        getHints().clear();
+        return;
       case CqrsDslPackage.COMMAND__ATTRIBUTES:
         getAttributes().clear();
         return;
@@ -357,6 +467,10 @@ public class CommandImpl extends AbstractElementImpl implements Command
         return target != null;
       case CqrsDslPackage.COMMAND__ACCEPTABLE:
         return acceptable != null;
+      case CqrsDslPackage.COMMAND__META_INFO:
+        return metaInfo != null;
+      case CqrsDslPackage.COMMAND__HINTS:
+        return hints != null && !hints.isEmpty();
       case CqrsDslPackage.COMMAND__ATTRIBUTES:
         return attributes != null && !attributes.isEmpty();
       case CqrsDslPackage.COMMAND__MESSAGE:

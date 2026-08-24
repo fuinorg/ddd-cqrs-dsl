@@ -4,11 +4,14 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.function.Consumer;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -45,6 +48,12 @@ import org.fuin.dsl.cqrs.scoping.CqrsModelArchives;
  * 
  * <p>Types from an archived dependency model are not edges: they belong to another artifact, which is
  * a dependency of the whole context rather than of one module of it.</p>
+ * 
+ * <p><b>A module is its name, not its block.</b> One module may be declared in more than one file - a
+ * bounded context whose aggregates are split off has a block of the same name in both halves - and
+ * those blocks are separate objects holding one logical module. The graph is therefore keyed by name
+ * and the blocks are merged, or a module would be reported as depending on itself the moment its two
+ * halves referred to each other.</p>
  */
 @SuppressWarnings("all")
 public class CqrsModuleDependencies {
@@ -52,14 +61,14 @@ public class CqrsModuleDependencies {
   }
 
   /**
-   * The modules the given one depends on, excluding itself.
+   * The names of the modules the given block depends on, excluding its own.
    * 
-   * @param module Module to inspect.
+   * @param module Module block to inspect.
    * 
-   * @return Modules it addresses, in encounter order, without duplicates.
+   * @return Module names it addresses, sorted, without duplicates.
    */
-  public static Set<org.fuin.dsl.cqrs.cqrsDsl.Module> dependenciesOf(final org.fuin.dsl.cqrs.cqrsDsl.Module module) {
-    final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> result = new LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module>();
+  public static Set<String> dependencyNamesOf(final org.fuin.dsl.cqrs.cqrsDsl.Module module) {
+    final Set<String> result = new TreeSet<String>();
     if ((module == null)) {
       return result;
     }
@@ -67,8 +76,8 @@ public class CqrsModuleDependencies {
     for (final EObject target : _referencedObjects) {
       {
         final org.fuin.dsl.cqrs.cqrsDsl.Module other = CqrsEObjectExtensions.getModule(target);
-        if (((other != null) && (other != module))) {
-          result.add(other);
+        if ((((other != null) && (other.getName() != null)) && (!Objects.equals(other.getName(), module.getName())))) {
+          result.add(other.getName());
         }
       }
     }
@@ -76,14 +85,17 @@ public class CqrsModuleDependencies {
   }
 
   /**
-   * The whole graph of a parsed model, keyed by module.
+   * The whole graph of a parsed model, keyed by module name.
+   * 
+   * <p>Blocks sharing a name are one node: their dependencies are unioned, because a module split
+   * over two files is one module.</p>
    * 
    * @param resourceSet Fully parsed model.
    * 
    * @return Every module of the model and what it depends on. Never null.
    */
-  public static Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> graphOf(final ResourceSet resourceSet) {
-    final Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> result = new LinkedHashMap<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>>();
+  public static Map<String, Set<String>> graphOf(final ResourceSet resourceSet) {
+    final Map<String, Set<String>> result = new TreeMap<String, Set<String>>();
     if ((resourceSet == null)) {
       return result;
     }
@@ -105,10 +117,25 @@ public class CqrsModuleDependencies {
           _and = _not;
         }
         if (_and) {
-          result.put(((org.fuin.dsl.cqrs.cqrsDsl.Module) obj), CqrsModuleDependencies.dependenciesOf(((org.fuin.dsl.cqrs.cqrsDsl.Module) obj)));
+          final org.fuin.dsl.cqrs.cqrsDsl.Module module = ((org.fuin.dsl.cqrs.cqrsDsl.Module) obj);
+          String _name = module.getName();
+          boolean _tripleNotEquals = (_name != null);
+          if (_tripleNotEquals) {
+            Set<String> known = result.get(module.getName());
+            if ((known == null)) {
+              TreeSet<String> _treeSet = new TreeSet<String>();
+              known = _treeSet;
+              result.put(module.getName(), known);
+            }
+            known.addAll(CqrsModuleDependencies.dependencyNamesOf(module));
+          }
         }
       }
     }
+    final Consumer<Set<String>> _function = (Set<String> it) -> {
+      it.retainAll(result.keySet());
+    };
+    result.values().forEach(_function);
     return result;
   }
 
@@ -123,53 +150,50 @@ public class CqrsModuleDependencies {
    * 
    * @return The cycle, or an empty list when the graph is acyclic.
    */
-  public static List<org.fuin.dsl.cqrs.cqrsDsl.Module> firstCycle(final Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> graph) {
-    final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> settled = new LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-    Set<org.fuin.dsl.cqrs.cqrsDsl.Module> _keySet = graph.keySet();
-    for (final org.fuin.dsl.cqrs.cqrsDsl.Module start : _keySet) {
-      boolean _contains = settled.contains(start);
-      boolean _not = (!_contains);
-      if (_not) {
-        final List<org.fuin.dsl.cqrs.cqrsDsl.Module> path = new ArrayList<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-        final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> onPath = new LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-        final List<org.fuin.dsl.cqrs.cqrsDsl.Module> found = CqrsModuleDependencies.walk(start, graph, settled, onPath, path);
-        if ((found != null)) {
+  public static List<String> firstCycle(final Map<String, Set<String>> graph) {
+    Set<String> _keySet = graph.keySet();
+    for (final String start : _keySet) {
+      {
+        final List<String> found = CqrsModuleDependencies.cycleThrough(start, graph);
+        boolean _isEmpty = found.isEmpty();
+        boolean _not = (!_isEmpty);
+        if (_not) {
           return found;
         }
       }
     }
-    return Collections.<org.fuin.dsl.cqrs.cqrsDsl.Module>emptyList();
+    return Collections.<String>emptyList();
   }
 
   /**
-   * The cycle the given module takes part in, or an empty list when it takes part in none.
+   * The cycle the named module takes part in, or an empty list when it takes part in none.
    * 
-   * @param module Module to check.
+   * @param moduleName Module to check.
    * @param graph Graph to search.
    * 
    * @return The cycle starting and ending at this module, or an empty list.
    */
-  public static List<org.fuin.dsl.cqrs.cqrsDsl.Module> cycleThrough(final org.fuin.dsl.cqrs.cqrsDsl.Module module, final Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> graph) {
-    final List<org.fuin.dsl.cqrs.cqrsDsl.Module> path = new ArrayList<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-    final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> onPath = new LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-    LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module> _linkedHashSet = new LinkedHashSet<org.fuin.dsl.cqrs.cqrsDsl.Module>();
-    final List<org.fuin.dsl.cqrs.cqrsDsl.Module> found = CqrsModuleDependencies.walk(module, graph, _linkedHashSet, onPath, path);
-    if (((found != null) && (found.get(0) == module))) {
+  public static List<String> cycleThrough(final String moduleName, final Map<String, Set<String>> graph) {
+    final List<String> path = new ArrayList<String>();
+    LinkedHashSet<String> _linkedHashSet = new LinkedHashSet<String>();
+    LinkedHashSet<String> _linkedHashSet_1 = new LinkedHashSet<String>();
+    final List<String> found = CqrsModuleDependencies.walk(moduleName, graph, _linkedHashSet, _linkedHashSet_1, path);
+    if (((found != null) && Objects.equals(found.get(0), moduleName))) {
       return found;
     }
-    return Collections.<org.fuin.dsl.cqrs.cqrsDsl.Module>emptyList();
+    return Collections.<String>emptyList();
   }
 
   /**
    * Depth first search that returns the closing path as soon as it steps onto a module already on
    * the current path.
    */
-  private static List<org.fuin.dsl.cqrs.cqrsDsl.Module> walk(final org.fuin.dsl.cqrs.cqrsDsl.Module current, final Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> graph, final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> settled, final Set<org.fuin.dsl.cqrs.cqrsDsl.Module> onPath, final List<org.fuin.dsl.cqrs.cqrsDsl.Module> path) {
+  private static List<String> walk(final String current, final Map<String, Set<String>> graph, final Set<String> settled, final Set<String> onPath, final List<String> path) {
     boolean _contains = onPath.contains(current);
     if (_contains) {
       final int start = path.indexOf(current);
-      List<org.fuin.dsl.cqrs.cqrsDsl.Module> _subList = path.subList(start, path.size());
-      final List<org.fuin.dsl.cqrs.cqrsDsl.Module> cycle = new ArrayList<org.fuin.dsl.cqrs.cqrsDsl.Module>(_subList);
+      List<String> _subList = path.subList(start, path.size());
+      final List<String> cycle = new ArrayList<String>(_subList);
       cycle.add(current);
       return cycle;
     }
@@ -179,17 +203,17 @@ public class CqrsModuleDependencies {
     }
     onPath.add(current);
     path.add(current);
-    Set<org.fuin.dsl.cqrs.cqrsDsl.Module> _elvis = null;
-    Set<org.fuin.dsl.cqrs.cqrsDsl.Module> _get = graph.get(current);
+    Set<String> _elvis = null;
+    Set<String> _get = graph.get(current);
     if (_get != null) {
       _elvis = _get;
     } else {
-      Set<org.fuin.dsl.cqrs.cqrsDsl.Module> _emptySet = Collections.<org.fuin.dsl.cqrs.cqrsDsl.Module>emptySet();
+      Set<String> _emptySet = Collections.<String>emptySet();
       _elvis = _emptySet;
     }
-    for (final org.fuin.dsl.cqrs.cqrsDsl.Module next : _elvis) {
+    for (final String next : _elvis) {
       {
-        final List<org.fuin.dsl.cqrs.cqrsDsl.Module> found = CqrsModuleDependencies.walk(next, graph, settled, onPath, path);
+        final List<String> found = CqrsModuleDependencies.walk(next, graph, settled, onPath, path);
         if ((found != null)) {
           return found;
         }

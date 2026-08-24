@@ -3,17 +3,26 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 
 /**
  * <!-- begin-user-doc -->
@@ -24,7 +33,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getException <em>Exception</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getConsistency <em>Consistency</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getRequires <em>Requires</em>}</li>
  * </ul>
  *
  * @generated
@@ -42,6 +53,16 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
   protected org.fuin.dsl.cqrs.cqrsDsl.Exception exception;
 
   /**
+   * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAttributes()
+   * @generated
+   * @ordered
+   */
+  protected EList<Attribute> attributes;
+
+  /**
    * The cached value of the '{@link #getConsistency() <em>Consistency</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -50,6 +71,16 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * @ordered
    */
   protected Consistency consistency;
+
+  /**
+   * The cached value of the '{@link #getRequires() <em>Requires</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRequires()
+   * @generated
+   * @ordered
+   */
+  protected RuleExpr requires;
 
   /**
    * <!-- begin-user-doc -->
@@ -123,6 +154,21 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * @generated
    */
   @Override
+  public EList<Attribute> getAttributes()
+  {
+    if (attributes == null)
+    {
+      attributes = new EObjectContainmentEList<Attribute>(Attribute.class, this, CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES);
+    }
+    return attributes;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Consistency getConsistency()
   {
     return consistency;
@@ -173,12 +219,66 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * @generated
    */
   @Override
+  public RuleExpr getRequires()
+  {
+    return requires;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetRequires(RuleExpr newRequires, NotificationChain msgs)
+  {
+    RuleExpr oldRequires = requires;
+    requires = newRequires;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__REQUIRES, oldRequires, newRequires);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setRequires(RuleExpr newRequires)
+  {
+    if (newRequires != requires)
+    {
+      NotificationChain msgs = null;
+      if (requires != null)
+        msgs = ((InternalEObject)requires).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.BUSINESS_RULE__REQUIRES, null, msgs);
+      if (newRequires != null)
+        msgs = ((InternalEObject)newRequires).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.BUSINESS_RULE__REQUIRES, null, msgs);
+      msgs = basicSetRequires(newRequires, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__REQUIRES, newRequires, newRequires));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
+      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
+        return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return basicSetConsistency(null, msgs);
+      case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
+        return basicSetRequires(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -196,8 +296,12 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         if (resolve) return getException();
         return basicGetException();
+      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
+        return getAttributes();
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return getConsistency();
+      case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
+        return getRequires();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -207,6 +311,7 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -215,8 +320,15 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)newValue);
         return;
+      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
+        getAttributes().clear();
+        getAttributes().addAll((Collection<? extends Attribute>)newValue);
+        return;
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         setConsistency((Consistency)newValue);
+        return;
+      case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
+        setRequires((RuleExpr)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -235,8 +347,14 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)null);
         return;
+      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
+        getAttributes().clear();
+        return;
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         setConsistency((Consistency)null);
+        return;
+      case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
+        setRequires((RuleExpr)null);
         return;
     }
     super.eUnset(featureID);
@@ -254,8 +372,12 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
     {
       case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
         return exception != null;
+      case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
+        return attributes != null && !attributes.isEmpty();
       case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
         return consistency != null;
+      case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
+        return requires != null;
     }
     return super.eIsSet(featureID);
   }

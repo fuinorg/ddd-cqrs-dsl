@@ -1,0 +1,50 @@
+context p_28_identified_by {
+
+    module reporting {
+
+        type String
+        type Integer
+
+        value-object CustomerId base String {}
+
+        // A read model row is addressed by one of its attributes. Where the attribute's own type
+        // says so - an aggregate-id or an entity-id - nothing has to be declared. Where it does
+        // not, 'identified-by' names the attribute, and it is a cross reference: renaming the
+        // attribute follows, and a name that is not an attribute of this row is a linking error.
+        value-object CustomerRow {
+
+            CustomerId id
+            String name
+            Integer orderCount
+
+            identified-by id
+        }
+
+        // Only one attribute is ever named. A composite identity is expressed as a composite id
+        // *type*, not as a list here, so this stays a single reference no matter how many parts
+        // the identity has.
+        value-object PeriodId base String {
+
+            String provider
+            String period
+        }
+
+        value-object PeriodRow {
+
+            PeriodId id
+            Integer rateCount
+
+            identified-by id
+        }
+
+        // A row whose identity is an id type needs no declaration at all - the type already says
+        // it. 'identified-by' is for the case the type cannot express.
+        value-object OrderRow {
+
+            CustomerId customer
+            Integer total
+        }
+
+    }
+
+}

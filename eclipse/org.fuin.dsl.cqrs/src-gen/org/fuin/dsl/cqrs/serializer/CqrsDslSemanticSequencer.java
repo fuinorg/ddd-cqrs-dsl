@@ -53,7 +53,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
+import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -63,10 +66,21 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
+import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 import org.fuin.dsl.cqrs.cqrsDsl.WeakConsistency;
 import org.fuin.dsl.cqrs.services.CqrsDslGrammarAccess;
@@ -202,11 +216,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.JSON_STRING:
 				sequence_JsonString(context, (JsonString) semanticObject); 
 				return; 
+			case CqrsDslPackage.KEY:
+				sequence_Key(context, (Key) semanticObject); 
+				return; 
+			case CqrsDslPackage.LITERAL_ARGUMENT:
+				sequence_RuleArgument(context, (LiteralArgument) semanticObject); 
+				return; 
 			case CqrsDslPackage.METHOD:
 				sequence_Method(context, (Method) semanticObject); 
 				return; 
 			case CqrsDslPackage.MODULE:
 				sequence_Module(context, (org.fuin.dsl.cqrs.cqrsDsl.Module) semanticObject); 
+				return; 
+			case CqrsDslPackage.NO_KEY:
+				sequence_NoKey(context, (NoKey) semanticObject); 
 				return; 
 			case CqrsDslPackage.NULL_LITERAL:
 				sequence_NullLiteral(context, (NullLiteral) semanticObject); 
@@ -238,8 +261,38 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.RETURN_TYPE:
 				sequence_ReturnType(context, (ReturnType) semanticObject); 
 				return; 
+			case CqrsDslPackage.RULE_AND:
+				sequence_RuleAnd(context, (RuleAnd) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_ATTR_REF:
+				sequence_RuleAtom(context, (RuleAttrRef) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_COMPARISON:
+				sequence_RuleAtom(context, (RuleComparison) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_IS_EMPTY:
+				sequence_RuleAtom(context, (RuleIsEmpty) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_NOT:
+				sequence_RuleUnary(context, (RuleNot) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_NULL_OPERAND:
+				sequence_RuleOperand(context, (RuleNullOperand) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_OR:
+				sequence_RuleOr(context, (RuleOr) semanticObject); 
+				return; 
+			case CqrsDslPackage.RULE_REF_OPERAND:
+				sequence_RuleOperand(context, (RuleRefOperand) semanticObject); 
+				return; 
 			case CqrsDslPackage.SERVICE:
 				sequence_Service(context, (Service) semanticObject); 
+				return; 
+			case CqrsDslPackage.SERVICE_CALL_ARGUMENT:
+				sequence_ServiceCallArgument(context, (ServiceCallArgument) semanticObject); 
+				return; 
+			case CqrsDslPackage.SOFT_DELETE:
+				sequence_SoftDelete(context, (SoftDelete) semanticObject); 
 				return; 
 			case CqrsDslPackage.STRING_LITERAL:
 				sequence_StringLiteral(context, (StringLiteral) semanticObject); 
@@ -249,6 +302,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.VALUE_OBJECT:
 				sequence_ValueObject(context, (ValueObject) semanticObject); 
+				return; 
+			case CqrsDslPackage.VARIABLE_ARGUMENT:
+				sequence_RuleArgument(context, (VariableArgument) semanticObject); 
 				return; 
 			case CqrsDslPackage.VIEW:
 				sequence_View(context, (View) semanticObject); 
@@ -281,6 +337,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method*
@@ -307,11 +364,15 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         doc=DOC? 
 	 *         name=ID 
 	 *         idType=[AggregateId|FQN]? 
+	 *         softDelete=SoftDelete? 
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         businessRules+=BusinessRule* 
+	 *         keys+=Key* 
+	 *         noKey=NoKey? 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method* 
 	 *         elements+=EntityElement*
@@ -398,7 +459,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BusinessRuleInstance returns BusinessRuleInstance
 	 *
 	 * Constraint:
-	 *     (businessRule=[BusinessRule|FQN] (params+=Literal params+=Literal*)?)
+	 *     (businessRule=[BusinessRule|FQN] (params+=RuleArgument params+=RuleArgument*)?)
 	 * </pre>
 	 */
 	protected void sequence_BusinessRuleInstance(ISerializationContext context, BusinessRuleInstance semanticObject) {
@@ -413,26 +474,18 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BusinessRule returns BusinessRule
 	 *
 	 * Constraint:
-	 *     (doc=DOC name=ID exception=[Exception|FQN] consistency=Consistency)
+	 *     (
+	 *         doc=DOC 
+	 *         name=ID 
+	 *         exception=[Exception|FQN] 
+	 *         attributes+=Attribute* 
+	 *         consistency=Consistency 
+	 *         requires=RuleExpr?
+	 *     )
 	 * </pre>
 	 */
 	protected void sequence_BusinessRule(ISerializationContext context, BusinessRule semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__DOC) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__DOC));
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME));
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION));
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__CONSISTENCY) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.BUSINESS_RULE__CONSISTENCY));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getBusinessRuleAccess().getDocDOCTerminalRuleCall_0_0(), semanticObject.getDoc());
-		feeder.accept(grammarAccess.getBusinessRuleAccess().getNameIDTerminalRuleCall_2_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getBusinessRuleAccess().getExceptionExceptionFQNParserRuleCall_4_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION, false));
-		feeder.accept(grammarAccess.getBusinessRuleAccess().getConsistencyConsistencyParserRuleCall_6_0(), semanticObject.getConsistency());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -479,6 +532,8 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         target=[AbstractMethod|FQN]? 
 	 *         acceptable=Duration? 
+	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         message=STRING?
 	 *     )
@@ -696,6 +751,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method*
@@ -723,11 +779,15 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         idType=[EntityId|FQN]? 
 	 *         root=[Aggregate|FQN]? 
+	 *         softDelete=SoftDelete? 
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         businessRules+=BusinessRule* 
+	 *         keys+=Key* 
+	 *         noKey=NoKey? 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method* 
 	 *         elements+=EntityElement*
@@ -770,6 +830,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
 	 *         instances+=EnumInstance+
 	 *     )
@@ -1020,6 +1081,29 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     Key returns Key
+	 *
+	 * Constraint:
+	 *     (
+	 *         doc=DOC 
+	 *         name=ID 
+	 *         exception=[Exception|FQN]? 
+	 *         attributes+=[Attribute|ID] 
+	 *         attributes+=[Attribute|ID]* 
+	 *         onCollision=CollisionStrategy 
+	 *         consistency=Consistency 
+	 *         displayAs=STRING?
+	 *     )
+	 * </pre>
+	 */
+	protected void sequence_Key(ISerializationContext context, Key semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     AbstractMethod returns Method
 	 *     Method returns Method
 	 *
@@ -1033,6 +1117,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         (firedEvents+=[Event|FQN] firedEvents+=[Event|FQN]*)? 
 	 *         restPath=STRING? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         parameters+=Parameter* 
 	 *         operationContext=[Service|FQN]? 
 	 *         returnType=ReturnType? 
@@ -1052,11 +1137,38 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Module returns Module
 	 *
 	 * Constraint:
-	 *     (name=FQN metaInfo=TypeMetaInfo dependencies+=Dependency* imports+=Import* elements+=AbstractElement*)
+	 *     (
+	 *         name=FQN 
+	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
+	 *         dependencies+=Dependency* 
+	 *         imports+=Import* 
+	 *         elements+=AbstractElement*
+	 *     )
 	 * </pre>
 	 */
 	protected void sequence_Module(ISerializationContext context, org.fuin.dsl.cqrs.cqrsDsl.Module semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     NoKey returns NoKey
+	 *
+	 * Constraint:
+	 *     doc=DOC
+	 * </pre>
+	 */
+	protected void sequence_NoKey(ISerializationContext context, NoKey semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.NO_KEY__DOC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.NO_KEY__DOC));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getNoKeyAccess().getDocDOCTerminalRuleCall_0_0(), semanticObject.getDoc());
+		feeder.finish();
 	}
 	
 	
@@ -1108,17 +1220,11 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     OverriddenTypeMetaInfo returns OverriddenTypeMetaInfo
 	 *
 	 * Constraint:
-	 *     metaInfo=TypeMetaInfo
+	 *     (metaInfo=TypeMetaInfo hints+=Hint*)
 	 * </pre>
 	 */
 	protected void sequence_OverriddenTypeMetaInfo(ISerializationContext context, OverriddenTypeMetaInfo semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.OVERRIDDEN_TYPE_META_INFO__META_INFO) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.OVERRIDDEN_TYPE_META_INFO__META_INFO));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getOverriddenTypeMetaInfoAccess().getMetaInfoTypeMetaInfoParserRuleCall_1_0(), semanticObject.getMetaInfo());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -1253,6 +1359,268 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     RuleExpr returns RuleAnd
+	 *     RuleOr returns RuleAnd
+	 *     RuleOr.RuleOr_1_0 returns RuleAnd
+	 *     RuleAnd returns RuleAnd
+	 *     RuleAnd.RuleAnd_1_0 returns RuleAnd
+	 *     RuleUnary returns RuleAnd
+	 *
+	 * Constraint:
+	 *     (left=RuleAnd_RuleAnd_1_0 right=RuleUnary)
+	 * </pre>
+	 */
+	protected void sequence_RuleAnd(ISerializationContext context, RuleAnd semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_AND__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_AND__LEFT));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_AND__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_AND__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleAndAccess().getRuleAndLeftAction_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getRuleAndAccess().getRightRuleUnaryParserRuleCall_1_2_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleArgument returns LiteralArgument
+	 *
+	 * Constraint:
+	 *     literal=Literal
+	 * </pre>
+	 */
+	protected void sequence_RuleArgument(ISerializationContext context, LiteralArgument semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.LITERAL_ARGUMENT__LITERAL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.LITERAL_ARGUMENT__LITERAL));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleArgumentAccess().getLiteralLiteralParserRuleCall_0_1_0(), semanticObject.getLiteral());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleArgument returns VariableArgument
+	 *
+	 * Constraint:
+	 *     variable=[Variable|ID]
+	 * </pre>
+	 */
+	protected void sequence_RuleArgument(ISerializationContext context, VariableArgument semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleArgumentAccess().getVariableVariableIDTerminalRuleCall_2_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleExpr returns RuleAttrRef
+	 *     RuleOr returns RuleAttrRef
+	 *     RuleOr.RuleOr_1_0 returns RuleAttrRef
+	 *     RuleAnd returns RuleAttrRef
+	 *     RuleAnd.RuleAnd_1_0 returns RuleAttrRef
+	 *     RuleUnary returns RuleAttrRef
+	 *     RuleAtom returns RuleAttrRef
+	 *     RuleAtom.RuleComparison_2_0_0 returns RuleAttrRef
+	 *     RuleAtom.RuleIsEmpty_2_1_0 returns RuleAttrRef
+	 *
+	 * Constraint:
+	 *     attribute=[Attribute|ID]
+	 * </pre>
+	 */
+	protected void sequence_RuleAtom(ISerializationContext context, RuleAttrRef semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_ATTR_REF__ATTRIBUTE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_ATTR_REF__ATTRIBUTE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleAtomAccess().getAttributeAttributeIDTerminalRuleCall_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.RULE_ATTR_REF__ATTRIBUTE, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleExpr returns RuleComparison
+	 *     RuleOr returns RuleComparison
+	 *     RuleOr.RuleOr_1_0 returns RuleComparison
+	 *     RuleAnd returns RuleComparison
+	 *     RuleAnd.RuleAnd_1_0 returns RuleComparison
+	 *     RuleUnary returns RuleComparison
+	 *     RuleAtom returns RuleComparison
+	 *
+	 * Constraint:
+	 *     (left=RuleAtom_RuleComparison_2_0_0 op=CompareOp right=RuleOperand)
+	 * </pre>
+	 */
+	protected void sequence_RuleAtom(ISerializationContext context, RuleComparison semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__LEFT));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__OP) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__OP));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_COMPARISON__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleAtomAccess().getRuleComparisonLeftAction_2_0_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getRuleAtomAccess().getOpCompareOpEnumRuleCall_2_0_1_0(), semanticObject.getOp());
+		feeder.accept(grammarAccess.getRuleAtomAccess().getRightRuleOperandParserRuleCall_2_0_2_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleExpr returns RuleIsEmpty
+	 *     RuleOr returns RuleIsEmpty
+	 *     RuleOr.RuleOr_1_0 returns RuleIsEmpty
+	 *     RuleAnd returns RuleIsEmpty
+	 *     RuleAnd.RuleAnd_1_0 returns RuleIsEmpty
+	 *     RuleUnary returns RuleIsEmpty
+	 *     RuleAtom returns RuleIsEmpty
+	 *
+	 * Constraint:
+	 *     left=RuleAtom_RuleIsEmpty_2_1_0
+	 * </pre>
+	 */
+	protected void sequence_RuleAtom(ISerializationContext context, RuleIsEmpty semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_IS_EMPTY__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_IS_EMPTY__LEFT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleAtomAccess().getRuleIsEmptyLeftAction_2_1_0(), semanticObject.getLeft());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleOperand returns RuleNullOperand
+	 *
+	 * Constraint:
+	 *     nullValue='null'
+	 * </pre>
+	 */
+	protected void sequence_RuleOperand(ISerializationContext context, RuleNullOperand semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_NULL_OPERAND__NULL_VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_NULL_OPERAND__NULL_VALUE));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleOperandAccess().getNullValueNullKeyword_1_1_0(), semanticObject.getNullValue());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleOperand returns RuleRefOperand
+	 *
+	 * Constraint:
+	 *     target=[EObject|ID]
+	 * </pre>
+	 */
+	protected void sequence_RuleOperand(ISerializationContext context, RuleRefOperand semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_REF_OPERAND__TARGET) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_REF_OPERAND__TARGET));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleOperandAccess().getTargetEObjectIDTerminalRuleCall_0_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.RULE_REF_OPERAND__TARGET, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleExpr returns RuleOr
+	 *     RuleOr returns RuleOr
+	 *     RuleOr.RuleOr_1_0 returns RuleOr
+	 *     RuleAnd returns RuleOr
+	 *     RuleAnd.RuleAnd_1_0 returns RuleOr
+	 *     RuleUnary returns RuleOr
+	 *
+	 * Constraint:
+	 *     (left=RuleOr_RuleOr_1_0 right=RuleAnd)
+	 * </pre>
+	 */
+	protected void sequence_RuleOr(ISerializationContext context, RuleOr semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_OR__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_OR__LEFT));
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_OR__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_OR__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleOrAccess().getRuleOrLeftAction_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getRuleOrAccess().getRightRuleAndParserRuleCall_1_2_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleExpr returns RuleNot
+	 *     RuleOr returns RuleNot
+	 *     RuleOr.RuleOr_1_0 returns RuleNot
+	 *     RuleAnd returns RuleNot
+	 *     RuleAnd.RuleAnd_1_0 returns RuleNot
+	 *     RuleUnary returns RuleNot
+	 *
+	 * Constraint:
+	 *     expr=RuleUnary
+	 * </pre>
+	 */
+	protected void sequence_RuleUnary(ISerializationContext context, RuleNot semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CqrsDslPackage.Literals.RULE_NOT__EXPR) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.RULE_NOT__EXPR));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getRuleUnaryAccess().getExprRuleUnaryParserRuleCall_0_2_0(), semanticObject.getExpr());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleArgument returns ServiceCallArgument
+	 *     ServiceCallArgument returns ServiceCallArgument
+	 *
+	 * Constraint:
+	 *     (method=[Method|FQN] (args+=[Variable|ID] args+=[Variable|ID]*)?)
+	 * </pre>
+	 */
+	protected void sequence_ServiceCallArgument(ISerializationContext context, ServiceCallArgument semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     AbstractElement returns Service
 	 *     EntityElement returns Service
 	 *     Type returns Service
@@ -1263,6 +1631,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * </pre>
 	 */
 	protected void sequence_Service(ISerializationContext context, Service semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     SoftDelete returns SoftDelete
+	 *
+	 * Constraint:
+	 *     (deleteEvent=[Event|FQN] restoreEvent=[Event|FQN]?)
+	 * </pre>
+	 */
+	protected void sequence_SoftDelete(ISerializationContext context, SoftDelete semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1321,7 +1703,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
+	 *         hints+=Hint* 
 	 *         attributes+=Attribute* 
+	 *         identifiedBy=[Attribute|ID]? 
 	 *         constructors+=Constructor* 
 	 *         methods+=Method*
 	 *     )

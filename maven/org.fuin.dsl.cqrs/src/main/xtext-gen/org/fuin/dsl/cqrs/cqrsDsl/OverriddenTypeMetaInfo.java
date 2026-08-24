@@ -3,6 +3,8 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -15,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo#getHints <em>Hints</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getOverriddenTypeMetaInfo()
@@ -44,5 +47,17 @@ public interface OverriddenTypeMetaInfo extends EObject
    * @generated
    */
   void setMetaInfo(TypeMetaInfo value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getOverriddenTypeMetaInfo_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
 } // OverriddenTypeMetaInfo

@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getInvariants <em>Invariants</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getDataProtection <em>Data Protection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.InternalType#getAttributes <em>Attributes</em>}</li>
  * </ul>
  *
@@ -91,6 +92,18 @@ public interface InternalType extends Type
    * @generated
    */
   void setMetaInfo(TypeMetaInfo value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getInternalType_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
   /**
    * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.

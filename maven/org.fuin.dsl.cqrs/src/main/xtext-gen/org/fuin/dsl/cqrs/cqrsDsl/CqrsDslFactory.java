@@ -204,6 +204,24 @@ public interface CqrsDslFactory extends EFactory
   BusinessRule createBusinessRule();
 
   /**
+   * Returns a new object of class '<em>Rule Expr</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Expr</em>'.
+   * @generated
+   */
+  RuleExpr createRuleExpr();
+
+  /**
+   * Returns a new object of class '<em>Rule Operand</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Operand</em>'.
+   * @generated
+   */
+  RuleOperand createRuleOperand();
+
+  /**
    * Returns a new object of class '<em>Annotation</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -292,6 +310,33 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   Aggregate createAggregate();
+
+  /**
+   * Returns a new object of class '<em>Soft Delete</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Soft Delete</em>'.
+   * @generated
+   */
+  SoftDelete createSoftDelete();
+
+  /**
+   * Returns a new object of class '<em>Key</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Key</em>'.
+   * @generated
+   */
+  Key createKey();
+
+  /**
+   * Returns a new object of class '<em>No Key</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>No Key</em>'.
+   * @generated
+   */
+  NoKey createNoKey();
 
   /**
    * Returns a new object of class '<em>Abstract Method</em>'.
@@ -427,6 +472,24 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   BusinessRuleInstance createBusinessRuleInstance();
+
+  /**
+   * Returns a new object of class '<em>Rule Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Argument</em>'.
+   * @generated
+   */
+  RuleArgument createRuleArgument();
+
+  /**
+   * Returns a new object of class '<em>Service Call Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Service Call Argument</em>'.
+   * @generated
+   */
+  ServiceCallArgument createServiceCallArgument();
 
   /**
    * Returns a new object of class '<em>Annotation Instance</em>'.
@@ -625,6 +688,96 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   StringLiteral createStringLiteral();
+
+  /**
+   * Returns a new object of class '<em>Rule Or</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Or</em>'.
+   * @generated
+   */
+  RuleOr createRuleOr();
+
+  /**
+   * Returns a new object of class '<em>Rule And</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule And</em>'.
+   * @generated
+   */
+  RuleAnd createRuleAnd();
+
+  /**
+   * Returns a new object of class '<em>Rule Not</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Not</em>'.
+   * @generated
+   */
+  RuleNot createRuleNot();
+
+  /**
+   * Returns a new object of class '<em>Rule Attr Ref</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Attr Ref</em>'.
+   * @generated
+   */
+  RuleAttrRef createRuleAttrRef();
+
+  /**
+   * Returns a new object of class '<em>Rule Comparison</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Comparison</em>'.
+   * @generated
+   */
+  RuleComparison createRuleComparison();
+
+  /**
+   * Returns a new object of class '<em>Rule Is Empty</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Is Empty</em>'.
+   * @generated
+   */
+  RuleIsEmpty createRuleIsEmpty();
+
+  /**
+   * Returns a new object of class '<em>Rule Ref Operand</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Ref Operand</em>'.
+   * @generated
+   */
+  RuleRefOperand createRuleRefOperand();
+
+  /**
+   * Returns a new object of class '<em>Rule Null Operand</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Null Operand</em>'.
+   * @generated
+   */
+  RuleNullOperand createRuleNullOperand();
+
+  /**
+   * Returns a new object of class '<em>Literal Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Literal Argument</em>'.
+   * @generated
+   */
+  LiteralArgument createLiteralArgument();
+
+  /**
+   * Returns a new object of class '<em>Variable Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Variable Argument</em>'.
+   * @generated
+   */
+  VariableArgument createVariableArgument();
 
   /**
    * Returns the package supported by this factory.

@@ -153,6 +153,21 @@
     KW_FALSE='false'
     KW_NULL='null'
 
+    // Business key, soft delete and rule predicate keywords
+    KW_IDENTIFIED_BY='identified-by'
+    KW_SOFT_DELETE='soft-delete'
+    KW_RESTORED_BY='restored-by'
+    KW_KEY='key'
+    KW_ATTRIBUTES='attributes'
+    KW_ON_COLLISION='on-collision'
+    KW_DISPLAY_AS='display-as'
+    KW_NO_KEY='no-key'
+    KW_REFUSE='refuse'
+    KW_OVERWRITE='overwrite'
+    KW_SKIP='skip'
+    KW_REQUIRES='requires'
+    KW_IS_EMPTY='is-empty'
+
     // Punctuation
     LBRACE='{'
     RBRACE='}'
@@ -168,6 +183,13 @@
     COLON=':'
     LBRACKET='['
     RBRACKET=']'
+    EQ='=='
+    NEQ='!='
+    LE='<='
+    GE='>='
+    AND='&&'
+    OR='||'
+    NOT='!'
 
     // Terminals (the actual matching is done by the JFlex lexer)
     ID='regexp:\^?[A-Za-z][A-Za-z_0-9]*'
@@ -194,7 +216,7 @@ context_def ::= KW_CONTEXT qualified_name LBRACE dependency_decl* import_decl* h
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-module_def ::= KW_MODULE qualified_name LBRACE type_meta_info dependency_decl* import_decl* element* RBRACE {
+module_def ::= KW_MODULE qualified_name LBRACE type_meta_info hint_def* dependency_decl* import_decl* element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -302,25 +324,25 @@ exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE 
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* identified_by? constructor_def* method_def* RBRACE {
   pin=2
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_id ::= KW_ENTITY_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+entity_id ::= KW_ENTITY_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* constructor_def* method_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_id ::= KW_AGGREGATE_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* constructor_def* method_def* RBRACE {
+aggregate_id ::= KW_AGGREGATE_ID ID (KW_IDENTIFIES type_ref)? (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* constructor_def* method_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* KW_INSTANCES LBRACE enum_instance+ RBRACE RBRACE {
+enum_object ::= KW_ENUM ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* KW_INSTANCES LBRACE enum_instance+ RBRACE RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -337,13 +359,13 @@ event_def ::= annotation_instance* KW_EVENT ID (KW_COPIES_ATTRIBUTES_OF type_ref
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* entity_element* RBRACE {
+entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? soft_delete? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? data_protection_instance? LBRACE type_meta_info attribute* business_rule* constructor_def* method_def* entity_element* RBRACE {
+aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? soft_delete? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -355,7 +377,7 @@ service_def ::= KW_SERVICE ID LBRACE business_rule* method_def* RBRACE {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-command_def ::= KW_COMMAND ID (KW_TARGET type_ref)? (KW_SLA duration)? LBRACE attribute* (KW_MESSAGE STRING)? RBRACE {
+command_def ::= KW_COMMAND ID (KW_TARGET type_ref)? (KW_SLA duration)? LBRACE type_meta_info hint_def* attribute* (KW_MESSAGE STRING)? RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -413,7 +435,7 @@ process_reaction ::= KW_REACTS_TO type_ref (KW_IN_STATE type_ref)? LBRACE
 // Members
 // =========================================================================
 
-business_rule ::= KW_BUSINESS_RULE ID KW_EXCEPTION type_ref LBRACE consistency RBRACE {
+business_rule ::= KW_BUSINESS_RULE ID KW_EXCEPTION type_ref LBRACE attribute* consistency rule_requires? RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -425,7 +447,7 @@ constructor_def ::= KW_CONSTRUCTOR ID preconditions? business_rules? (KW_FIRES t
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE type_meta_info parameter* operation_context? return_type? service_def* event_def* RBRACE {
+method_def ::= KW_METHOD ID (KW_REF type_ref)? preconditions? business_rules? (KW_FIRES type_ref (COMMA type_ref)*)? (KW_REST_PATH STRING)? LBRACE type_meta_info hint_def* parameter* operation_context? return_type? service_def* event_def* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -451,7 +473,7 @@ parameter ::= KW_OPTIONAL? type_ref generic_args? ID preconditions? business_rul
 
 type_meta_info ::= (KW_SLABEL STRING)? (KW_LABEL STRING)? (KW_TOOLTIP STRING)? (KW_PROMPT STRING)? (KW_EXAMPLES literal*)?
 
-overridden_meta ::= LBRACE type_meta_info RBRACE { pin=1 }
+overridden_meta ::= LBRACE type_meta_info hint_def* RBRACE { pin=1 }
 
 generic_args ::= LT type_ref (COMMA type_ref)* GT { pin=1 }
 
@@ -461,9 +483,63 @@ preconditions ::= KW_PRECONDITIONS constraint_instance (COMMA constraint_instanc
 
 business_rules ::= KW_BUSINESS_RULES business_rule_instance (COMMA business_rule_instance)* { pin=1 }
 
-business_rule_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
+business_rule_instance ::= type_ref (LPAREN rule_argument (COMMA rule_argument)* RPAREN)?
 
 constraint_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
+
+// An actual of a business rule usage. A service call is told apart from a plain value by the
+// parenthesis that follows it, so it is tried first.
+rule_argument ::= service_call_argument | variable_argument | literal
+
+service_call_argument ::= ID LPAREN (ID (COMMA ID)*)? RPAREN
+
+variable_argument ::= ID
+
+// =========================================================================
+// Business keys, soft delete and the read model's declared identity
+// =========================================================================
+
+// The attribute that identifies a read model row, where the attribute's own type cannot say so.
+identified_by ::= KW_IDENTIFIED_BY ID { pin=1 }
+
+// Marks the type as soft deleted and names the event that sets the flag - and, where the state can be
+// reversed, the one that clears it again.
+soft_delete ::= KW_SOFT_DELETE type_ref (KW_RESTORED_BY type_ref)? { pin=1 }
+
+// The natural key that identifies something without being a surrogate id.
+key_def ::= KW_KEY ID (KW_EXCEPTION type_ref)? LBRACE KW_ATTRIBUTES ID (COMMA ID)* KW_ON_COLLISION collision_strategy consistency (KW_DISPLAY_AS STRING)? RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+collision_strategy ::= KW_REFUSE | KW_OVERWRITE | KW_SKIP
+
+// Says that a type has no business key on purpose; the preceding documentation is the reason.
+no_key ::= KW_NO_KEY
+
+// =========================================================================
+// Business rule predicate
+// =========================================================================
+
+rule_requires ::= KW_REQUIRES rule_expr { pin=1 }
+
+rule_expr ::= rule_or
+
+rule_or ::= rule_and (OR rule_and)*
+
+rule_and ::= rule_unary (AND rule_unary)*
+
+rule_unary ::= NOT rule_unary | LPAREN rule_or RPAREN | rule_atom
+
+rule_atom ::= ID rule_atom_tail?
+
+rule_atom_tail ::= compare_op rule_operand
+                 | DOT KW_IS_EMPTY LPAREN RPAREN
+
+compare_op ::= EQ | NEQ | LE | GE | LT | GT
+
+rule_operand ::= ID | KW_NULL
 
 annotation_instance ::= AT type_ref (LPAREN literal (COMMA literal)* RPAREN)? { pin=1 }
 

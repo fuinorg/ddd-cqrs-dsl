@@ -3,15 +3,23 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
@@ -27,6 +35,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRefMethod <em>Ref Method</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getRestPath <em>Rest Path</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.MethodImpl#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -73,6 +82,16 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @ordered
    */
   protected TypeMetaInfo metaInfo;
+
+  /**
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHints()
+   * @generated
+   * @ordered
+   */
+  protected EList<Hint> hints;
 
   /**
    * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -231,6 +250,21 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * @generated
    */
   @Override
+  public EList<Hint> getHints()
+  {
+    if (hints == null)
+    {
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.METHOD__HINTS);
+    }
+    return hints;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public ReturnType getReturnType()
   {
     return returnType;
@@ -287,6 +321,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
     {
       case CqrsDslPackage.METHOD__META_INFO:
         return basicSetMetaInfo(null, msgs);
+      case CqrsDslPackage.METHOD__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return basicSetReturnType(null, msgs);
     }
@@ -310,6 +346,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return getRestPath();
       case CqrsDslPackage.METHOD__META_INFO:
         return getMetaInfo();
+      case CqrsDslPackage.METHOD__HINTS:
+        return getHints();
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return getReturnType();
     }
@@ -321,6 +359,7 @@ public class MethodImpl extends AbstractMethodImpl implements Method
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -334,6 +373,10 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return;
       case CqrsDslPackage.METHOD__META_INFO:
         setMetaInfo((TypeMetaInfo)newValue);
+        return;
+      case CqrsDslPackage.METHOD__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)newValue);
@@ -361,6 +404,9 @@ public class MethodImpl extends AbstractMethodImpl implements Method
       case CqrsDslPackage.METHOD__META_INFO:
         setMetaInfo((TypeMetaInfo)null);
         return;
+      case CqrsDslPackage.METHOD__HINTS:
+        getHints().clear();
+        return;
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         setReturnType((ReturnType)null);
         return;
@@ -384,6 +430,8 @@ public class MethodImpl extends AbstractMethodImpl implements Method
         return REST_PATH_EDEFAULT == null ? restPath != null : !REST_PATH_EDEFAULT.equals(restPath);
       case CqrsDslPackage.METHOD__META_INFO:
         return metaInfo != null;
+      case CqrsDslPackage.METHOD__HINTS:
+        return hints != null && !hints.isEmpty();
       case CqrsDslPackage.METHOD__RETURN_TYPE:
         return returnType != null;
     }

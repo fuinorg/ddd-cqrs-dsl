@@ -50,7 +50,7 @@ public interface BusinessRuleInstance extends EObject
 
   /**
    * Returns the value of the '<em><b>Params</b></em>' containment reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Literal}.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.RuleArgument}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Params</em>' containment reference list.
@@ -58,6 +58,6 @@ public interface BusinessRuleInstance extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<Literal> getParams();
+  EList<RuleArgument> getParams();
 
 } // BusinessRuleInstance

@@ -5,6 +5,7 @@ package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -12,10 +13,13 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 
@@ -28,6 +32,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ValueObjectImpl#getAnnotations <em>Annotations</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ValueObjectImpl#getIdentifiedBy <em>Identified By</em>}</li>
  * </ul>
  *
  * @generated
@@ -43,6 +48,16 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
    * @ordered
    */
   protected EList<AnnotationInstance> annotations;
+
+  /**
+   * The cached value of the '{@link #getIdentifiedBy() <em>Identified By</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getIdentifiedBy()
+   * @generated
+   * @ordered
+   */
+  protected Attribute identifiedBy;
 
   /**
    * <!-- begin-user-doc -->
@@ -86,6 +101,51 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
    * @generated
    */
   @Override
+  public Attribute getIdentifiedBy()
+  {
+    if (identifiedBy != null && identifiedBy.eIsProxy())
+    {
+      InternalEObject oldIdentifiedBy = (InternalEObject)identifiedBy;
+      identifiedBy = (Attribute)eResolveProxy(oldIdentifiedBy);
+      if (identifiedBy != oldIdentifiedBy)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY, oldIdentifiedBy, identifiedBy));
+      }
+    }
+    return identifiedBy;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Attribute basicGetIdentifiedBy()
+  {
+    return identifiedBy;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setIdentifiedBy(Attribute newIdentifiedBy)
+  {
+    Attribute oldIdentifiedBy = identifiedBy;
+    identifiedBy = newIdentifiedBy;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY, oldIdentifiedBy, identifiedBy));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
@@ -108,6 +168,9 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
     {
       case CqrsDslPackage.VALUE_OBJECT__ANNOTATIONS:
         return getAnnotations();
+      case CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY:
+        if (resolve) return getIdentifiedBy();
+        return basicGetIdentifiedBy();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -127,6 +190,9 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
         getAnnotations().clear();
         getAnnotations().addAll((Collection<? extends AnnotationInstance>)newValue);
         return;
+      case CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY:
+        setIdentifiedBy((Attribute)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -144,6 +210,9 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
       case CqrsDslPackage.VALUE_OBJECT__ANNOTATIONS:
         getAnnotations().clear();
         return;
+      case CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY:
+        setIdentifiedBy((Attribute)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -160,6 +229,8 @@ public class ValueObjectImpl extends AbstractVOImpl implements ValueObject
     {
       case CqrsDslPackage.VALUE_OBJECT__ANNOTATIONS:
         return annotations != null && !annotations.isEmpty();
+      case CqrsDslPackage.VALUE_OBJECT__IDENTIFIED_BY:
+        return identifiedBy != null;
     }
     return super.eIsSet(featureID);
   }

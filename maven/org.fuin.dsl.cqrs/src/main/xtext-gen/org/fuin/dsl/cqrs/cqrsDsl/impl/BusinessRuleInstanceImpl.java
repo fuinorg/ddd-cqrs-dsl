@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
-import org.fuin.dsl.cqrs.cqrsDsl.Literal;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
 
 /**
  * <!-- begin-user-doc -->
@@ -58,7 +58,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected EList<Literal> params;
+  protected EList<RuleArgument> params;
 
   /**
    * <!-- begin-user-doc -->
@@ -132,11 +132,11 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * @generated
    */
   @Override
-  public EList<Literal> getParams()
+  public EList<RuleArgument> getParams()
   {
     if (params == null)
     {
-      params = new EObjectContainmentEList<Literal>(Literal.class, this, CqrsDslPackage.BUSINESS_RULE_INSTANCE__PARAMS);
+      params = new EObjectContainmentEList<RuleArgument>(RuleArgument.class, this, CqrsDslPackage.BUSINESS_RULE_INSTANCE__PARAMS);
     }
     return params;
   }
@@ -192,7 +192,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
         return;
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE__PARAMS:
         getParams().clear();
-        getParams().addAll((Collection<? extends Literal>)newValue);
+        getParams().addAll((Collection<? extends RuleArgument>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

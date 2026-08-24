@@ -16,6 +16,8 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getTarget <em>Target</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getAcceptable <em>Acceptable</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getMessage <em>Message</em>}</li>
  * </ul>
@@ -69,6 +71,40 @@ public interface Command extends AbstractElement
    * @generated
    */
   void setAcceptable(Duration value);
+
+  /**
+   * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Meta Info</em>' containment reference.
+   * @see #setMetaInfo(TypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getCommand_MetaInfo()
+   * @model containment="true"
+   * @generated
+   */
+  TypeMetaInfo getMetaInfo();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Command#getMetaInfo <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Meta Info</em>' containment reference.
+   * @see #getMetaInfo()
+   * @generated
+   */
+  void setMetaInfo(TypeMetaInfo value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getCommand_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
   /**
    * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.

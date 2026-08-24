@@ -74,6 +74,13 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "arm-timeout"             { return KW_ARM_TIMEOUT; }
   "cancel-timeout"          { return KW_CANCEL_TIMEOUT; }
   "rest-path"               { return KW_REST_PATH; }
+  "identified-by"           { return KW_IDENTIFIED_BY; }
+  "soft-delete"             { return KW_SOFT_DELETE; }
+  "restored-by"             { return KW_RESTORED_BY; }
+  "on-collision"            { return KW_ON_COLLISION; }
+  "display-as"              { return KW_DISPLAY_AS; }
+  "no-key"                  { return KW_NO_KEY; }
+  "is-empty"                { return KW_IS_EMPTY; }
 
   // ---- Structural keywords ----
   "context"                 { return KW_CONTEXT; }
@@ -127,6 +134,14 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "detection"               { return KW_DETECTION; }
   "resolution"              { return KW_RESOLUTION; }
   "optional"                { return KW_OPTIONAL; }
+
+  // ---- Business key and rule predicate keywords ----
+  "key"                     { return KW_KEY; }
+  "attributes"              { return KW_ATTRIBUTES; }
+  "refuse"                  { return KW_REFUSE; }
+  "overwrite"               { return KW_OVERWRITE; }
+  "skip"                    { return KW_SKIP; }
+  "requires"                { return KW_REQUIRES; }
 
   // ---- Data protection keywords ----
   "protection"              { return KW_PROTECTION; }
@@ -207,6 +222,13 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   ":"                       { return COLON; }
   "["                       { return LBRACKET; }
   "]"                       { return RBRACKET; }
+  "=="                      { return EQ; }
+  "!="                      { return NEQ; }
+  "<="                      { return LE; }
+  ">="                      { return GE; }
+  "&&"                      { return AND; }
+  "||"                      { return OR; }
+  "!"                       { return NOT; }
 
   // ---- Terminals ----
   {STRING}                  { return STRING; }

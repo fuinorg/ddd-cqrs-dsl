@@ -5,12 +5,15 @@ package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -20,7 +23,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
+import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,7 +36,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.Method;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getSoftDelete <em>Soft Delete</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getBusinessRules <em>Business Rules</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getKeys <em>Keys</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getNoKey <em>No Key</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getConstructors <em>Constructors</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getElements <em>Elements</em>}</li>
@@ -41,6 +50,16 @@ import org.fuin.dsl.cqrs.cqrsDsl.Method;
 public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEntity
 {
   /**
+   * The cached value of the '{@link #getSoftDelete() <em>Soft Delete</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSoftDelete()
+   * @generated
+   * @ordered
+   */
+  protected SoftDelete softDelete;
+
+  /**
    * The cached value of the '{@link #getBusinessRules() <em>Business Rules</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -49,6 +68,26 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
    * @ordered
    */
   protected EList<BusinessRule> businessRules;
+
+  /**
+   * The cached value of the '{@link #getKeys() <em>Keys</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getKeys()
+   * @generated
+   * @ordered
+   */
+  protected EList<Key> keys;
+
+  /**
+   * The cached value of the '{@link #getNoKey() <em>No Key</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getNoKey()
+   * @generated
+   * @ordered
+   */
+  protected NoKey noKey;
 
   /**
    * The cached value of the '{@link #getConstructors() <em>Constructors</em>}' containment reference list.
@@ -107,6 +146,56 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
    * @generated
    */
   @Override
+  public SoftDelete getSoftDelete()
+  {
+    return softDelete;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetSoftDelete(SoftDelete newSoftDelete, NotificationChain msgs)
+  {
+    SoftDelete oldSoftDelete = softDelete;
+    softDelete = newSoftDelete;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, oldSoftDelete, newSoftDelete);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setSoftDelete(SoftDelete newSoftDelete)
+  {
+    if (newSoftDelete != softDelete)
+    {
+      NotificationChain msgs = null;
+      if (softDelete != null)
+        msgs = ((InternalEObject)softDelete).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, null, msgs);
+      if (newSoftDelete != null)
+        msgs = ((InternalEObject)newSoftDelete).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, null, msgs);
+      msgs = basicSetSoftDelete(newSoftDelete, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, newSoftDelete, newSoftDelete));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<BusinessRule> getBusinessRules()
   {
     if (businessRules == null)
@@ -114,6 +203,71 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
       businessRules = new EObjectContainmentEList<BusinessRule>(BusinessRule.class, this, CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES);
     }
     return businessRules;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Key> getKeys()
+  {
+    if (keys == null)
+    {
+      keys = new EObjectContainmentEList<Key>(Key.class, this, CqrsDslPackage.ABSTRACT_ENTITY__KEYS);
+    }
+    return keys;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NoKey getNoKey()
+  {
+    return noKey;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetNoKey(NoKey newNoKey, NotificationChain msgs)
+  {
+    NoKey oldNoKey = noKey;
+    noKey = newNoKey;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY, oldNoKey, newNoKey);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setNoKey(NoKey newNoKey)
+  {
+    if (newNoKey != noKey)
+    {
+      NotificationChain msgs = null;
+      if (noKey != null)
+        msgs = ((InternalEObject)noKey).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY, null, msgs);
+      if (newNoKey != null)
+        msgs = ((InternalEObject)newNoKey).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY, null, msgs);
+      msgs = basicSetNoKey(newNoKey, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY, newNoKey, newNoKey));
   }
 
   /**
@@ -171,8 +325,14 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
+        return basicSetSoftDelete(null, msgs);
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return ((InternalEList<?>)getBusinessRules()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
+        return ((InternalEList<?>)getKeys()).basicRemove(otherEnd, msgs);
+      case CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY:
+        return basicSetNoKey(null, msgs);
       case CqrsDslPackage.ABSTRACT_ENTITY__CONSTRUCTORS:
         return ((InternalEList<?>)getConstructors()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.ABSTRACT_ENTITY__METHODS:
@@ -193,8 +353,14 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
+        return getSoftDelete();
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return getBusinessRules();
+      case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
+        return getKeys();
+      case CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY:
+        return getNoKey();
       case CqrsDslPackage.ABSTRACT_ENTITY__CONSTRUCTORS:
         return getConstructors();
       case CqrsDslPackage.ABSTRACT_ENTITY__METHODS:
@@ -216,9 +382,19 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
+        setSoftDelete((SoftDelete)newValue);
+        return;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         getBusinessRules().clear();
         getBusinessRules().addAll((Collection<? extends BusinessRule>)newValue);
+        return;
+      case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
+        getKeys().clear();
+        getKeys().addAll((Collection<? extends Key>)newValue);
+        return;
+      case CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY:
+        setNoKey((NoKey)newValue);
         return;
       case CqrsDslPackage.ABSTRACT_ENTITY__CONSTRUCTORS:
         getConstructors().clear();
@@ -246,8 +422,17 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
+        setSoftDelete((SoftDelete)null);
+        return;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         getBusinessRules().clear();
+        return;
+      case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
+        getKeys().clear();
+        return;
+      case CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY:
+        setNoKey((NoKey)null);
         return;
       case CqrsDslPackage.ABSTRACT_ENTITY__CONSTRUCTORS:
         getConstructors().clear();
@@ -272,8 +457,14 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
+        return softDelete != null;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return businessRules != null && !businessRules.isEmpty();
+      case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
+        return keys != null && !keys.isEmpty();
+      case CqrsDslPackage.ABSTRACT_ENTITY__NO_KEY:
+        return noKey != null;
       case CqrsDslPackage.ABSTRACT_ENTITY__CONSTRUCTORS:
         return constructors != null && !constructors.isEmpty();
       case CqrsDslPackage.ABSTRACT_ENTITY__METHODS:

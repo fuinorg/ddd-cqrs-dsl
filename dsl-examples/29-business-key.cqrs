@@ -1,0 +1,110 @@
+context p_29_business_key {
+
+    module catalogue {
+
+        type String
+        type Date
+
+        exception DuplicateCategoryNameException {
+
+            /** The name that is already taken. */
+            String name
+
+            message "A category named '${name}' already exists"
+        }
+
+        aggregate-id CategoryId identifies Category {}
+
+        aggregate Category identifier CategoryId {
+
+            String name
+            String kind
+
+            // A business key is the natural key that identifies something without being a
+            // surrogate id: what a person recognises it by, and what must not occur twice.
+            //
+            // Its scope comes from where it is declared - on an aggregate it holds across the
+            // context, on an entity within its root - so no keyword says which. A doc comment is
+            // required, as it is on a business rule.
+            //
+            // 'attributes' are cross references, so a renamed attribute follows and a typo is a
+            // linking error. That is the difference from naming the same columns in a hint's JSON,
+            // where nothing links the two.
+            /**
+             * No two categories of the same type share a name. The name is how a user picks one,
+             * so a duplicate makes every picker ambiguous.
+             */
+            key NamePerType exception DuplicateCategoryNameException {
+
+                attributes name, kind
+
+                // What happens when the key collides: 'refuse' throws the key's exception,
+                // 'overwrite' replaces what is there, 'skip' ignores the incoming record.
+                on-collision refuse
+
+                consistency weak {
+                    acceptable 1 days
+                    detection manually
+                    resolution manually
+                }
+
+                // A format rather than a label: what to call one of these on screen. Its presence
+                // is what says this key is the one a person recognises the thing by.
+                display-as "${name} (${kind})"
+            }
+
+        }
+
+    }
+
+    module rates {
+
+        type String
+        type Date
+
+        aggregate-id DailyRatesId identifies DailyRates {}
+
+        aggregate DailyRates identifier DailyRatesId {
+
+            String provider
+            Date rateDate
+
+            // A collision is not always a refusal, and a key that does not refuse needs no
+            // exception - importing the same day again is meant to replace what is there.
+            /** One provider's rates for one day. Re-importing a day replaces it. */
+            key PerProviderAndDay {
+
+                attributes provider, rateDate
+                on-collision overwrite
+                consistency strong
+                display-as "${provider} ${rateDate}"
+            }
+
+        }
+
+    }
+
+    module partners {
+
+        type String
+
+        aggregate-id BusinessPartnerId identifies BusinessPartner {}
+
+        aggregate BusinessPartner identifier BusinessPartnerId {
+
+            String displayName
+
+            // Having no business key has to be sayable rather than merely absent, so an omission
+            // cannot be mistaken for an oversight. The doc comment is mandatory, which is what
+            // keeps the justification from being a shrug.
+            /**
+             * Deliberately none. Inline creation from a receipt makes near duplicates easy to
+             * produce, and merging is the answer rather than refusal.
+             */
+            no-key
+
+        }
+
+    }
+
+}
