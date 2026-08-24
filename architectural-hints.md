@@ -71,6 +71,31 @@ an existing keyword token in another rule needs only steps 2 (the rule reference
 8. Maven submodules stay `*-SNAPSHOT`; log DSL/grammar changes as bullets under the single
    `## 1.0.0-SNAPSHOT` heading in the root `CHANGELOG.md`.
 
+## Grammar traps that cost a rebuild
+Three ways an addition to `CqrsDsl.xtext` compiles, regenerates cleanly, and is still wrong. All three
+were hit while adding the business-key, soft-delete and business-rule-predicate constructs.
+
+- **Never start a keyword with `.`** — an ANTLR lexer commits to a keyword the moment its first
+  character matches and cannot back out. A `'.contains('` token therefore swallows the dot of every
+  qualified name whose next segment begins with a `c`, `org.fuin.dsl.cqrs` among them, and the entire
+  corpus stops parsing with `mismatched character 'q' expecting 'o'`. Write the operator as separate
+  tokens, `'.' 'is-empty' '(' ')'`.
+- **Hyphenate the operator word.** A plain `isEmpty` keyword is reserved globally and costs every model
+  built on this DSL the right to declare a method by that name — `dsl-examples/15-method.cqrs` already
+  declares `method isEmpty`. A hyphen cannot appear in an ID, so `is-empty` reserves nothing. Same rule
+  as `aggregate-id`, `on-collision`, `no-key`.
+- **A cross-reference whose target may be two unrelated types must be `[ecore::EObject|ID]`**, narrowed
+  in the scope provider. `status == IGNORED` and `status == otherStatus` are both a bare ID, so no
+  lookahead separates an `EnumInstance` from an `Attribute`; ANTLR reports the second alternative as
+  unreachable. Introducing a shared super-type rule (`X: A | B;`) instead is worse: `Attribute` then
+  has two supertypes and EMF emits each inherited feature constant twice
+  (`ATTRIBUTE__DOC ist bereits definiert`), which fails the Java compile rather than the generation.
+
+The check that catches all of this is not the DSL's own build. Regenerate, then run the console
+verifier over a real corpus — `java -jar maven/console/target/ddd-cqrs-dsl-console.jar dsl-examples`
+and the same over `melkheftken/model` — and regenerate melkheftken: **an additive grammar change must
+leave its generated tree byte-identical**, so `git status` there staying clean is the assertion.
+
 ## Semantic validation lives in TWO hand-synced validators
 - **Xtext:** `.../validation/CqrsDslValidator.xtend` — `@Check def` methods auto-invoked (no manual
   registration); report via `error(msg, obj, CqrsDslPackage.Literals::&lt;FEATURE&gt;, CODE)`. Edit it in
@@ -109,8 +134,17 @@ they cannot disagree about what a model depends on:
   `ImportedNamespaceAwareLocalScopeProvider`) turns the declared `import`s into `ImportNormalizer`s:
   for a `Module` its own qualified name plus its imports, for a `Context` its imports (which every
   module below therefore inherits), and **nothing** at the model root. It is installed by overriding
-  **`configureIScopeProviderDelegate`** — *not* `bindIScopeProvider`, which is the declarative
-  `CqrsDslScopeProvider` and is deliberately left empty.
+  **`configureIScopeProviderDelegate`** — *not* `bindIScopeProvider`, which is `CqrsDslScopeProvider`.
+  That class handles the references that are **local to the element they are written in** (a row's
+  `identified-by`, a business key's attributes, a rule's own attributes and the enum values scoped by
+  the attribute on its left) and delegates everything else — which is every reference to a *type* — to
+  the import-aware provider above. Two things about it are easy to get wrong: it extends
+  **`DelegatingScopeProvider`**, so the old `scope_<Type>_<feature>(ctx, ref)` naming convention is
+  never called and `getScope(EObject, EReference)` must be overridden instead; and every element with a
+  `name` is indexed, so a local reference left unscoped resolves happily to a same-named element in
+  another module. The test that catches that is one asserting a reference must **fail**
+  (`row.identifiedBy.eIsProxy`) — an unresolved cross-reference surfaces as a validation issue, not in
+  `resource.errors`.
   - A wildcard normalizer maps exactly **one** segment and does not recurse, and both a context and a
     module name may itself be dotted (`common.types`). So a wildcard import cannot be handed over as
     written: besides the literal prefix, one normalizer per **module below that prefix** is added,
