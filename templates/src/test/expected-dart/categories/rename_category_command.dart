@@ -26,6 +26,13 @@ class RenameCategoryCommand {
     kind: CommandKind.modify,
     doc: 'Rename a custom category.',
     message: r"Rename category to '${newName}'",
+    text: ModelText(
+      bundle: 'Categories',
+      key: 'RenameCategoryCommand',
+      shortLabel: 'Rename',
+      label: 'Rename this category',
+      tooltip: 'Gives the category another name',
+    ),
     rejections: <String, String>{
       'DuplicateCategoryNameException': 'newName',
     },

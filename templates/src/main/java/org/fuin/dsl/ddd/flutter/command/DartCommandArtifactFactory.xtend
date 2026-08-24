@@ -119,7 +119,14 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             targetOrigin: «origin(command, aggregate, entity)»,
             kind: «kind(command)»,
             doc: «dartStringOrNull(docText(command.doc))»,
-            message: «dartStringRaw(command.message)»,
+            message: «dartStringRaw(command.message)»,«IF states(command.metaInfo)»
+            text: ModelText(
+              bundle: «dartString(bundle)»,
+              key: «dartString(command.name)»,
+              shortLabel: «dartStringOrNull(command.metaInfo?.slabel)»,
+              label: «dartStringOrNull(command.metaInfo?.label)»,
+              tooltip: «dartStringOrNull(command.metaInfo?.tooltip)»,
+            ),«ENDIF»
             «IF !rejections.empty»
             rejections: <String, String>{
               «FOR entry : rejections.entrySet»

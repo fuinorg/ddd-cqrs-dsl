@@ -80,6 +80,25 @@ class DartCommandArtifactFactoryTest {
     }
 
     @Test
+    def void testACommandCarriesItsOwnWording() {
+        // Without this a client has nothing to caption a button with but the command's documentation -
+        // a whole sentence where a caption belongs. The key is the command itself, so a translation
+        // file states it once, the way a view or a value object is stated.
+        val generated = generate("RenameCategoryCommand")
+        assertThat(generated).contains("key: 'RenameCategoryCommand'")
+        assertThat(generated).contains("shortLabel: 'Rename'")
+        assertThat(generated).contains("label: 'Rename this category'")
+        assertThat(generated).contains("tooltip: 'Gives the category another name'")
+    }
+
+    @Test
+    def void testACommandWithoutWordingEmitsNone() {
+        // Wording is optional, and a command that states none must not emit an empty ModelText for a
+        // client to fall through - it falls back to the documentation instead.
+        assertThat(generate("RemoveCategoryCommand")).doesNotContain("text: ModelText")
+    }
+
+    @Test
     def void testARefusalTheModelCannotPlaceIsLeftOut() {
         // DuplicateCategoryNameException carries BOTH a name and a kind, and the create command has an
         // attribute of each - so the model does not say which the rule is about. Guessing from the

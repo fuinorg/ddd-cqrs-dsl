@@ -110,6 +110,9 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
                     }
                 }
                 Command: {
+                    // The command's own wording is what a menu entry and a button read, so it is
+                    // keyed by the command itself - the way a view or a value object is.
+                    put(entries, bundle, element.name, element.metaInfo)
                     for (Attribute attribute : element.attributes) {
                         put(entries, bundle, attribute.name, attribute.overridden?.metaInfo)
                     }

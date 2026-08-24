@@ -124,6 +124,9 @@ context de.fuin.melkheftken {
 
         /** Rename a custom category. */
         command RenameCategoryCommand target Category.rename {
+            slabel "Rename"
+            label "Rename this category"
+            tooltip "Gives the category another name"
             message "Rename category to '${newName}'"
         }
 
