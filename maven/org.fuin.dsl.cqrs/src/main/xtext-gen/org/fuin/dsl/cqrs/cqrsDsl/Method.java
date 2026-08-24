@@ -3,6 +3,7 @@
  */
 package org.fuin.dsl.cqrs.cqrsDsl;
 
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,6 +17,7 @@ package org.fuin.dsl.cqrs.cqrsDsl;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRefMethod <em>Ref Method</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getRestPath <em>Rest Path</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Method#getReturnType <em>Return Type</em>}</li>
  * </ul>
  *
@@ -90,6 +92,18 @@ public interface Method extends AbstractMethod
    * @generated
    */
   void setMetaInfo(TypeMetaInfo value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getMethod_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
   /**
    * Returns the value of the '<em><b>Return Type</b></em>' containment reference.

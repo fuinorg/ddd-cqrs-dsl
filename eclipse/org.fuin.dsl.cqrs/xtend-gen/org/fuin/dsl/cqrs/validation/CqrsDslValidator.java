@@ -32,7 +32,6 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
@@ -459,8 +458,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     if (_eResource_1!=null) {
       _resourceSet=_eResource_1.getResourceSet();
     }
-    final Map<org.fuin.dsl.cqrs.cqrsDsl.Module, Set<org.fuin.dsl.cqrs.cqrsDsl.Module>> graph = CqrsModuleDependencies.graphOf(_resourceSet);
-    final List<org.fuin.dsl.cqrs.cqrsDsl.Module> cycle = CqrsModuleDependencies.cycleThrough(module, graph);
+    final Map<String, Set<String>> graph = CqrsModuleDependencies.graphOf(_resourceSet);
+    final List<String> cycle = CqrsModuleDependencies.cycleThrough(module.getName(), graph);
     boolean _isEmpty = cycle.isEmpty();
     if (_isEmpty) {
       return;
@@ -468,10 +467,7 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     String _name = module.getName();
     String _plus = ("Module \'" + _name);
     String _plus_1 = (_plus + "\' is part of a dependency cycle: ");
-    final Function1<org.fuin.dsl.cqrs.cqrsDsl.Module, String> _function = (org.fuin.dsl.cqrs.cqrsDsl.Module it) -> {
-      return it.getName();
-    };
-    String _join = IterableExtensions.join(ListExtensions.<org.fuin.dsl.cqrs.cqrsDsl.Module, String>map(cycle, _function), " -> ");
+    String _join = IterableExtensions.join(cycle, " -> ");
     String _plus_2 = (_plus_1 + _join);
     this.error(_plus_2, module, CqrsDslPackage.Literals.MODULE__NAME, CqrsDslValidator.MODULE_DEPENDENCY_CYCLE);
   }

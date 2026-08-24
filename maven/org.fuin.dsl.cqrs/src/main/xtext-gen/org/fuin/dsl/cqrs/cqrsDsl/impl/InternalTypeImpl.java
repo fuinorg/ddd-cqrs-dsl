@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.DataProtectionInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
@@ -36,6 +37,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getInvariants <em>Invariants</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getDataProtection <em>Data Protection</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.InternalTypeImpl#getAttributes <em>Attributes</em>}</li>
  * </ul>
  *
@@ -72,6 +74,16 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
    * @ordered
    */
   protected TypeMetaInfo metaInfo;
+
+  /**
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHints()
+   * @generated
+   * @ordered
+   */
+  protected EList<Hint> hints;
 
   /**
    * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
@@ -260,6 +272,21 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
    * @generated
    */
   @Override
+  public EList<Hint> getHints()
+  {
+    if (hints == null)
+    {
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.INTERNAL_TYPE__HINTS);
+    }
+    return hints;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Attribute> getAttributes()
   {
     if (attributes == null)
@@ -285,6 +312,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
         return basicSetDataProtection(null, msgs);
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return basicSetMetaInfo(null, msgs);
+      case CqrsDslPackage.INTERNAL_TYPE__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
         return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
     }
@@ -307,6 +336,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
         return getDataProtection();
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return getMetaInfo();
+      case CqrsDslPackage.INTERNAL_TYPE__HINTS:
+        return getHints();
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
         return getAttributes();
     }
@@ -332,6 +363,10 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
         return;
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         setMetaInfo((TypeMetaInfo)newValue);
+        return;
+      case CqrsDslPackage.INTERNAL_TYPE__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
         getAttributes().clear();
@@ -360,6 +395,9 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         setMetaInfo((TypeMetaInfo)null);
         return;
+      case CqrsDslPackage.INTERNAL_TYPE__HINTS:
+        getHints().clear();
+        return;
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
         getAttributes().clear();
         return;
@@ -383,6 +421,8 @@ public class InternalTypeImpl extends TypeImpl implements InternalType
         return dataProtection != null;
       case CqrsDslPackage.INTERNAL_TYPE__META_INFO:
         return metaInfo != null;
+      case CqrsDslPackage.INTERNAL_TYPE__HINTS:
+        return hints != null && !hints.isEmpty();
       case CqrsDslPackage.INTERNAL_TYPE__ATTRIBUTES:
         return attributes != null && !attributes.isEmpty();
     }

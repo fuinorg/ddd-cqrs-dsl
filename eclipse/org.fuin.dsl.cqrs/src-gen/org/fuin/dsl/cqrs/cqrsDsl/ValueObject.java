@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ValueObject#getAnnotations <em>Annotations</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.ValueObject#getIdentifiedBy <em>Identified By</em>}</li>
  * </ul>
  *
  * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getValueObject()
@@ -34,5 +35,27 @@ public interface ValueObject extends AbstractVO
    * @generated
    */
   EList<AnnotationInstance> getAnnotations();
+
+  /**
+   * Returns the value of the '<em><b>Identified By</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Identified By</em>' reference.
+   * @see #setIdentifiedBy(Attribute)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getValueObject_IdentifiedBy()
+   * @model
+   * @generated
+   */
+  Attribute getIdentifiedBy();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.ValueObject#getIdentifiedBy <em>Identified By</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Identified By</em>' reference.
+   * @see #getIdentifiedBy()
+   * @generated
+   */
+  void setIdentifiedBy(Attribute value);
 
 } // ValueObject

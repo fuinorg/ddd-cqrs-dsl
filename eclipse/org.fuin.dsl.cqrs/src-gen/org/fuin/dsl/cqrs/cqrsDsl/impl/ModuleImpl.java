@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
+import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 
@@ -35,6 +36,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ModuleImpl#getElements <em>Elements</em>}</li>
@@ -73,6 +75,16 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
    * @ordered
    */
   protected TypeMetaInfo metaInfo;
+
+  /**
+   * The cached value of the '{@link #getHints() <em>Hints</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHints()
+   * @generated
+   * @ordered
+   */
+  protected EList<Hint> hints;
 
   /**
    * The cached value of the '{@link #getDependencies() <em>Dependencies</em>}' containment reference list.
@@ -206,6 +218,21 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
    * @generated
    */
   @Override
+  public EList<Hint> getHints()
+  {
+    if (hints == null)
+    {
+      hints = new EObjectContainmentEList<Hint>(Hint.class, this, CqrsDslPackage.MODULE__HINTS);
+    }
+    return hints;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Dependency> getDependencies()
   {
     if (dependencies == null)
@@ -257,6 +284,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
     {
       case CqrsDslPackage.MODULE__META_INFO:
         return basicSetMetaInfo(null, msgs);
+      case CqrsDslPackage.MODULE__HINTS:
+        return ((InternalEList<?>)getHints()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return ((InternalEList<?>)getDependencies()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.MODULE__IMPORTS:
@@ -281,6 +310,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
         return getName();
       case CqrsDslPackage.MODULE__META_INFO:
         return getMetaInfo();
+      case CqrsDslPackage.MODULE__HINTS:
+        return getHints();
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return getDependencies();
       case CqrsDslPackage.MODULE__IMPORTS:
@@ -307,6 +338,10 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
         return;
       case CqrsDslPackage.MODULE__META_INFO:
         setMetaInfo((TypeMetaInfo)newValue);
+        return;
+      case CqrsDslPackage.MODULE__HINTS:
+        getHints().clear();
+        getHints().addAll((Collection<? extends Hint>)newValue);
         return;
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         getDependencies().clear();
@@ -340,6 +375,9 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
       case CqrsDslPackage.MODULE__META_INFO:
         setMetaInfo((TypeMetaInfo)null);
         return;
+      case CqrsDslPackage.MODULE__HINTS:
+        getHints().clear();
+        return;
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         getDependencies().clear();
         return;
@@ -367,6 +405,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements org.fuin
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CqrsDslPackage.MODULE__META_INFO:
         return metaInfo != null;
+      case CqrsDslPackage.MODULE__HINTS:
+        return hints != null && !hints.isEmpty();
       case CqrsDslPackage.MODULE__DEPENDENCIES:
         return dependencies != null && !dependencies.isEmpty();
       case CqrsDslPackage.MODULE__IMPORTS:

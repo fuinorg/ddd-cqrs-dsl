@@ -54,8 +54,11 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
+import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -66,12 +69,26 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
+import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 import org.fuin.dsl.cqrs.cqrsDsl.WeakConsistency;
 
@@ -296,6 +313,20 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CqrsDslPackage.RULE_EXPR:
+      {
+        RuleExpr ruleExpr = (RuleExpr)theEObject;
+        T result = caseRuleExpr(ruleExpr);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_OPERAND:
+      {
+        RuleOperand ruleOperand = (RuleOperand)theEObject;
+        T result = caseRuleOperand(ruleOperand);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CqrsDslPackage.ANNOTATION:
       {
         Annotation annotation = (Annotation)theEObject;
@@ -391,6 +422,27 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = caseInternalType(aggregate);
         if (result == null) result = caseType(aggregate);
         if (result == null) result = caseAbstractElement(aggregate);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.SOFT_DELETE:
+      {
+        SoftDelete softDelete = (SoftDelete)theEObject;
+        T result = caseSoftDelete(softDelete);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.KEY:
+      {
+        Key key = (Key)theEObject;
+        T result = caseKey(key);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.NO_KEY:
+      {
+        NoKey noKey = (NoKey)theEObject;
+        T result = caseNoKey(noKey);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -500,6 +552,21 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         BusinessRuleInstance businessRuleInstance = (BusinessRuleInstance)theEObject;
         T result = caseBusinessRuleInstance(businessRuleInstance);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_ARGUMENT:
+      {
+        RuleArgument ruleArgument = (RuleArgument)theEObject;
+        T result = caseRuleArgument(ruleArgument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.SERVICE_CALL_ARGUMENT:
+      {
+        ServiceCallArgument serviceCallArgument = (ServiceCallArgument)theEObject;
+        T result = caseServiceCallArgument(serviceCallArgument);
+        if (result == null) result = caseRuleArgument(serviceCallArgument);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -671,6 +738,86 @@ public class CqrsDslSwitch<T> extends Switch<T>
         StringLiteral stringLiteral = (StringLiteral)theEObject;
         T result = caseStringLiteral(stringLiteral);
         if (result == null) result = caseLiteral(stringLiteral);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_OR:
+      {
+        RuleOr ruleOr = (RuleOr)theEObject;
+        T result = caseRuleOr(ruleOr);
+        if (result == null) result = caseRuleExpr(ruleOr);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_AND:
+      {
+        RuleAnd ruleAnd = (RuleAnd)theEObject;
+        T result = caseRuleAnd(ruleAnd);
+        if (result == null) result = caseRuleExpr(ruleAnd);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_NOT:
+      {
+        RuleNot ruleNot = (RuleNot)theEObject;
+        T result = caseRuleNot(ruleNot);
+        if (result == null) result = caseRuleExpr(ruleNot);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_ATTR_REF:
+      {
+        RuleAttrRef ruleAttrRef = (RuleAttrRef)theEObject;
+        T result = caseRuleAttrRef(ruleAttrRef);
+        if (result == null) result = caseRuleExpr(ruleAttrRef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_COMPARISON:
+      {
+        RuleComparison ruleComparison = (RuleComparison)theEObject;
+        T result = caseRuleComparison(ruleComparison);
+        if (result == null) result = caseRuleExpr(ruleComparison);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_IS_EMPTY:
+      {
+        RuleIsEmpty ruleIsEmpty = (RuleIsEmpty)theEObject;
+        T result = caseRuleIsEmpty(ruleIsEmpty);
+        if (result == null) result = caseRuleExpr(ruleIsEmpty);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_REF_OPERAND:
+      {
+        RuleRefOperand ruleRefOperand = (RuleRefOperand)theEObject;
+        T result = caseRuleRefOperand(ruleRefOperand);
+        if (result == null) result = caseRuleOperand(ruleRefOperand);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.RULE_NULL_OPERAND:
+      {
+        RuleNullOperand ruleNullOperand = (RuleNullOperand)theEObject;
+        T result = caseRuleNullOperand(ruleNullOperand);
+        if (result == null) result = caseRuleOperand(ruleNullOperand);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.LITERAL_ARGUMENT:
+      {
+        LiteralArgument literalArgument = (LiteralArgument)theEObject;
+        T result = caseLiteralArgument(literalArgument);
+        if (result == null) result = caseRuleArgument(literalArgument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.VARIABLE_ARGUMENT:
+      {
+        VariableArgument variableArgument = (VariableArgument)theEObject;
+        T result = caseVariableArgument(variableArgument);
+        if (result == null) result = caseRuleArgument(variableArgument);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -999,6 +1146,38 @@ public class CqrsDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Expr</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Expr</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleExpr(RuleExpr object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Operand</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Operand</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleOperand(RuleOperand object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Annotation</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1154,6 +1333,54 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAggregate(Aggregate object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Soft Delete</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Soft Delete</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSoftDelete(SoftDelete object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Key</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Key</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseKey(Key object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>No Key</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>No Key</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseNoKey(NoKey object)
   {
     return null;
   }
@@ -1394,6 +1621,38 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseBusinessRuleInstance(BusinessRuleInstance object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleArgument(RuleArgument object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Service Call Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Service Call Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseServiceCallArgument(ServiceCallArgument object)
   {
     return null;
   }
@@ -1746,6 +2005,166 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseStringLiteral(StringLiteral object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Or</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Or</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleOr(RuleOr object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule And</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule And</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleAnd(RuleAnd object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Not</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Not</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleNot(RuleNot object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Attr Ref</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Attr Ref</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleAttrRef(RuleAttrRef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Comparison</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Comparison</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleComparison(RuleComparison object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Is Empty</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Is Empty</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleIsEmpty(RuleIsEmpty object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Ref Operand</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Ref Operand</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleRefOperand(RuleRefOperand object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Null Operand</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Null Operand</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleNullOperand(RuleNullOperand object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Literal Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Literal Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLiteralArgument(LiteralArgument object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Variable Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Variable Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVariableArgument(VariableArgument object)
   {
     return null;
   }

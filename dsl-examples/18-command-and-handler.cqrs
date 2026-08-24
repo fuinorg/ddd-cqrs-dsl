@@ -24,6 +24,14 @@ context p_18_command_and_handler {
          */
         command CreateTask target Task.create sla 2 seconds {
 
+            // A command carries its own wording, like every other named element except an event: a
+            // client shows 'slabel' where space is tight (a menu entry, a button), 'label' where
+            // there is room (a dialog title) and 'tooltip' on hover. Without it a client has
+            // nothing to put on a button but the sentence-long documentation above.
+            slabel "New task"
+            label "Create a task"
+            tooltip "Adds a task to the list"
+
             String title
 
             message "Create a new task"

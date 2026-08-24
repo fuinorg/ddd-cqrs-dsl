@@ -46,6 +46,22 @@ context p_22_hint {
         value-object OrderName base String {
             String value invariants MaxLength(50)
         }
+
+        /*
+         * A hint may sit wherever UI wording may - on a module, a type, a method, a command, a view -
+         * and, inside the brace block an attribute already uses for its wording, on an attribute or a
+         * parameter. That is where a generator-specific fact belongs: something one generator needs,
+         * that no other client cares about, and that changes nothing about what the domain means.
+         */
+        value-object OrderLine {
+
+            hint p_22_hint.Whatever { "on-the-type": true }
+
+            String article {
+                slabel "Article"
+                hint p_22_hint.Whatever { "on-the-attribute": true }
+            }
+        }
     }
 
     /*

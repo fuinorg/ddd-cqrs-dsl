@@ -14,7 +14,10 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getSoftDelete <em>Soft Delete</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getBusinessRules <em>Business Rules</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getKeys <em>Keys</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getNoKey <em>No Key</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getConstructors <em>Constructors</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getElements <em>Elements</em>}</li>
@@ -27,6 +30,28 @@ import org.eclipse.emf.common.util.EList;
 public interface AbstractEntity extends InternalType
 {
   /**
+   * Returns the value of the '<em><b>Soft Delete</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Soft Delete</em>' containment reference.
+   * @see #setSoftDelete(SoftDelete)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getAbstractEntity_SoftDelete()
+   * @model containment="true"
+   * @generated
+   */
+  SoftDelete getSoftDelete();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getSoftDelete <em>Soft Delete</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Soft Delete</em>' containment reference.
+   * @see #getSoftDelete()
+   * @generated
+   */
+  void setSoftDelete(SoftDelete value);
+
+  /**
    * Returns the value of the '<em><b>Business Rules</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule}.
    * <!-- begin-user-doc -->
@@ -37,6 +62,40 @@ public interface AbstractEntity extends InternalType
    * @generated
    */
   EList<BusinessRule> getBusinessRules();
+
+  /**
+   * Returns the value of the '<em><b>Keys</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Key}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Keys</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getAbstractEntity_Keys()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Key> getKeys();
+
+  /**
+   * Returns the value of the '<em><b>No Key</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>No Key</em>' containment reference.
+   * @see #setNoKey(NoKey)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getAbstractEntity_NoKey()
+   * @model containment="true"
+   * @generated
+   */
+  NoKey getNoKey();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity#getNoKey <em>No Key</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>No Key</em>' containment reference.
+   * @see #getNoKey()
+   * @generated
+   */
+  void setNoKey(NoKey value);
 
   /**
    * Returns the value of the '<em><b>Constructors</b></em>' containment reference list.

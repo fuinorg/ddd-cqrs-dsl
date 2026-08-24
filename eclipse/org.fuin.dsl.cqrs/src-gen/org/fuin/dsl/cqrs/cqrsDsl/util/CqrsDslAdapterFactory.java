@@ -56,8 +56,11 @@ import org.fuin.dsl.cqrs.cqrsDsl.JsonNull;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonNumber;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonObject;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonString;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
+import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
@@ -68,12 +71,26 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.Projection;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
+import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
+import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 import org.fuin.dsl.cqrs.cqrsDsl.WeakConsistency;
 
@@ -241,6 +258,16 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createBusinessRuleAdapter();
       }
       @Override
+      public Adapter caseRuleExpr(RuleExpr object)
+      {
+        return createRuleExprAdapter();
+      }
+      @Override
+      public Adapter caseRuleOperand(RuleOperand object)
+      {
+        return createRuleOperandAdapter();
+      }
+      @Override
       public Adapter caseAnnotation(Annotation object)
       {
         return createAnnotationAdapter();
@@ -289,6 +316,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAggregate(Aggregate object)
       {
         return createAggregateAdapter();
+      }
+      @Override
+      public Adapter caseSoftDelete(SoftDelete object)
+      {
+        return createSoftDeleteAdapter();
+      }
+      @Override
+      public Adapter caseKey(Key object)
+      {
+        return createKeyAdapter();
+      }
+      @Override
+      public Adapter caseNoKey(NoKey object)
+      {
+        return createNoKeyAdapter();
       }
       @Override
       public Adapter caseAbstractMethod(AbstractMethod object)
@@ -364,6 +406,16 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseBusinessRuleInstance(BusinessRuleInstance object)
       {
         return createBusinessRuleInstanceAdapter();
+      }
+      @Override
+      public Adapter caseRuleArgument(RuleArgument object)
+      {
+        return createRuleArgumentAdapter();
+      }
+      @Override
+      public Adapter caseServiceCallArgument(ServiceCallArgument object)
+      {
+        return createServiceCallArgumentAdapter();
       }
       @Override
       public Adapter caseAnnotationInstance(AnnotationInstance object)
@@ -474,6 +526,56 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseStringLiteral(StringLiteral object)
       {
         return createStringLiteralAdapter();
+      }
+      @Override
+      public Adapter caseRuleOr(RuleOr object)
+      {
+        return createRuleOrAdapter();
+      }
+      @Override
+      public Adapter caseRuleAnd(RuleAnd object)
+      {
+        return createRuleAndAdapter();
+      }
+      @Override
+      public Adapter caseRuleNot(RuleNot object)
+      {
+        return createRuleNotAdapter();
+      }
+      @Override
+      public Adapter caseRuleAttrRef(RuleAttrRef object)
+      {
+        return createRuleAttrRefAdapter();
+      }
+      @Override
+      public Adapter caseRuleComparison(RuleComparison object)
+      {
+        return createRuleComparisonAdapter();
+      }
+      @Override
+      public Adapter caseRuleIsEmpty(RuleIsEmpty object)
+      {
+        return createRuleIsEmptyAdapter();
+      }
+      @Override
+      public Adapter caseRuleRefOperand(RuleRefOperand object)
+      {
+        return createRuleRefOperandAdapter();
+      }
+      @Override
+      public Adapter caseRuleNullOperand(RuleNullOperand object)
+      {
+        return createRuleNullOperandAdapter();
+      }
+      @Override
+      public Adapter caseLiteralArgument(LiteralArgument object)
+      {
+        return createLiteralArgumentAdapter();
+      }
+      @Override
+      public Adapter caseVariableArgument(VariableArgument object)
+      {
+        return createVariableArgumentAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -798,6 +900,36 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleExpr <em>Rule Expr</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleExpr
+   * @generated
+   */
+  public Adapter createRuleExprAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleOperand <em>Rule Operand</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleOperand
+   * @generated
+   */
+  public Adapter createRuleOperandAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Annotation <em>Annotation</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -943,6 +1075,51 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAggregateAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.SoftDelete <em>Soft Delete</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.SoftDelete
+   * @generated
+   */
+  public Adapter createSoftDeleteAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Key <em>Key</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Key
+   * @generated
+   */
+  public Adapter createKeyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.NoKey <em>No Key</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.NoKey
+   * @generated
+   */
+  public Adapter createNoKeyAdapter()
   {
     return null;
   }
@@ -1168,6 +1345,36 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBusinessRuleInstanceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleArgument <em>Rule Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleArgument
+   * @generated
+   */
+  public Adapter createRuleArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument <em>Service Call Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument
+   * @generated
+   */
+  public Adapter createServiceCallArgumentAdapter()
   {
     return null;
   }
@@ -1498,6 +1705,156 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createStringLiteralAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleOr <em>Rule Or</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleOr
+   * @generated
+   */
+  public Adapter createRuleOrAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleAnd <em>Rule And</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleAnd
+   * @generated
+   */
+  public Adapter createRuleAndAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleNot <em>Rule Not</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleNot
+   * @generated
+   */
+  public Adapter createRuleNotAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef <em>Rule Attr Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef
+   * @generated
+   */
+  public Adapter createRuleAttrRefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleComparison <em>Rule Comparison</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleComparison
+   * @generated
+   */
+  public Adapter createRuleComparisonAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty <em>Rule Is Empty</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty
+   * @generated
+   */
+  public Adapter createRuleIsEmptyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand <em>Rule Ref Operand</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
+   * @generated
+   */
+  public Adapter createRuleRefOperandAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand <em>Rule Null Operand</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand
+   * @generated
+   */
+  public Adapter createRuleNullOperandAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument <em>Literal Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument
+   * @generated
+   */
+  public Adapter createLiteralArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.VariableArgument <em>Variable Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
+   * @generated
+   */
+  public Adapter createVariableArgumentAdapter()
   {
     return null;
   }

@@ -21,12 +21,16 @@ public class CqrsDslSyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected CqrsDslGrammarAccess grammarAccess;
 	protected AbstractElementAlias match_GenericArgs_LessThanSignKeyword_0_p;
+	protected AbstractElementAlias match_RuleUnary_LeftParenthesisKeyword_1_0_a;
+	protected AbstractElementAlias match_RuleUnary_LeftParenthesisKeyword_1_0_p;
 	protected AbstractElementAlias match_TypeMetaInfo_ExamplesKeyword_5_0_q;
 	
 	@Inject
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (CqrsDslGrammarAccess) access;
 		match_GenericArgs_LessThanSignKeyword_0_p = new TokenAlias(true, false, grammarAccess.getGenericArgsAccess().getLessThanSignKeyword_0());
+		match_RuleUnary_LeftParenthesisKeyword_1_0_a = new TokenAlias(true, true, grammarAccess.getRuleUnaryAccess().getLeftParenthesisKeyword_1_0());
+		match_RuleUnary_LeftParenthesisKeyword_1_0_p = new TokenAlias(true, false, grammarAccess.getRuleUnaryAccess().getLeftParenthesisKeyword_1_0());
 		match_TypeMetaInfo_ExamplesKeyword_5_0_q = new TokenAlias(false, true, grammarAccess.getTypeMetaInfoAccess().getExamplesKeyword_5_0());
 	}
 	
@@ -44,6 +48,10 @@ public class CqrsDslSyntacticSequencer extends AbstractSyntacticSequencer {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
 			if (match_GenericArgs_LessThanSignKeyword_0_p.equals(syntax))
 				emit_GenericArgs_LessThanSignKeyword_0_p(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_RuleUnary_LeftParenthesisKeyword_1_0_a.equals(syntax))
+				emit_RuleUnary_LeftParenthesisKeyword_1_0_a(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_RuleUnary_LeftParenthesisKeyword_1_0_p.equals(syntax))
+				emit_RuleUnary_LeftParenthesisKeyword_1_0_p(semanticObject, getLastNavigableState(), syntaxNodes);
 			else if (match_TypeMetaInfo_ExamplesKeyword_5_0_q.equals(syntax))
 				emit_TypeMetaInfo_ExamplesKeyword_5_0_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else acceptNodes(getLastNavigableState(), syntaxNodes);
@@ -61,6 +69,40 @@ public class CqrsDslSyntacticSequencer extends AbstractSyntacticSequencer {
 	 * </pre>
 	 */
 	protected void emit_GenericArgs_LessThanSignKeyword_0_p(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+		acceptNodes(transition, nodes);
+	}
+	
+	/**
+	 * <pre>
+	 * Ambiguous syntax:
+	 *     '('*
+	 *
+	 * This ambiguous syntax occurs at:
+	 *     (rule start) (ambiguity) '!' expr=RuleUnary
+	 *     (rule start) (ambiguity) attribute=[Attribute|ID]
+	 *     (rule start) (ambiguity) {RuleAnd.left=}
+	 *     (rule start) (ambiguity) {RuleComparison.left=}
+	 *     (rule start) (ambiguity) {RuleIsEmpty.left=}
+	 *     (rule start) (ambiguity) {RuleOr.left=}
+	 
+	 * </pre>
+	 */
+	protected void emit_RuleUnary_LeftParenthesisKeyword_1_0_a(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+		acceptNodes(transition, nodes);
+	}
+	
+	/**
+	 * <pre>
+	 * Ambiguous syntax:
+	 *     '('+
+	 *
+	 * This ambiguous syntax occurs at:
+	 *     (rule start) (ambiguity) {RuleAnd.left=}
+	 *     (rule start) (ambiguity) {RuleOr.left=}
+	 
+	 * </pre>
+	 */
+	protected void emit_RuleUnary_LeftParenthesisKeyword_1_0_p(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	

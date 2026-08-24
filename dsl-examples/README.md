@@ -24,16 +24,20 @@ comment explaining what it shows. They follow the grammar in
 | [15-method](15-method.cqrs) | `method` with `returns`, `fires`, parameter `preconditions`, and `ref` |
 | [16-service](16-service.cqrs) | `service` grouping methods and a business rule |
 | [17-event](17-event.cqrs) | `event` attributes, `message`, and `copies-attributes-of` |
-| [18-command-and-handler](18-command-and-handler.cqrs) | `command` with `target` and `sla`, and a `command-handler` (`handles` / `uses`) |
+| [18-command-and-handler](18-command-and-handler.cqrs) | `command` with `target`, `sla` and its own `slabel`/`label`/`tooltip`, and a `command-handler` (`handles` / `uses`) |
 | [19-projection-and-view](19-projection-and-view.cqrs) | `projection` consuming events and a `view` using it |
 | [20-literals-and-comments](20-literals-and-comments.cqrs) | Comment styles (`//`, `/* */`, `/** */`) and literal values (string, number, boolean, `null`) |
 | [21-data-protection](21-data-protection.cqrs) | GDPR `data-protection` policies (`protection` level, `category`, `subject`, `purpose`, `lawful-basis`, `retention ... then ...`) applied via `protected-by` |
-| [22-hint](22-hint.cqrs) | `hint` — a named, JSON-structured generator hint. The `SrcGen4J` config on a `context`: the `model2JavaPackage` and `artifact2Target` scripts deciding where generated code goes (in [22-hint-scripts](22-hint-scripts)), and `constraintMappings` mapping a DSL constraint onto a Java validation annotation |
+| [22-hint](22-hint.cqrs) | `hint` — a named, JSON-structured generator hint. The `SrcGen4J` config on a `context`: the `model2JavaPackage` and `artifact2Target` scripts deciding where generated code goes (in [22-hint-scripts](22-hint-scripts)), and `constraintMappings` mapping a DSL constraint onto a Java validation annotation; also a hint on a type and on an attribute |
 | [23-message-el-expressions](23-message-el-expressions.cqrs) | `message` with simple `${var}` placeholders and Jakarta EL expressions (method calls, arithmetic) |
 | [24-process-manager](24-process-manager.cqrs) | `process-manager` (saga): `process-states` and `reacts-to <Event> in-state <State>` reactions with `correlate-by`, `issues-commands`, `transition-to` and `arm-timeout`/`cancel-timeout` |
 | [25-jpa-hint](25-jpa-hint.cqrs) | `JpaHint` inside a `view` describing JPA tables (`@Table`/`@Column` plus `@Digits`/`@DecimalMin`), generated into the view's package |
 | [26-dependency](26-dependency.cqrs) | `dependency "groupId:artifactId:version"` on a `context` and on a `module`, with the optional `local` directory override. Both point at [26-dependency-models](26-dependency-models) and [26-dependency-wip](26-dependency-wip), which stand in for a published artifact and an unpublished one so the example resolves without a network |
 | [27-import](27-import.cqrs) | `import` on a `context` and on a `module`: `ctx.*`, `ctx.mod.*` and `ctx.mod.Type`, plus the fully qualified reference that needs none |
+| [28-identified-by](28-identified-by.cqrs) | `identified-by` — the attribute that identifies a read-model row, where the attribute's own type cannot say so |
+| [29-business-key](29-business-key.cqrs) | `key` — the natural key: `attributes`, `on-collision refuse`/`overwrite`/`skip`, its own `consistency` and a `display-as` format; and `no-key` for a type that has none on purpose |
+| [30-soft-delete](30-soft-delete.cqrs) | `soft-delete <Event>` naming the event that marks a type removed, and `restored-by <Event>` for one whose removal can be undone |
+| [31-business-rule-predicate](31-business-rule-predicate.cqrs) | A `business-rule`'s own attributes and its `requires` condition over them (comparisons, `.is-empty()`, `!`/`&&`/`||`), plus the actuals a usage binds — a field, a parameter, a service method or a literal |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

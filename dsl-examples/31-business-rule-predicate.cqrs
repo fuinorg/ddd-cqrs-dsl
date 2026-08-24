@@ -1,0 +1,197 @@
+context p_31_business_rule_predicate {
+
+    module receipts {
+
+        type String
+        type Boolean
+        type Integer
+        type Date
+
+        exception NotAssignedException { message "The receipt is not assigned to a journal entry" }
+
+        exception TransactionIgnoredException { message "The transaction is ignored" }
+
+        exception NoLinksException { message "The transaction has no linked entries" }
+
+        exception NameTakenException { message "The name is already taken" }
+
+        exception WrongTypeException { message "Wrong type" }
+
+        exception TooManyException { message "Too many" }
+
+        /** How far a transaction got. */
+        enum TransactionStatus {
+            instances {
+                /** Not reconciled yet. */
+                OPEN
+                /** Deliberately skipped. */
+                IGNORED
+                /** Reconciled. */
+                LINKED
+            }
+        }
+
+        value-object JournalEntryId base String {}
+
+        aggregate-id ReceiptId identifies Receipt {}
+
+        aggregate Receipt identifier ReceiptId {
+
+            String name
+            String kind
+            TransactionStatus status
+            TransactionStatus expectedStatus
+            optional JournalEntryId assignedEntry
+            String linkedEntries
+            Date date
+            Date newDate
+
+            // A business rule is a predicate over values it is *handed*. The rule decides, the
+            // caller fetches - so a rule never reaches for a repository or the aggregate, it
+            // declares the attributes it needs and asks one question about them.
+            //
+            // Mandatoriness and the condition are not the same statement: 'optional' governs
+            // whether the rule may be constructed with a missing value, 'requires' governs the
+            // verdict. 'assignedEntry' has to be optional precisely because its absence is what
+            // the rule exists to report.
+            /** Makes sure the receipt is assigned before its assignment is removed. */
+            business-rule MustBeAssigned exception NotAssignedException {
+
+                /** The journal entry this receipt backs, if any. */
+                optional JournalEntryId assignedEntry
+
+                /** The receipt's name, so the refusal can say which one. Not part of the condition. */
+                String name
+
+                consistency strong
+
+                requires assignedEntry != null
+            }
+
+            // A named value of an enumeration is a cross reference too, scoped by the type of the
+            // attribute on the left - so 'status == COMPANY' is a linking error with no check
+            // written for it, and ctrl-click reaches the value's own documentation.
+            /** Makes sure the transaction is not ignored. */
+            business-rule MustNotBeIgnored exception TransactionIgnoredException {
+
+                /** The reconciliation status. */
+                TransactionStatus status
+
+                consistency strong
+
+                requires status != IGNORED
+            }
+
+            // Two attributes of the same enumeration compare as well - the right hand side is not
+            // restricted to enumeration values.
+            /** Makes sure the status is the one the caller expected. */
+            business-rule StatusMustMatch exception WrongTypeException {
+
+                /** What it is. */
+                TransactionStatus status
+
+                /** What it should be. */
+                TransactionStatus expectedStatus
+
+                consistency strong
+
+                requires status == expectedStatus
+            }
+
+            // The one built-in operator. It looks like a method call and is not: nothing declares
+            // it, and there is no '.size()' behind it. It is hyphenated so it reserves no identifier -
+            // a model stays free to declare a method called 'isEmpty'.
+            /** Makes sure the transaction still has links before they are removed. */
+            business-rule MustHaveLinks exception NoLinksException {
+
+                /** The entries linked to it. */
+                String linkedEntries
+
+                consistency strong
+
+                requires !linkedEntries.is-empty()
+            }
+
+            // A bare Boolean attribute is a condition on its own. A rule that needs data from
+            // outside is handed the answer as a Boolean rather than being allowed to go and look.
+            /** Makes sure the name is still free. */
+            business-rule NameMustBeUnique exception NameTakenException {
+
+                /** Whether the name is already taken. */
+                Boolean nameTaken
+
+                consistency strong
+
+                requires !nameTaken
+            }
+
+            // '&&', '||', '!' and parentheses, with the usual precedence. '==' means value
+            // equality, never Java's identity comparison.
+            /** Makes sure a financial change does not conflict with an existing link. */
+            business-rule MustNotBeLinkedForFinancialChange exception WrongTypeException {
+
+                /** The entry it is linked to, if any. */
+                optional JournalEntryId assignedEntry
+
+                /** The date as it stands. */
+                Date date
+
+                /** The date as it would become. */
+                Date newDate
+
+                /** Whether the amount is changing as well. */
+                Boolean amountChanged
+
+                consistency strong
+
+                requires assignedEntry == null || (date == newDate && !amountChanged)
+            }
+
+            /** A rule may take a plain value as well, for a limit the model states once. */
+            business-rule NameMustBeShort exception TooManyException {
+
+                /** The name being checked. */
+                String candidate
+
+                /** How long it may be. */
+                Integer limit
+
+                consistency strong
+            }
+
+            // The usage site binds the actuals - which is what lets one rule be carried by
+            // operations that agree on nothing. Here 'newName' is a parameter of the method while
+            // 'kind' is a field of the aggregate, and 'existsForType' is a method of the
+            // operation context, handed the same two.
+            method rename business-rules NameMustBeUnique(existsForType(newName, kind)), NameMustBeShort(newName, 200) {
+
+                /** The new name. */
+                String newName
+
+                operation-context RenameService
+
+                service RenameService {
+
+                    /** Whether a name is already taken for a type. */
+                    method existsForType {
+
+                        /** The name to check. */
+                        String candidate
+
+                        /** The type to check it within. */
+                        String kind
+
+                        returns Boolean
+                    }
+                }
+            }
+
+            // A rule reading only the aggregate's own state binds fields, and nothing else.
+            method unassignEntry business-rules MustBeAssigned(assignedEntry, name) {
+            }
+
+        }
+
+    }
+
+}

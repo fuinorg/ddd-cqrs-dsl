@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getName <em>Name</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getMetaInfo <em>Meta Info</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getHints <em>Hints</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getDependencies <em>Dependencies</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getImports <em>Imports</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Module#getElements <em>Elements</em>}</li>
@@ -72,6 +73,18 @@ public interface Module extends EObject
    * @generated
    */
   void setMetaInfo(TypeMetaInfo value);
+
+  /**
+   * Returns the value of the '<em><b>Hints</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Hint}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Hints</em>' containment reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getModule_Hints()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Hint> getHints();
 
   /**
    * Returns the value of the '<em><b>Dependencies</b></em>' containment reference list.

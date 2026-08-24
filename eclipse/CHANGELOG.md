@@ -2,6 +2,33 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.28.0
+- **A read model row can name the attribute that identifies it**, with `identified-by`. It is a cross
+  reference, so renaming the attribute follows and a typo is a linking error - unlike the `@Key("id")`
+  annotation it replaces, whose argument is a string nothing checks.
+- **A business key is now a construct rather than three restatements of one fact.** `key <Name>` sits
+  beside the attributes it names, says what a collision does (`on-collision refuse`, `overwrite` or
+  `skip`), carries its own `consistency`, and may carry a `display-as` format. `no-key` states that a
+  type has none on purpose, and its documentation is mandatory so the reason cannot be a shrug.
+- **An aggregate or entity may be marked `soft-delete`**, naming the event that sets the flag and
+  optionally, after `restored-by`, the one that clears it again. The marker names its event because
+  that is what an apply handler has to be generated from; nothing else in the model says which event
+  is the removal.
+- **A business rule declares the values it is handed and the condition it verifies**: attributes in its
+  body, and `requires <expression>` over them. The expression language is deliberately small - `!`,
+  `&&`, `||`, parentheses, the six comparisons and `.is-empty()` - and every name in it is a cross
+  reference: an attribute of the rule, or a value of the enumeration
+  the attribute on the left is typed with. There is no property access and no arithmetic.
+- **A rule usage binds its actuals** - `MustBeAssigned(assignedEntry, id)` - to what the carrying
+  operation actually holds: its parameters, the type's attributes, or a method of the operation
+  context. One rule can therefore be carried by operations that agree on nothing, which is what the
+  previously unused `params` slot was always for.
+- **A `command` carries `slabel`/`label`/`tooltip`** like every other named element except an event, so
+  a client no longer has to fall back to its documentation for a menu entry.
+- **A `hint` may sit wherever wording may** - on a module, value object, entity id, aggregate id, enum,
+  entity, aggregate, method, command, and inside an attribute's or parameter's brace block - rather
+  than only on a context and a view.
+
 ## 1.27.0
 - **A dependency cycle between modules is now an error.** The modules a module depends on are read
   from the references that actually resolve, not from its `import` lines - an unused import would

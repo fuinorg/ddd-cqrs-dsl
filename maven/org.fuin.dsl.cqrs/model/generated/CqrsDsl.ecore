@@ -20,6 +20,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
         eType="#//Dependency" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
@@ -51,6 +53,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
         eType="#//Attribute" containment="true"/>
   </eClassifiers>
@@ -63,8 +67,14 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractEntityId" eSuperTypes="#//AbstractVO"/>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractEntity" eSuperTypes="#//InternalType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="softDelete" eType="#//SoftDelete"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="businessRules" upperBound="-1"
         eType="#//BusinessRule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keys" upperBound="-1" eType="#//Key"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="noKey" eType="#//NoKey"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constructors" upperBound="-1"
         eType="#//Constructor" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
@@ -183,8 +193,22 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BusinessRule" eSuperTypes="#//AbstractElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//Exception"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="consistency" eType="#//Consistency"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requires" eType="#//RuleExpr"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleExpr"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleOperand"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="CompareOp">
+    <eLiterals name="eq" literal="=="/>
+    <eLiterals name="ne" value="1" literal="!="/>
+    <eLiterals name="le" value="2" literal="&lt;="/>
+    <eLiterals name="ge" value="3" literal=">="/>
+    <eLiterals name="lt" value="4" literal="&lt;"/>
+    <eLiterals name="gt" value="5" literal=">"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Annotation" eSuperTypes="#//AbstractElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
@@ -199,6 +223,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ValueObject" eSuperTypes="#//AbstractVO">
     <eStructuralFeatures xsi:type="ecore:EReference" name="annotations" upperBound="-1"
         eType="#//AnnotationInstance" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="identifiedBy" eType="#//Attribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityId" eSuperTypes="#//AbstractEntityId">
     <eStructuralFeatures xsi:type="ecore:EReference" name="entity" eType="#//Entity"/>
@@ -235,6 +260,29 @@
   <eClassifiers xsi:type="ecore:EClass" name="Aggregate" eSuperTypes="#//AbstractEntity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="idType" eType="#//AggregateId"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SoftDelete">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deleteEvent" eType="#//Event"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="restoreEvent" eType="#//Event"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Key">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//Exception"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" unique="false"
+        upperBound="-1" eType="#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="onCollision" eType="#//CollisionStrategy"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consistency" eType="#//Consistency"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayAs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CollisionStrategy">
+    <eLiterals name="refuse" literal="refuse"/>
+    <eLiterals name="overwrite" value="1" literal="overwrite"/>
+    <eLiterals name="skip" value="2" literal="skip"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NoKey">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractMethod">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -265,6 +313,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="restPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ReturnType"
         containment="true"/>
   </eClassifiers>
@@ -317,6 +367,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="OverriddenTypeMetaInfo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConstraintInstance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" eType="#//Constraint"/>
@@ -326,7 +378,13 @@
   <eClassifiers xsi:type="ecore:EClass" name="BusinessRuleInstance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="businessRule" eType="#//BusinessRule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="params" upperBound="-1"
-        eType="#//Literal" containment="true"/>
+        eType="#//RuleArgument" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleArgument"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ServiceCallArgument" eSuperTypes="#//RuleArgument">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="method" eType="#//Method"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="args" unique="false" upperBound="-1"
+        eType="#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AnnotationInstance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" eType="#//Annotation"/>
@@ -343,6 +401,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractMethod"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="acceptable" eType="#//Duration"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hints" upperBound="-1"
+        eType="#//Hint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
         eType="#//Attribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -425,4 +487,47 @@
   <eClassifiers xsi:type="ecore:EClass" name="NullLiteral" eSuperTypes="#//Literal"/>
   <eClassifiers xsi:type="ecore:EClass" name="NumberLiteral" eSuperTypes="#//Literal"/>
   <eClassifiers xsi:type="ecore:EClass" name="StringLiteral" eSuperTypes="#//Literal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleOr" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//RuleExpr"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//RuleExpr"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleAnd" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//RuleExpr"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//RuleExpr"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleNot" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//RuleExpr"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleAttrRef" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" eType="#//Attribute"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleComparison" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//RuleAttrRef"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="#//CompareOp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//RuleOperand"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleIsEmpty" eSuperTypes="#//RuleExpr">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//RuleAttrRef"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleRefOperand" eSuperTypes="#//RuleOperand">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleNullOperand" eSuperTypes="#//RuleOperand">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LiteralArgument" eSuperTypes="#//RuleArgument">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="literal" eType="#//Literal"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableArgument" eSuperTypes="#//RuleArgument">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Variable"/>
+  </eClassifiers>
 </ecore:EPackage>

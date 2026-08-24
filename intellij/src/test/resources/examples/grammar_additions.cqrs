@@ -1,0 +1,173 @@
+context foo {
+
+	module bar {
+
+		type String
+		type Boolean
+		type Integer
+
+		/** Something went wrong. */
+		exception SomeException {
+			message "Nope"
+		}
+
+		/** How far a transaction got. */
+		enum Status {
+			hint org.fuin.Whatever { "on-the-enum" : true }
+			instances {
+				/** Still open. */
+				OPEN
+				/** Deliberately skipped. */
+				IGNORED
+			}
+		}
+
+		/** A row of the read model, which says which attribute addresses it. */
+		value-object ThingRow {
+			hint org.fuin.Whatever { "on-the-row" : true }
+			String id {
+				slabel "Id"
+				hint org.fuin.Whatever { "on-the-attribute" : 1 }
+			}
+			String name
+			identified-by id
+		}
+
+		event ThingRemovedEvent {}
+
+		event ThingRestoredEvent {}
+
+		aggregate-id ThingId identifies Thing {}
+
+		/** Soft deleted, and able to come back. */
+		aggregate Thing identifier ThingId soft-delete ThingRemovedEvent restored-by ThingRestoredEvent {
+
+			hint org.fuin.Whatever { "on-the-aggregate" : true }
+
+			String name
+			String kind
+			Status status
+			Status otherStatus
+			Boolean nameTaken
+			String links
+			optional String assignedEntry
+
+			/** Makes sure the thing is assigned. */
+			business-rule MustBeAssigned exception SomeException {
+				/** The entry it backs, if any. */
+				optional String assignedEntry
+				consistency strong
+				requires assignedEntry != null
+			}
+
+			/** Makes sure the transaction is ignored. */
+			business-rule MustBeIgnored exception SomeException {
+				/** The reconciliation status. */
+				Status status
+				consistency strong
+				requires status == IGNORED
+			}
+
+			/** Makes sure both sides agree. */
+			business-rule TypeMustMatch exception SomeException {
+				/** One side. */
+				Status status
+				/** The other. */
+				Status otherStatus
+				consistency strong
+				requires status == otherStatus
+			}
+
+			/** Makes sure nothing is linked. */
+			business-rule MustHaveNoLinks exception SomeException {
+				/** What is linked. */
+				String links
+				consistency strong
+				requires links.is-empty()
+			}
+
+			/** Makes sure the name is free. */
+			business-rule NameMustBeUnique exception SomeException {
+				/** Whether the name is taken. */
+				Boolean nameTaken
+				consistency strong
+				requires !nameTaken
+			}
+
+			/** Makes sure a financial change does not conflict with a link. */
+			business-rule MustNotBeLinkedForFinancialChange exception SomeException {
+				/** The transaction it is linked to, if any. */
+				optional String accountTransactionId
+				/** The date as it stands. */
+				String date
+				/** The date as it would become. */
+				String newDate
+				/** How long it may be. */
+				Integer limit
+				consistency weak {
+					acceptable 1 days
+					detection manually
+					resolution manually
+				}
+				requires accountTransactionId == null || (date == newDate && !accountTransactionId.is-empty())
+			}
+
+			/** No two things of the same kind share a name. */
+			key NamePerKind exception SomeException {
+				attributes name, kind
+				on-collision refuse
+				consistency strong
+				display-as "the name and the kind"
+			}
+
+			/** The day's rates are keyed by their provider, and a later import replaces them. */
+			key PerDay {
+				attributes name
+				on-collision overwrite
+				consistency strong
+			}
+
+			/** Renames it, checking the name against a service and against a fixed limit. */
+			method rename business-rules NameMustBeUnique(exists(newName)), MustBeAssigned(name, 10) {
+				hint org.fuin.Whatever { "on-the-method" : true }
+				/** The new name. */
+				String newName
+				operation-context RenameService
+				service RenameService {
+					/** Whether the name is taken. */
+					method exists {
+						/** The name to check. */
+						String candidate
+						returns Boolean
+					}
+				}
+			}
+
+		}
+
+		aggregate-id PartnerId identifies Partner {}
+
+		/** Near duplicates are expected, so this one says it has no key rather than leaving it out. */
+		aggregate Partner identifier PartnerId {
+
+			String name
+
+			/** Inline creation makes near duplicates easy to produce; merging is the answer. */
+			no-key
+
+		}
+
+		/** An action, with its own wording. */
+		command DoIt target Thing.rename {
+			slabel "Rename"
+			label "Rename the thing"
+			tooltip "Gives the thing another name"
+			hint org.fuin.Whatever { "on-the-command" : true }
+			/** The new name. */
+			String newName
+			message "Rename to something else"
+		}
+
+	}
+
+}

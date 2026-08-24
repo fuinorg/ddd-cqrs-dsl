@@ -1,0 +1,58 @@
+context p_30_soft_delete {
+
+    module people {
+
+        type String
+
+        aggregate-id PersonId identifies Person {}
+
+        entity-id RoleId identifies Role {}
+
+        event PersonRemovedEvent { message "Person removed" }
+
+        event PersonRestoredEvent { message "Person restored" }
+
+        event RoleRemovedEvent { message "Role removed" }
+
+        // 'soft-delete' marks an aggregate or entity as removed rather than gone: it stays
+        // loadable from its event stream and refuses every further operation.
+        //
+        // The marker names the event that sets the flag, because that is what the apply handler is
+        // generated from - nothing else in the model marks a method as the removal or an event as
+        // the deletion. 'restored-by' names the event that clears the flag again, for a type whose
+        // removal can be undone.
+        aggregate Person identifier PersonId soft-delete PersonRemovedEvent restored-by PersonRestoredEvent {
+
+            String name
+
+            method remove fires PersonRemovedEvent {
+            }
+
+            method restore fires PersonRestoredEvent {
+            }
+
+        }
+
+        // The reviving half is optional. Without it the type can be removed and not brought back,
+        // which is the ordinary case.
+        entity Role identifier RoleId root Person soft-delete RoleRemovedEvent {
+
+            String name
+
+            method remove fires RoleRemovedEvent {
+            }
+
+        }
+
+        // A singleton that is never removed simply omits the marker.
+        aggregate-id SettingsId identifies Settings {}
+
+        aggregate Settings identifier SettingsId {
+
+            String baseCurrency
+
+        }
+
+    }
+
+}

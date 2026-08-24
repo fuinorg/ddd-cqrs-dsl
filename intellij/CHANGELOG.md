@@ -2,6 +2,15 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.31.0
+- The grammar gained the constructs for business keys, soft delete and generated business rules. A read model row names its identity with `identified-by`; an aggregate or entity declares a `key` with its attributes, an `on-collision` strategy and an optional `display-as` format, or states `no-key` on purpose; it may be marked `soft-delete` with the event that sets the flag and optionally the one that clears it again after `restored-by`. A `business-rule` now declares the attributes it is handed and the condition it verifies over them after `requires`, with `!`, `&&`, `||`, parentheses, the six comparisons, `in [ ... ]`, `.is-empty()` and `.contains-value(...)`. A rule usage binds its actuals. A `command` carries its own wording, and a `hint` may sit wherever wording may.
+
+## 1.30.0
+- A dependency cycle between modules is now reported as an error, the same rule the Eclipse plugin and the generator build apply. What a module depends on is read from the references that actually resolve rather than from its `import` lines, so an unused import no longer invents a dependency and a fully qualified reference no longer hides one. The graph is cached per change, so the check costs nothing while typing.
+
+## 1.29.0
+- A `module`, a `view` and a `method` may now carry UI meta information - the same `slabel`/`label`/`tooltip`/`prompt`/`examples` block a type and an attribute take, written at the top of the block. A module name is a single lowercase identifier and a view name is a type name, so neither can be turned into a caption by any rule a client could write - `businesspartners` is not "Business partners". What to call a module in a menu, a view on a tab and a method as a screen title is now something the model states rather than something each application invents from an identifier.
+
 ## 1.28.1
 - Build only: the plugin is now built with IntelliJ Platform Gradle Plugin 2.18.1, and Grammar-Kit generation moved to its `grammarkit` subplugin - the standalone one was archived. No change to what the plugin does.
 

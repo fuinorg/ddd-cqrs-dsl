@@ -36,6 +36,11 @@ public class CqrsParsingTest extends ParsingTestCase {
         assertNoErrors("aggregate");
     }
 
+    /** Business keys, soft delete, the row's declared identity, rule predicates and the widened hint slot. */
+    public void testGrammarAdditions() {
+        assertNoErrors("grammar_additions");
+    }
+
     public void testDependency() {
         assertNoErrors("dependency");
     }
