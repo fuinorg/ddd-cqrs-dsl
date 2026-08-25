@@ -17,6 +17,12 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- Flutter: a command now carries **the rules a client can answer for itself** - the predicate as a const
+  tree, plus where each value comes from. Advisory and deliberately incomplete: a rule handed a service
+  call (a question only the server can ask) or a parameter of the operation (nobody has typed it yet) is
+  left out entirely rather than half described, and a command with none carries no field at all, because
+  an empty list would read as "nothing guards this". Which rules a client can decide is now a question
+  the model answers rather than one somebody answers by reading Java.
 - A newly created write-once operation now **calls its validator in one line** - `new XRules(this).op(...)`,
   or the static form for a create - instead of carrying one `// TODO Verify …` comment per rule. That
   line is the whole contract between the two: adding a rule to an operation never means editing the

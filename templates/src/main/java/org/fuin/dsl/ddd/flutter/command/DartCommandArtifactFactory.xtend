@@ -85,9 +85,10 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         val bundle = bundleName(command.module)
         val versioned = !(command.target instanceof Constructor)
         val rejections = rejections(command, attributes)
+        val rules = new DartRuleDescriptors(command.target)
 
         '''
-        «FOR imp : imports(command, attributes, aggregateIdType, entityIdType)»
+        «FOR imp : imports(command, attributes, aggregateIdType, entityIdType, rules)»
         import '«imp»';
         «ENDFOR»
 
@@ -127,6 +128,11 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
               label: «dartStringOrNull(command.metaInfo?.label)»,
               tooltip: «dartStringOrNull(command.metaInfo?.tooltip)»,
             ),«ENDIF»
+            «IF !rules.empty»
+            rules: <RuleDescriptor>[
+              «rules»
+            ],
+            «ENDIF»
             «IF !rejections.empty»
             rejections: <String, String>{
               «FOR entry : rejections.entrySet»
@@ -281,7 +287,7 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
     }
 
     def private imports(Command command, List<DartAttribute> attributes, String aggregateIdType,
-            String entityIdType) {
+            String entityIdType, DartRuleDescriptors rules) {
         val out = new TreeSet<String>()
         val aggregate = command.aggregate
         if (aggregate?.idType !== null) {
@@ -301,6 +307,10 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             }
         }
         out.add(runtimeImport("src/descriptor/command_descriptor.dart"))
+        if (!rules.empty) {
+            out.add(runtimeImport("src/rules/rule_descriptor.dart"))
+            out.add(runtimeImport("src/rules/rule_predicate.dart"))
+        }
         if (attributes.exists[usesWireHelper]) {
             out.add(runtimeImport("src/json/json.dart"))
         }

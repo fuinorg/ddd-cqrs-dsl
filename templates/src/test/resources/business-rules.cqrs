@@ -324,6 +324,39 @@ context de.fuin.rules {
 
         }
 
+        /** Clears the assignment. */
+        command UnassignReceiptCommand target Receipt.unassignEntry {
+
+            slabel "Unassign"
+            label "Clear the assignment"
+            tooltip "Detach this receipt from the journal entry it backs"
+
+            message "Clear the assignment"
+
+        }
+
+        /** Leaves the receipt out of the books. */
+        command IgnoreReceiptCommand target Receipt.ignore {
+
+            slabel "Ignore"
+            label "Ignore the receipt"
+            tooltip "Leave this receipt out of the books"
+
+            message "Ignore the receipt"
+
+        }
+
+        /** Records a receipt, whose rule needs a service the client cannot ask. */
+        command RecordReceiptCommand target Receipt.record {
+
+            slabel "Record"
+            label "Record a receipt"
+            tooltip "Put a receipt on file"
+
+            message "Record the receipt"
+
+        }
+
     }
 
 }
