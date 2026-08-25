@@ -51,6 +51,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
@@ -693,6 +694,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass literalArgumentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass identityArgumentEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3974,6 +3982,17 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EClass getIdentityArgument()
+  {
+    return identityArgumentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getVariableArgument()
   {
     return variableArgumentEClass;
@@ -4499,6 +4518,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     literalArgumentEClass = createEClass(LITERAL_ARGUMENT);
     createEReference(literalArgumentEClass, LITERAL_ARGUMENT__LITERAL);
 
+    identityArgumentEClass = createEClass(IDENTITY_ARGUMENT);
+
     variableArgumentEClass = createEClass(VARIABLE_ARGUMENT);
     createEReference(variableArgumentEClass, VARIABLE_ARGUMENT__VARIABLE);
 
@@ -4592,6 +4613,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     ruleRefOperandEClass.getESuperTypes().add(this.getRuleOperand());
     ruleNullOperandEClass.getESuperTypes().add(this.getRuleOperand());
     literalArgumentEClass.getESuperTypes().add(this.getRuleArgument());
+    identityArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     variableArgumentEClass.getESuperTypes().add(this.getRuleArgument());
 
     // Initialize classes and features; add operations and parameters
@@ -4962,6 +4984,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(literalArgumentEClass, LiteralArgument.class, "LiteralArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLiteralArgument_Literal(), this.getLiteral(), null, "literal", null, 0, 1, LiteralArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(identityArgumentEClass, IdentityArgument.class, "IdentityArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(variableArgumentEClass, VariableArgument.class, "VariableArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVariableArgument_Variable(), this.getVariable(), null, "variable", null, 0, 1, VariableArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

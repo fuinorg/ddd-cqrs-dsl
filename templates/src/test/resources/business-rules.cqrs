@@ -79,7 +79,7 @@ context de.fuin.rules {
              * Clears the assignment. Reads state the receipt already holds, which is what the
              * accessors on the generated abstract are for.
              */
-            method unassignEntry business-rules MustBeAssignedAnywhere(assignedEntry)
+            method unassignEntry business-rules MustBeAssigned(assignedEntry, own-id)
                     fires ReceiptUnassignedEvent {
 
                 event ReceiptUnassignedEvent { message "Assignment cleared" }
@@ -170,20 +170,6 @@ context de.fuin.rules {
         /** An edit conflicts with what the receipt is linked to. */
         exception LinkedEditConflictException {
             message "The edit conflicts with the linked transaction"
-        }
-
-        /**
-         * Makes sure the receipt is assigned, without naming which one. The refusal that names the
-         * receipt cannot be bound at a usage site today - see MustBeAssigned below.
-         */
-        business-rule MustBeAssignedAnywhere exception ReceiptAlreadyAssignedException {
-
-            /** The journal entry this receipt backs, if any. */
-            optional JournalEntryId assignedEntry
-
-            consistency strong
-
-            requires assignedEntry != null
         }
 
         /**

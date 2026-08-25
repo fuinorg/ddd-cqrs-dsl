@@ -52,6 +52,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection;
 import org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution;
@@ -242,6 +243,7 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.RULE_REF_OPERAND: return createRuleRefOperand();
       case CqrsDslPackage.RULE_NULL_OPERAND: return createRuleNullOperand();
       case CqrsDslPackage.LITERAL_ARGUMENT: return createLiteralArgument();
+      case CqrsDslPackage.IDENTITY_ARGUMENT: return createIdentityArgument();
       case CqrsDslPackage.VARIABLE_ARGUMENT: return createVariableArgument();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -1312,6 +1314,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     LiteralArgumentImpl literalArgument = new LiteralArgumentImpl();
     return literalArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public IdentityArgument createIdentityArgument()
+  {
+    IdentityArgumentImpl identityArgument = new IdentityArgumentImpl();
+    return identityArgument;
   }
 
   /**

@@ -4223,23 +4223,34 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cLiteralLiteralParserRuleCall_0_1_0 = (RuleCall)cLiteralAssignment_0_1.eContents().get(0);
 		private final RuleCall cServiceCallArgumentParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
-		private final Action cVariableArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
-		private final Assignment cVariableAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final CrossReference cVariableVariableCrossReference_2_1_0 = (CrossReference)cVariableAssignment_2_1.eContents().get(0);
-		private final RuleCall cVariableVariableIDTerminalRuleCall_2_1_0_1 = (RuleCall)cVariableVariableCrossReference_2_1_0.eContents().get(1);
+		private final Action cIdentityArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
+		private final Keyword cOwnIdKeyword_2_1 = (Keyword)cGroup_2.eContents().get(1);
+		private final Group cGroup_3 = (Group)cAlternatives.eContents().get(3);
+		private final Action cVariableArgumentAction_3_0 = (Action)cGroup_3.eContents().get(0);
+		private final Assignment cVariableAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final CrossReference cVariableVariableCrossReference_3_1_0 = (CrossReference)cVariableAssignment_3_1.eContents().get(0);
+		private final RuleCall cVariableVariableIDTerminalRuleCall_3_1_0_1 = (RuleCall)cVariableVariableCrossReference_3_1_0.eContents().get(1);
 		
 		///**
 		// * One actual of a business rule usage - a value the carrier holds, a service method that answers a
-		// * question the carrier cannot, or a plain literal for a parameterised rule.
+		// * question the carrier cannot, the carrier's own identity, or a plain literal for a parameterised rule.
+		// *
+		// * 'own-id' is a keyword rather than a reference because the identity is not one of the declared
+		// * attributes: an aggregate states it as 'identifier', so there is nothing for a cross reference to
+		// * point at. It is what lets a refusal name the thing it refused - six operations in the melkheftken
+		// * corpus need it - and it is hyphenated so that it costs no model the right to call an attribute 'id',
+		// * which twenty of them do.
 		// */
 		//RuleArgument:
 		//    {LiteralArgument} literal=Literal
 		//    | ServiceCallArgument
+		//    | {IdentityArgument} 'own-id'
 		//    | {VariableArgument} variable=[Variable|ID];
 		@Override public ParserRule getRule() { return rule; }
 		
 		//{LiteralArgument} literal=Literal
 		//| ServiceCallArgument
+		//| {IdentityArgument} 'own-id'
 		//| {VariableArgument} variable=[Variable|ID]
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
@@ -4258,20 +4269,29 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//ServiceCallArgument
 		public RuleCall getServiceCallArgumentParserRuleCall_1() { return cServiceCallArgumentParserRuleCall_1; }
 		
-		//{VariableArgument} variable=[Variable|ID]
+		//{IdentityArgument} 'own-id'
 		public Group getGroup_2() { return cGroup_2; }
 		
+		//{IdentityArgument}
+		public Action getIdentityArgumentAction_2_0() { return cIdentityArgumentAction_2_0; }
+		
+		//'own-id'
+		public Keyword getOwnIdKeyword_2_1() { return cOwnIdKeyword_2_1; }
+		
+		//{VariableArgument} variable=[Variable|ID]
+		public Group getGroup_3() { return cGroup_3; }
+		
 		//{VariableArgument}
-		public Action getVariableArgumentAction_2_0() { return cVariableArgumentAction_2_0; }
+		public Action getVariableArgumentAction_3_0() { return cVariableArgumentAction_3_0; }
 		
 		//variable=[Variable|ID]
-		public Assignment getVariableAssignment_2_1() { return cVariableAssignment_2_1; }
+		public Assignment getVariableAssignment_3_1() { return cVariableAssignment_3_1; }
 		
 		//[Variable|ID]
-		public CrossReference getVariableVariableCrossReference_2_1_0() { return cVariableVariableCrossReference_2_1_0; }
+		public CrossReference getVariableVariableCrossReference_3_1_0() { return cVariableVariableCrossReference_3_1_0; }
 		
 		//ID
-		public RuleCall getVariableVariableIDTerminalRuleCall_2_1_0_1() { return cVariableVariableIDTerminalRuleCall_2_1_0_1; }
+		public RuleCall getVariableVariableIDTerminalRuleCall_3_1_0_1() { return cVariableVariableIDTerminalRuleCall_3_1_0_1; }
 	}
 	public class ServiceCallArgumentElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ServiceCallArgument");
@@ -7612,11 +7632,18 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	///**
 	// * One actual of a business rule usage - a value the carrier holds, a service method that answers a
-	// * question the carrier cannot, or a plain literal for a parameterised rule.
+	// * question the carrier cannot, the carrier's own identity, or a plain literal for a parameterised rule.
+	// *
+	// * 'own-id' is a keyword rather than a reference because the identity is not one of the declared
+	// * attributes: an aggregate states it as 'identifier', so there is nothing for a cross reference to
+	// * point at. It is what lets a refusal name the thing it refused - six operations in the melkheftken
+	// * corpus need it - and it is hyphenated so that it costs no model the right to call an attribute 'id',
+	// * which twenty of them do.
 	// */
 	//RuleArgument:
 	//    {LiteralArgument} literal=Literal
 	//    | ServiceCallArgument
+	//    | {IdentityArgument} 'own-id'
 	//    | {VariableArgument} variable=[Variable|ID];
 	public RuleArgumentElements getRuleArgumentAccess() {
 		return pRuleArgument;

@@ -43,7 +43,7 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_KEY, CqrsTypes.KW_ATTRIBUTES, CqrsTypes.KW_ON_COLLISION,
             CqrsTypes.KW_DISPLAY_AS, CqrsTypes.KW_NO_KEY,
             CqrsTypes.KW_REFUSE, CqrsTypes.KW_OVERWRITE, CqrsTypes.KW_SKIP,
-            CqrsTypes.KW_REQUIRES, CqrsTypes.KW_IS_EMPTY,
+            CqrsTypes.KW_REQUIRES, CqrsTypes.KW_IS_EMPTY, CqrsTypes.KW_OWN_ID,
             CqrsTypes.KW_MILLIS, CqrsTypes.KW_SECONDS, CqrsTypes.KW_MINUTES, CqrsTypes.KW_HOURS,
             CqrsTypes.KW_DAYS, CqrsTypes.KW_WEEKS, CqrsTypes.KW_MONTHS, CqrsTypes.KW_YEARS,
             CqrsTypes.KW_WEAK, CqrsTypes.KW_STRONG, CqrsTypes.KW_NEVER,

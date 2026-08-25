@@ -147,7 +147,9 @@ ext.pluginChangeNotes = '''\
         <code>business-rule</code> now declares the attributes it is handed and the condition it
         verifies over them after <code>requires</code>, with <code>!</code>, <code>&amp;&amp;</code>,
         <code>||</code>, parentheses, the six comparisons and <code>.is-empty()</code>. A rule usage
-        binds its actuals.
+        binds its actuals, and may hand the rule the carrier's own identity with <code>own-id</code> -
+        a keyword rather than a reference, because an aggregate states its identity as
+        <code>identifier</code> and never as an attribute.
         A <code>command</code> carries its own wording, and a <code>hint</code> may sit wherever
         wording may.</li>
     <li><b>1.30.0</b> &ndash; A dependency cycle between modules is now reported as an error, the same

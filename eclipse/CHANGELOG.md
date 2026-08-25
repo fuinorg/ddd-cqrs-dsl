@@ -3,6 +3,13 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.28.0
+- **A business rule can be handed the carrier's own identity**, with `own-id` in the actuals of a rule
+  usage. It is a keyword rather than a reference because an aggregate states its identity as
+  `identifier` and never as an attribute, so there is nothing for a cross reference to point at - and it
+  is what lets a refusal name the thing it refused, which six operations in a real model need.
+  Hyphenated, so it costs no model the right to call an attribute `id`. A constructor may not use it: it
+  is what creates the identity, and the generated validator's method for a create is static for the
+  same reason.
 - **A command's `message` is now checked, and is deliberately stricter than an event's.** An event's
   message is rendered by the JVM alone, so anything Jakarta EL understands passes. A command's is a
   confirmation prompt shown *before* the command is sent, so the client renders it too - and a client

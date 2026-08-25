@@ -55,7 +55,10 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
+import org.eclipse.xtext.EcoreUtil2
 import org.fuin.dsl.cqrs.cqrsDsl.Command
+import org.fuin.dsl.cqrs.cqrsDsl.Constructor
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Hint
 import org.fuin.dsl.cqrs.cqrsDsl.View
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager
@@ -101,6 +104,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val COMMAND_MSG_NOT_A_PATH = 'commandMsgNotAPath'
 
 	public static val COMMAND_MSG_UNCLOSED_VAR = 'commandMsgUnclosedVar'
+
+	public static val RULE_OWN_ID_IN_CONSTRUCTOR = 'ruleOwnIdInConstructor'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
@@ -664,6 +669,26 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					problem.key
 				)
 			}
+		}
+	}
+
+	/**
+	 * Checks that a creating operation does not hand a rule the carrier's own identity.
+	 *
+	 * <p>'own-id' reads the identity off the instance the operation is called on, and a constructor has
+	 * none - it is what brings the instance into being. The generated validator's method for a creating
+	 * operation is static for exactly that reason, so there would be nothing to read it from.
+	 */
+	@Check
+	def checkOwnIdOutsideConstructor(IdentityArgument argument) {
+		val constructor = EcoreUtil2.getContainerOfType(argument, Constructor)
+		if (constructor !== null) {
+			error(
+				"'own-id' has nothing to read in a constructor, which is what creates the identity",
+				argument,
+				null,
+				RULE_OWN_ID_IN_CONSTRUCTOR
+			)
 		}
 	}
 

@@ -17,6 +17,11 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- The class that **verifies everything one aggregate or entity declares** is now generated: one method
+  per operation, constructing each rule from the actuals the usage binds. Nothing can be skipped - the
+  write-once operation names its operation and nothing else, and no method on the validator takes a rule
+  from outside, so the model is the complete list of what is enforced. A creating operation gets a
+  static method, having no instance to read state from.
 - An aggregate's and an entity's **declared attributes now reach the generated abstract**, as fields with
   a `public final` getter and a `protected final` setter - until now the abstract carried only the
   identity, and every attribute the model declared lived as a hand-written field in the write-once class

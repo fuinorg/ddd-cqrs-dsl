@@ -42,7 +42,7 @@ class AggregateRulesArtifactFactoryTest {
 
         assertThat(generated).contains("public final class ReceiptRules {")
         assertThat(generated).contains("private final Receipt self;")
-        assertThat(generated).contains("void unassignEntry() throws ReceiptAlreadyAssignedException {")
+        assertThat(generated).contains("void unassignEntry() throws ReceiptNotAssignedException {")
 
         // "ignore" declares two rules, so it verifies both and declares both refusals.
         assertThat(generated).contains(
@@ -51,9 +51,11 @@ class AggregateRulesArtifactFactoryTest {
 
     @Test
     def void testStateTheCarrierHoldsIsReadOffIt() {
-        // The accessors on the generated abstract are what this needs, which is why they exist.
+        // The accessors on the generated abstract are what this needs, which is why they exist. The
+        // identity comes from 'own-id': it is never a declared attribute, so nothing could name it as a
+        // reference - and without it the refusal has no way to say which receipt it refused.
         assertThat(generate("Receipt"))
-            .contains("new MustBeAssignedAnywhere(self.getAssignedEntry()).verify();")
+            .contains("new MustBeAssigned(self.getAssignedEntry(), self.getId()).verify();")
     }
 
     @Test

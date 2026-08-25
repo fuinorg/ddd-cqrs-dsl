@@ -771,6 +771,15 @@ public interface CqrsDslFactory extends EFactory
   LiteralArgument createLiteralArgument();
 
   /**
+   * Returns a new object of class '<em>Identity Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Identity Argument</em>'.
+   * @generated
+   */
+  IdentityArgument createIdentityArgument();
+
+  /**
    * Returns a new object of class '<em>Variable Argument</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

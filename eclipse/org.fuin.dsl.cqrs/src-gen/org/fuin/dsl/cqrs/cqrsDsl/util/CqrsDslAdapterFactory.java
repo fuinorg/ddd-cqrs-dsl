@@ -45,6 +45,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
@@ -571,6 +572,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseLiteralArgument(LiteralArgument object)
       {
         return createLiteralArgumentAdapter();
+      }
+      @Override
+      public Adapter caseIdentityArgument(IdentityArgument object)
+      {
+        return createIdentityArgumentAdapter();
       }
       @Override
       public Adapter caseVariableArgument(VariableArgument object)
@@ -1840,6 +1846,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createLiteralArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument <em>Identity Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
+   * @generated
+   */
+  public Adapter createIdentityArgumentAdapter()
   {
     return null;
   }

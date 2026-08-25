@@ -433,6 +433,7 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//LiteralArgument">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//LiteralArgument/literal"/>
     </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//IdentityArgument"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//VariableArgument">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//VariableArgument/variable"/>
     </genClasses>

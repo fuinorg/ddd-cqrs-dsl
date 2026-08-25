@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IContainer;
@@ -56,6 +57,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
@@ -118,6 +120,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String COMMAND_MSG_NOT_A_PATH = "commandMsgNotAPath";
 
   public static final String COMMAND_MSG_UNCLOSED_VAR = "commandMsgUnclosedVar";
+
+  public static final String RULE_OWN_ID_IN_CONSTRUCTOR = "ruleOwnIdInConstructor";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
@@ -787,6 +791,24 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           CqrsDslPackage.Literals.COMMAND__MESSAGE, 
           problem.getKey());
       }
+    }
+  }
+
+  /**
+   * Checks that a creating operation does not hand a rule the carrier's own identity.
+   * 
+   * <p>'own-id' reads the identity off the instance the operation is called on, and a constructor has
+   * none - it is what brings the instance into being. The generated validator's method for a creating
+   * operation is static for exactly that reason, so there would be nothing to read it from.
+   */
+  @Check
+  public void checkOwnIdOutsideConstructor(final IdentityArgument argument) {
+    final Constructor constructor = EcoreUtil2.<Constructor>getContainerOfType(argument, Constructor.class);
+    if ((constructor != null)) {
+      this.error(
+        "\'own-id\' has nothing to read in a constructor, which is what creates the identity", argument, 
+        null, 
+        CqrsDslValidator.RULE_OWN_ID_IN_CONSTRUCTOR);
     }
   }
 

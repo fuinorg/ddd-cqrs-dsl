@@ -44,6 +44,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
 import org.fuin.dsl.cqrs.cqrsDsl.JsonArray;
@@ -188,6 +189,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.HINT:
 				sequence_Hint(context, (Hint) semanticObject); 
+				return; 
+			case CqrsDslPackage.IDENTITY_ARGUMENT:
+				sequence_RuleArgument(context, (IdentityArgument) semanticObject); 
 				return; 
 			case CqrsDslPackage.IMPORT:
 				sequence_Import(context, (Import) semanticObject); 
@@ -1387,6 +1391,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     RuleArgument returns IdentityArgument
+	 *
+	 * Constraint:
+	 *     {IdentityArgument}
+	 * </pre>
+	 */
+	protected void sequence_RuleArgument(ISerializationContext context, IdentityArgument semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     RuleArgument returns LiteralArgument
 	 *
 	 * Constraint:
@@ -1419,7 +1437,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getRuleArgumentAccess().getVariableVariableIDTerminalRuleCall_2_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE, false));
+		feeder.accept(grammarAccess.getRuleArgumentAccess().getVariableVariableIDTerminalRuleCall_3_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE, false));
 		feeder.finish();
 	}
 	

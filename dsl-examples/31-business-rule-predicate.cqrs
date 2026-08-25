@@ -159,11 +159,25 @@ context p_31_business_rule_predicate {
                 consistency strong
             }
 
+            /** Makes sure the thing is still there, which is what its identity is handed for. */
+            business-rule MustStillExist exception NameTakenException {
+
+                /** The receipt being renamed. */
+                ReceiptId receipt
+
+                consistency strong
+
+                requires receipt != null
+            }
+
             // The usage site binds the actuals - which is what lets one rule be carried by
             // operations that agree on nothing. Here 'newName' is a parameter of the method while
             // 'kind' is a field of the aggregate, and 'existsForType' is a method of the
-            // operation context, handed the same two.
-            method rename business-rules NameMustBeUnique(existsForType(newName, kind)), NameMustBeShort(newName, 200) {
+            // operation context, handed the same two. 'own-id' is the aggregate's own identity: it is
+            // never a declared attribute, so it is a keyword rather than a reference, and it is what
+            // lets a refusal name the thing it refused. A constructor may not use it - it is what
+            // creates the identity.
+            method rename business-rules NameMustBeUnique(existsForType(newName, kind)), NameMustBeShort(newName, 200), MustStillExist(own-id) {
 
                 /** The new name. */
                 String newName

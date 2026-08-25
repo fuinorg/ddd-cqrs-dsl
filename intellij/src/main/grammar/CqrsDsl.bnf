@@ -167,6 +167,7 @@
     KW_SKIP='skip'
     KW_REQUIRES='requires'
     KW_IS_EMPTY='is-empty'
+    KW_OWN_ID='own-id'
 
     // Punctuation
     LBRACE='{'
@@ -489,7 +490,11 @@ constraint_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
 
 // An actual of a business rule usage. A service call is told apart from a plain value by the
 // parenthesis that follows it, so it is tried first.
-rule_argument ::= service_call_argument | variable_argument | literal
+// 'own-id' is a keyword, not a reference: the identity is never a declared attribute, so there is
+// nothing for a reference to point at. Ahead of variable_argument because it must not be read as a name.
+rule_argument ::= service_call_argument | identity_argument | variable_argument | literal
+
+identity_argument ::= KW_OWN_ID
 
 service_call_argument ::= ID LPAREN (ID (COMMA ID)*)? RPAREN
 

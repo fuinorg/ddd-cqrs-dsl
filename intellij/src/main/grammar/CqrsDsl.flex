@@ -81,6 +81,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "display-as"              { return KW_DISPLAY_AS; }
   "no-key"                  { return KW_NO_KEY; }
   "is-empty"                { return KW_IS_EMPTY; }
+  "own-id"                  { return KW_OWN_ID; }
 
   // ---- Structural keywords ----
   "context"                 { return KW_CONTEXT; }

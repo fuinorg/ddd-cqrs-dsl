@@ -43,6 +43,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Invariants;
@@ -810,6 +811,14 @@ public class CqrsDslSwitch<T> extends Switch<T>
         LiteralArgument literalArgument = (LiteralArgument)theEObject;
         T result = caseLiteralArgument(literalArgument);
         if (result == null) result = caseRuleArgument(literalArgument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.IDENTITY_ARGUMENT:
+      {
+        IdentityArgument identityArgument = (IdentityArgument)theEObject;
+        T result = caseIdentityArgument(identityArgument);
+        if (result == null) result = caseRuleArgument(identityArgument);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -2149,6 +2158,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseLiteralArgument(LiteralArgument object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Identity Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Identity Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseIdentityArgument(IdentityArgument object)
   {
     return null;
   }

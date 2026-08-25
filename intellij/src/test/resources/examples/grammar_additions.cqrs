@@ -128,7 +128,7 @@ context foo {
 			}
 
 			/** Renames it, checking the name against a service and against a fixed limit. */
-			method rename business-rules NameMustBeUnique(exists(newName)), MustBeAssigned(name, 10) {
+			method rename business-rules NameMustBeUnique(exists(newName)), MustBeAssigned(name, 10, own-id) {
 				hint org.fuin.Whatever { "on-the-method" : true }
 				/** The new name. */
 				String newName

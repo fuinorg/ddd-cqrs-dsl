@@ -2,6 +2,7 @@ package org.fuin.dsl.ddd.gen.rule
 
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument
@@ -56,6 +57,13 @@ class SrcRuleConstruction {
     def private String argument(RuleArgument arg) throws GenerateException {
         switch (arg) {
             LiteralArgument: return arg.literal.str
+            IdentityArgument: {
+                if (carrier === null) {
+                    throw new GenerateException("'own-id' has nothing to read in " + operation.name
+                        + ": a creating operation has no instance yet")
+                }
+                return carrier + ".getId()"
+            }
             VariableArgument: return valueOf(arg.variable.name)
             ServiceCallArgument: {
                 val call = arg.args.nullSafe.map[valueOf(name)].join(", ")

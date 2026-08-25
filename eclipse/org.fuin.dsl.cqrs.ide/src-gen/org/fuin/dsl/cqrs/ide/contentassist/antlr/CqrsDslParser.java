@@ -169,6 +169,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getBusinessRuleInstanceAccess().getGroup_1_2(), "rule__BusinessRuleInstance__Group_1_2__0");
 			builder.put(grammarAccess.getRuleArgumentAccess().getGroup_0(), "rule__RuleArgument__Group_0__0");
 			builder.put(grammarAccess.getRuleArgumentAccess().getGroup_2(), "rule__RuleArgument__Group_2__0");
+			builder.put(grammarAccess.getRuleArgumentAccess().getGroup_3(), "rule__RuleArgument__Group_3__0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getGroup(), "rule__ServiceCallArgument__Group__0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getGroup_0(), "rule__ServiceCallArgument__Group_0__0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getGroup_0_0(), "rule__ServiceCallArgument__Group_0_0__0");
@@ -464,7 +465,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getBusinessRuleInstanceAccess().getParamsAssignment_1_1(), "rule__BusinessRuleInstance__ParamsAssignment_1_1");
 			builder.put(grammarAccess.getBusinessRuleInstanceAccess().getParamsAssignment_1_2_1(), "rule__BusinessRuleInstance__ParamsAssignment_1_2_1");
 			builder.put(grammarAccess.getRuleArgumentAccess().getLiteralAssignment_0_1(), "rule__RuleArgument__LiteralAssignment_0_1");
-			builder.put(grammarAccess.getRuleArgumentAccess().getVariableAssignment_2_1(), "rule__RuleArgument__VariableAssignment_2_1");
+			builder.put(grammarAccess.getRuleArgumentAccess().getVariableAssignment_3_1(), "rule__RuleArgument__VariableAssignment_3_1");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getMethodAssignment_0_0_0(), "rule__ServiceCallArgument__MethodAssignment_0_0_0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getArgsAssignment_1_0(), "rule__ServiceCallArgument__ArgsAssignment_1_0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getArgsAssignment_1_1_1(), "rule__ServiceCallArgument__ArgsAssignment_1_1_1");

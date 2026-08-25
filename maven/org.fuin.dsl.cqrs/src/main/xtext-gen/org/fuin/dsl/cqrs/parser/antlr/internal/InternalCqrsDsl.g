@@ -6655,7 +6655,21 @@ ruleRuleArgument returns [EObject current=null]
 			(
 				{
 					$current = forceCreateModelElement(
-						grammarAccess.getRuleArgumentAccess().getVariableArgumentAction_2_0(),
+						grammarAccess.getRuleArgumentAccess().getIdentityArgumentAction_2_0(),
+						$current);
+				}
+			)
+			otherlv_4='own-id'
+			{
+				newLeafNode(otherlv_4, grammarAccess.getRuleArgumentAccess().getOwnIdKeyword_2_1());
+			}
+		)
+		    |
+		(
+			(
+				{
+					$current = forceCreateModelElement(
+						grammarAccess.getRuleArgumentAccess().getVariableArgumentAction_3_0(),
 						$current);
 				}
 			)
@@ -6666,9 +6680,9 @@ ruleRuleArgument returns [EObject current=null]
 							$current = createModelElement(grammarAccess.getRuleArgumentRule());
 						}
 					}
-					otherlv_4=RULE_ID
+					otherlv_6=RULE_ID
 					{
-						newLeafNode(otherlv_4, grammarAccess.getRuleArgumentAccess().getVariableVariableCrossReference_2_1_0());
+						newLeafNode(otherlv_6, grammarAccess.getRuleArgumentAccess().getVariableVariableCrossReference_3_1_0());
 					}
 				)
 			)
