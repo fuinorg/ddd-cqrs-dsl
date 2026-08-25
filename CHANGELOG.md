@@ -21,6 +21,12 @@ The plugins have their own change notes:
   attributes or its target operation's parameters, plus the implicit `entityIdPath`. Stricter than an
   event's message on purpose - the client renders a command's prompt before sending, and has no
   expression language - so the two renderers cannot drift.
+- Flutter: a generated Dart enum now carries the attributes the model declares on it, as final fields
+  beside the wire name, plus an `operator []` to reach one by name. Without them a client cannot resolve
+  `${provider.id}` in a command message at all - its idea of the provider is the wire name `BAZG_CH`
+  where the model's `id` says `BAZG` - so the two renderers would disagree about the same sentence. An
+  attribute of a type no Dart `const` can hold is refused at generation time rather than emitted as
+  uncompilable Dart. An enumeration that declares no attributes generates exactly what it did.
 - Flutter: a command's own `slabel`/`label`/`tooltip` reach its descriptor and the translation bundle,
   so a client captions a button with the wording the model gives rather than the documentation.
 - Initial version

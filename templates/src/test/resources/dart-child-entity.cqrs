@@ -119,6 +119,40 @@ context de.fuin.library {
             message "Print an edition"
         }
 
+        /**
+         * How a copy reached the shelf.
+         *
+         * <p>Carries attributes, which a command message may address as ${acquisition.code}. Note
+         * "name": the model declares it, and on the Dart side it shadows the Enum.name extension - so
+         * the constant reads as what the model says it is called rather than as its Dart identifier.
+         */
+        enum Acquisition {
+
+            slabel "Source"
+            label "How acquired"
+            tooltip "Where the copy came from"
+
+            /** Code as the catalogue writes it. Never changes. */
+            String code
+
+            /** Descriptive name. */
+            String name
+
+            /** How many copies one order may hold. */
+            Integer batchSize
+
+            instances {
+
+                /** Ordered from a distributor. */
+                PURCHASE("PUR", "Purchased", 50)
+
+                /** Given by a reader. */
+                DONATION("DON", "Donated", 1)
+
+            }
+
+        }
+
         /** The catalogue number a reader looks a book up by. */
         value-object Isbn base String {
 

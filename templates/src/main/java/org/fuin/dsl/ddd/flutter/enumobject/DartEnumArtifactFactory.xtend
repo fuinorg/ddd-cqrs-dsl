@@ -3,14 +3,19 @@ package org.fuin.dsl.ddd.flutter.enumobject
 import java.util.ArrayList
 import java.util.List
 import java.util.Map
+import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject
+import org.fuin.dsl.cqrs.cqrsDsl.Literal
+import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral
+import org.fuin.dsl.ddd.flutter.base.DartAttribute
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.dsl.ddd.flutter.base.DartNames
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 
@@ -27,8 +32,17 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
  * <p>The instance names are lower-cased for Dart, which conventionally names enum values that way, and
  * each carries the name it has <em>on the wire</em> so the two never have to be guessed from one
  * another.
+ *
+ * <p><b>The attributes the model declares travel too.</b> A command's <code>message</code> is rendered
+ * on both sides, and one of them writes <code>${provider.id}</code> - which the JVM resolves against the
+ * generated Java enum. Without the same values here the client cannot resolve it at all: its idea of the
+ * provider would be the wire name (<code>BAZG_CH</code>) where the model's <code>id</code> says
+ * <code>BAZG</code>, and the two renderers would disagree about the same sentence.
  */
 class DartEnumArtifactFactory extends AbstractDartSource<EnumObject> {
+
+    /** Dart types a compile-time constant can be written as, which is what an enum's attributes are. */
+    static val List<String> CONST_TYPES = List.of("String", "int", "double", "num", "bool")
 
     override getModelType() {
         typeof(EnumObject)
@@ -71,10 +85,15 @@ class DartEnumArtifactFactory extends AbstractDartSource<EnumObject> {
           «instanceBlock(instances)»
 
           /// Constructor with mandatory data.
-          const «className»(this.wireName);
+          const «className»(this.wireName«FOR a : enu.attributes.nullSafe», this.«a.name»«ENDFOR»);
 
           /// The instance as it appears on the wire.
           final String wireName;
+          «FOR a : enu.attributes.nullSafe»
+
+          «dartDoc(a.doc, "")»
+          final «dartType(enu, a)» «a.name»;
+          «ENDFOR»
 
           /// All instances, in model order.
           static const List<«className»> all = <«className»>[«names(instances)»];
@@ -107,6 +126,20 @@ class DartEnumArtifactFactory extends AbstractDartSource<EnumObject> {
             «ENDIF»
           ];
 
+          «IF !enu.attributes.nullSafe.empty»
+          /// Reads the attribute called [attribute] off this instance, for a caller that has only its
+          /// name - filling a command message's `${provider.id}` is the one that needs it.
+          ///
+          /// An operator rather than a method, matching what a generated row offers, and for the same
+          /// reason: a method needs a name and every name is one a model may give an attribute.
+          Object? operator [](String attribute) => switch (attribute) {
+                «FOR a : enu.attributes.nullSafe»
+                «dartString(a.name)» => «a.name»,
+                «ENDFOR»
+                _ => throw ArgumentError("«className» has no attribute '$attribute'"),
+              };
+
+          «ENDIF»
           /// Reads an instance off its wire name.
           static «className» fromWire(String wireName) => all.firstWhere(
                 (v) => v.wireName == wireName,
@@ -131,10 +164,42 @@ class DartEnumArtifactFactory extends AbstractDartSource<EnumObject> {
         val blocks = new ArrayList<String>()
         for (instance : instances) {
             val doc = dartDoc(instance.doc, "")
-            val declaration = value(instance.name) + "(" + dartString(instance.name) + ")"
+            val args = new ArrayList<String>()
+            args.add(dartString(instance.name))
+            for (literal : instance.params.nullSafe) {
+                args.add(literal.dartLiteral)
+            }
+            val declaration = value(instance.name) + "(" + args.join(", ") + ")"
             blocks.add(if(doc.empty) declaration else doc + "\n" + declaration)
         }
         return blocks.join(",\n\n") + ";"
+    }
+
+    /**
+     * The Dart type of one enumeration attribute, refused unless a Dart <code>const</code> can hold it.
+     *
+     * <p>An enum's values are compile-time constants, so an attribute of a type that has to be built at
+     * runtime - an exact decimal, an instant, a byte list - cannot travel this way. Refusing here says
+     * so where the model can be changed; emitting it anyway would say so as a Dart compile error in
+     * whichever project happens to consume the generated package.
+     */
+    def private static String dartType(EnumObject enu, Attribute attribute) throws GenerateException {
+        val dart = new DartAttribute(attribute)
+        val type = dart.type
+        val bare = dart.baseType
+        if (!CONST_TYPES.contains(bare)) {
+            throw new GenerateException(enu.name + "." + attribute.name + " is a " + bare
+                + ", which no Dart const can hold - an enumeration's attributes have to be constants")
+        }
+        return type
+    }
+
+    /** One instance argument as Dart source: a quoted string, or the literal exactly as written. */
+    def private static String dartLiteral(Literal literal) {
+        if (literal instanceof StringLiteral) {
+            return dartString(literal.value)
+        }
+        return literal.value
     }
 
     /** Dart names an enum value in lower camel case; the wire name stays as the model wrote it. */
