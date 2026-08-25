@@ -50,6 +50,9 @@ public final class TypeKeys {
     /** A <code>business-rule</code>: <code>«Name»</code>. */
     public static final String JAVA_BUSINESS_RULE = "java-business-rule";
 
+    /** Everything one aggregate or entity declares, verified: <code>«Name»Rules</code>. */
+    public static final String JAVA_BUSINESS_RULES = "java-business-rules";
+
     /** An <code>aggregate</code>: <code>«Name»</code>. */
     public static final String JAVA_AGGREGATE = "java-aggregate";
 

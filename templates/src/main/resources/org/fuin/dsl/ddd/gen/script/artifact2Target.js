@@ -70,6 +70,7 @@ function module(typeKey) {
         case 'java-entity-abstract':
         case 'java-service':
         case 'java-business-rule':
+        case 'java-business-rules':
         case 'res-aggregate-doc':
         case 'res-aggregate-liquibase':
             return 'command.core';

@@ -7,6 +7,8 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
+
+
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
@@ -112,6 +114,10 @@ class CqrsDslScopeProvider extends AbstractCqrsDslScopeProvider {
 		val type = EcoreUtil2.getContainerOfType(obj, InternalType)
 		if (type !== null) {
 			result.addAll(type.attributes)
+			// Deliberately not the identity. An aggregate holds one and a rule commonly wants it - it is
+			// what lets a refusal name the thing it refused - but "id" is never declared as an
+			// attribute, and a synthetic one belongs to no resource, so linking to it yields a dangling
+			// reference. Naming the identity in an actual needs the grammar to say so.
 		}
 		result
 	}

@@ -39,8 +39,61 @@ context de.fuin.rules {
             tooltip "Position of the entry in its book"
         }
 
+        /** Answers what an operation cannot answer itself. */
+        service NameService {
+
+            /** Whether the name is already taken for that kind. */
+            method existsForType {
+                ReceiptNumber receiptNumber
+                returns Boolean
+            }
+
+        }
+
         /** What the rules are about. */
         aggregate Receipt identifier ReceiptId {
+
+            /** The journal entry this receipt backs, if any. */
+            optional JournalEntryId assignedEntry
+
+            /** How far the receipt has been processed. */
+            ReceiptStatus status
+
+            /**
+             * Records a receipt. A creating operation has no prior state, so its rules can only
+             * concern the arguments and what the caller looked up.
+             */
+            constructor record business-rules NameMustBeUniqueForType(existsForType(receiptNumber))
+                    fires ReceiptRecordedEvent {
+
+                /** The number printed on the document. */
+                ReceiptNumber receiptNumber
+
+                operation-context NameService
+
+                event ReceiptRecordedEvent { message "Receipt recorded" }
+
+            }
+
+            /**
+             * Clears the assignment. Reads state the receipt already holds, which is what the
+             * accessors on the generated abstract are for.
+             */
+            method unassignEntry business-rules MustBeAssignedAnywhere(assignedEntry)
+                    fires ReceiptUnassignedEvent {
+
+                event ReceiptUnassignedEvent { message "Assignment cleared" }
+
+            }
+
+            /** Two rules on one operation, so the refusals are both declared. */
+            method ignore business-rules MustNotBeIgnored(status), MustNotBeAssigned(assignedEntry)
+                    fires ReceiptIgnoredEvent {
+
+                event ReceiptIgnoredEvent { message "Receipt ignored" }
+
+            }
+
         }
 
         /** What a receipt is linked to. */
@@ -67,6 +120,16 @@ context de.fuin.rules {
 
             }
 
+        }
+
+        /** Number printed on a document. */
+        value-object ReceiptNumber base String {
+
+            slabel "Number"
+            label "Receipt number"
+            tooltip "The number printed on the document"
+
+            String value
         }
 
         /** The receipt backs no journal entry. */
@@ -107,6 +170,20 @@ context de.fuin.rules {
         /** An edit conflicts with what the receipt is linked to. */
         exception LinkedEditConflictException {
             message "The edit conflicts with the linked transaction"
+        }
+
+        /**
+         * Makes sure the receipt is assigned, without naming which one. The refusal that names the
+         * receipt cannot be bound at a usage site today - see MustBeAssigned below.
+         */
+        business-rule MustBeAssignedAnywhere exception ReceiptAlreadyAssignedException {
+
+            /** The journal entry this receipt backs, if any. */
+            optional JournalEntryId assignedEntry
+
+            consistency strong
+
+            requires assignedEntry != null
         }
 
         /**
