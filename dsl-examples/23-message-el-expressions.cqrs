@@ -9,8 +9,9 @@ context p_23_message_el_expressions {
 
         aggregate Order identifier OrderId {
 
-            // The generated messages are evaluated with Jakarta EL (KeyValueEL), so a ${...}
+            // An EVENT message is evaluated with Jakarta EL (KeyValueEL) on the JVM, so a ${...}
             // placeholder may be a simple variable OR a full EL expression (method call, arithmetic).
+            // A COMMAND message may not - see the command at the bottom of this file.
 
             // Event message mixing a simple ${customer} variable with an EL method call
             // ${customer.toUpperCase()}, plus the implicit ${entityIdPath}.
@@ -34,13 +35,16 @@ context p_23_message_el_expressions {
 
         }
 
-        // Command message mixing a simple ${amount} variable with an EL method call.
+        // A command message is stricter than an event's: plain variables and dotted paths only.
+        // It is a confirmation prompt shown before the command is sent, so the client renders it too,
+        // and a client without an expression language cannot evaluate ${amount.doubleValue()}.
+        // Allowing EL here would mean the two renderers disagree about the same message.
         command PlaceOrder target Order.place sla 2 seconds {
 
             String customer
             BigDecimal amount
 
-            message "Place order for ${customer} worth ${amount} (${amount.doubleValue()})"
+            message "Place order for ${customer} worth ${amount}"
 
         }
 

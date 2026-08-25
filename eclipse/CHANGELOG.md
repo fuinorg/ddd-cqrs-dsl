@@ -3,6 +3,14 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.28.0
+- **A command's `message` is now checked, and is deliberately stricter than an event's.** An event's
+  message is rendered by the JVM alone, so anything Jakarta EL understands passes. A command's is a
+  confirmation prompt shown *before* the command is sent, so the client renders it too - and a client
+  without an expression language cannot evaluate `${amount.doubleValue()}`. What a command may write is
+  therefore the intersection: a plain variable or a dotted path, over the command's own attributes or
+  the parameters of the operation it targets, plus the implicit `entityIdPath`. Three separate errors,
+  because they are three separate mistakes: nothing closes the placeholder, no renderer understands it,
+  or nothing supplies it.
 - **A read model row can name the attribute that identifies it**, with `identified-by`. It is a cross
   reference, so renaming the attribute follows and a typo is a linking error - unlike the `@Key("id")`
   annotation it replaces, whose argument is a string nothing checks.

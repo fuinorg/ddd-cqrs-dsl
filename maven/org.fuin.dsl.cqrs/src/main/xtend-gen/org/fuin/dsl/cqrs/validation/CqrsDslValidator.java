@@ -32,6 +32,7 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
@@ -111,6 +112,12 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String MISSING_DOC = "missingDOC";
 
   public static final String EVENT_MSG_UNKNOWN_VAR = "eventMsgUnknownVar";
+
+  public static final String COMMAND_MSG_UNKNOWN_VAR = "commandMsgUnknownVar";
+
+  public static final String COMMAND_MSG_NOT_A_PATH = "commandMsgNotAPath";
+
+  public static final String COMMAND_MSG_UNCLOSED_VAR = "commandMsgUnclosedVar";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
@@ -752,6 +759,37 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     }
   }
 
+  /**
+   * Checks that every variable in a command's message is one the command carries.
+   * 
+   * <p>Deliberately stricter than the event check above. An event's message is rendered by the JVM
+   * alone, so anything Jakarta EL understands is fair game. A command's message is a confirmation
+   * prompt shown <em>before</em> the command is sent, so the client renders it too - and a Dart
+   * client has no EL engine. What a command may write is therefore the intersection: a plain
+   * identifier or a dotted path, checked here so the two renderers cannot drift.
+   */
+  @Check
+  public void checkVariablesInCommandMessage(final Command command) {
+    String _message = command.getMessage();
+    boolean _tripleNotEquals = (_message != null);
+    if (_tripleNotEquals) {
+      final List<String> vars = new ArrayList<String>();
+      AbstractMethod _target = command.getTarget();
+      boolean _tripleNotEquals_1 = (_target != null);
+      if (_tripleNotEquals_1) {
+        vars.addAll(CqrsParameterExtensions.asNames(command.getTarget().getParameters()));
+      }
+      vars.addAll(CqrsAttributeExtensions.asNames(command.getAttributes()));
+      final Pair<String, String> problem = CqrsDslValidator.findUnusableCommandVar(vars, command.getMessage());
+      if ((problem != null)) {
+        this.error(
+          problem.getValue(), command, 
+          CqrsDslPackage.Literals.COMMAND__MESSAGE, 
+          problem.getKey());
+      }
+    }
+  }
+
   @Check
   public void checkViewCronSchedule(final View view) {
     if (((view.getCron() != null) && (!SpringCronExpression.isValid(view.getCron())))) {
@@ -1299,6 +1337,62 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   private static boolean isSimpleVariableName(final String name) {
     return name.matches("[A-Za-z_$][A-Za-z0-9_$]*");
+  }
+
+  /**
+   * Returns the first "${...}" of a command message that will not render, as an issue code paired
+   * with what to tell the author, or NULL if every one of them is usable. Three different defects,
+   * so three codes: nothing closes it, no renderer understands it, or nothing supplies it.
+   */
+  private static Pair<String, String> findUnusableCommandVar(final List<String> vars, final String msg) {
+    int from = 0;
+    int start = (-1);
+    while (((start = msg.indexOf("${", from)) > (-1))) {
+      {
+        final int end = msg.indexOf("}", (start + 1));
+        if ((end == (-1))) {
+          String _substring = msg.substring((start + 2));
+          String _plus = ("The variable \'" + _substring);
+          String _plus_1 = (_plus + "\' is not closed with \'}\'");
+          return Pair.<String, String>of(CqrsDslValidator.COMMAND_MSG_UNCLOSED_VAR, _plus_1);
+        }
+        final String expr = msg.substring((start + 2), end);
+        boolean _isVariablePath = CqrsDslValidator.isVariablePath(expr);
+        boolean _not = (!_isVariablePath);
+        if (_not) {
+          return Pair.<String, String>of(CqrsDslValidator.COMMAND_MSG_NOT_A_PATH, (((("\'" + expr) + "\' is not a plain variable or a dotted ") + "path. A command\'s message is rendered by the client as well, which has no ") + "expression language"));
+        }
+        if (((!vars.contains(CqrsDslValidator.rootOf(expr))) && (!Objects.equals(CqrsDslValidator.rootOf(expr), "entityIdPath")))) {
+          String _rootOf = CqrsDslValidator.rootOf(expr);
+          String _plus_2 = ("A variable with the name \'" + _rootOf);
+          String _plus_3 = (_plus_2 + "\' is unknown");
+          return Pair.<String, String>of(CqrsDslValidator.COMMAND_MSG_UNKNOWN_VAR, _plus_3);
+        }
+        from = (end + 1);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Whether the expression is a plain identifier or identifiers joined by dots, and nothing else.
+   */
+  private static boolean isVariablePath(final String expr) {
+    return expr.matches("[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*");
+  }
+
+  /**
+   * The variable a path starts at - "provider" in "provider.id" - which is what has to exist.
+   */
+  private static String rootOf(final String expr) {
+    final int dot = expr.indexOf(".");
+    String _xifexpression = null;
+    if ((dot == (-1))) {
+      _xifexpression = expr;
+    } else {
+      _xifexpression = expr.substring(0, dot);
+    }
+    return _xifexpression;
   }
 
   private static String typeNames(final List<Type> types) {

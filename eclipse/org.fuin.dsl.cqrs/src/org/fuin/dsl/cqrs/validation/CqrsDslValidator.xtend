@@ -96,6 +96,12 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	public static val EVENT_MSG_UNKNOWN_VAR = 'eventMsgUnknownVar'
 
+	public static val COMMAND_MSG_UNKNOWN_VAR = 'commandMsgUnknownVar'
+
+	public static val COMMAND_MSG_NOT_A_PATH = 'commandMsgNotAPath'
+
+	public static val COMMAND_MSG_UNCLOSED_VAR = 'commandMsgUnclosedVar'
+
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
 	public static val DEPENDENCY_INVALID_COORDINATE = 'dependencyInvalidCoordinate'
@@ -625,6 +631,37 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					event,
 					CqrsDslPackage.Literals::EVENT__MESSAGE,
 					EVENT_MSG_UNKNOWN_VAR
+				)
+			}
+		}
+	}
+
+	/**
+	 * Checks that every variable in a command's message is one the command carries.
+	 *
+	 * <p>Deliberately stricter than the event check above. An event's message is rendered by the JVM
+	 * alone, so anything Jakarta EL understands is fair game. A command's message is a confirmation
+	 * prompt shown <em>before</em> the command is sent, so the client renders it too - and a Dart
+	 * client has no EL engine. What a command may write is therefore the intersection: a plain
+	 * identifier or a dotted path, checked here so the two renderers cannot drift.
+	 */
+	@Check
+	def checkVariablesInCommandMessage(Command command) {
+		if (command.message !== null) {
+			// The generated command carries the target operation's parameters as well as its own
+			// attributes - most commands declare none and take all of theirs from the target.
+			val List<String> vars = new ArrayList<String>()
+			if (command.target !== null) {
+				vars.addAll(command.target.parameters.asNames)
+			}
+			vars.addAll(command.attributes.asNames)
+			val problem = findUnusableCommandVar(vars, command.message)
+			if (problem !== null) {
+				error(
+					problem.value,
+					command,
+					CqrsDslPackage.Literals::COMMAND__MESSAGE,
+					problem.key
 				)
 			}
 		}
@@ -1186,6 +1223,49 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	private static def boolean isSimpleVariableName(String name) {
 		name.matches("[A-Za-z_$][A-Za-z0-9_$]*")
+	}
+
+	/**
+	 * Returns the first "${...}" of a command message that will not render, as an issue code paired
+	 * with what to tell the author, or NULL if every one of them is usable. Three different defects,
+	 * so three codes: nothing closes it, no renderer understands it, or nothing supplies it.
+	 */
+	private static def Pair<String, String> findUnusableCommandVar(List<String> vars, String msg) {
+		var int from = 0;
+		var int start = -1;
+		while ((start = msg.indexOf("${", from)) > -1) {
+			val int end = msg.indexOf('}', start + 1);
+			if (end == -1) {
+
+				// No closing bracket. Neither renderer treats this as a variable: both leave it
+				// standing, so the message quietly shows its own source.
+				return COMMAND_MSG_UNCLOSED_VAR -> "The variable '" + msg.substring(start + 2)
+					+ "' is not closed with '}'"
+			}
+			val String expr = msg.substring(start + 2, end);
+			if (!isVariablePath(expr)) {
+				return COMMAND_MSG_NOT_A_PATH -> "'" + expr + "' is not a plain variable or a dotted "
+					+ "path. A command's message is rendered by the client as well, which has no "
+					+ "expression language"
+			}
+			if (!vars.contains(rootOf(expr)) && rootOf(expr) != "entityIdPath") {
+				return COMMAND_MSG_UNKNOWN_VAR -> "A variable with the name '" + rootOf(expr)
+					+ "' is unknown"
+			}
+			from = end + 1;
+		}
+		return null
+	}
+
+	/** Whether the expression is a plain identifier or identifiers joined by dots, and nothing else. */
+	private static def boolean isVariablePath(String expr) {
+		expr.matches("[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*")
+	}
+
+	/** The variable a path starts at - "provider" in "provider.id" - which is what has to exist. */
+	private static def String rootOf(String expr) {
+		val int dot = expr.indexOf('.')
+		return if (dot == -1) expr else expr.substring(0, dot)
 	}
 
     private static def String typeNames(List<Type> types) {

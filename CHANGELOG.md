@@ -17,6 +17,10 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- A command's `message` is validated: a plain variable or a dotted path, over the command's own
+  attributes or its target operation's parameters, plus the implicit `entityIdPath`. Stricter than an
+  event's message on purpose - the client renders a command's prompt before sending, and has no
+  expression language - so the two renderers cannot drift.
 - Flutter: a command's own `slabel`/`label`/`tooltip` reach its descriptor and the translation bundle,
   so a client captions a button with the wording the model gives rather than the documentation.
 - Initial version
