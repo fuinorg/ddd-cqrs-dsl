@@ -1,0 +1,266 @@
+/*
+ * Business rules whose conditions cover every form the expression language has.
+ *
+ * The predicates mirror the shared conformance vectors in ddd-cqrs-contexts one for one, so the Java a
+ * rule generates and the Dart evaluator that answers the same condition can be read side by side. They
+ * cannot be run against each other from here - this repository knows nothing of cqrs-common, and the
+ * generated classes are the semantics on the server - so that check belongs downstream, where both
+ * exist.
+ */
+context de.fuin.rules {
+
+    module receipts {
+
+        slabel "Receipts"
+        label "Receipts"
+        tooltip "Rules over a receipt and what it is linked to"
+
+        type String
+
+        type Integer
+
+        type Boolean
+
+        type Date
+
+        type List generics 1
+
+        type UUID
+
+        aggregate-id ReceiptId identifies Receipt base UUID {
+            slabel "RID"
+            label "Receipt ID"
+            tooltip "Unique identifier of the receipt"
+        }
+
+        aggregate-id JournalEntryId identifies JournalEntry base Integer {
+            slabel "JEID"
+            label "Journal entry ID"
+            tooltip "Position of the entry in its book"
+        }
+
+        /** What the rules are about. */
+        aggregate Receipt identifier ReceiptId {
+        }
+
+        /** What a receipt is linked to. */
+        aggregate JournalEntry identifier JournalEntryId {
+        }
+
+        /** How far a receipt has been processed. */
+        enum ReceiptStatus {
+
+            slabel "Status"
+            label "Status"
+            tooltip "How far the document has been processed"
+
+            /** Code as it travels. */
+            String code
+
+            instances {
+
+                /** Waiting to be dealt with. */
+                OPEN("OPN")
+
+                /** Deliberately left out of the books. */
+                IGNORED("IGN")
+
+            }
+
+        }
+
+        /** The receipt backs no journal entry. */
+        exception ReceiptNotAssignedException {
+
+            /** The receipt that backs nothing. */
+            ReceiptId receipt
+
+            message "Receipt ${receipt} backs no journal entry"
+
+        }
+
+        /** The receipt already backs a journal entry. */
+        exception ReceiptAlreadyAssignedException {
+            message "The receipt is already assigned"
+        }
+
+        /** The receipt is not in the state the operation needs. */
+        exception WrongStatusException {
+            message "The receipt is not in the expected state"
+        }
+
+        /** A date is before the one it has to follow. */
+        exception DatesOutOfOrderException {
+            message "The due date is before the receipt date"
+        }
+
+        /** The name is taken. */
+        exception NameTakenException {
+            message "That name is already in use"
+        }
+
+        /** The linked entries are wrong for this operation. */
+        exception WrongLinksException {
+            message "The links are wrong for this operation"
+        }
+
+        /** An edit conflicts with what the receipt is linked to. */
+        exception LinkedEditConflictException {
+            message "The edit conflicts with the linked transaction"
+        }
+
+        /**
+         * Makes sure the receipt is assigned before its assignment is removed.
+         */
+        business-rule MustBeAssigned exception ReceiptNotAssignedException {
+
+            /** The journal entry this receipt backs, if any. */
+            optional JournalEntryId assignedEntry
+
+            /** The receipt whose assignment is being removed. */
+            ReceiptId receipt
+
+            consistency strong
+
+            requires assignedEntry != null
+        }
+
+        /**
+         * Makes sure the receipt is free before it is assigned.
+         */
+        business-rule MustNotBeAssigned exception ReceiptAlreadyAssignedException {
+
+            /** The journal entry this receipt backs, if any. */
+            optional JournalEntryId assignedEntry
+
+            consistency strong
+
+            requires assignedEntry == null
+        }
+
+        /**
+         * Makes sure the receipt is ignored.
+         */
+        business-rule MustBeIgnored exception WrongStatusException {
+
+            /** How far the receipt has been processed. */
+            ReceiptStatus status
+
+            consistency strong
+
+            requires status == IGNORED
+        }
+
+        /**
+         * Makes sure the receipt is not ignored.
+         */
+        business-rule MustNotBeIgnored exception WrongStatusException {
+
+            /** How far the receipt has been processed. */
+            ReceiptStatus status
+
+            consistency strong
+
+            requires status != IGNORED
+        }
+
+        /**
+         * Makes sure the due date is not before the receipt date.
+         */
+        business-rule DueDateMustNotBeBeforeReceiptDate exception DatesOutOfOrderException {
+
+            /** When payment is due. */
+            Date dueDate
+
+            /** When the document was issued. */
+            Date receiptDate
+
+            consistency strong
+
+            requires dueDate >= receiptDate
+        }
+
+        /**
+         * Makes sure the name is free.
+         */
+        business-rule NameMustBeUniqueForType exception NameTakenException {
+
+            /** Whether the name is already in use, as the caller found out. */
+            Boolean nameTaken
+
+            consistency weak {
+                acceptable 1 days
+                detection automatic
+                resolution workflow
+            }
+
+            requires !nameTaken
+        }
+
+        /**
+         * Makes sure the receipt has links.
+         */
+        business-rule MustHaveLinks exception WrongLinksException {
+
+            /** The entries this receipt is linked to. */
+            List<JournalEntryId> linkedEntries
+
+            consistency strong
+
+            requires !linkedEntries.is-empty()
+        }
+
+        /**
+         * Makes sure the receipt has no links.
+         */
+        business-rule MustHaveNoLinks exception WrongLinksException {
+
+            /** The entries this receipt is linked to. */
+            List<JournalEntryId> linkedEntries
+
+            consistency strong
+
+            requires linkedEntries.is-empty()
+        }
+
+        /**
+         * Makes sure a financial change does not conflict with what the receipt is linked to.
+         */
+        business-rule MustNotBeLinkedForFinancialChange exception LinkedEditConflictException {
+
+            /** The bank transaction this is linked to, if any. */
+            optional JournalEntryId accountTransactionId
+
+            /** The date as it stands. */
+            Date date
+
+            /** The date as it would become. */
+            Date newDate
+
+            /** The currency as it stands. */
+            String sourceCurrency
+
+            /** The currency as it would become. */
+            String newSourceCurrency
+
+            consistency strong
+
+            requires accountTransactionId == null || (date == newDate && sourceCurrency == newSourceCurrency)
+        }
+
+        /**
+         * Makes sure the imported statement is one this account can accept. Quantifies over the lines,
+         * which the language deliberately cannot express, so this class is written by hand.
+         */
+        business-rule StatementMustBeValid exception WrongLinksException {
+
+            /** The entries the statement would create. */
+            List<JournalEntryId> linkedEntries
+
+            consistency strong
+
+        }
+
+    }
+
+}

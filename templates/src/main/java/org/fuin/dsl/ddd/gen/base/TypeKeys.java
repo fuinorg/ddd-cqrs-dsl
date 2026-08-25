@@ -47,6 +47,9 @@ public final class TypeKeys {
     /** A <code>service</code>: <code>«Name»</code>. */
     public static final String JAVA_SERVICE = "java-service";
 
+    /** A <code>business-rule</code>: <code>«Name»</code>. */
+    public static final String JAVA_BUSINESS_RULE = "java-business-rule";
+
     /** An <code>aggregate</code>: <code>«Name»</code>. */
     public static final String JAVA_AGGREGATE = "java-aggregate";
 
@@ -251,6 +254,8 @@ public final class TypeKeys {
             return JAVA_CONSTRAINT;
         case "Service":
             return JAVA_SERVICE;
+        case "BusinessRule":
+            return JAVA_BUSINESS_RULE;
         case "Aggregate":
             return JAVA_AGGREGATE;
         case "Entity":

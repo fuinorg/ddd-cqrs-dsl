@@ -33,6 +33,7 @@ function model2JavaPackage(element, typeKey) {
         case 'res-aggregate-doc':
         case 'res-aggregate-liquibase':
         case 'java-service':
+        case 'java-business-rule':
             return join(ctx, 'command.core.domain', mod);
 
         case 'java-view':

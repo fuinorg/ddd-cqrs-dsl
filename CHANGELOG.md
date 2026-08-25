@@ -17,6 +17,12 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- A `business-rule` that declares a `requires` condition now generates the class that verifies it: the
+  rule's attributes as its constructor, the condition as the check, and the model's own exception thrown
+  when it does not hold. `==` becomes `Objects.equals` (Java's own is identity and every attribute here
+  is a value object), only a comparison against `null` stays `== null`, and ordering a date is
+  `compareTo`. A rule with **no** `requires` generates nothing at all - those conditions are written by
+  hand, and a stub would let a newly declared rule appear unenforced with the build still green.
 - A command's `message` is validated: a plain variable or a dotted path, over the command's own
   attributes or its target operation's parameters, plus the implicit `entityIdPath`. Stricter than an
   event's message on purpose - the client renders a command's prompt before sending, and has no
