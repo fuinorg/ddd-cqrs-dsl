@@ -30,6 +30,10 @@ import p.shared.domain.x.entities.EntityCId;
 public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, AggregateX, EntityCId> {
 
     private EntityCId id;
+    private String a;
+    
+    private int b;
+    
 
     /**
      * Constructor with mandatory data.
@@ -54,6 +58,43 @@ public abstract class AbstractEntityC extends AbstractEntity<AggregateXId, Aggre
         return id;
     }
 
+    /**
+     * Returns: Variable A.
+     *
+     * @return Current value.
+     */
+    public final String getA() {
+        return a;
+    }
+    
+    /**
+     * Returns: Variable B.
+     *
+     * @return Current value.
+     */
+    public final int getB() {
+        return b;
+    }
+    
+    /**
+     * Sets: Variable A.
+     *
+     * @param a Value to set.
+     */
+    protected final void setA(final String a) {
+        Contract.requireArgNotNull("a", a);
+        this.a = a;
+    }
+    
+    /**
+     * Sets: Variable B.
+     *
+     * @param b Value to set.
+     */
+    protected final void setB(final int b) {
+        this.b = b;
+    }
+    
     /**
      * Handles: EntityCCreatedEvent.
      *

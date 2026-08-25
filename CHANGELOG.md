@@ -17,6 +17,13 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- An aggregate's and an entity's **declared attributes now reach the generated abstract**, as fields with
+  a `public final` getter and a `protected final` setter - until now the abstract carried only the
+  identity, and every attribute the model declared lived as a hand-written field in the write-once class
+  with no accessor. A rule validator is a separate class and can only read what the aggregate exposes, so
+  it could read almost nothing. **This is not source compatible**: a write-once class that declares its
+  own getter for a declared attribute no longer compiles, which is deliberate - the alternative silently
+  shadows the field, leaving the validator reading one copy while the operations write another.
 - A `business-rule` that declares a `requires` condition now generates the class that verifies it: the
   rule's attributes as its constructor, the condition as the check, and the model's own exception thrown
   when it does not hold. `==` becomes `Objects.equals` (Java's own is identity and every attribute here

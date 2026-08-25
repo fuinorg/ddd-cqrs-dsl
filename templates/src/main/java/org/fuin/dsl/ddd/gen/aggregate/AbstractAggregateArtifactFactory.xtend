@@ -94,6 +94,7 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
                 @SuppressWarnings("NullAway.Init")
                 private «aggregate.idTypeNullsafe.name» id;
 
+                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), aggregate.attributes.nullSafe.toList)»
                 /**
                  * Default constructor for loading the aggregate from its history. The identity comes
                  * from the event that created it (see setId below).
@@ -140,6 +141,8 @@ class AbstractAggregateArtifactFactory extends AbstractSource<Aggregate> {
                 }
 
                 «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), aggregate)»
+                «new SrcGetters(ctx, GenerateOptions.empty(), "public final", aggregate.attributes.nullSafe.toList)»
+                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", aggregate.attributes.nullSafe.toList)»
                 «new SrcAbstractHandleEventMethods(ctx, aggregate.allEvents)»
                 «new SrcServices(ctx, aggregate.services)»
                 «new SrcMethods(ctx, GenerateOptions.empty(), aggregate, true)»

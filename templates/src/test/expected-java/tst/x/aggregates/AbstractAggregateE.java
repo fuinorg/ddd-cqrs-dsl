@@ -33,6 +33,8 @@ public abstract class AbstractAggregateE extends AbstractAggregateRoot<Aggregate
     @SuppressWarnings("NullAway.Init")
     private AggregateEId id;
 
+    private String a;
+    
     /**
      * Default constructor for loading the aggregate from its history. The identity comes
      * from the event that created it (see setId below).
@@ -78,6 +80,25 @@ public abstract class AbstractAggregateE extends AbstractAggregateRoot<Aggregate
         this.id = id;
     }
 
+    /**
+     * Returns: Variable A.
+     *
+     * @return Current value.
+     */
+    public final String getA() {
+        return a;
+    }
+    
+    /**
+     * Sets: Variable A.
+     *
+     * @param a Value to set.
+     */
+    protected final void setA(final String a) {
+        Contract.requireArgNotNull("a", a);
+        this.a = a;
+    }
+    
     /**
      * Handles: AggregateECreatedEvent.
      *

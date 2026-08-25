@@ -100,6 +100,7 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
                 idTypeNullsafe.name»> {
             
                 «new SrcVarDecl(ctx, "private", GenerateOptions.empty(), idVar)»
+                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), entity.attributes.nullSafe.toList)»
 
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), constructorData(entity, className))»
                 @Override
@@ -113,6 +114,8 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
                 }
 
                 «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
+                «new SrcGetters(ctx, GenerateOptions.empty(), "public final", entity.attributes.nullSafe.toList)»
+                «new SrcSetters(ctx, GenerateOptions.empty(), "protected final", entity.attributes.nullSafe.toList)»
                 «new SrcAbstractHandleEventMethods(ctx, entity.allEvents)»
                 «new SrcServices(ctx, entity.services)»
                 «new SrcMethods(ctx, GenerateOptions.empty(), entity, true)»

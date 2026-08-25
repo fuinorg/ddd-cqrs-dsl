@@ -38,7 +38,7 @@ class SrcSetter implements CodeSnippet {
              */
             «modifiers» void set«variable.name.toFirstUpper»(«IF variable.optional !== null && !variable.isPrimitive(ctx)»@Nullable «ENDIF»final «variable.
                 type(ctx)» «variable.name») {
-                «IF variable.optional === null»
+                «IF variable.optional === null && !variable.isPrimitive(ctx)»
                     Contract.requireArgNotNull("«variable.name»", «variable.name»);
                 «ENDIF»
                 this.«variable.name» = «variable.name»;
