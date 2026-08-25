@@ -3,6 +3,15 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.28.0
+- **A business rule is checked against the refusal it names.** An exception declares what it needs in
+  order to say what it refused, and a rule declares what it decides from; where the two do not overlap
+  by name, the generated rule cannot construct its own refusal. Reported where the model can be changed
+  rather than as a generator failure in whichever project regenerates next. Only for a rule that
+  declares a condition - one without is written by hand, and one not yet given its inputs is unfinished
+  rather than wrong.
+- **A rule usage is checked against what the rule declares.** The actuals bind positionally and every
+  one of them is a reference, so handing over one too few silently shifts the rest and usually still
+  resolves.
 - **A business rule can be handed the carrier's own identity**, with `own-id` in the actuals of a rule
   usage. It is a keyword rather than a reference because an aggregate states its identity as
   `identifier` and never as an attribute, so there is nothing for a cross reference to point at - and it

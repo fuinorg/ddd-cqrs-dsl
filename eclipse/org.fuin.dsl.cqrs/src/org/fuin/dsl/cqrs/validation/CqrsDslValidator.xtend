@@ -56,6 +56,8 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.eclipse.xtext.EcoreUtil2
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
@@ -106,6 +108,10 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val COMMAND_MSG_UNCLOSED_VAR = 'commandMsgUnclosedVar'
 
 	public static val RULE_OWN_ID_IN_CONSTRUCTOR = 'ruleOwnIdInConstructor'
+
+	public static val RULE_EXCEPTION_NOT_SUPPLIED = 'ruleExceptionNotSupplied'
+
+	public static val RULE_ACTUALS_MISMATCH = 'ruleActualsMismatch'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
@@ -679,6 +685,64 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	 * none - it is what brings the instance into being. The generated validator's method for a creating
 	 * operation is static for exactly that reason, so there would be nothing to read it from.
 	 */
+	/**
+	 * Checks that a rule holds everything its refusal needs to name.
+	 *
+	 * <p>An exception declares what it needs in order to say what it refused; a rule declares what it
+	 * decides from. The two overlap by name, which is why a rule commonly carries an attribute that
+	 * plays no part in its condition. Where they do not overlap the generated rule cannot construct its
+	 * own refusal - and without this that surfaces as a generator failure at the far end of a release
+	 * chain, or as generated Java missing an argument.
+	 *
+	 * <p>Only where a condition is declared, because that is what decides whether a class is generated
+	 * at all. A rule without one is written by hand and constructs its refusal however it likes; a rule
+	 * that has not yet been given its inputs is not yet wrong, it is not yet finished.
+	 */
+	@Check
+	def checkRuleSuppliesItsException(BusinessRule rule) {
+		if (rule.exception === null || rule.requires === null) {
+			return
+		}
+		val declared = rule.attributes.asNames
+		for (attribute : rule.exception.attributes) {
+			if (!declared.contains(attribute.name)) {
+				error(
+					rule.exception.name + " needs '" + attribute.name + "' to say what it refused, and "
+						+ rule.name + " does not declare it",
+					rule,
+					CqrsDslPackage.Literals::BUSINESS_RULE__EXCEPTION,
+					RULE_EXCEPTION_NOT_SUPPLIED
+				)
+				return
+			}
+		}
+	}
+
+	/**
+	 * Checks that a rule usage hands over as many values as the rule declares.
+	 *
+	 * <p>The actuals bind positionally, so one too few or one too many silently shifts every value
+	 * after it - and because everything here is a reference rather than a literal, the result usually
+	 * still type-checks.
+	 */
+	@Check
+	def checkRuleActuals(BusinessRuleInstance instance) {
+		val rule = instance.businessRule
+		if (rule === null || rule.eIsProxy) {
+			return
+		}
+		val expected = rule.attributes.nullSafe.size
+		val actual = instance.params.nullSafe.size
+		if (expected !== actual) {
+			error(
+				rule.name + " decides from " + expected + " value(s), but " + actual + " were given",
+				instance,
+				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+				RULE_ACTUALS_MISMATCH
+			)
+		}
+	}
+
 	@Check
 	def checkOwnIdOutsideConstructor(IdentityArgument argument) {
 		val constructor = EcoreUtil2.getContainerOfType(argument, Constructor)
