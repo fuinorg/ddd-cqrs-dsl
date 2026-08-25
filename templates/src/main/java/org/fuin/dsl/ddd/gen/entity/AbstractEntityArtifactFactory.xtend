@@ -96,6 +96,10 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
     def create(SimpleCodeSnippetContext ctx, Entity entity, String pkg, String className, Attribute idVar) {
         val String src = ''' 
             «new SrcJavaDocType(entity)»
+            // Everything the model declares is left unset by the constructors on purpose: an entity's
+            // state comes from the event that created it, applied a moment later and again on every
+            // replay, so there is nothing for a constructor to put there.
+            @SuppressWarnings("NullAway.Init")
             public abstract class «className» extends AbstractEntity<«entity.rootNullsafe.idTypeNullsafe.name», «entity.rootNullsafe.name», «entity.
                 idTypeNullsafe.name»> {
             

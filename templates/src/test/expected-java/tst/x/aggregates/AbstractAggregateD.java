@@ -27,6 +27,10 @@ import p.shared.domain.x.aggregates.AggregateDRenamedEvent;
 /**
  * Aggregate D - Fires an event declared outside the method.
  */
+// Everything the model declares is left unset by the constructors on purpose: an
+// aggregate's state comes from the event that created it, applied a moment later and again
+// on every replay, so there is nothing for a constructor to put there.
+@SuppressWarnings("NullAway.Init")
 public abstract class AbstractAggregateD extends AbstractAggregateRoot<AggregateDId> {
 
     @SuppressWarnings("NullAway.Init")

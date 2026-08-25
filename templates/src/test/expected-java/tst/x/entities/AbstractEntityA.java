@@ -26,6 +26,10 @@ import p.shared.domain.x.entities.EntityAId;
 /**
  * Entity A - No variables.
  */
+// Everything the model declares is left unset by the constructors on purpose: an entity's
+// state comes from the event that created it, applied a moment later and again on every
+// replay, so there is nothing for a constructor to put there.
+@SuppressWarnings("NullAway.Init")
 public abstract class AbstractEntityA extends AbstractEntity<AggregateXId, AggregateX, EntityAId> {
 
     private EntityAId id;

@@ -28,6 +28,10 @@ import p.shared.domain.x.aggregates.AnyConstraintViolatedException;
 /**
  * Aggregate E - A constructor and a method that each reference a service. The referenced service is the collaborator the operation needs to verify its rule, and becomes a trailing parameter; the inline declaration itself is only the nested interface.
  */
+// Everything the model declares is left unset by the constructors on purpose: an
+// aggregate's state comes from the event that created it, applied a moment later and again
+// on every replay, so there is nothing for a constructor to put there.
+@SuppressWarnings("NullAway.Init")
 public abstract class AbstractAggregateE extends AbstractAggregateRoot<AggregateEId> {
 
     @SuppressWarnings("NullAway.Init")

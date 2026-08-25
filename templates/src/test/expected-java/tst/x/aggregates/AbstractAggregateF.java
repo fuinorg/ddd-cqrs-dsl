@@ -28,6 +28,10 @@ import p.shared.domain.x.aggregates.AnyConstraintViolatedException;
 /**
  * Aggregate F - References the service declared outside the operation. It becomes the same kind of trailing parameter as an inline one, but is imported as the top-level type it is.
  */
+// Everything the model declares is left unset by the constructors on purpose: an
+// aggregate's state comes from the event that created it, applied a moment later and again
+// on every replay, so there is nothing for a constructor to put there.
+@SuppressWarnings("NullAway.Init")
 public abstract class AbstractAggregateF extends AbstractAggregateRoot<AggregateFId> {
 
     @SuppressWarnings("NullAway.Init")

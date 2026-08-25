@@ -26,6 +26,10 @@ import p.shared.domain.x.aggregates.AggregateCId;
 /**
  * Aggregate C - With constructor, constraint and event.
  */
+// Everything the model declares is left unset by the constructors on purpose: an
+// aggregate's state comes from the event that created it, applied a moment later and again
+// on every replay, so there is nothing for a constructor to put there.
+@SuppressWarnings("NullAway.Init")
 public abstract class AbstractAggregateC extends AbstractAggregateRoot<AggregateCId> {
 
     @SuppressWarnings("NullAway.Init")
