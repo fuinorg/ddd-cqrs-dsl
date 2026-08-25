@@ -4,7 +4,6 @@ import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import java.util.TreeSet
-import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.dsl.ddd.flutter.base.DartAttribute
@@ -32,9 +31,6 @@ import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
  * disagreeing about one file is a debugging session nobody needs.
  */
 class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
-
-    /** Annotation a row states its key with, naming the attribute that identifies it. */
-    static val String KEY = "Key"
 
     override getModelType() {
         typeof(ValueObject)
@@ -80,13 +76,6 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
             val dart = new DartAttribute(attribute)
             dart.declaredKey(key)
             attributes.add(dart)
-        }
-        if (key !== null && !attributes.exists[name == key]) {
-            // Otherwise this surfaces as a screen with no identity, at the far end of a release chain.
-            // Only reachable from the annotation: 'identified-by' is a cross-reference and cannot name
-            // an attribute the row does not have.
-            throw new GenerateException("@Key(\"" + key + "\") on " + className
-                + " names an attribute it does not have")
         }
         val bundle = bundleName(vo.module)
 
@@ -235,27 +224,13 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
     /**
      * The attribute this row declares as its identity.
      *
-     * <p><code>identified-by</code> is a cross-reference, so the model itself guarantees the name is an
-     * attribute of this row. The <code>@Key</code> annotation says the same thing as an unchecked
-     * string and is read only while models still carry it; a row that states both is a row that has
-     * been migrated, and the declaration wins.
+     * <p>A cross-reference, so the model itself guarantees the name is an attribute of this row. This
+     * replaced a <code>@Key("...")</code> annotation carrying the same fact as an unchecked string,
+     * where a name that matched nothing was found - if at all - as a screen with no identity, at the
+     * far end of a release chain.
      */
     def private static String declaredKey(ValueObject vo) {
-        if (vo.identifiedBy !== null) {
-            return vo.identifiedBy.name
-        }
-        for (instance : vo.annotations.nullSafe) {
-            if (instance?.annotation?.name == KEY) {
-                val params = instance.params
-                if (params !== null && !params.empty) {
-                    val literal = params.get(0)
-                    if (literal instanceof StringLiteral) {
-                        return literal.value
-                    }
-                }
-            }
-        }
-        return null
+        return vo.identifiedBy?.name
     }
 
     def private descriptorOf(DartAttribute a, String bundle) {

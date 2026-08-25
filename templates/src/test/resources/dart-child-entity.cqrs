@@ -131,9 +131,6 @@ context de.fuin.library {
 
         /**
          * A read-model row keyed by a surrogate, with a second id beside it as a reference.
-         *
-         * <p>States its identity with 'identified-by', which is what the annotation on BookRow says as
-         * an unchecked string.
          */
         value-object ShelfRow {
 
@@ -182,7 +179,6 @@ context de.fuin.library {
          * <p>Its identity is the catalogue number, which is also the thing a reader reads - and it
          * carries the aggregate's own id as well, as a reference rather than as its identity.
          */
-        @Key("isbn")
         value-object BookRow {
 
             /** Aggregate this row was projected from and the version it reflects. */
@@ -196,6 +192,8 @@ context de.fuin.library {
 
             /** Who published it, and where. */
             Imprint imprint
+
+            identified-by isbn
 
         }
 
@@ -233,11 +231,6 @@ context de.fuin.library {
 
         /** The event that ends one. */
         annotation ExodusEvent {
-        }
-
-        /** Names the attribute that identifies a row, where its type cannot say so. */
-        annotation Key {
-            String value
         }
 
         /** An ordered list of entity identifiers, the aggregate root first. */

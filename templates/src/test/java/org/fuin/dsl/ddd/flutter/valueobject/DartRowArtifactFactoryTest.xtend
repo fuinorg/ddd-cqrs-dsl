@@ -65,7 +65,8 @@ class DartRowArtifactFactoryTest {
         // Two things the attribute's type cannot say. A natural key is an ordinary value object, so the
         // type-derived rule makes it plain data and the row has no identity at all. And a row holding a
         // second id - a reference, not its identity - has that id hidden from the screen although the
-        // model gives it wording. Naming the key settles both.
+        // model gives it wording. Declaring the identity settles both, and because 'identified-by' is a
+        // cross-reference, naming an attribute the row does not have cannot get as far as a generator.
         val generated = generateFrom("/dart-child-entity.cqrs", "BookRow")
 
         assertThat(generated).contains("modelType: 'Isbn',\n        role: AttributeRole.key,")
@@ -88,16 +89,6 @@ class DartRowArtifactFactoryTest {
 
         // The second id is a reference, so it stays a column - it is what the model gives wording to.
         assertThat(generated).contains("kind: ValueKind.identifier,\n        modelType: 'ChapterId',\n        text:")
-    }
-
-    @Test
-    def void testARowDeclaresItsIdentityRatherThanAnnotatingIt() {
-        // 'identified-by' is a cross-reference, so a name that is not an attribute of the row is a
-        // resolution error rather than a screen with no identity at the far end of a release chain.
-        // ShelfRow states it that way and BookRow still uses the annotation: both must come out the same.
-        val generated = generateFrom("/dart-child-entity.cqrs", "ShelfRow")
-
-        assertThat(generated).contains("modelType: 'BookId',\n        role: AttributeRole.identifier,")
     }
 
     @Test
