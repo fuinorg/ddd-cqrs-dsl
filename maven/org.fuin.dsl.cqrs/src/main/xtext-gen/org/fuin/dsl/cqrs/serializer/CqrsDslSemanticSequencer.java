@@ -77,7 +77,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -295,9 +294,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.SERVICE_CALL_ARGUMENT:
 				sequence_ServiceCallArgument(context, (ServiceCallArgument) semanticObject); 
 				return; 
-			case CqrsDslPackage.SOFT_DELETE:
-				sequence_SoftDelete(context, (SoftDelete) semanticObject); 
-				return; 
 			case CqrsDslPackage.STRING_LITERAL:
 				sequence_StringLiteral(context, (StringLiteral) semanticObject); 
 				return; 
@@ -368,7 +364,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         doc=DOC? 
 	 *         name=ID 
 	 *         idType=[AggregateId|FQN]? 
-	 *         softDelete=SoftDelete? 
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
@@ -783,7 +778,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         name=ID 
 	 *         idType=[EntityId|FQN]? 
 	 *         root=[Aggregate|FQN]? 
-	 *         softDelete=SoftDelete? 
 	 *         invariants=Invariants? 
 	 *         dataProtection=DataProtectionInstance? 
 	 *         metaInfo=TypeMetaInfo 
@@ -1649,20 +1643,6 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * </pre>
 	 */
 	protected void sequence_Service(ISerializationContext context, Service semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * <pre>
-	 * Contexts:
-	 *     SoftDelete returns SoftDelete
-	 *
-	 * Constraint:
-	 *     (deleteEvent=[Event|FQN] restoreEvent=[Event|FQN]?)
-	 * </pre>
-	 */
-	protected void sequence_SoftDelete(ISerializationContext context, SoftDelete semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

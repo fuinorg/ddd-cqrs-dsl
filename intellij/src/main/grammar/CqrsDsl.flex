@@ -75,8 +75,6 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "cancel-timeout"          { return KW_CANCEL_TIMEOUT; }
   "rest-path"               { return KW_REST_PATH; }
   "identified-by"           { return KW_IDENTIFIED_BY; }
-  "soft-delete"             { return KW_SOFT_DELETE; }
-  "restored-by"             { return KW_RESTORED_BY; }
   "on-collision"            { return KW_ON_COLLISION; }
   "display-as"              { return KW_DISPLAY_AS; }
   "no-key"                  { return KW_NO_KEY; }

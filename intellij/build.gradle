@@ -142,8 +142,7 @@ ext.pluginChangeNotes = '''\
         generated business rules. A read model row names its identity with <code>identified-by</code>;
         an aggregate or entity declares a <code>key</code> with its attributes, an
         <code>on-collision</code> strategy and an optional <code>display-as</code> format, or states
-        <code>no-key</code> on purpose; it may be marked <code>soft-delete</code> with the event that
-        sets the flag and optionally the one that clears it again after <code>restored-by</code>. A
+        <code>no-key</code> on purpose. A
         <code>business-rule</code> now declares the attributes it is handed and the condition it
         verifies over them after <code>requires</code>, with <code>!</code>, <code>&amp;&amp;</code>,
         <code>||</code>, parentheses, the six comparisons and <code>.is-empty()</code>. A rule usage

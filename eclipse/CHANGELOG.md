@@ -34,10 +34,7 @@ Reflects only changes made in the Eclipse plugin.
   beside the attributes it names, says what a collision does (`on-collision refuse`, `overwrite` or
   `skip`), carries its own `consistency`, and may carry a `display-as` format. `no-key` states that a
   type has none on purpose, and its documentation is mandatory so the reason cannot be a shrug.
-- **An aggregate or entity may be marked `soft-delete`**, naming the event that sets the flag and
-  optionally, after `restored-by`, the one that clears it again. The marker names its event because
-  that is what an apply handler has to be generated from; nothing else in the model says which event
-  is the removal.
+
 - **A business rule declares the values it is handed and the condition it verifies**: attributes in its
   body, and `requires <expression>` over them. The expression language is deliberately small - `!`,
   `&&`, `||`, parentheses, the six comparisons and `.is-empty()` - and every name in it is a cross

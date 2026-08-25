@@ -4,6 +4,8 @@ context p_30_soft_delete {
 
         type String
 
+        type Boolean
+
         aggregate-id PersonId identifies Person {}
 
         entity-id RoleId identifies Role {}
@@ -12,39 +14,102 @@ context p_30_soft_delete {
 
         event PersonRestoredEvent { message "Person restored" }
 
+        event PersonRenamedEvent { message "Person renamed" }
+
         event RoleRemovedEvent { message "Role removed" }
 
-        // 'soft-delete' marks an aggregate or entity as removed rather than gone: it stays
-        // loadable from its event stream and refuses every further operation.
+        /** Refused because the thing was already removed. */
+        exception AlreadyRemovedException {
+            message "It was already removed"
+        }
+
+        /** Refused because the thing was never removed. */
+        exception NotRemovedException {
+            message "It was not removed"
+        }
+
+        /** Makes sure it is still there. */
+        business-rule MustNotBeDeleted exception AlreadyRemovedException {
+
+            /** Whether it was removed already. */
+            Boolean deleted
+
+            consistency strong
+
+            requires !deleted
+        }
+
+        /** Makes sure it was removed, which is what there is to undo. */
+        business-rule MustBeDeleted exception NotRemovedException {
+
+            /** Whether it was removed already. */
+            Boolean deleted
+
+            consistency strong
+
+            requires deleted
+        }
+
+        // A soft delete needs no construct of its own: it is a Boolean the type declares and a rule
+        // that reads it, which is what every other piece of state and every other guard already is.
         //
-        // The marker names the event that sets the flag, because that is what the apply handler is
-        // generated from - nothing else in the model marks a method as the removal or an event as
-        // the deletion. 'restored-by' names the event that clears the flag again, for a type whose
-        // removal can be undone.
-        aggregate Person identifier PersonId soft-delete PersonRemovedEvent restored-by PersonRestoredEvent {
+        // Three things are worth knowing, and none of them is special to deletion:
+        //
+        // 1. 'deleted' is ordinary declared state, so it reaches the generated abstract with an
+        //    accessor - which is exactly what a rule and its validator read it through.
+        // 2. The apply handler that sets it is written once in the concrete class, like the handler
+        //    for any other field.
+        // 3. The guard is repeated on every operation on purpose. A rule that applies to everything
+        //    is still a rule, and saying it each time is what makes it visible - a marker on the type
+        //    would apply it silently, which reads as "nothing guards this" wherever you look.
+        //
+        // The two rules sit at module level rather than inside a type, because they say the same thing
+        // about every type that has the flag - which is what a shared rule is for.
+        aggregate Person identifier PersonId {
 
+            /**
+             * Whether the person was removed. Recorded rather than erased: the aggregate stays
+             * loadable from its stream, and a stream deleted while a projection is still catching up
+             * would take the removal with it.
+             */
+            Boolean deleted
+
+            /** What the person is called. */
             String name
 
-            method remove fires PersonRemovedEvent {
+
+            method remove business-rules MustNotBeDeleted(deleted) fires PersonRemovedEvent {
             }
 
-            method restore fires PersonRestoredEvent {
+            // The reviving half is optional. A type whose removal cannot be undone simply has no
+            // operation that clears the flag.
+            method restore business-rules MustBeDeleted(deleted) fires PersonRestoredEvent {
+            }
+
+            // And every ordinary operation carries the same guard.
+            method rename business-rules MustNotBeDeleted(deleted) fires PersonRenamedEvent {
+
+                /** What to call the person now. */
+                String newName
+
             }
 
         }
 
-        // The reviving half is optional. Without it the type can be removed and not brought back,
-        // which is the ordinary case.
-        entity Role identifier RoleId root Person soft-delete RoleRemovedEvent {
+        // An entity is no different - it declares the flag and reads it the same way.
+        entity Role identifier RoleId root Person {
+
+            /** Whether the role was removed. */
+            Boolean deleted
 
             String name
 
-            method remove fires RoleRemovedEvent {
+            method remove business-rules MustNotBeDeleted(deleted) fires RoleRemovedEvent {
             }
 
         }
 
-        // A singleton that is never removed simply omits the marker.
+        // A singleton that is never removed declares no flag and carries no guard.
         aggregate-id SettingsId identifies Settings {}
 
         aggregate Settings identifier SettingsId {

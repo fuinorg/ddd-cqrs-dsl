@@ -389,7 +389,7 @@ Event:
 /* An object fundamentally defined not by its attributes, but by a thread of continuity and identity. */
 Entity:
 	doc=DOC?
-	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (softDelete=SoftDelete)? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
+	'entity' name=ID ('identifier' idType=[EntityId|FQN])? ('root' root=[Aggregate|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		hints+=Hint*
 		attributes+=Attribute*
@@ -408,7 +408,7 @@ Entity:
  */
 Aggregate:
 	doc=DOC?
-	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (softDelete=SoftDelete)? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
+	'aggregate' name=ID ('identifier' idType=[AggregateId|FQN])? (invariants=Invariants)? (dataProtection=DataProtectionInstance)? '{'
 		metaInfo=TypeMetaInfo
 		hints+=Hint*
 		attributes+=Attribute*
@@ -420,14 +420,6 @@ Aggregate:
 		elements+=EntityElement*
 	'}';
 
-/**
- * Marks an aggregate or entity as soft deleted rather than removed: it stays loadable from its event
- * stream and refuses every further operation. The marker names the event that sets the flag, because
- * that is what the generated apply handler is written from - and, where the state can be reversed, the
- * event that clears it again.
- */
-SoftDelete:
-	'soft-delete' deleteEvent=[Event|FQN] ('restored-by' restoreEvent=[Event|FQN])?;
 
 /**
  * A business key: the natural key that identifies something without being a surrogate id. Its scope

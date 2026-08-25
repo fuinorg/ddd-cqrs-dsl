@@ -37,7 +37,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
@@ -289,100 +288,6 @@ public class CqrsDslGrammarAdditionsTest {
     _builder.newLine();
     final DomainModel model = this.parsed(_builder);
     Assertions.assertNotNull(IterableExtensions.<Aggregate>head(EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class)).getNoKey());
-  }
-
-  /**
-   * A soft deleted aggregate names the event that marks it gone, and may name the one that revives it.
-   */
-  @Test
-  public void softDeleteNamesItsEvents() {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("context foo {");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("module bar {");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("type String");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("event ThingRemovedEvent {}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("event ThingRestoredEvent {}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("aggregate-id ThingId identifies Thing {}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("aggregate Thing identifier ThingId soft-delete ThingRemovedEvent restored-by ThingRestoredEvent {");
-    _builder.newLine();
-    _builder.append("\t\t\t");
-    _builder.append("String name");
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("}");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
-    final DomainModel model = this.parsed(_builder);
-    final SoftDelete softDelete = IterableExtensions.<Aggregate>head(EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class)).getSoftDelete();
-    Assertions.assertEquals("ThingRemovedEvent", softDelete.getDeleteEvent().getName());
-    Assertions.assertEquals("ThingRestoredEvent", softDelete.getRestoreEvent().getName());
-  }
-
-  /**
-   * The reviving half is optional - nothing in the model has one yet.
-   */
-  @Test
-  public void softDeleteWithoutRestore() {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("context foo {");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("module bar {");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("type String");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("event ThingRemovedEvent {}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("aggregate-id ThingId identifies Thing {}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("aggregate Thing identifier ThingId soft-delete ThingRemovedEvent {");
-    _builder.newLine();
-    _builder.append("\t\t\t");
-    _builder.append("String name");
-    _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("}");
-    _builder.newLine();
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("}");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
-    final DomainModel model = this.parsed(_builder);
-    final SoftDelete softDelete = IterableExtensions.<Aggregate>head(EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class)).getSoftDelete();
-    Assertions.assertEquals("ThingRemovedEvent", softDelete.getDeleteEvent().getName());
-    Assertions.assertNull(softDelete.getRestoreEvent());
   }
 
   /**

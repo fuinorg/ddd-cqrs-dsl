@@ -67,8 +67,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractEntityId" eSuperTypes="#//AbstractVO"/>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractEntity" eSuperTypes="#//InternalType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="softDelete" eType="#//SoftDelete"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="businessRules" upperBound="-1"
         eType="#//BusinessRule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="keys" upperBound="-1" eType="#//Key"
@@ -259,10 +257,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Aggregate" eSuperTypes="#//AbstractEntity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="idType" eType="#//AggregateId"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SoftDelete">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deleteEvent" eType="#//Event"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="restoreEvent" eType="#//Event"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Key">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

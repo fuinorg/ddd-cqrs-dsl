@@ -126,7 +126,6 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//AbstractEntityId"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//AbstractEntity">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractEntity/softDelete"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractEntity/businessRules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractEntity/keys"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractEntity/noKey"/>
@@ -228,10 +227,6 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Aggregate">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Aggregate/idType"/>
-    </genClasses>
-    <genClasses ecoreClass="CqrsDsl.ecore#//SoftDelete">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//SoftDelete/deleteEvent"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//SoftDelete/restoreEvent"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Key">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Key/doc"/>

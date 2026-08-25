@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IContainer;
@@ -41,6 +42,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId;
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
@@ -56,6 +59,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
 import org.fuin.dsl.cqrs.cqrsDsl.Hint;
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
@@ -65,6 +69,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -118,6 +123,12 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String COMMAND_MSG_NOT_A_PATH = "commandMsgNotAPath";
 
   public static final String COMMAND_MSG_UNCLOSED_VAR = "commandMsgUnclosedVar";
+
+  public static final String RULE_OWN_ID_IN_CONSTRUCTOR = "ruleOwnIdInConstructor";
+
+  public static final String RULE_EXCEPTION_NOT_SUPPLIED = "ruleExceptionNotSupplied";
+
+  public static final String RULE_ACTUALS_MISMATCH = "ruleActualsMismatch";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
@@ -787,6 +798,85 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           CqrsDslPackage.Literals.COMMAND__MESSAGE, 
           problem.getKey());
       }
+    }
+  }
+
+  /**
+   * Checks that a rule holds everything its refusal needs to name.
+   * 
+   * <p>An exception declares what it needs in order to say what it refused; a rule declares what it
+   * decides from. The two overlap by name, which is why a rule commonly carries an attribute that
+   * plays no part in its condition. Where they do not overlap the generated rule cannot construct its
+   * own refusal - and without this that surfaces as a generator failure at the far end of a release
+   * chain, or as generated Java missing an argument.
+   * 
+   * <p>Only where a condition is declared, because that is what decides whether a class is generated
+   * at all. A rule without one is written by hand and constructs its refusal however it likes; a rule
+   * that has not yet been given its inputs is not yet wrong, it is not yet finished.
+   */
+  @Check
+  public void checkRuleSuppliesItsException(final BusinessRule rule) {
+    if (((rule.getException() == null) || (rule.getRequires() == null))) {
+      return;
+    }
+    final List<String> declared = CqrsAttributeExtensions.asNames(rule.getAttributes());
+    EList<Attribute> _attributes = rule.getException().getAttributes();
+    for (final Attribute attribute : _attributes) {
+      boolean _contains = declared.contains(attribute.getName());
+      boolean _not = (!_contains);
+      if (_not) {
+        String _name = rule.getException().getName();
+        String _plus = (_name + " needs \'");
+        String _name_1 = attribute.getName();
+        String _plus_1 = (_plus + _name_1);
+        String _plus_2 = (_plus_1 + "\' to say what it refused, and ");
+        String _name_2 = rule.getName();
+        String _plus_3 = (_plus_2 + _name_2);
+        String _plus_4 = (_plus_3 + " does not declare it");
+        this.error(_plus_4, rule, 
+          CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION, 
+          CqrsDslValidator.RULE_EXCEPTION_NOT_SUPPLIED);
+        return;
+      }
+    }
+  }
+
+  /**
+   * Checks that a rule usage hands over as many values as the rule declares.
+   * 
+   * <p>The actuals bind positionally, so one too few or one too many silently shifts every value
+   * after it - and because everything here is a reference rather than a literal, the result usually
+   * still type-checks.
+   */
+  @Check
+  public void checkRuleActuals(final BusinessRuleInstance instance) {
+    final BusinessRule rule = instance.getBusinessRule();
+    if (((rule == null) || rule.eIsProxy())) {
+      return;
+    }
+    final int expected = CqrsCollectionExtensions.<Attribute>nullSafe(rule.getAttributes()).size();
+    final int actual = CqrsCollectionExtensions.<RuleArgument>nullSafe(instance.getParams()).size();
+    if ((expected != actual)) {
+      String _name = rule.getName();
+      String _plus = (_name + " decides from ");
+      String _plus_1 = (_plus + Integer.valueOf(expected));
+      String _plus_2 = (_plus_1 + " value(s), but ");
+      String _plus_3 = (_plus_2 + Integer.valueOf(actual));
+      String _plus_4 = (_plus_3 + " were given");
+      this.error(_plus_4, instance, 
+        CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+        CqrsDslValidator.RULE_ACTUALS_MISMATCH);
+    }
+  }
+
+  @Check
+  public void checkOwnIdOutsideConstructor(final IdentityArgument argument) {
+    final Constructor constructor = EcoreUtil2.<Constructor>getContainerOfType(argument, Constructor.class);
+    if ((constructor != null)) {
+      this.error(
+        "\'own-id\' has nothing to read in a constructor, which is what creates the identity", argument, 
+        null, 
+        CqrsDslValidator.RULE_OWN_ID_IN_CONSTRUCTOR);
     }
   }
 

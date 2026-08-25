@@ -36,7 +36,7 @@ comment explaining what it shows. They follow the grammar in
 | [27-import](27-import.cqrs) | `import` on a `context` and on a `module`: `ctx.*`, `ctx.mod.*` and `ctx.mod.Type`, plus the fully qualified reference that needs none |
 | [28-identified-by](28-identified-by.cqrs) | `identified-by` — the attribute that identifies a read-model row, where the attribute's own type cannot say so |
 | [29-business-key](29-business-key.cqrs) | `key` — the natural key: `attributes`, `on-collision refuse`/`overwrite`/`skip`, its own `consistency` and a `display-as` format; and `no-key` for a type that has none on purpose |
-| [30-soft-delete](30-soft-delete.cqrs) | `soft-delete <Event>` naming the event that marks a type removed, and `restored-by <Event>` for one whose removal can be undone |
+| [30-soft-delete](30-soft-delete.cqrs) | Modelling a soft delete without a construct for it: a `Boolean` the type declares, a shared rule that reads it, and the guard said on every operation |
 | [31-business-rule-predicate](31-business-rule-predicate.cqrs) | A `business-rule`'s own attributes and its `requires` condition over them (comparisons, `.is-empty()`, `!`/`&&`/`||`), plus the actuals a usage binds — a field, a parameter, a service method or a literal |
 
 Open them with the Eclipse plugin or the

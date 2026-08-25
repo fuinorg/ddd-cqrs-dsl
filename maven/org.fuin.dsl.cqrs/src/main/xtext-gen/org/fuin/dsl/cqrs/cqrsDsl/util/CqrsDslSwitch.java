@@ -83,7 +83,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
@@ -423,13 +422,6 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = caseInternalType(aggregate);
         if (result == null) result = caseType(aggregate);
         if (result == null) result = caseAbstractElement(aggregate);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CqrsDslPackage.SOFT_DELETE:
-      {
-        SoftDelete softDelete = (SoftDelete)theEObject;
-        T result = caseSoftDelete(softDelete);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1342,22 +1334,6 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAggregate(Aggregate object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Soft Delete</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Soft Delete</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseSoftDelete(SoftDelete object)
   {
     return null;
   }

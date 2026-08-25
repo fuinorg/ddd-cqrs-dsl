@@ -39,7 +39,7 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_ARM_TIMEOUT, CqrsTypes.KW_CANCEL_TIMEOUT,
             CqrsTypes.KW_CONSISTENCY, CqrsTypes.KW_ACCEPTABLE,
             CqrsTypes.KW_DETECTION, CqrsTypes.KW_RESOLUTION, CqrsTypes.KW_OPTIONAL,
-            CqrsTypes.KW_IDENTIFIED_BY, CqrsTypes.KW_SOFT_DELETE, CqrsTypes.KW_RESTORED_BY,
+            CqrsTypes.KW_IDENTIFIED_BY,
             CqrsTypes.KW_KEY, CqrsTypes.KW_ATTRIBUTES, CqrsTypes.KW_ON_COLLISION,
             CqrsTypes.KW_DISPLAY_AS, CqrsTypes.KW_NO_KEY,
             CqrsTypes.KW_REFUSE, CqrsTypes.KW_OVERWRITE, CqrsTypes.KW_SKIP,

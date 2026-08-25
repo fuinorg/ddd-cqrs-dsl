@@ -94,7 +94,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TimeUnit;
@@ -337,13 +336,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass aggregateEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass softDeleteEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1287,7 +1279,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_SoftDelete()
+  public EReference getAbstractEntity_BusinessRules()
   {
     return (EReference)abstractEntityEClass.getEStructuralFeatures().get(0);
   }
@@ -1298,7 +1290,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_BusinessRules()
+  public EReference getAbstractEntity_Keys()
   {
     return (EReference)abstractEntityEClass.getEStructuralFeatures().get(1);
   }
@@ -1309,7 +1301,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_Keys()
+  public EReference getAbstractEntity_NoKey()
   {
     return (EReference)abstractEntityEClass.getEStructuralFeatures().get(2);
   }
@@ -1320,7 +1312,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_NoKey()
+  public EReference getAbstractEntity_Constructors()
   {
     return (EReference)abstractEntityEClass.getEStructuralFeatures().get(3);
   }
@@ -1331,7 +1323,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_Constructors()
+  public EReference getAbstractEntity_Methods()
   {
     return (EReference)abstractEntityEClass.getEStructuralFeatures().get(4);
   }
@@ -1342,20 +1334,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getAbstractEntity_Methods()
-  {
-    return (EReference)abstractEntityEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getAbstractEntity_Elements()
   {
-    return (EReference)abstractEntityEClass.getEStructuralFeatures().get(6);
+    return (EReference)abstractEntityEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -2203,39 +2184,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EReference getAggregate_IdType()
   {
     return (EReference)aggregateEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getSoftDelete()
-  {
-    return softDeleteEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getSoftDelete_DeleteEvent()
-  {
-    return (EReference)softDeleteEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getSoftDelete_RestoreEvent()
-  {
-    return (EReference)softDeleteEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -4201,7 +4149,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     abstractEntityIdEClass = createEClass(ABSTRACT_ENTITY_ID);
 
     abstractEntityEClass = createEClass(ABSTRACT_ENTITY);
-    createEReference(abstractEntityEClass, ABSTRACT_ENTITY__SOFT_DELETE);
     createEReference(abstractEntityEClass, ABSTRACT_ENTITY__BUSINESS_RULES);
     createEReference(abstractEntityEClass, ABSTRACT_ENTITY__KEYS);
     createEReference(abstractEntityEClass, ABSTRACT_ENTITY__NO_KEY);
@@ -4305,10 +4252,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     aggregateEClass = createEClass(AGGREGATE);
     createEReference(aggregateEClass, AGGREGATE__ID_TYPE);
-
-    softDeleteEClass = createEClass(SOFT_DELETE);
-    createEReference(softDeleteEClass, SOFT_DELETE__DELETE_EVENT);
-    createEReference(softDeleteEClass, SOFT_DELETE__RESTORE_EVENT);
 
     keyEClass = createEClass(KEY);
     createEAttribute(keyEClass, KEY__DOC);
@@ -4668,7 +4611,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEClass(abstractEntityIdEClass, AbstractEntityId.class, "AbstractEntityId", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(abstractEntityEClass, AbstractEntity.class, "AbstractEntity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAbstractEntity_SoftDelete(), this.getSoftDelete(), null, "softDelete", null, 0, 1, AbstractEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractEntity_BusinessRules(), this.getBusinessRule(), null, "businessRules", null, 0, -1, AbstractEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractEntity_Keys(), this.getKey(), null, "keys", null, 0, -1, AbstractEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAbstractEntity_NoKey(), this.getNoKey(), null, "noKey", null, 0, 1, AbstractEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4772,10 +4714,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(aggregateEClass, Aggregate.class, "Aggregate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAggregate_IdType(), this.getAggregateId(), null, "idType", null, 0, 1, Aggregate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(softDeleteEClass, SoftDelete.class, "SoftDelete", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getSoftDelete_DeleteEvent(), this.getEvent(), null, "deleteEvent", null, 0, 1, SoftDelete.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getSoftDelete_RestoreEvent(), this.getEvent(), null, "restoreEvent", null, 0, 1, SoftDelete.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(keyEClass, Key.class, "Key", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getKey_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

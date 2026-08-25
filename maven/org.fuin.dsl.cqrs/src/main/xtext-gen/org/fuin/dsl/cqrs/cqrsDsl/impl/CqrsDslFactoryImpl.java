@@ -96,7 +96,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.TimeUnit;
@@ -192,7 +191,6 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.EVENT: return createEvent();
       case CqrsDslPackage.ENTITY: return createEntity();
       case CqrsDslPackage.AGGREGATE: return createAggregate();
-      case CqrsDslPackage.SOFT_DELETE: return createSoftDelete();
       case CqrsDslPackage.KEY: return createKey();
       case CqrsDslPackage.NO_KEY: return createNoKey();
       case CqrsDslPackage.ABSTRACT_METHOD: return createAbstractMethod();
@@ -702,18 +700,6 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     AggregateImpl aggregate = new AggregateImpl();
     return aggregate;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public SoftDelete createSoftDelete()
-  {
-    SoftDeleteImpl softDelete = new SoftDeleteImpl();
-    return softDelete;
   }
 
   /**

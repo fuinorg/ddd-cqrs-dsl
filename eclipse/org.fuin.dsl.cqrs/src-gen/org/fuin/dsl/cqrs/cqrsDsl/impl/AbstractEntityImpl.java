@@ -26,7 +26,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,7 +35,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getSoftDelete <em>Soft Delete</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getBusinessRules <em>Business Rules</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getKeys <em>Keys</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractEntityImpl#getNoKey <em>No Key</em>}</li>
@@ -49,16 +47,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
  */
 public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEntity
 {
-  /**
-   * The cached value of the '{@link #getSoftDelete() <em>Soft Delete</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSoftDelete()
-   * @generated
-   * @ordered
-   */
-  protected SoftDelete softDelete;
-
   /**
    * The cached value of the '{@link #getBusinessRules() <em>Business Rules</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -138,56 +126,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   protected EClass eStaticClass()
   {
     return CqrsDslPackage.Literals.ABSTRACT_ENTITY;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public SoftDelete getSoftDelete()
-  {
-    return softDelete;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetSoftDelete(SoftDelete newSoftDelete, NotificationChain msgs)
-  {
-    SoftDelete oldSoftDelete = softDelete;
-    softDelete = newSoftDelete;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, oldSoftDelete, newSoftDelete);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setSoftDelete(SoftDelete newSoftDelete)
-  {
-    if (newSoftDelete != softDelete)
-    {
-      NotificationChain msgs = null;
-      if (softDelete != null)
-        msgs = ((InternalEObject)softDelete).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, null, msgs);
-      if (newSoftDelete != null)
-        msgs = ((InternalEObject)newSoftDelete).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, null, msgs);
-      msgs = basicSetSoftDelete(newSoftDelete, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE, newSoftDelete, newSoftDelete));
   }
 
   /**
@@ -325,8 +263,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
-      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
-        return basicSetSoftDelete(null, msgs);
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return ((InternalEList<?>)getBusinessRules()).basicRemove(otherEnd, msgs);
       case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
@@ -353,8 +289,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
-      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
-        return getSoftDelete();
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return getBusinessRules();
       case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:
@@ -382,9 +316,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
-      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
-        setSoftDelete((SoftDelete)newValue);
-        return;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         getBusinessRules().clear();
         getBusinessRules().addAll((Collection<? extends BusinessRule>)newValue);
@@ -422,9 +353,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
-      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
-        setSoftDelete((SoftDelete)null);
-        return;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         getBusinessRules().clear();
         return;
@@ -457,8 +385,6 @@ public class AbstractEntityImpl extends InternalTypeImpl implements AbstractEnti
   {
     switch (featureID)
     {
-      case CqrsDslPackage.ABSTRACT_ENTITY__SOFT_DELETE:
-        return softDelete != null;
       case CqrsDslPackage.ABSTRACT_ENTITY__BUSINESS_RULES:
         return businessRules != null && !businessRules.isEmpty();
       case CqrsDslPackage.ABSTRACT_ENTITY__KEYS:

@@ -158,57 +158,7 @@ class CqrsDslGrammarAdditionsTest {
 		Assertions.assertNotNull(model.getAllContentsOfType(Aggregate).head.noKey)
 	}
 
-	/** A soft deleted aggregate names the event that marks it gone, and may name the one that revives it. */
-	@Test
-	def void softDeleteNamesItsEvents() {
-		val model = '''
-			context foo {
-				module bar {
 
-					type String
-
-					event ThingRemovedEvent {}
-
-					event ThingRestoredEvent {}
-
-					aggregate-id ThingId identifies Thing {}
-
-					aggregate Thing identifier ThingId soft-delete ThingRemovedEvent restored-by ThingRestoredEvent {
-						String name
-					}
-
-				}
-			}
-		'''.parsed
-		val softDelete = model.getAllContentsOfType(Aggregate).head.softDelete
-		Assertions.assertEquals("ThingRemovedEvent", softDelete.deleteEvent.name)
-		Assertions.assertEquals("ThingRestoredEvent", softDelete.restoreEvent.name)
-	}
-
-	/** The reviving half is optional - nothing in the model has one yet. */
-	@Test
-	def void softDeleteWithoutRestore() {
-		val model = '''
-			context foo {
-				module bar {
-
-					type String
-
-					event ThingRemovedEvent {}
-
-					aggregate-id ThingId identifies Thing {}
-
-					aggregate Thing identifier ThingId soft-delete ThingRemovedEvent {
-						String name
-					}
-
-				}
-			}
-		'''.parsed
-		val softDelete = model.getAllContentsOfType(Aggregate).head.softDelete
-		Assertions.assertEquals("ThingRemovedEvent", softDelete.deleteEvent.name)
-		Assertions.assertNull(softDelete.restoreEvent)
-	}
 
 	/** A rule declares the values it is handed and the condition it verifies over them. */
 	@Test

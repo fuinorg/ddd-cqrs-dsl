@@ -4111,28 +4111,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getSoftDeleteSoftDeleteParserRuleCall_5_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getInvariantsInvariantsParserRuleCall_5_0());
 				}
-				lv_softDelete_7_0=ruleSoftDelete
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getEntityRule());
-					}
-					set(
-						$current,
-						"softDelete",
-						lv_softDelete_7_0,
-						"org.fuin.dsl.cqrs.CqrsDsl.SoftDelete");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getEntityAccess().getInvariantsInvariantsParserRuleCall_6_0());
-				}
-				lv_invariants_8_0=ruleInvariants
+				lv_invariants_7_0=ruleInvariants
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4140,7 +4121,7 @@ ruleEntity returns [EObject current=null]
 					set(
 						$current,
 						"invariants",
-						lv_invariants_8_0,
+						lv_invariants_7_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Invariants");
 					afterParserOrEnumRuleCall();
 				}
@@ -4149,9 +4130,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getDataProtectionDataProtectionInstanceParserRuleCall_7_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getDataProtectionDataProtectionInstanceParserRuleCall_6_0());
 				}
-				lv_dataProtection_9_0=ruleDataProtectionInstance
+				lv_dataProtection_8_0=ruleDataProtectionInstance
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4159,22 +4140,22 @@ ruleEntity returns [EObject current=null]
 					set(
 						$current,
 						"dataProtection",
-						lv_dataProtection_9_0,
+						lv_dataProtection_8_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.DataProtectionInstance");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)?
-		otherlv_10='{'
+		otherlv_9='{'
 		{
-			newLeafNode(otherlv_10, grammarAccess.getEntityAccess().getLeftCurlyBracketKeyword_8());
+			newLeafNode(otherlv_9, grammarAccess.getEntityAccess().getLeftCurlyBracketKeyword_7());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getMetaInfoTypeMetaInfoParserRuleCall_9_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getMetaInfoTypeMetaInfoParserRuleCall_8_0());
 				}
-				lv_metaInfo_11_0=ruleTypeMetaInfo
+				lv_metaInfo_10_0=ruleTypeMetaInfo
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4182,7 +4163,7 @@ ruleEntity returns [EObject current=null]
 					set(
 						$current,
 						"metaInfo",
-						lv_metaInfo_11_0,
+						lv_metaInfo_10_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.TypeMetaInfo");
 					afterParserOrEnumRuleCall();
 				}
@@ -4191,9 +4172,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getHintsHintParserRuleCall_10_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getHintsHintParserRuleCall_9_0());
 				}
-				lv_hints_12_0=ruleHint
+				lv_hints_11_0=ruleHint
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4201,7 +4182,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"hints",
-						lv_hints_12_0,
+						lv_hints_11_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Hint");
 					afterParserOrEnumRuleCall();
 				}
@@ -4210,9 +4191,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getAttributesAttributeParserRuleCall_11_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getAttributesAttributeParserRuleCall_10_0());
 				}
-				lv_attributes_13_0=ruleAttribute
+				lv_attributes_12_0=ruleAttribute
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4220,7 +4201,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"attributes",
-						lv_attributes_13_0,
+						lv_attributes_12_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Attribute");
 					afterParserOrEnumRuleCall();
 				}
@@ -4229,9 +4210,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getBusinessRulesBusinessRuleParserRuleCall_12_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getBusinessRulesBusinessRuleParserRuleCall_11_0());
 				}
-				lv_businessRules_14_0=ruleBusinessRule
+				lv_businessRules_13_0=ruleBusinessRule
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4239,7 +4220,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"businessRules",
-						lv_businessRules_14_0,
+						lv_businessRules_13_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.BusinessRule");
 					afterParserOrEnumRuleCall();
 				}
@@ -4248,9 +4229,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getKeysKeyParserRuleCall_13_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getKeysKeyParserRuleCall_12_0());
 				}
-				lv_keys_15_0=ruleKey
+				lv_keys_14_0=ruleKey
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4258,7 +4239,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"keys",
-						lv_keys_15_0,
+						lv_keys_14_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Key");
 					afterParserOrEnumRuleCall();
 				}
@@ -4267,9 +4248,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getNoKeyNoKeyParserRuleCall_14_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getNoKeyNoKeyParserRuleCall_13_0());
 				}
-				lv_noKey_16_0=ruleNoKey
+				lv_noKey_15_0=ruleNoKey
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4277,7 +4258,7 @@ ruleEntity returns [EObject current=null]
 					set(
 						$current,
 						"noKey",
-						lv_noKey_16_0,
+						lv_noKey_15_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.NoKey");
 					afterParserOrEnumRuleCall();
 				}
@@ -4286,9 +4267,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getConstructorsConstructorParserRuleCall_15_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getConstructorsConstructorParserRuleCall_14_0());
 				}
-				lv_constructors_17_0=ruleConstructor
+				lv_constructors_16_0=ruleConstructor
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4296,7 +4277,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"constructors",
-						lv_constructors_17_0,
+						lv_constructors_16_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Constructor");
 					afterParserOrEnumRuleCall();
 				}
@@ -4305,9 +4286,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getMethodsMethodParserRuleCall_16_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getMethodsMethodParserRuleCall_15_0());
 				}
-				lv_methods_18_0=ruleMethod
+				lv_methods_17_0=ruleMethod
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4315,7 +4296,7 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"methods",
-						lv_methods_18_0,
+						lv_methods_17_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Method");
 					afterParserOrEnumRuleCall();
 				}
@@ -4324,9 +4305,9 @@ ruleEntity returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityAccess().getElementsEntityElementParserRuleCall_17_0());
+					newCompositeNode(grammarAccess.getEntityAccess().getElementsEntityElementParserRuleCall_16_0());
 				}
-				lv_elements_19_0=ruleEntityElement
+				lv_elements_18_0=ruleEntityElement
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityRule());
@@ -4334,15 +4315,15 @@ ruleEntity returns [EObject current=null]
 					add(
 						$current,
 						"elements",
-						lv_elements_19_0,
+						lv_elements_18_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.EntityElement");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_20='}'
+		otherlv_19='}'
 		{
-			newLeafNode(otherlv_20, grammarAccess.getEntityAccess().getRightCurlyBracketKeyword_18());
+			newLeafNode(otherlv_19, grammarAccess.getEntityAccess().getRightCurlyBracketKeyword_17());
 		}
 	)
 ;
@@ -4428,28 +4409,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getSoftDeleteSoftDeleteParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getInvariantsInvariantsParserRuleCall_4_0());
 				}
-				lv_softDelete_5_0=ruleSoftDelete
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getAggregateRule());
-					}
-					set(
-						$current,
-						"softDelete",
-						lv_softDelete_5_0,
-						"org.fuin.dsl.cqrs.CqrsDsl.SoftDelete");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getInvariantsInvariantsParserRuleCall_5_0());
-				}
-				lv_invariants_6_0=ruleInvariants
+				lv_invariants_5_0=ruleInvariants
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4457,7 +4419,7 @@ ruleAggregate returns [EObject current=null]
 					set(
 						$current,
 						"invariants",
-						lv_invariants_6_0,
+						lv_invariants_5_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Invariants");
 					afterParserOrEnumRuleCall();
 				}
@@ -4466,9 +4428,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getDataProtectionDataProtectionInstanceParserRuleCall_6_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getDataProtectionDataProtectionInstanceParserRuleCall_5_0());
 				}
-				lv_dataProtection_7_0=ruleDataProtectionInstance
+				lv_dataProtection_6_0=ruleDataProtectionInstance
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4476,22 +4438,22 @@ ruleAggregate returns [EObject current=null]
 					set(
 						$current,
 						"dataProtection",
-						lv_dataProtection_7_0,
+						lv_dataProtection_6_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.DataProtectionInstance");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)?
-		otherlv_8='{'
+		otherlv_7='{'
 		{
-			newLeafNode(otherlv_8, grammarAccess.getAggregateAccess().getLeftCurlyBracketKeyword_7());
+			newLeafNode(otherlv_7, grammarAccess.getAggregateAccess().getLeftCurlyBracketKeyword_6());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getMetaInfoTypeMetaInfoParserRuleCall_8_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getMetaInfoTypeMetaInfoParserRuleCall_7_0());
 				}
-				lv_metaInfo_9_0=ruleTypeMetaInfo
+				lv_metaInfo_8_0=ruleTypeMetaInfo
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4499,7 +4461,7 @@ ruleAggregate returns [EObject current=null]
 					set(
 						$current,
 						"metaInfo",
-						lv_metaInfo_9_0,
+						lv_metaInfo_8_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.TypeMetaInfo");
 					afterParserOrEnumRuleCall();
 				}
@@ -4508,9 +4470,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getHintsHintParserRuleCall_9_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getHintsHintParserRuleCall_8_0());
 				}
-				lv_hints_10_0=ruleHint
+				lv_hints_9_0=ruleHint
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4518,7 +4480,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"hints",
-						lv_hints_10_0,
+						lv_hints_9_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Hint");
 					afterParserOrEnumRuleCall();
 				}
@@ -4527,9 +4489,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getAttributesAttributeParserRuleCall_10_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getAttributesAttributeParserRuleCall_9_0());
 				}
-				lv_attributes_11_0=ruleAttribute
+				lv_attributes_10_0=ruleAttribute
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4537,7 +4499,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"attributes",
-						lv_attributes_11_0,
+						lv_attributes_10_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Attribute");
 					afterParserOrEnumRuleCall();
 				}
@@ -4546,9 +4508,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getBusinessRulesBusinessRuleParserRuleCall_11_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getBusinessRulesBusinessRuleParserRuleCall_10_0());
 				}
-				lv_businessRules_12_0=ruleBusinessRule
+				lv_businessRules_11_0=ruleBusinessRule
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4556,7 +4518,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"businessRules",
-						lv_businessRules_12_0,
+						lv_businessRules_11_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.BusinessRule");
 					afterParserOrEnumRuleCall();
 				}
@@ -4565,9 +4527,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getKeysKeyParserRuleCall_12_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getKeysKeyParserRuleCall_11_0());
 				}
-				lv_keys_13_0=ruleKey
+				lv_keys_12_0=ruleKey
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4575,7 +4537,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"keys",
-						lv_keys_13_0,
+						lv_keys_12_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Key");
 					afterParserOrEnumRuleCall();
 				}
@@ -4584,9 +4546,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getNoKeyNoKeyParserRuleCall_13_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getNoKeyNoKeyParserRuleCall_12_0());
 				}
-				lv_noKey_14_0=ruleNoKey
+				lv_noKey_13_0=ruleNoKey
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4594,7 +4556,7 @@ ruleAggregate returns [EObject current=null]
 					set(
 						$current,
 						"noKey",
-						lv_noKey_14_0,
+						lv_noKey_13_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.NoKey");
 					afterParserOrEnumRuleCall();
 				}
@@ -4603,9 +4565,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getConstructorsConstructorParserRuleCall_14_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getConstructorsConstructorParserRuleCall_13_0());
 				}
-				lv_constructors_15_0=ruleConstructor
+				lv_constructors_14_0=ruleConstructor
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4613,7 +4575,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"constructors",
-						lv_constructors_15_0,
+						lv_constructors_14_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Constructor");
 					afterParserOrEnumRuleCall();
 				}
@@ -4622,9 +4584,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getMethodsMethodParserRuleCall_15_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getMethodsMethodParserRuleCall_14_0());
 				}
-				lv_methods_16_0=ruleMethod
+				lv_methods_15_0=ruleMethod
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4632,7 +4594,7 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"methods",
-						lv_methods_16_0,
+						lv_methods_15_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Method");
 					afterParserOrEnumRuleCall();
 				}
@@ -4641,9 +4603,9 @@ ruleAggregate returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getAggregateAccess().getElementsEntityElementParserRuleCall_16_0());
+					newCompositeNode(grammarAccess.getAggregateAccess().getElementsEntityElementParserRuleCall_15_0());
 				}
-				lv_elements_17_0=ruleEntityElement
+				lv_elements_16_0=ruleEntityElement
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getAggregateRule());
@@ -4651,77 +4613,16 @@ ruleAggregate returns [EObject current=null]
 					add(
 						$current,
 						"elements",
-						lv_elements_17_0,
+						lv_elements_16_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.EntityElement");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_18='}'
+		otherlv_17='}'
 		{
-			newLeafNode(otherlv_18, grammarAccess.getAggregateAccess().getRightCurlyBracketKeyword_17());
+			newLeafNode(otherlv_17, grammarAccess.getAggregateAccess().getRightCurlyBracketKeyword_16());
 		}
-	)
-;
-
-// Entry rule entryRuleSoftDelete
-entryRuleSoftDelete returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getSoftDeleteRule()); }
-	iv_ruleSoftDelete=ruleSoftDelete
-	{ $current=$iv_ruleSoftDelete.current; }
-	EOF;
-
-// Rule SoftDelete
-ruleSoftDelete returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		otherlv_0='soft-delete'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getSoftDeleteAccess().getSoftDeleteKeyword_0());
-		}
-		(
-			(
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getSoftDeleteRule());
-					}
-				}
-				{
-					newCompositeNode(grammarAccess.getSoftDeleteAccess().getDeleteEventEventCrossReference_1_0());
-				}
-				ruleFQN
-				{
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)
-		(
-			otherlv_2='restored-by'
-			{
-				newLeafNode(otherlv_2, grammarAccess.getSoftDeleteAccess().getRestoredByKeyword_2_0());
-			}
-			(
-				(
-					{
-						if ($current==null) {
-							$current = createModelElement(grammarAccess.getSoftDeleteRule());
-						}
-					}
-					{
-						newCompositeNode(grammarAccess.getSoftDeleteAccess().getRestoreEventEventCrossReference_2_1_0());
-					}
-					ruleFQN
-					{
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-		)?
 	)
 ;
 

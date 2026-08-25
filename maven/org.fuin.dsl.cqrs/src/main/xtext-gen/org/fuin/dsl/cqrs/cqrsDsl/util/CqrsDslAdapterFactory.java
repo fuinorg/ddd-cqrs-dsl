@@ -85,7 +85,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.SoftDelete;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
@@ -317,11 +316,6 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAggregate(Aggregate object)
       {
         return createAggregateAdapter();
-      }
-      @Override
-      public Adapter caseSoftDelete(SoftDelete object)
-      {
-        return createSoftDeleteAdapter();
       }
       @Override
       public Adapter caseKey(Key object)
@@ -1081,21 +1075,6 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAggregateAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.SoftDelete <em>Soft Delete</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.SoftDelete
-   * @generated
-   */
-  public Adapter createSoftDeleteAdapter()
   {
     return null;
   }

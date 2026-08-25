@@ -40,7 +40,7 @@ context foo {
 		aggregate-id ThingId identifies Thing {}
 
 		/** Soft deleted, and able to come back. */
-		aggregate Thing identifier ThingId soft-delete ThingRemovedEvent restored-by ThingRestoredEvent {
+		aggregate Thing identifier ThingId {
 
 			hint org.fuin.Whatever { "on-the-aggregate" : true }
 

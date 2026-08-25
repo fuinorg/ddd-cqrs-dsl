@@ -155,8 +155,6 @@
 
     // Business key, soft delete and rule predicate keywords
     KW_IDENTIFIED_BY='identified-by'
-    KW_SOFT_DELETE='soft-delete'
-    KW_RESTORED_BY='restored-by'
     KW_KEY='key'
     KW_ATTRIBUTES='attributes'
     KW_ON_COLLISION='on-collision'
@@ -360,13 +358,13 @@ event_def ::= annotation_instance* KW_EVENT ID (KW_COPIES_ATTRIBUTES_OF type_ref
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? soft_delete? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
+entity_def ::= KW_ENTITY ID (KW_IDENTIFIER type_ref)? (KW_ROOT type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? soft_delete? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
+aggregate_def ::= KW_AGGREGATE ID (KW_IDENTIFIER type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* business_rule* key_def* no_key? constructor_def* method_def* entity_element* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -509,7 +507,6 @@ identified_by ::= KW_IDENTIFIED_BY ID { pin=1 }
 
 // Marks the type as soft deleted and names the event that sets the flag - and, where the state can be
 // reversed, the one that clears it again.
-soft_delete ::= KW_SOFT_DELETE type_ref (KW_RESTORED_BY type_ref)? { pin=1 }
 
 // The natural key that identifies something without being a surrogate id.
 key_def ::= KW_KEY ID (KW_EXCEPTION type_ref)? LBRACE KW_ATTRIBUTES ID (COMMA ID)* KW_ON_COLLISION collision_strategy consistency (KW_DISPLAY_AS STRING)? RBRACE {

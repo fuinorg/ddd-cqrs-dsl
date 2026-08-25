@@ -312,15 +312,6 @@ public interface CqrsDslFactory extends EFactory
   Aggregate createAggregate();
 
   /**
-   * Returns a new object of class '<em>Soft Delete</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Soft Delete</em>'.
-   * @generated
-   */
-  SoftDelete createSoftDelete();
-
-  /**
    * Returns a new object of class '<em>Key</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
