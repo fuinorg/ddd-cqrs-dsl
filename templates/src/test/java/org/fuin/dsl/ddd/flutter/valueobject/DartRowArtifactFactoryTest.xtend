@@ -91,6 +91,31 @@ class DartRowArtifactFactoryTest {
     }
 
     @Test
+    def void testARowDeclaresItsIdentityRatherThanAnnotatingIt() {
+        // 'identified-by' is a cross-reference, so a name that is not an attribute of the row is a
+        // resolution error rather than a screen with no identity at the far end of a release chain.
+        // ShelfRow states it that way and BookRow still uses the annotation: both must come out the same.
+        val generated = generateFrom("/dart-child-entity.cqrs", "ShelfRow")
+
+        assertThat(generated).contains("modelType: 'BookId',\n        role: AttributeRole.identifier,")
+    }
+
+    @Test
+    def void testAPathIsAnIdentityRatherThanSomethingToRead() {
+        // A child of a root there are many of cannot be addressed by its own id, so the row's identity
+        // is the whole path. It is an external type, so without recognising it by name the row would
+        // show a column of raw paths and - having no attribute marked identifier - offer no action at all.
+        val generated = generateFrom("/dart-child-entity.cqrs", "ChapterRow")
+
+        assertThat(generated).contains("name: 'id',\n        kind: ValueKind.text,\n        role: AttributeRole.identifier,")
+
+        // And only the one it declares. The other path points at a different chapter, so it is a
+        // reference and stays a column - otherwise every row that records what it was matched to would
+        // lose that column and gain a second identity.
+        assertThat(generated).contains("name: 'continues',\n        kind: ValueKind.text,\n        optional: true,")
+    }
+
+    @Test
     def void testARowWithoutAKeyStillRecognisesAnIdentifierByItsType() {
         // The counterpart: nothing in dart-categories.cqrs declares a key, and CategoryDetails must
         // still identify itself. Otherwise "name the key" would quietly become "name it everywhere".

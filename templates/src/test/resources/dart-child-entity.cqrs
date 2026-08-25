@@ -131,8 +131,10 @@ context de.fuin.library {
 
         /**
          * A read-model row keyed by a surrogate, with a second id beside it as a reference.
+         *
+         * <p>States its identity with 'identified-by', which is what the annotation on BookRow says as
+         * an unchecked string.
          */
-        @Key("bookId")
         value-object ShelfRow {
 
             /** Aggregate this row was projected from and the version it reflects. */
@@ -146,6 +148,31 @@ context de.fuin.library {
 
             /** The catalogue number. */
             Isbn isbn
+
+            identified-by bookId
+
+        }
+
+        /**
+         * A read-model row for a child of a root there are many of, so no id of its own can address it.
+         *
+         * <p>The whole path identifies the row and its last segment says what kind of thing it is.
+         */
+        value-object ChapterRow {
+
+            /** Aggregate this row was projected from and the version it reflects. */
+            VersionedEntityIdPath source
+
+            /** Addresses this chapter, root and all. */
+            EntityIdPath id
+
+            /** The chapter this one continues, where it continues one. */
+            optional EntityIdPath continues
+
+            /** The heading it appears under. */
+            ChapterTitle title
+
+            identified-by id
 
         }
 
@@ -212,6 +239,9 @@ context de.fuin.library {
         annotation Key {
             String value
         }
+
+        /** An ordered list of entity identifiers, the aggregate root first. */
+        type EntityIdPath
 
         /** Identifies the aggregate some data was derived from, and the version it reflects. */
         value-object VersionedEntityIdPath {

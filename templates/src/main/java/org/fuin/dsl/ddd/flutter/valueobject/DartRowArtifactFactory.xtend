@@ -83,6 +83,8 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
         }
         if (key !== null && !attributes.exists[name == key]) {
             // Otherwise this surfaces as a screen with no identity, at the far end of a release chain.
+            // Only reachable from the annotation: 'identified-by' is a cross-reference and cannot name
+            // an attribute the row does not have.
             throw new GenerateException("@Key(\"" + key + "\") on " + className
                 + " names an attribute it does not have")
         }
@@ -230,8 +232,18 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
         return "'" + className + "[" + out.join(", ") + "]'"
     }
 
-    /** The attribute this row calls its key, as its <code>@Key</code> states it. */
+    /**
+     * The attribute this row declares as its identity.
+     *
+     * <p><code>identified-by</code> is a cross-reference, so the model itself guarantees the name is an
+     * attribute of this row. The <code>@Key</code> annotation says the same thing as an unchecked
+     * string and is read only while models still carry it; a row that states both is a row that has
+     * been migrated, and the declaration wins.
+     */
     def private static String declaredKey(ValueObject vo) {
+        if (vo.identifiedBy !== null) {
+            return vo.identifiedBy.name
+        }
         for (instance : vo.annotations.nullSafe) {
             if (instance?.annotation?.name == KEY) {
                 val params = instance.params

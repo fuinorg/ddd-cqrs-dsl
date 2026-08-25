@@ -32,17 +32,31 @@ class DartAttribute {
      */
     public static val String SOURCE_TYPE = "VersionedEntityIdPath"
 
+    /**
+     * The other type from the common model this target knows by name: an entity id path.
+     *
+     * <p>A child of a root that is not a singleton cannot be addressed by its own id - <code>TRANSACTION
+     * 45</code> exists in every account-year - so the row's identity is the whole path, and its last
+     * segment is what says what kind of thing the row is. It is an external type rather than an
+     * <code>entity-id</code>, so a row that declares one as its identity would otherwise fall through
+     * to "some value a screen shows": a column of raw paths, and no actions at all.
+     *
+     * <p>Only where the row <em>declares</em> it. A path is far more often a reference to something
+     * else - the transaction a journal entry was matched to - and a reference is a column.
+     */
+    public static val String PATH_TYPE = "EntityIdPath"
+
     /** The attribute or parameter this describes. */
     public val Variable attribute
 
-    /** The attribute its owning type declares as the row's key. See {@link #role()}. */
+    /** The attribute its owning type declares as its identity. See {@link #role()}. */
     var String declaredKey
 
     new(Variable attribute) {
         this.attribute = attribute
     }
 
-    /** Tells this attribute which one its owning type calls the key, from that type's <code>@Key</code>. */
+    /** Tells this attribute which one its owning type declares as the identity, from <code>identified-by</code>. */
     def void declaredKey(String name) {
         this.declaredKey = name
     }
@@ -153,8 +167,10 @@ class DartAttribute {
 
     /**
      * What the attribute is for, derived from its type so no generator switches on a name.
-     * <code>@Key</code> says which attribute identifies the row; whether it is shown stays a question
-     * about its type, so a surrogate is hidden and a natural key is a column.
+     * <code>identified-by</code> says which attribute identifies the row; whether it is shown stays a
+     * question about its type, so a surrogate is hidden and a natural key is a column, and an id-typed
+     * attribute that is <em>not</em> the identity is a reference to something else and therefore a
+     * column too.
      */
     def String role() {
         val type = attribute.type
@@ -174,16 +190,32 @@ class DartAttribute {
             }
             // Naming the key says which attribute identifies the row, not that it is worth reading:
             // a surrogate stays hidden, a natural key is the content.
-            return switch (type) {
-                AggregateId: "AttributeRole.identifier"
-                EntityId: "AttributeRole.identifier"
-                default: "AttributeRole.key"
+            if (identifying(type)) {
+                return "AttributeRole.identifier"
             }
+            return "AttributeRole.key"
         }
+        // No declaration, so only the type can say - and a path cannot. Rows carry paths to other
+        // things as references far more often than as their own identity, so an undeclared one stays
+        // a column rather than silently becoming the row's identity.
         return switch (type) {
             AggregateId: "AttributeRole.identifier"
             EntityId: "AttributeRole.identifier"
             default: "AttributeRole.data"
+        }
+    }
+
+    /**
+     * Whether the attribute a row <em>declares</em> as its identity addresses that row rather than
+     * describing it: a surrogate id, or the path that addresses a child of a non-singleton root. A
+     * natural key is neither - it identifies the row and is also worth reading, so it stays a column.
+     */
+    def private static boolean identifying(Type type) {
+        switch (type) {
+            AggregateId: true
+            EntityId: true
+            ExternalType: (type as ExternalType).name == PATH_TYPE
+            default: false
         }
     }
 
