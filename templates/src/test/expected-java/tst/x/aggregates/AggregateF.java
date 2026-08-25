@@ -52,7 +52,7 @@ public final class AggregateF extends AbstractAggregateF {
         Contract.requireArgNotNull("a", a);
         
         // Verify business constraints
-        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
+        AggregateFRules.create(a, sharedService);
         
         // Apply events
         // TODO apply(AggregateFCreatedEvent.builder()
@@ -75,7 +75,7 @@ public final class AggregateF extends AbstractAggregateF {
         Contract.requireArgNotNull("a", a);
         
         // Verify business constraints
-        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
+        new AggregateFRules(this).change(a, sharedService);
         
         // Apply events
         // TODO apply(AggregateFChangedEvent.builder()

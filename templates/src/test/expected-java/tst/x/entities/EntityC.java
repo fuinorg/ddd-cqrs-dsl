@@ -46,7 +46,7 @@ public final class EntityC extends AbstractEntityC {
         Contract.requireArgNotNull("b", b);
         
         // Verify business constraints
-        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
+        EntityCRules.create(a, b);
         
         // Apply events
         // TODO apply(EntityCCreatedEvent.builder()

@@ -17,6 +17,10 @@ The plugins have their own change notes:
   a child of a root there are many of cannot be addressed by its own id - while an undeclared path
   stays a column, because a row carries a path to another thing far more often than to itself. The
   annotation is no longer read at all, and is gone from `cqrs-common`.
+- A newly created write-once operation now **calls its validator in one line** - `new XRules(this).op(...)`,
+  or the static form for a create - instead of carrying one `// TODO Verify …` comment per rule. That
+  line is the whole contract between the two: adding a rule to an operation never means editing the
+  write-once file again. An existing file is untouched, being written once and never regenerated.
 - The class that **verifies everything one aggregate or entity declares** is now generated: one method
   per operation, constructing each rule from the actuals the usage binds. Nothing can be skipped - the
   write-once operation names its operation and nothing else, and no method on the validator takes a rule

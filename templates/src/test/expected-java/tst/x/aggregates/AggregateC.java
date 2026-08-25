@@ -52,7 +52,7 @@ public final class AggregateC extends AbstractAggregateC {
         Contract.requireArgNotNull("b", b);
         
         // Verify business constraints
-        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
+        AggregateCRules.create(a, b);
         
         // Apply events
         // TODO apply(AggregateCCreatedEvent.builder()

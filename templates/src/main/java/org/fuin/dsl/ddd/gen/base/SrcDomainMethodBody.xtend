@@ -1,6 +1,9 @@
 package org.fuin.dsl.ddd.gen.base
 
 import java.util.List
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
+import java.util.ArrayList
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
 import org.fuin.dsl.cqrs.cqrsDsl.Event
@@ -49,6 +52,7 @@ class SrcDomainMethodBody implements CodeSnippet {
     val List<Event> firedEvents
     val String entityIdPathArgument
     val String aggregateVersionArgument
+    val String validatorCall
 
     /**
      * Constructor for a method.
@@ -58,7 +62,8 @@ class SrcDomainMethodBody implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, Method method) {
         this(ctx, method.parameters, method.businessRules, method.firedEvents,
-            method.eContainer.entityIdPathArgument(false), method.eContainer.aggregateVersionArgument)
+            method.eContainer.entityIdPathArgument(false), method.eContainer.aggregateVersionArgument,
+            validatorCall(method, method.businessRules, method.eContainer, false))
     }
 
     /**
@@ -69,7 +74,8 @@ class SrcDomainMethodBody implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, Constructor constructor) {
         this(ctx, constructor.parameters, constructor.businessRules, constructor.firedEvents,
-            constructor.eContainer.entityIdPathArgument(true), constructor.eContainer.aggregateVersionArgument)
+            constructor.eContainer.entityIdPathArgument(true), constructor.eContainer.aggregateVersionArgument,
+            validatorCall(constructor, constructor.businessRules, constructor.eContainer, true))
     }
 
     /**
@@ -97,6 +103,24 @@ class SrcDomainMethodBody implements CodeSnippet {
      */
     new(CodeSnippetContext ctx, List<Parameter> parameters, BusinessRules businessRules, List<Event> firedEvents,
         String entityIdPathArgument, String aggregateVersionArgument) {
+        this(ctx, parameters, businessRules, firedEvents, entityIdPathArgument, aggregateVersionArgument, null)
+    }
+
+    /**
+     * Constructor that also knows how to reach the generated validator.
+     *
+     * @param ctx Context.
+     * @param parameters Parameters to check.
+     * @param businessRules Business rules to verify or <code>null</code>.
+     * @param firedEvents Events that may be fired.
+     * @param entityIdPathArgument Argument for the event's mandatory "entityIdPath".
+     * @param aggregateVersionArgument Argument for the event's "aggregateVersion".
+     * @param validatorCall The one line that verifies everything this operation declares, or
+     *                      <code>null</code> where the caller could not work out how to reach it.
+     */
+    new(CodeSnippetContext ctx, List<Parameter> parameters, BusinessRules businessRules, List<Event> firedEvents,
+        String entityIdPathArgument, String aggregateVersionArgument, String validatorCall) {
+        this.validatorCall = validatorCall
         this.ctx = ctx
         this.parameters = parameters
         this.businessRules = businessRules
@@ -193,6 +217,8 @@ class SrcDomainMethodBody implements CodeSnippet {
             // Verify business constraints
             «IF businessRuleInstances.size == 0»
                 // None declared for this operation.
+            «ELSEIF validatorCall !== null»
+                «validatorCall»
             «ELSE»
                 «FOR instance : businessRuleInstances»
                     // TODO Verify "«instance.businessRule.name»" and throw «instance.businessRule.exception.name» if it is violated.
@@ -214,6 +240,36 @@ class SrcDomainMethodBody implements CodeSnippet {
                 «ENDFOR»
             «ENDIF»
         '''
+    }
+
+
+    /**
+     * The one line that verifies everything an operation declares.
+     *
+     * <p>This is the whole contract between the write-once class and the generated validator: the
+     * operation names its operation and nothing else. Every rule it verifies lives inside the generated
+     * method, and the validator offers no way to hand it a rule from outside - so the model is the
+     * complete list of what is enforced, and adding a rule to an operation never means editing this
+     * file again.
+     *
+     * <p>A creating operation calls a static method, because there is no instance to hand over yet.
+     */
+    def private static String validatorCall(AbstractMethod operation, BusinessRules rules, EObject owner,
+        boolean creating) {
+        if (rules === null || rules.businessRuleInstances.nullSafe.empty || !(owner instanceof AbstractEntity)) {
+            return null
+        }
+        val args = new ArrayList<String>
+        for (parameter : operation.parameters.nullSafe) {
+            args.add(parameter.name)
+        }
+        val service = operation.operationContext
+        if (service !== null) {
+            args.add(service.name.substring(0, 1).toLowerCase + service.name.substring(1))
+        }
+        val className = (owner as AbstractEntity).name + "Rules"
+        val target = if(creating) className + "." else "new " + className + "(this)."
+        return target + operation.name + "(" + args.join(", ") + ");"
     }
 
 }
