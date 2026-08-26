@@ -38,6 +38,16 @@ class SrcEntityIdTypeMethods implements CodeSnippet {
             return TYPE + " " + asString();
         }
         
+        /**
+         * The id as it reads, which is what an exception message interpolating it wants. Without this
+         * the base class leaves Object's version in place and a refusal names the thing it refused as
+         * "SomethingId@1f3a2b" - a value object of the same shape already carries one.
+         */
+        @Override
+        public final String toString() {
+            return asString();
+        }
+        
         «new SrcVoBaseOptionalMethods(ctx, entityId)»
         '''
     }

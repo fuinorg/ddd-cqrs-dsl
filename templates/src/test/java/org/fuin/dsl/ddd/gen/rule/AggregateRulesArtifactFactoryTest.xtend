@@ -44,9 +44,9 @@ class AggregateRulesArtifactFactoryTest {
         assertThat(generated).contains("private final Receipt self;")
         assertThat(generated).contains("void unassignEntry() throws ReceiptNotAssignedException {")
 
-        // "ignore" declares two rules, so it verifies both and declares both refusals.
+        // "ignore" declares several rules, so it verifies each and declares every refusal once.
         assertThat(generated).contains(
-            "void ignore() throws WrongStatusException, ReceiptAlreadyAssignedException {")
+            "void ignore() throws WrongStatusException, ReceiptAlreadyAssignedException, WrongLinksException {")
     }
 
     @Test
@@ -73,6 +73,26 @@ class AggregateRulesArtifactFactoryTest {
         // A service reaches an operation as a parameter named after it; the validator asks for the
         // same thing rather than inventing a way of its own to reach it.
         assertThat(generate("Receipt")).contains("final NameService nameService")
+    }
+
+    @Test
+    def void testARuleWithoutAConditionStaysWithTheOperation() {
+        // There is nothing here to call - no generated class, and no declared attributes to construct
+        // one with - and an empty stub would let a declared rule look enforced while doing nothing. The
+        // operation keeps its "TODO Verify" line for it, and its refusal is not promised here either.
+        val generated = generate("Receipt")
+
+        assertThat(generated).doesNotContain("StatementMustBeValid")
+        assertThat(generated).contains(
+            "void ignore() throws WrongStatusException, ReceiptAlreadyAssignedException, WrongLinksException {")
+    }
+
+    @Test
+    def void testACustomRuleIsStillConstructed() {
+        // A rule that declares what it decides from but leaves the deciding to a hand-written class is
+        // called like any other. Referencing a class nobody has written does not compile, which is the
+        // point: a stub would let a newly declared rule look enforced while doing nothing.
+        assertThat(generate("Receipt")).contains("new LinksMustNotBeElsewhere(self.getStatus()).verify();")
     }
 
     @Test

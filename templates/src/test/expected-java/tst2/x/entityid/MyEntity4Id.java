@@ -92,6 +92,16 @@ public final class MyEntity4Id implements EntityId, ValueObject {
         return TYPE + " " + asString();
     }
     
+    /**
+     * The id as it reads, which is what an exception message interpolating it wants. Without this
+     * the base class leaves Object's version in place and a refusal names the thing it refused as
+     * "SomethingId@1f3a2b" - a value object of the same shape already carries one.
+     */
+    @Override
+    public final String toString() {
+        return asString();
+    }
+    
     @Override
     public final String asString() {
         // TODO Implement!

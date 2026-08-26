@@ -1,6 +1,7 @@
 package org.fuin.dsl.ddd.gen.except
 
 import java.util.Map
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -60,7 +61,9 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
 
     def addImports(CodeSnippetContext ctx, Exception ex) {
         ctx.requiresImport("java.io.Serial")
-        if (ex.cid > 0) {
+        if (ex.namedByARule) {
+            ctx.requiresImport("org.fuin.dsl.cqrs.common.rules." + ex.baseClass)
+        } else if (ex.cid > 0) {
             ctx.requiresImport("org.fuin.objects4j.common.UniquelyNumberedException")
         }
         if (!ex.attributes.empty) {
@@ -100,11 +103,45 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
     }
 
     def _uniquelyNumberedException(Exception ex) {
-        if (ex.cid > 0) {
-            '''UniquelyNumberedException'''
-        } else {
-            '''Exception'''
+        return ex.baseClass
+    }
+
+    /**
+     * What the refusal extends.
+     *
+     * <p>A refusal a business rule names extends the rules' own base, because the generated rule class
+     * implements <code>BusinessRule</code> and its <code>verify()</code> may only throw what that
+     * interface declares. It also gives a caller one type to catch for "a rule refused", which is the
+     * question a command handler asks. Everything else keeps the plain base it always had.
+     */
+    def private String baseClass(Exception ex) {
+        if (ex.namedByARule) {
+            return if (ex.cid > 0) "UniquelyNumberedBusinessRuleViolationException"
+                else "BusinessRuleViolationException"
         }
+        return if(ex.cid > 0) "UniquelyNumberedException" else "Exception"
+    }
+
+    /**
+     * Whether any business rule in the model names this exception.
+     *
+     * <p>Searched across the whole resource set rather than the exception's own resource: a context is
+     * commonly split over a public file declaring the refusals and a private one declaring the rules
+     * that raise them, and those are two resources.
+     */
+    def private boolean namedByARule(Exception ex) {
+        val resource = ex.eResource
+        if (resource === null || resource.resourceSet === null) {
+            return false
+        }
+        for (other : resource.resourceSet.resources) {
+            for (rule : other.allContents.toIterable.filter(BusinessRule)) {
+                if (rule.exception === ex) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
 }

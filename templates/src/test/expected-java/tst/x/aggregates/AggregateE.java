@@ -52,7 +52,7 @@ public final class AggregateE extends AbstractAggregateE {
         Contract.requireArgNotNull("a", a);
         
         // Verify business constraints
-        AggregateERules.create(a, createService);
+        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
         
         // Apply events
         // TODO apply(AggregateECreatedEvent.builder()
@@ -75,7 +75,7 @@ public final class AggregateE extends AbstractAggregateE {
         Contract.requireArgNotNull("a", a);
         
         // Verify business constraints
-        new AggregateERules(this).change(a, changeService);
+        // TODO Verify "AnyConstraint" and throw AnyConstraintViolatedException if it is violated.
         
         // Apply events
         // TODO apply(AggregateEChangedEvent.builder()

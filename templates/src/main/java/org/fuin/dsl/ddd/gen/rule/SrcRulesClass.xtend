@@ -4,9 +4,11 @@ import java.util.ArrayList
 import java.util.LinkedHashSet
 import java.util.List
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
+import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcParamsDecl
 import org.fuin.dsl.ddd.gen.base.TypeKeys
@@ -14,6 +16,8 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory.eINSTANCE
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
@@ -55,17 +59,42 @@ class SrcRulesClass {
         this.className = className
     }
 
-    /** The operations that declare at least one rule; the rest need no method here. */
+    /** The operations this class can verify something for; the rest need no method here. */
     def static List<AbstractMethod> guarded(AbstractEntity owner) {
         val out = new ArrayList<AbstractMethod>()
         for (constructor : owner.constructors.nullSafe) {
-            if (!constructor.businessRules?.businessRuleInstances.nullSafe.empty) {
+            if (!decidable(constructor).empty) {
                 out.add(constructor)
             }
         }
         for (method : owner.methods.nullSafe) {
-            if (!method.businessRules?.businessRuleInstances.nullSafe.empty) {
+            if (!decidable(method).empty) {
                 out.add(method)
+            }
+        }
+        return out
+    }
+
+    /**
+     * The rules of one operation this class verifies: those the model says something about.
+     *
+     * <p>A rule declaring a <code>requires</code> condition is generated whole. A rule declaring only
+     * its attributes is a custom one - the class is written by hand, and the call is emitted anyway, so
+     * that a rule nobody has written yet does not compile. That is on purpose: a stub would let a newly
+     * declared rule look enforced while doing nothing, which is the failure this generator exists to
+     * prevent.
+     *
+     * <p>A rule declaring <em>neither</em> is the one case left out. There is nothing to call - no class
+     * and no constructor arguments - and nothing to write one from either, because the model has not yet
+     * said what it decides from. It stays with the operation, which still carries its
+     * <code>// TODO Verify</code> line, and starts being verified here the moment it declares anything.
+     */
+    def static List<BusinessRuleInstance> decidable(AbstractMethod operation) {
+        val out = new ArrayList<BusinessRuleInstance>()
+        for (instance : operation.businessRules?.businessRuleInstances.nullSafe) {
+            val rule = instance.businessRule
+            if (rule !== null && (rule.requires !== null || !rule.attributes.nullSafe.empty)) {
+                out.add(instance)
             }
         }
         return out
@@ -97,21 +126,24 @@ class SrcRulesClass {
     def private method(AbstractMethod operation) {
         val creating = operation instanceof Constructor
         val parameters = new ArrayList<Parameter>(operation.parameters.nullSafe.toList)
-        if (operation.operationContext !== null) {
-            parameters.add(serviceParameter(operation))
+        val service = operation.operationContext
+        val serviceParam = if(service === null) null else serviceParameter(operation)
+        val documented = new ArrayList<Parameter>(parameters)
+        if (serviceParam !== null) {
+            documented.add(serviceParam)
         }
         '''
         /**
          * Verifies everything «operation.name» declares.
          *
-         «FOR parameter : parameters»
+         «FOR parameter : documented»
          * @param «parameter.name» «parameter.superDocOrName»
          «ENDFOR»
          *
          * @throws «throwsOf(operation).join(" ")» One of the rules refused the operation.
          */
-        «IF creating»static «ENDIF»void «operation.name»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), parameters)») throws «throwsOf(operation).join(", ")» {
-            «FOR instance : operation.businessRules.businessRuleInstances»
+        «IF creating»static «ENDIF»void «operation.name»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), parameters)»«IF serviceParam !== null»«IF !parameters.empty», «ENDIF»final «serviceType(service)» «serviceParam.name»«ENDIF») throws «throwsOf(operation).join(", ")» {
+            «FOR instance : decidable(operation)»
             «new SrcRuleConstruction(instance, operation, if(creating) null else "self")»
             «ENDFOR»
         }
@@ -121,12 +153,29 @@ class SrcRulesClass {
     /** The refusals this operation can produce, each named once however many rules share it. */
     def private throwsOf(AbstractMethod operation) {
         val out = new LinkedHashSet<String>()
-        for (instance : operation.businessRules.businessRuleInstances) {
+        for (instance : decidable(operation)) {
             ctx.requiresReference(TypeKeys.refKey(instance.businessRule.exception))
             ctx.requiresReference(TypeKeys.refKey(instance.businessRule))
             out.add(instance.businessRule.exception.name)
         }
         return out
+    }
+
+    /**
+     * How this class names the operation's service.
+     *
+     * <p>A service declared inline in an operation is generated as a nested interface of the abstract
+     * class, which only the abstract and its final subclass have in scope by its simple name - this
+     * class extends neither, so it says which class the interface belongs to. Both live in the same
+     * package, so nothing has to be imported. A service declared at module level is an ordinary
+     * top-level type and is referenced as one.
+     */
+    def private String serviceType(Service service) {
+        if (owner.services.nullSafe.contains(service)) {
+            return owner.abstractName + "." + service.name
+        }
+        ctx.requiresReference(TypeKeys.refKey(service))
+        return service.name
     }
 
     def private Parameter serviceParameter(AbstractMethod operation) {

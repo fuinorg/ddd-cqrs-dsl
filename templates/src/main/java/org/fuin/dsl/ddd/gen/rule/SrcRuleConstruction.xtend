@@ -77,7 +77,14 @@ class SrcRuleConstruction {
                 // The same spellings a rule takes, one level down - a service asked about the thing
                 // being acted on needs its identity as much as the refusal naming it does.
                 val call = arg.args.nullSafe.map[argument].join(", ")
-                return serviceParameter(arg.method) + "." + arg.method.name + "(" + call + ")"
+                val invocation = serviceParameter(arg.method) + "." + arg.method.name + "(" + call + ")"
+                // A service says "there may be none" with an empty Optional, a rule attribute says it
+                // with null - the model writes 'optional' for both, and the two spellings meet here.
+                // Unwrapped rather than held, because the condition asks '== null' and nothing else.
+                if (arg.method.returnType?.optional !== null) {
+                    return invocation + ".orElse(null)"
+                }
+                return invocation
             }
             default: throw new GenerateException("Unknown rule argument: " + arg?.class?.simpleName)
         }

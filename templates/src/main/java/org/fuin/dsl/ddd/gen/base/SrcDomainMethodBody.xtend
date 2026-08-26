@@ -133,6 +133,27 @@ class SrcDomainMethodBody implements CodeSnippet {
     }
 
     /**
+     * The rules the generated validator verifies: those declaring a condition, and the custom ones
+     * declaring the values they decide from.
+     */
+    def private decidableInstances() {
+        return businessRuleInstances.filter[
+            businessRule?.requires !== null || !(businessRule?.attributes).nullSafe.empty].toList
+    }
+
+    /**
+     * The rules that stay with this operation, because the model has not yet said anything about them.
+     *
+     * <p>They keep their <code>// TODO Verify</code> line. The validator cannot call them - there is no
+     * class and no constructor arguments - and a silent omission would read as "this operation is fully
+     * guarded", which is exactly what it is not.
+     */
+    def private handWrittenInstances() {
+        return businessRuleInstances.filter[
+            businessRule?.requires === null && (businessRule?.attributes).nullSafe.empty].toList
+    }
+
+    /**
      * Returns what to pass for the event's mandatory entity id path. An aggregate method can use the
      * aggregate's own identifier and a constructor the one it was handed. A child entity needs the
      * path from the root down to itself, which the generator does not build to avoid an import in
@@ -217,10 +238,15 @@ class SrcDomainMethodBody implements CodeSnippet {
             // Verify business constraints
             «IF businessRuleInstances.size == 0»
                 // None declared for this operation.
-            «ELSEIF validatorCall !== null»
-                «validatorCall»
-            «ELSE»
+            «ELSEIF validatorCall === null»
                 «FOR instance : businessRuleInstances»
+                    // TODO Verify "«instance.businessRule.name»" and throw «instance.businessRule.exception.name» if it is violated.
+                «ENDFOR»
+            «ELSE»
+                «IF !decidableInstances.empty»
+                    «validatorCall»
+                «ENDIF»
+                «FOR instance : handWrittenInstances»
                     // TODO Verify "«instance.businessRule.name»" and throw «instance.businessRule.exception.name» if it is violated.
                 «ENDFOR»
             «ENDIF»
