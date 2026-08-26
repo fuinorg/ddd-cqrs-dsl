@@ -7,7 +7,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CompareOp
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand
 import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd
 import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison
@@ -20,6 +22,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
 import org.fuin.srcgen4j.commons.GenerateException
+
+import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 
@@ -87,6 +91,7 @@ class DartRuleDescriptors {
         for (actual : instance.params.nullSafe) {
             switch (actual) {
                 IdentityArgument: { /* the row knows its own identity */ }
+                CarrierAttributeArgument: { /* the row carries the state the carrier holds now */ }
                 VariableArgument: {
                     if (parameterOfOperation(actual.variable)) {
                         return false
@@ -127,6 +132,8 @@ class DartRuleDescriptors {
             val actual = actuals.get(i)
             if (actual instanceof IdentityArgument) {
                 fromIdentity.add(name)
+            } else if (actual instanceof CarrierAttributeArgument) {
+                fromAttribute.put(name, actual.attribute.name)
             } else if (actual instanceof VariableArgument) {
                 fromAttribute.put(name, actual.variable.name)
             }
@@ -175,6 +182,11 @@ class DartRuleDescriptors {
         val right = node.right
         if (right instanceof RuleNullOperand) {
             return "RuleNullOperand()"
+        }
+        // A value written out in the condition travels as itself: Dart spells a number, a string and a
+        // Boolean the same way Java does, which is why the literal is emitted rather than described.
+        if (right instanceof RuleLiteralOperand) {
+            return "RuleLiteralOperand(" + right.literal.str + ")"
         }
         if (right instanceof RuleRefOperand) {
             val target = right.target

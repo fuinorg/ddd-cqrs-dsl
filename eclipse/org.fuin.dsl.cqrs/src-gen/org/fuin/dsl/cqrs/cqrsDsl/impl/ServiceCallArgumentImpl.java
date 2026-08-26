@@ -6,6 +6,7 @@ package org.fuin.dsl.cqrs.cqrsDsl.impl;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -14,12 +15,13 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
-import org.fuin.dsl.cqrs.cqrsDsl.Variable;
 
 /**
  * <!-- begin-user-doc -->
@@ -48,14 +50,14 @@ public class ServiceCallArgumentImpl extends RuleArgumentImpl implements Service
   protected Method method;
 
   /**
-   * The cached value of the '{@link #getArgs() <em>Args</em>}' reference list.
+   * The cached value of the '{@link #getArgs() <em>Args</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getArgs()
    * @generated
    * @ordered
    */
-  protected EList<Variable> args;
+  protected EList<RuleArgument> args;
 
   /**
    * <!-- begin-user-doc -->
@@ -129,13 +131,29 @@ public class ServiceCallArgumentImpl extends RuleArgumentImpl implements Service
    * @generated
    */
   @Override
-  public EList<Variable> getArgs()
+  public EList<RuleArgument> getArgs()
   {
     if (args == null)
     {
-      args = new EObjectResolvingEList<Variable>(Variable.class, this, CqrsDslPackage.SERVICE_CALL_ARGUMENT__ARGS);
+      args = new EObjectContainmentEList<RuleArgument>(RuleArgument.class, this, CqrsDslPackage.SERVICE_CALL_ARGUMENT__ARGS);
     }
     return args;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CqrsDslPackage.SERVICE_CALL_ARGUMENT__ARGS:
+        return ((InternalEList<?>)getArgs()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -173,7 +191,7 @@ public class ServiceCallArgumentImpl extends RuleArgumentImpl implements Service
         return;
       case CqrsDslPackage.SERVICE_CALL_ARGUMENT__ARGS:
         getArgs().clear();
-        getArgs().addAll((Collection<? extends Variable>)newValue);
+        getArgs().addAll((Collection<? extends RuleArgument>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

@@ -95,6 +95,13 @@ class BusinessRuleArtifactFactoryTest {
     }
 
     @Test
+    def void testAValueWrittenOutInTheConditionIsEmittedAsItself() {
+        // The boundary belongs to the rule rather than to the state being judged, so it is not an
+        // attribute somebody has to supply - and Java spells the value the same way the model does.
+        assertThat(generate("MustNotBeReferenced")).contains("if (!(Objects.equals(referenceCount, 0))) {")
+    }
+
+    @Test
     def void testTheOneBuiltInQuestionAboutACollection() {
         assertThat(generate("MustHaveNoLinks")).contains("if (!(linkedEntries.isEmpty())) {")
         assertThat(generate("MustHaveLinks")).contains("if (!(!(linkedEntries.isEmpty()))) {")

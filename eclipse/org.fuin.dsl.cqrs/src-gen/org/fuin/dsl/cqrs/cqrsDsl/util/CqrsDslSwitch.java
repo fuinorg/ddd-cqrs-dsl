@@ -22,6 +22,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BooleanLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CommandHandler;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
@@ -76,6 +77,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
@@ -324,6 +326,13 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         RuleOperand ruleOperand = (RuleOperand)theEObject;
         T result = caseRuleOperand(ruleOperand);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.LITERAL:
+      {
+        Literal literal = (Literal)theEObject;
+        T result = caseLiteral(literal);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -633,13 +642,6 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CqrsDslPackage.LITERAL:
-      {
-        Literal literal = (Literal)theEObject;
-        T result = caseLiteral(literal);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case CqrsDslPackage.JSON:
       {
         JSON json = (JSON)theEObject;
@@ -798,6 +800,14 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CqrsDslPackage.RULE_LITERAL_OPERAND:
+      {
+        RuleLiteralOperand ruleLiteralOperand = (RuleLiteralOperand)theEObject;
+        T result = caseRuleLiteralOperand(ruleLiteralOperand);
+        if (result == null) result = caseRuleOperand(ruleLiteralOperand);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CqrsDslPackage.LITERAL_ARGUMENT:
       {
         LiteralArgument literalArgument = (LiteralArgument)theEObject;
@@ -811,6 +821,14 @@ public class CqrsDslSwitch<T> extends Switch<T>
         IdentityArgument identityArgument = (IdentityArgument)theEObject;
         T result = caseIdentityArgument(identityArgument);
         if (result == null) result = caseRuleArgument(identityArgument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.CARRIER_ATTRIBUTE_ARGUMENT:
+      {
+        CarrierAttributeArgument carrierAttributeArgument = (CarrierAttributeArgument)theEObject;
+        T result = caseCarrierAttributeArgument(carrierAttributeArgument);
+        if (result == null) result = caseRuleArgument(carrierAttributeArgument);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1174,6 +1192,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseRuleOperand(RuleOperand object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Literal</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Literal</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLiteral(Literal object)
   {
     return null;
   }
@@ -1787,22 +1821,6 @@ public class CqrsDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Literal</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Literal</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseLiteral(Literal object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>JSON</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -2123,6 +2141,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Literal Operand</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Literal Operand</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleLiteralOperand(RuleLiteralOperand object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Literal Argument</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -2150,6 +2184,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseIdentityArgument(IdentityArgument object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Carrier Attribute Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Carrier Attribute Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCarrierAttributeArgument(CarrierAttributeArgument object)
   {
     return null;
   }

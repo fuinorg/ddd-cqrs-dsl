@@ -138,19 +138,13 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
-    <li><b>1.31.0</b> &ndash; The grammar gained the constructs for business keys, soft delete and
-        generated business rules. A read model row names its identity with <code>identified-by</code>;
-        an aggregate or entity declares a <code>key</code> with its attributes, an
-        <code>on-collision</code> strategy and an optional <code>display-as</code> format, or states
-        <code>no-key</code> on purpose. A
-        <code>business-rule</code> now declares the attributes it is handed and the condition it
-        verifies over them after <code>requires</code>, with <code>!</code>, <code>&amp;&amp;</code>,
-        <code>||</code>, parentheses, the six comparisons and <code>.is-empty()</code>. A rule usage
-        binds its actuals, and may hand the rule the carrier's own identity with <code>own-id</code> -
-        a keyword rather than a reference, because an aggregate states its identity as
-        <code>identifier</code> and never as an attribute.
-        A <code>command</code> carries its own wording, and a <code>hint</code> may sit wherever
-        wording may.</li>
+    <li><b>1.31.0</b> &ndash; The grammar gained the constructs for business keys and generated
+        business rules. A read model row names its identity with <code>identified-by</code>; an aggregate
+        or entity declares a <code>key</code> or states <code>no-key</code> on purpose. A
+        <code>business-rule</code> declares the attributes it is handed and a <code>requires</code>
+        condition over them, and a rule usage binds its actuals - including the carrier's own identity
+        with <code>own-id</code> and its prior state with <code>own</code>. A <code>command</code>
+        carries its own wording, and a <code>hint</code> may sit wherever wording may.</li>
     <li><b>1.30.0</b> &ndash; A dependency cycle between modules is now reported as an error, the same
         rule the Eclipse plugin and the generator build apply. What a module depends on is read from
         the references that actually resolve rather than from its <code>import</code> lines, so an

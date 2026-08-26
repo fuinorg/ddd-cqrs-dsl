@@ -222,6 +222,15 @@ public interface CqrsDslFactory extends EFactory
   RuleOperand createRuleOperand();
 
   /**
+   * Returns a new object of class '<em>Literal</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Literal</em>'.
+   * @generated
+   */
+  Literal createLiteral();
+
+  /**
    * Returns a new object of class '<em>Annotation</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -564,15 +573,6 @@ public interface CqrsDslFactory extends EFactory
   ProcessReaction createProcessReaction();
 
   /**
-   * Returns a new object of class '<em>Literal</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Literal</em>'.
-   * @generated
-   */
-  Literal createLiteral();
-
-  /**
    * Returns a new object of class '<em>JSON</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -753,6 +753,15 @@ public interface CqrsDslFactory extends EFactory
   RuleNullOperand createRuleNullOperand();
 
   /**
+   * Returns a new object of class '<em>Rule Literal Operand</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Literal Operand</em>'.
+   * @generated
+   */
+  RuleLiteralOperand createRuleLiteralOperand();
+
+  /**
    * Returns a new object of class '<em>Literal Argument</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -769,6 +778,15 @@ public interface CqrsDslFactory extends EFactory
    * @generated
    */
   IdentityArgument createIdentityArgument();
+
+  /**
+   * Returns a new object of class '<em>Carrier Attribute Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Carrier Attribute Argument</em>'.
+   * @generated
+   */
+  CarrierAttributeArgument createCarrierAttributeArgument();
 
   /**
    * Returns a new object of class '<em>Variable Argument</em>'.

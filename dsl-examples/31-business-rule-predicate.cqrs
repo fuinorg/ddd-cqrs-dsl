@@ -147,6 +147,20 @@ context p_31_business_rule_predicate {
                 requires assignedEntry == null || (date == newDate && !amountChanged)
             }
 
+            /** Makes sure a rename is a change, not a repetition. */
+            business-rule NameMustActuallyChange exception NameTakenException {
+
+                /** The name it carries now. */
+                String name
+
+                /** The name the edit would give it. */
+                String newName
+
+                consistency strong
+
+                requires name != newName
+            }
+
             /** A rule may take a plain value as well, for a limit the model states once. */
             business-rule NameMustBeShort exception TooManyException {
 
@@ -173,11 +187,13 @@ context p_31_business_rule_predicate {
             // The usage site binds the actuals - which is what lets one rule be carried by
             // operations that agree on nothing. Here 'newName' is a parameter of the method while
             // 'kind' is a field of the aggregate, and 'existsForType' is a method of the
-            // operation context, handed the same two. 'own-id' is the aggregate's own identity: it is
+            // operation context, handed both. 'own-id' is the aggregate's own identity: it is
             // never a declared attribute, so it is a keyword rather than a reference, and it is what
             // lets a refusal name the thing it refused. A constructor may not use it - it is what
-            // creates the identity.
-            method rename business-rules NameMustBeUnique(existsForType(newName, kind)), NameMustBeShort(newName, 200), MustStillExist(own-id) {
+            // creates the identity. It is also what a service is handed when the question is about
+            // the thing being acted on, as it is here: a name the receipt already carries itself is
+            // not a collision.
+            method rename business-rules NameMustBeUnique(existsForType(newName, kind, own-id)), NameMustBeShort(newName, 200), MustStillExist(own-id) {
 
                 /** The new name. */
                 String newName
@@ -186,7 +202,7 @@ context p_31_business_rule_predicate {
 
                 service RenameService {
 
-                    /** Whether a name is already taken for a type. */
+                    /** Whether a name is already taken for a type by anything but this receipt. */
                     method existsForType {
 
                         /** The name to check. */
@@ -195,6 +211,9 @@ context p_31_business_rule_predicate {
                         /** The type to check it within. */
                         String kind
 
+                        /** The receipt being renamed, whose own name is not a collision. */
+                        ReceiptId receipt
+
                         returns Boolean
                     }
                 }
@@ -202,6 +221,17 @@ context p_31_business_rule_predicate {
 
             // A rule reading only the aggregate's own state binds fields, and nothing else.
             method unassignEntry business-rules MustBeAssigned(assignedEntry, name) {
+            }
+
+            // A rule guarding an edit needs both what the carrier holds now and what the operation
+            // would give it - and an edit's parameter is commonly named after the very field it
+            // overwrites, which is the one case a bare name cannot express: it resolves to the
+            // parameter. 'own' reaches past the parameters to the state of the type itself, so the
+            // parameter keeps the name whoever sends the command reads.
+            method updateName business-rules NameMustActuallyChange(own name, name) {
+
+                /** The new name, named after the field it overwrites. */
+                String name
             }
 
         }

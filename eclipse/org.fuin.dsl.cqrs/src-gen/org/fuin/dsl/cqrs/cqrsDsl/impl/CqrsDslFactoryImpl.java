@@ -26,6 +26,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BooleanLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.CollisionStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CommandHandler;
@@ -89,6 +90,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
@@ -181,6 +183,7 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.BUSINESS_RULE: return createBusinessRule();
       case CqrsDslPackage.RULE_EXPR: return createRuleExpr();
       case CqrsDslPackage.RULE_OPERAND: return createRuleOperand();
+      case CqrsDslPackage.LITERAL: return createLiteral();
       case CqrsDslPackage.ANNOTATION: return createAnnotation();
       case CqrsDslPackage.EXCEPTION: return createException();
       case CqrsDslPackage.VALUE_OBJECT: return createValueObject();
@@ -219,7 +222,6 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.PROCESS_MANAGER: return createProcessManager();
       case CqrsDslPackage.PROCESS_STATE: return createProcessState();
       case CqrsDslPackage.PROCESS_REACTION: return createProcessReaction();
-      case CqrsDslPackage.LITERAL: return createLiteral();
       case CqrsDslPackage.JSON: return createJSON();
       case CqrsDslPackage.JSON_OBJECT: return createJsonObject();
       case CqrsDslPackage.JSON_MEMBER: return createJsonMember();
@@ -240,8 +242,10 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.RULE_IS_EMPTY: return createRuleIsEmpty();
       case CqrsDslPackage.RULE_REF_OPERAND: return createRuleRefOperand();
       case CqrsDslPackage.RULE_NULL_OPERAND: return createRuleNullOperand();
+      case CqrsDslPackage.RULE_LITERAL_OPERAND: return createRuleLiteralOperand();
       case CqrsDslPackage.LITERAL_ARGUMENT: return createLiteralArgument();
       case CqrsDslPackage.IDENTITY_ARGUMENT: return createIdentityArgument();
+      case CqrsDslPackage.CARRIER_ATTRIBUTE_ARGUMENT: return createCarrierAttributeArgument();
       case CqrsDslPackage.VARIABLE_ARGUMENT: return createVariableArgument();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -580,6 +584,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     RuleOperandImpl ruleOperand = new RuleOperandImpl();
     return ruleOperand;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Literal createLiteral()
+  {
+    LiteralImpl literal = new LiteralImpl();
+    return literal;
   }
 
   /**
@@ -1044,18 +1060,6 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
-  public Literal createLiteral()
-  {
-    LiteralImpl literal = new LiteralImpl();
-    return literal;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public JSON createJSON()
   {
     JSONImpl json = new JSONImpl();
@@ -1296,6 +1300,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
    * @generated
    */
   @Override
+  public RuleLiteralOperand createRuleLiteralOperand()
+  {
+    RuleLiteralOperandImpl ruleLiteralOperand = new RuleLiteralOperandImpl();
+    return ruleLiteralOperand;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public LiteralArgument createLiteralArgument()
   {
     LiteralArgumentImpl literalArgument = new LiteralArgumentImpl();
@@ -1312,6 +1328,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     IdentityArgumentImpl identityArgument = new IdentityArgumentImpl();
     return identityArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public CarrierAttributeArgument createCarrierAttributeArgument()
+  {
+    CarrierAttributeArgumentImpl carrierAttributeArgument = new CarrierAttributeArgumentImpl();
+    return carrierAttributeArgument;
   }
 
   /**

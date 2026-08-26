@@ -294,16 +294,29 @@ RuleAtom returns RuleExpr:
 	)?;
 
 /**
- * Right hand side of a comparison - another attribute, a named value of an enumeration, or 'null'.
+ * Right hand side of a comparison - another attribute, a named value of an enumeration, a value written
+ * out here, or 'null'.
  *
  * An attribute and an enumeration value are both a bare identifier, so no amount of lookahead can tell
  * them apart: which of the two is meant is decided by the scope, from the type of the attribute on the
  * left. The reference is therefore declared against 'EObject' and narrowed there, rather than split
  * into two alternatives the parser cannot choose between.
+ *
+ * A written-out value is for the boundary a rule states about itself rather than reads: "no record
+ * references it any more" is 'referenceCount == 0', and the refusal quotes the count it was handed. The
+ * alternative is an attribute whose only actual is that same literal, which says the boundary twice.
  */
 RuleOperand:
 	{RuleRefOperand} target=[ecore::EObject|ID]
-	| {RuleNullOperand} nullValue='null';
+	| {RuleNullOperand} nullValue='null'
+	| {RuleLiteralOperand} literal=RuleLiteral;
+
+/**
+ * A value written out in a condition. 'null' is not among them: it is its own operand already, and two
+ * ways of writing the same thing would be two shapes for every reader of the tree to handle.
+ */
+RuleLiteral returns Literal:
+	BooleanLiteral | NumberLiteral | StringLiteral;
 
 /**
  * Comparison operator. '==' and '!=' mean value equality - every attribute here is a value object, so
@@ -578,15 +591,30 @@ BusinessRuleInstance:
 RuleArgument:
 	{LiteralArgument} literal=Literal
 	| ServiceCallArgument
-	| {IdentityArgument} 'own-id'
-	| {VariableArgument} variable=[Variable|ID];
+	| ServiceArgument;
 
 /**
  * A service method that answers a question the carrier cannot answer itself. Only the trailing '('
  * tells this apart from a plain value, so the decision is made by looking that far ahead.
  */
 ServiceCallArgument:
-	=> (method=[Method|FQN] '(') (args+=[Variable|ID] (',' args+=[Variable|ID])*)? ')';
+	=> (method=[Method|FQN] '(') (args+=ServiceArgument (',' args+=ServiceArgument)*)? ')';
+
+/**
+ * One value handed over, either to a rule directly or on to a service the rule's answer comes from.
+ * A service asked about the thing being acted on needs its identity as much as the refusal naming it
+ * does - seven calls in the melkheftken corpus do - so the same spellings serve both places.
+ *
+ * 'own' names what the carrier holds now, as against what the operation would give it. A bare name
+ * resolves to the operation's parameter first, which is right nearly everywhere and exactly wrong for
+ * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
+ * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
+ * the command, where the name is read by whoever sends it.
+ */
+ServiceArgument returns RuleArgument:
+	{IdentityArgument} 'own-id'
+	| {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+	| {VariableArgument} variable=[Variable|ID];
 
 /** Meta information assigned to a DSL type. */
 AnnotationInstance:

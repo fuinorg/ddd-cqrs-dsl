@@ -86,6 +86,14 @@ context foo {
 				requires links.is-empty()
 			}
 
+			/** Makes sure nothing references it any more, comparing against a written-out value. */
+			business-rule MustNotBeReferenced exception SomeException {
+				/** How many records still reference it. */
+				Integer referenceCount
+				consistency strong
+				requires referenceCount == 0
+			}
+
 			/** Makes sure the name is free. */
 			business-rule NameMustBeUnique exception SomeException {
 				/** Whether the name is taken. */
@@ -128,16 +136,18 @@ context foo {
 			}
 
 			/** Renames it, checking the name against a service and against a fixed limit. */
-			method rename business-rules NameMustBeUnique(exists(newName)), MustBeAssigned(name, 10, own-id) {
+			method rename business-rules NameMustBeUnique(exists(newName, own-id)), MustBeAssigned(own name, 10, own-id) {
 				hint org.fuin.Whatever { "on-the-method" : true }
 				/** The new name. */
 				String newName
 				operation-context RenameService
 				service RenameService {
-					/** Whether the name is taken. */
+					/** Whether the name is taken by anything other than the thing being renamed. */
 					method exists {
 						/** The name to check. */
 						String candidate
+						/** The thing being renamed, which its own name does not collide with. */
+						ThingId thing
 						returns Boolean
 					}
 				}

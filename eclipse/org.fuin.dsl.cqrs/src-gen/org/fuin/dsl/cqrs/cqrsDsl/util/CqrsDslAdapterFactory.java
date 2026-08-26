@@ -24,6 +24,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BooleanLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CommandHandler;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
@@ -78,6 +79,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
@@ -266,6 +268,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseRuleOperand(RuleOperand object)
       {
         return createRuleOperandAdapter();
+      }
+      @Override
+      public Adapter caseLiteral(Literal object)
+      {
+        return createLiteralAdapter();
       }
       @Override
       public Adapter caseAnnotation(Annotation object)
@@ -458,11 +465,6 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createProcessReactionAdapter();
       }
       @Override
-      public Adapter caseLiteral(Literal object)
-      {
-        return createLiteralAdapter();
-      }
-      @Override
       public Adapter caseJSON(JSON object)
       {
         return createJSONAdapter();
@@ -563,6 +565,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
         return createRuleNullOperandAdapter();
       }
       @Override
+      public Adapter caseRuleLiteralOperand(RuleLiteralOperand object)
+      {
+        return createRuleLiteralOperandAdapter();
+      }
+      @Override
       public Adapter caseLiteralArgument(LiteralArgument object)
       {
         return createLiteralArgumentAdapter();
@@ -571,6 +578,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseIdentityArgument(IdentityArgument object)
       {
         return createIdentityArgumentAdapter();
+      }
+      @Override
+      public Adapter caseCarrierAttributeArgument(CarrierAttributeArgument object)
+      {
+        return createCarrierAttributeArgumentAdapter();
       }
       @Override
       public Adapter caseVariableArgument(VariableArgument object)
@@ -925,6 +937,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createRuleOperandAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Literal <em>Literal</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Literal
+   * @generated
+   */
+  public Adapter createLiteralAdapter()
   {
     return null;
   }
@@ -1500,21 +1527,6 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.Literal <em>Literal</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Literal
-   * @generated
-   */
-  public Adapter createLiteralAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.JSON <em>JSON</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1815,6 +1827,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand <em>Rule Literal Operand</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand
+   * @generated
+   */
+  public Adapter createRuleLiteralOperandAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument <em>Literal Argument</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1840,6 +1867,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createIdentityArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument <em>Carrier Attribute Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
+   * @generated
+   */
+  public Adapter createCarrierAttributeArgumentAdapter()
   {
     return null;
   }

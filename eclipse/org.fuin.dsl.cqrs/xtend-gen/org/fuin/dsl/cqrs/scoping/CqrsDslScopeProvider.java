@@ -78,14 +78,13 @@ public class CqrsDslScopeProvider extends AbstractCqrsDslScopeProvider {
     if (!_matched) {
       if (Objects.equals(reference, CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE)) {
         _matched=true;
-      }
-      if (!_matched) {
-        if (Objects.equals(reference, CqrsDslPackage.Literals.SERVICE_CALL_ARGUMENT__ARGS)) {
-          _matched=true;
-        }
-      }
-      if (_matched) {
         _switchResult = Scopes.scopeFor(this.carrierVariables(context));
+      }
+    }
+    if (!_matched) {
+      if (Objects.equals(reference, CqrsDslPackage.Literals.CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE)) {
+        _matched=true;
+        _switchResult = Scopes.scopeFor(this.declaringAttributes(context));
       }
     }
     if (!_matched) {

@@ -82,6 +82,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "own-id"                  { return KW_OWN_ID; }
 
   // ---- Structural keywords ----
+  "own"                     { return KW_OWN; }
   "context"                 { return KW_CONTEXT; }
   "module"                  { return KW_MODULE; }
   "import"                  { return KW_IMPORT; }

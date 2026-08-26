@@ -44,6 +44,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel;
@@ -125,6 +126,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String COMMAND_MSG_UNCLOSED_VAR = "commandMsgUnclosedVar";
 
   public static final String RULE_OWN_ID_IN_CONSTRUCTOR = "ruleOwnIdInConstructor";
+
+  public static final String RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR = "ruleOwnAttributeInConstructor";
 
   public static final String RULE_EXCEPTION_NOT_SUPPLIED = "ruleExceptionNotSupplied";
 
@@ -877,6 +880,27 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         "\'own-id\' has nothing to read in a constructor, which is what creates the identity", argument, 
         null, 
         CqrsDslValidator.RULE_OWN_ID_IN_CONSTRUCTOR);
+    }
+  }
+
+  /**
+   * A constructor has no prior state either. 'own' names what the carrier holds now, as against what
+   * the operation would give it, and before the carrier exists there is no "now" to read.
+   */
+  @Check
+  public void checkOwnAttributeOutsideConstructor(final CarrierAttributeArgument argument) {
+    final Constructor constructor = EcoreUtil2.<Constructor>getContainerOfType(argument, Constructor.class);
+    if ((constructor != null)) {
+      Attribute _attribute = argument.getAttribute();
+      String _name = null;
+      if (_attribute!=null) {
+        _name=_attribute.getName();
+      }
+      String _plus = ("\'own " + _name);
+      String _plus_1 = (_plus + "\' has nothing to read in a constructor, which is what creates the state");
+      this.error(_plus_1, argument, 
+        null, 
+        CqrsDslValidator.RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR);
     }
   }
 

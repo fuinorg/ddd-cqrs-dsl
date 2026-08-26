@@ -166,6 +166,7 @@
     KW_REQUIRES='requires'
     KW_IS_EMPTY='is-empty'
     KW_OWN_ID='own-id'
+    KW_OWN='own'
 
     // Punctuation
     LBRACE='{'
@@ -490,11 +491,19 @@ constraint_instance ::= type_ref (LPAREN literal (COMMA literal)* RPAREN)?
 // parenthesis that follows it, so it is tried first.
 // 'own-id' is a keyword, not a reference: the identity is never a declared attribute, so there is
 // nothing for a reference to point at. Ahead of variable_argument because it must not be read as a name.
-rule_argument ::= service_call_argument | identity_argument | variable_argument | literal
+rule_argument ::= service_call_argument | service_argument | literal
 
 identity_argument ::= KW_OWN_ID
 
-service_call_argument ::= ID LPAREN (ID (COMMA ID)*)? RPAREN
+// What the carrier holds now, as against what the operation would give it. A bare name resolves to
+// the operation's parameter, which an edit commonly names after the very field it would overwrite.
+carrier_attribute_argument ::= KW_OWN ID
+
+service_call_argument ::= ID LPAREN (service_argument (COMMA service_argument)*)? RPAREN
+
+// A service asked about the thing being acted on is handed its identity, for the same reason a rule
+// takes 'own-id' directly: it is not a declared attribute, so nothing can point at it.
+service_argument ::= identity_argument | carrier_attribute_argument | variable_argument
 
 variable_argument ::= ID
 
@@ -541,7 +550,9 @@ rule_atom_tail ::= compare_op rule_operand
 
 compare_op ::= EQ | NEQ | LE | GE | LT | GT
 
-rule_operand ::= ID | KW_NULL
+// A written-out value is the boundary the rule states about itself - "referenceCount == 0". 'null' is
+// listed on its own rather than through 'literal', which also contains it: absence is its own operand.
+rule_operand ::= ID | KW_NULL | KW_TRUE | KW_FALSE | NUMBER | STRING
 
 annotation_instance ::= AT type_ref (LPAREN literal (COMMA literal)* RPAREN)? { pin=1 }
 

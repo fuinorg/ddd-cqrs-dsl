@@ -57,6 +57,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.eclipse.xtext.EcoreUtil2
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
@@ -108,6 +109,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val COMMAND_MSG_UNCLOSED_VAR = 'commandMsgUnclosedVar'
 
 	public static val RULE_OWN_ID_IN_CONSTRUCTOR = 'ruleOwnIdInConstructor'
+
+	public static val RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR = 'ruleOwnAttributeInConstructor'
 
 	public static val RULE_EXCEPTION_NOT_SUPPLIED = 'ruleExceptionNotSupplied'
 
@@ -752,6 +755,24 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				argument,
 				null,
 				RULE_OWN_ID_IN_CONSTRUCTOR
+			)
+		}
+	}
+
+	/**
+	 * A constructor has no prior state either. 'own' names what the carrier holds now, as against what
+	 * the operation would give it, and before the carrier exists there is no "now" to read.
+	 */
+	@Check
+	def checkOwnAttributeOutsideConstructor(CarrierAttributeArgument argument) {
+		val constructor = EcoreUtil2.getContainerOfType(argument, Constructor)
+		if (constructor !== null) {
+			error(
+				"'own " + argument.attribute?.name
+					+ "' has nothing to read in a constructor, which is what creates the state",
+				argument,
+				null,
+				RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR
 			)
 		}
 	}

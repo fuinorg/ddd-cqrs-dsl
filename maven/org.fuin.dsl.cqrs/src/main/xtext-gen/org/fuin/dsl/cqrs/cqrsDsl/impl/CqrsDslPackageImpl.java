@@ -25,6 +25,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BooleanLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.CollisionStrategy;
 import org.fuin.dsl.cqrs.cqrsDsl.Command;
 import org.fuin.dsl.cqrs.cqrsDsl.CommandHandler;
@@ -87,6 +88,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
@@ -266,6 +268,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass ruleOperandEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass literalEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -538,13 +547,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass literalEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass jsonEClass = null;
 
   /**
@@ -685,6 +687,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass ruleLiteralOperandEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass literalArgumentEClass = null;
 
   /**
@@ -693,6 +702,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass identityArgumentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass carrierAttributeArgumentEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1832,6 +1848,28 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EClass getRuleOperand()
   {
     return ruleOperandEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getLiteral()
+  {
+    return literalEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getLiteral_Value()
+  {
+    return (EAttribute)literalEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -3457,28 +3495,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EClass getLiteral()
-  {
-    return literalEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getLiteral_Value()
-  {
-    return (EAttribute)literalEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getJSON()
   {
     return jsonEClass;
@@ -3908,6 +3924,28 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EClass getRuleLiteralOperand()
+  {
+    return ruleLiteralOperandEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getRuleLiteralOperand_Literal()
+  {
+    return (EReference)ruleLiteralOperandEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getLiteralArgument()
   {
     return literalArgumentEClass;
@@ -3933,6 +3971,28 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EClass getIdentityArgument()
   {
     return identityArgumentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getCarrierAttributeArgument()
+  {
+    return carrierAttributeArgumentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getCarrierAttributeArgument_Attribute()
+  {
+    return (EReference)carrierAttributeArgumentEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -4211,6 +4271,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     ruleOperandEClass = createEClass(RULE_OPERAND);
 
+    literalEClass = createEClass(LITERAL);
+    createEAttribute(literalEClass, LITERAL__VALUE);
+
     annotationEClass = createEClass(ANNOTATION);
     createEReference(annotationEClass, ANNOTATION__ATTRIBUTES);
 
@@ -4396,9 +4459,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEReference(processReactionEClass, PROCESS_REACTION__ARM_TIMEOUT);
     createEAttribute(processReactionEClass, PROCESS_REACTION__CANCEL_TIMEOUT);
 
-    literalEClass = createEClass(LITERAL);
-    createEAttribute(literalEClass, LITERAL__VALUE);
-
     jsonEClass = createEClass(JSON);
 
     jsonObjectEClass = createEClass(JSON_OBJECT);
@@ -4458,10 +4518,16 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     ruleNullOperandEClass = createEClass(RULE_NULL_OPERAND);
     createEAttribute(ruleNullOperandEClass, RULE_NULL_OPERAND__NULL_VALUE);
 
+    ruleLiteralOperandEClass = createEClass(RULE_LITERAL_OPERAND);
+    createEReference(ruleLiteralOperandEClass, RULE_LITERAL_OPERAND__LITERAL);
+
     literalArgumentEClass = createEClass(LITERAL_ARGUMENT);
     createEReference(literalArgumentEClass, LITERAL_ARGUMENT__LITERAL);
 
     identityArgumentEClass = createEClass(IDENTITY_ARGUMENT);
+
+    carrierAttributeArgumentEClass = createEClass(CARRIER_ATTRIBUTE_ARGUMENT);
+    createEReference(carrierAttributeArgumentEClass, CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE);
 
     variableArgumentEClass = createEClass(VARIABLE_ARGUMENT);
     createEReference(variableArgumentEClass, VARIABLE_ARGUMENT__VARIABLE);
@@ -4555,8 +4621,10 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     ruleIsEmptyEClass.getESuperTypes().add(this.getRuleExpr());
     ruleRefOperandEClass.getESuperTypes().add(this.getRuleOperand());
     ruleNullOperandEClass.getESuperTypes().add(this.getRuleOperand());
+    ruleLiteralOperandEClass.getESuperTypes().add(this.getRuleOperand());
     literalArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     identityArgumentEClass.getESuperTypes().add(this.getRuleArgument());
+    carrierAttributeArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     variableArgumentEClass.getESuperTypes().add(this.getRuleArgument());
 
     // Initialize classes and features; add operations and parameters
@@ -4672,6 +4740,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEClass(ruleExprEClass, RuleExpr.class, "RuleExpr", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(ruleOperandEClass, RuleOperand.class, "RuleOperand", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(literalEClass, Literal.class, "Literal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLiteral_Value(), ecorePackage.getEString(), "value", null, 0, 1, Literal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(annotationEClass, Annotation.class, "Annotation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAnnotation_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, Annotation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4804,7 +4875,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(serviceCallArgumentEClass, ServiceCallArgument.class, "ServiceCallArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getServiceCallArgument_Method(), this.getMethod(), null, "method", null, 0, 1, ServiceCallArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getServiceCallArgument_Args(), this.getVariable(), null, "args", null, 0, -1, ServiceCallArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getServiceCallArgument_Args(), this.getRuleArgument(), null, "args", null, 0, -1, ServiceCallArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(annotationInstanceEClass, AnnotationInstance.class, "AnnotationInstance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAnnotationInstance_Annotation(), this.getAnnotation(), null, "annotation", null, 0, 1, AnnotationInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4857,9 +4928,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getProcessReaction_ToState(), this.getProcessState(), null, "toState", null, 0, 1, ProcessReaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getProcessReaction_ArmTimeout(), this.getDuration(), null, "armTimeout", null, 0, 1, ProcessReaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getProcessReaction_CancelTimeout(), ecorePackage.getEBoolean(), "cancelTimeout", null, 0, 1, ProcessReaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(literalEClass, Literal.class, "Literal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLiteral_Value(), ecorePackage.getEString(), "value", null, 0, 1, Literal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(jsonEClass, org.fuin.dsl.cqrs.cqrsDsl.JSON.class, "JSON", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -4920,10 +4988,16 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEClass(ruleNullOperandEClass, RuleNullOperand.class, "RuleNullOperand", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getRuleNullOperand_NullValue(), ecorePackage.getEString(), "nullValue", null, 0, 1, RuleNullOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(ruleLiteralOperandEClass, RuleLiteralOperand.class, "RuleLiteralOperand", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getRuleLiteralOperand_Literal(), this.getLiteral(), null, "literal", null, 0, 1, RuleLiteralOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(literalArgumentEClass, LiteralArgument.class, "LiteralArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLiteralArgument_Literal(), this.getLiteral(), null, "literal", null, 0, 1, LiteralArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(identityArgumentEClass, IdentityArgument.class, "IdentityArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(carrierAttributeArgumentEClass, CarrierAttributeArgument.class, "CarrierAttributeArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getCarrierAttributeArgument_Attribute(), this.getAttribute(), null, "attribute", null, 0, 1, CarrierAttributeArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(variableArgumentEClass, VariableArgument.class, "VariableArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVariableArgument_Variable(), this.getVariable(), null, "variable", null, 0, 1, VariableArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

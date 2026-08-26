@@ -47,15 +47,15 @@ public interface ServiceCallArgument extends RuleArgument
   void setMethod(Method value);
 
   /**
-   * Returns the value of the '<em><b>Args</b></em>' reference list.
-   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Variable}.
+   * Returns the value of the '<em><b>Args</b></em>' containment reference list.
+   * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.RuleArgument}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Args</em>' reference list.
+   * @return the value of the '<em>Args</em>' containment reference list.
    * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getServiceCallArgument_Args()
-   * @model
+   * @model containment="true"
    * @generated
    */
-  EList<Variable> getArgs();
+  EList<RuleArgument> getArgs();
 
 } // ServiceCallArgument

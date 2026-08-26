@@ -2,6 +2,7 @@ package org.fuin.dsl.ddd.gen.rule
 
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Method
@@ -64,9 +65,18 @@ class SrcRuleConstruction {
                 }
                 return carrier + ".getId()"
             }
+            CarrierAttributeArgument: {
+                if (carrier === null) {
+                    throw new GenerateException("'own " + arg.attribute.name + "' has nothing to read in "
+                        + operation.name + ": a creating operation has no prior state")
+                }
+                return carrier + ".get" + arg.attribute.name.toFirstUpper + "()"
+            }
             VariableArgument: return valueOf(arg.variable.name)
             ServiceCallArgument: {
-                val call = arg.args.nullSafe.map[valueOf(name)].join(", ")
+                // The same spellings a rule takes, one level down - a service asked about the thing
+                // being acted on needs its identity as much as the refusal naming it does.
+                val call = arg.args.nullSafe.map[argument].join(", ")
                 return serviceParameter(arg.method) + "." + arg.method.name + "(" + call + ")"
             }
             default: throw new GenerateException("Unknown rule argument: " + arg?.class?.simpleName)

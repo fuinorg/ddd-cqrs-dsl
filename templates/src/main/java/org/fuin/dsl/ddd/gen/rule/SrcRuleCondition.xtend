@@ -8,6 +8,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty
+import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNot
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr
@@ -15,6 +16,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
+
+import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 
 /**
  * Renders a rule's <code>requires</code> condition as the Java expression that says it holds.
@@ -103,12 +106,16 @@ class SrcRuleCondition {
     }
 
     /**
-     * The right hand side: one of the rule's own attributes, or a named value of an enumeration.
+     * The right hand side: one of the rule's own attributes, a named value of an enumeration, or a
+     * value written out in the condition itself.
      *
-     * <p>Both are a bare identifier in the model and are told apart by what they resolve to, which is
-     * the same decision the scope provider makes when the model is compiled.
+     * <p>The first two are a bare identifier in the model and are told apart by what they resolve to,
+     * which is the same decision the scope provider makes when the model is compiled.
      */
     def private String operandOf(Object operand) throws GenerateException {
+        if (operand instanceof RuleLiteralOperand) {
+            return operand.literal.str
+        }
         if (operand instanceof RuleRefOperand) {
             val target = operand.target
             switch (target) {

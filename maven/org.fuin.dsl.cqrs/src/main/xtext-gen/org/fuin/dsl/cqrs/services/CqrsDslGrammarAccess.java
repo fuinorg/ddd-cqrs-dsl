@@ -1549,22 +1549,33 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Action cRuleNullOperandAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cNullValueAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cNullValueNullKeyword_1_1_0 = (Keyword)cNullValueAssignment_1_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
+		private final Action cRuleLiteralOperandAction_2_0 = (Action)cGroup_2.eContents().get(0);
+		private final Assignment cLiteralAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cLiteralRuleLiteralParserRuleCall_2_1_0 = (RuleCall)cLiteralAssignment_2_1.eContents().get(0);
 		
 		///**
-		// * Right hand side of a comparison - another attribute, a named value of an enumeration, or 'null'.
+		// * Right hand side of a comparison - another attribute, a named value of an enumeration, a value written
+		// * out here, or 'null'.
 		// *
 		// * An attribute and an enumeration value are both a bare identifier, so no amount of lookahead can tell
 		// * them apart: which of the two is meant is decided by the scope, from the type of the attribute on the
 		// * left. The reference is therefore declared against 'EObject' and narrowed there, rather than split
 		// * into two alternatives the parser cannot choose between.
+		// *
+		// * A written-out value is for the boundary a rule states about itself rather than reads: "no record
+		// * references it any more" is 'referenceCount == 0', and the refusal quotes the count it was handed. The
+		// * alternative is an attribute whose only actual is that same literal, which says the boundary twice.
 		// */
 		//RuleOperand:
 		//    {RuleRefOperand} target=[ecore::EObject|ID]
-		//    | {RuleNullOperand} nullValue='null';
+		//    | {RuleNullOperand} nullValue='null'
+		//    | {RuleLiteralOperand} literal=RuleLiteral;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//{RuleRefOperand} target=[ecore::EObject|ID]
 		//| {RuleNullOperand} nullValue='null'
+		//| {RuleLiteralOperand} literal=RuleLiteral
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//{RuleRefOperand} target=[ecore::EObject|ID]
@@ -1593,6 +1604,45 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//'null'
 		public Keyword getNullValueNullKeyword_1_1_0() { return cNullValueNullKeyword_1_1_0; }
+		
+		//{RuleLiteralOperand} literal=RuleLiteral
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//{RuleLiteralOperand}
+		public Action getRuleLiteralOperandAction_2_0() { return cRuleLiteralOperandAction_2_0; }
+		
+		//literal=RuleLiteral
+		public Assignment getLiteralAssignment_2_1() { return cLiteralAssignment_2_1; }
+		
+		//RuleLiteral
+		public RuleCall getLiteralRuleLiteralParserRuleCall_2_1_0() { return cLiteralRuleLiteralParserRuleCall_2_1_0; }
+	}
+	public class RuleLiteralElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.RuleLiteral");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cBooleanLiteralParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cNumberLiteralParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cStringLiteralParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		
+		///**
+		// * A value written out in a condition. 'null' is not among them: it is its own operand already, and two
+		// * ways of writing the same thing would be two shapes for every reader of the tree to handle.
+		// */
+		//RuleLiteral returns Literal:
+		//    BooleanLiteral | NumberLiteral | StringLiteral;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//BooleanLiteral | NumberLiteral | StringLiteral
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//BooleanLiteral
+		public RuleCall getBooleanLiteralParserRuleCall_0() { return cBooleanLiteralParserRuleCall_0; }
+		
+		//NumberLiteral
+		public RuleCall getNumberLiteralParserRuleCall_1() { return cNumberLiteralParserRuleCall_1; }
+		
+		//StringLiteral
+		public RuleCall getStringLiteralParserRuleCall_2() { return cStringLiteralParserRuleCall_2; }
 	}
 	public class AnnotationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.Annotation");
@@ -4153,14 +4203,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cLiteralAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
 		private final RuleCall cLiteralLiteralParserRuleCall_0_1_0 = (RuleCall)cLiteralAssignment_0_1.eContents().get(0);
 		private final RuleCall cServiceCallArgumentParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
-		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
-		private final Action cIdentityArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
-		private final Keyword cOwnIdKeyword_2_1 = (Keyword)cGroup_2.eContents().get(1);
-		private final Group cGroup_3 = (Group)cAlternatives.eContents().get(3);
-		private final Action cVariableArgumentAction_3_0 = (Action)cGroup_3.eContents().get(0);
-		private final Assignment cVariableAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final CrossReference cVariableVariableCrossReference_3_1_0 = (CrossReference)cVariableAssignment_3_1.eContents().get(0);
-		private final RuleCall cVariableVariableIDTerminalRuleCall_3_1_0_1 = (RuleCall)cVariableVariableCrossReference_3_1_0.eContents().get(1);
+		private final RuleCall cServiceArgumentParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		
 		///**
 		// * One actual of a business rule usage - a value the carrier holds, a service method that answers a
@@ -4175,14 +4218,12 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//RuleArgument:
 		//    {LiteralArgument} literal=Literal
 		//    | ServiceCallArgument
-		//    | {IdentityArgument} 'own-id'
-		//    | {VariableArgument} variable=[Variable|ID];
+		//    | ServiceArgument;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//{LiteralArgument} literal=Literal
 		//| ServiceCallArgument
-		//| {IdentityArgument} 'own-id'
-		//| {VariableArgument} variable=[Variable|ID]
+		//| ServiceArgument
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//{LiteralArgument} literal=Literal
@@ -4200,29 +4241,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//ServiceCallArgument
 		public RuleCall getServiceCallArgumentParserRuleCall_1() { return cServiceCallArgumentParserRuleCall_1; }
 		
-		//{IdentityArgument} 'own-id'
-		public Group getGroup_2() { return cGroup_2; }
-		
-		//{IdentityArgument}
-		public Action getIdentityArgumentAction_2_0() { return cIdentityArgumentAction_2_0; }
-		
-		//'own-id'
-		public Keyword getOwnIdKeyword_2_1() { return cOwnIdKeyword_2_1; }
-		
-		//{VariableArgument} variable=[Variable|ID]
-		public Group getGroup_3() { return cGroup_3; }
-		
-		//{VariableArgument}
-		public Action getVariableArgumentAction_3_0() { return cVariableArgumentAction_3_0; }
-		
-		//variable=[Variable|ID]
-		public Assignment getVariableAssignment_3_1() { return cVariableAssignment_3_1; }
-		
-		//[Variable|ID]
-		public CrossReference getVariableVariableCrossReference_3_1_0() { return cVariableVariableCrossReference_3_1_0; }
-		
-		//ID
-		public RuleCall getVariableVariableIDTerminalRuleCall_3_1_0_1() { return cVariableVariableIDTerminalRuleCall_3_1_0_1; }
+		//ServiceArgument
+		public RuleCall getServiceArgumentParserRuleCall_2() { return cServiceArgumentParserRuleCall_2; }
 	}
 	public class ServiceCallArgumentElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ServiceCallArgument");
@@ -4235,13 +4255,11 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cLeftParenthesisKeyword_0_0_1 = (Keyword)cGroup_0_0.eContents().get(1);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
 		private final Assignment cArgsAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
-		private final CrossReference cArgsVariableCrossReference_1_0_0 = (CrossReference)cArgsAssignment_1_0.eContents().get(0);
-		private final RuleCall cArgsVariableIDTerminalRuleCall_1_0_0_1 = (RuleCall)cArgsVariableCrossReference_1_0_0.eContents().get(1);
+		private final RuleCall cArgsServiceArgumentParserRuleCall_1_0_0 = (RuleCall)cArgsAssignment_1_0.eContents().get(0);
 		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
 		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
 		private final Assignment cArgsAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
-		private final CrossReference cArgsVariableCrossReference_1_1_1_0 = (CrossReference)cArgsAssignment_1_1_1.eContents().get(0);
-		private final RuleCall cArgsVariableIDTerminalRuleCall_1_1_1_0_1 = (RuleCall)cArgsVariableCrossReference_1_1_1_0.eContents().get(1);
+		private final RuleCall cArgsServiceArgumentParserRuleCall_1_1_1_0 = (RuleCall)cArgsAssignment_1_1_1.eContents().get(0);
 		private final Keyword cRightParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		
 		///**
@@ -4249,10 +4267,10 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		// * tells this apart from a plain value, so the decision is made by looking that far ahead.
 		// */
 		//ServiceCallArgument:
-		//    => (method=[Method|FQN] '(') (args+=[Variable|ID] (',' args+=[Variable|ID])*)? ')';
+		//    => (method=[Method|FQN] '(') (args+=ServiceArgument (',' args+=ServiceArgument)*)? ')';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//=> (method=[Method|FQN] '(') (args+=[Variable|ID] (',' args+=[Variable|ID])*)? ')'
+		//=> (method=[Method|FQN] '(') (args+=ServiceArgument (',' args+=ServiceArgument)*)? ')'
 		public Group getGroup() { return cGroup; }
 		
 		//=> (method=[Method|FQN] '(')
@@ -4273,35 +4291,111 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'('
 		public Keyword getLeftParenthesisKeyword_0_0_1() { return cLeftParenthesisKeyword_0_0_1; }
 		
-		//(args+=[Variable|ID] (',' args+=[Variable|ID])*)?
+		//(args+=ServiceArgument (',' args+=ServiceArgument)*)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//args+=[Variable|ID]
+		//args+=ServiceArgument
 		public Assignment getArgsAssignment_1_0() { return cArgsAssignment_1_0; }
 		
-		//[Variable|ID]
-		public CrossReference getArgsVariableCrossReference_1_0_0() { return cArgsVariableCrossReference_1_0_0; }
+		//ServiceArgument
+		public RuleCall getArgsServiceArgumentParserRuleCall_1_0_0() { return cArgsServiceArgumentParserRuleCall_1_0_0; }
 		
-		//ID
-		public RuleCall getArgsVariableIDTerminalRuleCall_1_0_0_1() { return cArgsVariableIDTerminalRuleCall_1_0_0_1; }
-		
-		//(',' args+=[Variable|ID])*
+		//(',' args+=ServiceArgument)*
 		public Group getGroup_1_1() { return cGroup_1_1; }
 		
 		//','
 		public Keyword getCommaKeyword_1_1_0() { return cCommaKeyword_1_1_0; }
 		
-		//args+=[Variable|ID]
+		//args+=ServiceArgument
 		public Assignment getArgsAssignment_1_1_1() { return cArgsAssignment_1_1_1; }
 		
-		//[Variable|ID]
-		public CrossReference getArgsVariableCrossReference_1_1_1_0() { return cArgsVariableCrossReference_1_1_1_0; }
-		
-		//ID
-		public RuleCall getArgsVariableIDTerminalRuleCall_1_1_1_0_1() { return cArgsVariableIDTerminalRuleCall_1_1_1_0_1; }
+		//ServiceArgument
+		public RuleCall getArgsServiceArgumentParserRuleCall_1_1_1_0() { return cArgsServiceArgumentParserRuleCall_1_1_1_0; }
 		
 		//')'
 		public Keyword getRightParenthesisKeyword_2() { return cRightParenthesisKeyword_2; }
+	}
+	public class ServiceArgumentElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ServiceArgument");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Action cIdentityArgumentAction_0_0 = (Action)cGroup_0.eContents().get(0);
+		private final Keyword cOwnIdKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
+		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
+		private final Action cCarrierAttributeArgumentAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Keyword cOwnKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cAttributeAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
+		private final CrossReference cAttributeAttributeCrossReference_1_2_0 = (CrossReference)cAttributeAssignment_1_2.eContents().get(0);
+		private final RuleCall cAttributeAttributeIDTerminalRuleCall_1_2_0_1 = (RuleCall)cAttributeAttributeCrossReference_1_2_0.eContents().get(1);
+		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
+		private final Action cVariableArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
+		private final Assignment cVariableAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final CrossReference cVariableVariableCrossReference_2_1_0 = (CrossReference)cVariableAssignment_2_1.eContents().get(0);
+		private final RuleCall cVariableVariableIDTerminalRuleCall_2_1_0_1 = (RuleCall)cVariableVariableCrossReference_2_1_0.eContents().get(1);
+		
+		///**
+		// * One value handed over, either to a rule directly or on to a service the rule's answer comes from.
+		// * A service asked about the thing being acted on needs its identity as much as the refusal naming it
+		// * does - seven calls in the melkheftken corpus do - so the same spellings serve both places.
+		// *
+		// * 'own' names what the carrier holds now, as against what the operation would give it. A bare name
+		// * resolves to the operation's parameter first, which is right nearly everywhere and exactly wrong for
+		// * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
+		// * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
+		// * the command, where the name is read by whoever sends it.
+		// */
+		//ServiceArgument returns RuleArgument:
+		//    {IdentityArgument} 'own-id'
+		//    | {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+		//    | {VariableArgument} variable=[Variable|ID];
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{IdentityArgument} 'own-id'
+		//| {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+		//| {VariableArgument} variable=[Variable|ID]
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//{IdentityArgument} 'own-id'
+		public Group getGroup_0() { return cGroup_0; }
+		
+		//{IdentityArgument}
+		public Action getIdentityArgumentAction_0_0() { return cIdentityArgumentAction_0_0; }
+		
+		//'own-id'
+		public Keyword getOwnIdKeyword_0_1() { return cOwnIdKeyword_0_1; }
+		
+		//{CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+		public Group getGroup_1() { return cGroup_1; }
+		
+		//{CarrierAttributeArgument}
+		public Action getCarrierAttributeArgumentAction_1_0() { return cCarrierAttributeArgumentAction_1_0; }
+		
+		//'own'
+		public Keyword getOwnKeyword_1_1() { return cOwnKeyword_1_1; }
+		
+		//attribute=[Attribute|ID]
+		public Assignment getAttributeAssignment_1_2() { return cAttributeAssignment_1_2; }
+		
+		//[Attribute|ID]
+		public CrossReference getAttributeAttributeCrossReference_1_2_0() { return cAttributeAttributeCrossReference_1_2_0; }
+		
+		//ID
+		public RuleCall getAttributeAttributeIDTerminalRuleCall_1_2_0_1() { return cAttributeAttributeIDTerminalRuleCall_1_2_0_1; }
+		
+		//{VariableArgument} variable=[Variable|ID]
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//{VariableArgument}
+		public Action getVariableArgumentAction_2_0() { return cVariableArgumentAction_2_0; }
+		
+		//variable=[Variable|ID]
+		public Assignment getVariableAssignment_2_1() { return cVariableAssignment_2_1; }
+		
+		//[Variable|ID]
+		public CrossReference getVariableVariableCrossReference_2_1_0() { return cVariableVariableCrossReference_2_1_0; }
+		
+		//ID
+		public RuleCall getVariableVariableIDTerminalRuleCall_2_1_0_1() { return cVariableVariableIDTerminalRuleCall_2_1_0_1; }
 	}
 	public class AnnotationInstanceElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AnnotationInstance");
@@ -6346,6 +6440,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final RuleUnaryElements pRuleUnary;
 	private final RuleAtomElements pRuleAtom;
 	private final RuleOperandElements pRuleOperand;
+	private final RuleLiteralElements pRuleLiteral;
 	private final CompareOpElements eCompareOp;
 	private final AnnotationElements pAnnotation;
 	private final ExceptionElements pException;
@@ -6377,6 +6472,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final BusinessRuleInstanceElements pBusinessRuleInstance;
 	private final RuleArgumentElements pRuleArgument;
 	private final ServiceCallArgumentElements pServiceCallArgument;
+	private final ServiceArgumentElements pServiceArgument;
 	private final AnnotationInstanceElements pAnnotationInstance;
 	private final ServiceElements pService;
 	private final CommandElements pCommand;
@@ -6452,6 +6548,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pRuleUnary = new RuleUnaryElements();
 		this.pRuleAtom = new RuleAtomElements();
 		this.pRuleOperand = new RuleOperandElements();
+		this.pRuleLiteral = new RuleLiteralElements();
 		this.eCompareOp = new CompareOpElements();
 		this.pAnnotation = new AnnotationElements();
 		this.pException = new ExceptionElements();
@@ -6483,6 +6580,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pBusinessRuleInstance = new BusinessRuleInstanceElements();
 		this.pRuleArgument = new RuleArgumentElements();
 		this.pServiceCallArgument = new ServiceCallArgumentElements();
+		this.pServiceArgument = new ServiceArgumentElements();
 		this.pAnnotationInstance = new AnnotationInstanceElements();
 		this.pService = new ServiceElements();
 		this.pCommand = new CommandElements();
@@ -7063,22 +7161,42 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	///**
-	// * Right hand side of a comparison - another attribute, a named value of an enumeration, or 'null'.
+	// * Right hand side of a comparison - another attribute, a named value of an enumeration, a value written
+	// * out here, or 'null'.
 	// *
 	// * An attribute and an enumeration value are both a bare identifier, so no amount of lookahead can tell
 	// * them apart: which of the two is meant is decided by the scope, from the type of the attribute on the
 	// * left. The reference is therefore declared against 'EObject' and narrowed there, rather than split
 	// * into two alternatives the parser cannot choose between.
+	// *
+	// * A written-out value is for the boundary a rule states about itself rather than reads: "no record
+	// * references it any more" is 'referenceCount == 0', and the refusal quotes the count it was handed. The
+	// * alternative is an attribute whose only actual is that same literal, which says the boundary twice.
 	// */
 	//RuleOperand:
 	//    {RuleRefOperand} target=[ecore::EObject|ID]
-	//    | {RuleNullOperand} nullValue='null';
+	//    | {RuleNullOperand} nullValue='null'
+	//    | {RuleLiteralOperand} literal=RuleLiteral;
 	public RuleOperandElements getRuleOperandAccess() {
 		return pRuleOperand;
 	}
 	
 	public ParserRule getRuleOperandRule() {
 		return getRuleOperandAccess().getRule();
+	}
+	
+	///**
+	// * A value written out in a condition. 'null' is not among them: it is its own operand already, and two
+	// * ways of writing the same thing would be two shapes for every reader of the tree to handle.
+	// */
+	//RuleLiteral returns Literal:
+	//    BooleanLiteral | NumberLiteral | StringLiteral;
+	public RuleLiteralElements getRuleLiteralAccess() {
+		return pRuleLiteral;
+	}
+	
+	public ParserRule getRuleLiteralRule() {
+		return getRuleLiteralAccess().getRule();
 	}
 	
 	///**
@@ -7556,8 +7674,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//RuleArgument:
 	//    {LiteralArgument} literal=Literal
 	//    | ServiceCallArgument
-	//    | {IdentityArgument} 'own-id'
-	//    | {VariableArgument} variable=[Variable|ID];
+	//    | ServiceArgument;
 	public RuleArgumentElements getRuleArgumentAccess() {
 		return pRuleArgument;
 	}
@@ -7571,13 +7688,36 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	// * tells this apart from a plain value, so the decision is made by looking that far ahead.
 	// */
 	//ServiceCallArgument:
-	//    => (method=[Method|FQN] '(') (args+=[Variable|ID] (',' args+=[Variable|ID])*)? ')';
+	//    => (method=[Method|FQN] '(') (args+=ServiceArgument (',' args+=ServiceArgument)*)? ')';
 	public ServiceCallArgumentElements getServiceCallArgumentAccess() {
 		return pServiceCallArgument;
 	}
 	
 	public ParserRule getServiceCallArgumentRule() {
 		return getServiceCallArgumentAccess().getRule();
+	}
+	
+	///**
+	// * One value handed over, either to a rule directly or on to a service the rule's answer comes from.
+	// * A service asked about the thing being acted on needs its identity as much as the refusal naming it
+	// * does - seven calls in the melkheftken corpus do - so the same spellings serve both places.
+	// *
+	// * 'own' names what the carrier holds now, as against what the operation would give it. A bare name
+	// * resolves to the operation's parameter first, which is right nearly everywhere and exactly wrong for
+	// * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
+	// * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
+	// * the command, where the name is read by whoever sends it.
+	// */
+	//ServiceArgument returns RuleArgument:
+	//    {IdentityArgument} 'own-id'
+	//    | {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+	//    | {VariableArgument} variable=[Variable|ID];
+	public ServiceArgumentElements getServiceArgumentAccess() {
+		return pServiceArgument;
+	}
+	
+	public ParserRule getServiceArgumentRule() {
+		return getServiceArgumentAccess().getRule();
 	}
 	
 	///** Meta information assigned to a DSL type. */

@@ -244,6 +244,20 @@ context de.fuin.rules {
         }
 
         /**
+         * Makes sure nothing references it any more. The boundary is written out in the condition:
+         * it belongs to the rule rather than to the state being judged, so nobody supplies it.
+         */
+        business-rule MustNotBeReferenced exception NameTakenException {
+
+            /** How many records still reference it, as the caller counted them. */
+            Integer referenceCount
+
+            consistency strong
+
+            requires referenceCount == 0
+        }
+
+        /**
          * Makes sure the name is free.
          */
         business-rule NameMustBeUniqueForType exception NameTakenException {

@@ -3,52 +3,29 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.28.0
-- **A business rule is checked against the refusal it names.** An exception declares what it needs in
-  order to say what it refused, and a rule declares what it decides from; where the two do not overlap
-  by name, the generated rule cannot construct its own refusal. Reported where the model can be changed
-  rather than as a generator failure in whichever project regenerates next. Only for a rule that
-  declares a condition - one without is written by hand, and one not yet given its inputs is unfinished
-  rather than wrong.
-- **A rule usage is checked against what the rule declares.** The actuals bind positionally and every
-  one of them is a reference, so handing over one too few silently shifts the rest and usually still
-  resolves.
-- **A business rule can be handed the carrier's own identity**, with `own-id` in the actuals of a rule
-  usage. It is a keyword rather than a reference because an aggregate states its identity as
-  `identifier` and never as an attribute, so there is nothing for a cross reference to point at - and it
-  is what lets a refusal name the thing it refused, which six operations in a real model need.
-  Hyphenated, so it costs no model the right to call an attribute `id`. A constructor may not use it: it
-  is what creates the identity, and the generated validator's method for a create is static for the
-  same reason.
-- **A command's `message` is now checked, and is deliberately stricter than an event's.** An event's
-  message is rendered by the JVM alone, so anything Jakarta EL understands passes. A command's is a
-  confirmation prompt shown *before* the command is sent, so the client renders it too - and a client
-  without an expression language cannot evaluate `${amount.doubleValue()}`. What a command may write is
-  therefore the intersection: a plain variable or a dotted path, over the command's own attributes or
-  the parameters of the operation it targets, plus the implicit `entityIdPath`. Three separate errors,
-  because they are three separate mistakes: nothing closes the placeholder, no renderer understands it,
-  or nothing supplies it.
-- **A read model row can name the attribute that identifies it**, with `identified-by`. It is a cross
-  reference, so renaming the attribute follows and a typo is a linking error - unlike the `@Key("id")`
-  annotation it replaces, whose argument is a string nothing checks.
-- **A business key is now a construct rather than three restatements of one fact.** `key <Name>` sits
-  beside the attributes it names, says what a collision does (`on-collision refuse`, `overwrite` or
-  `skip`), carries its own `consistency`, and may carry a `display-as` format. `no-key` states that a
-  type has none on purpose, and its documentation is mandatory so the reason cannot be a shrug.
-
-- **A business rule declares the values it is handed and the condition it verifies**: attributes in its
-  body, and `requires <expression>` over them. The expression language is deliberately small - `!`,
-  `&&`, `||`, parentheses, the six comparisons and `.is-empty()` - and every name in it is a cross
-  reference: an attribute of the rule, or a value of the enumeration
-  the attribute on the left is typed with. There is no property access and no arithmetic.
-- **A rule usage binds its actuals** - `MustBeAssigned(assignedEntry, id)` - to what the carrying
-  operation actually holds: its parameters, the type's attributes, or a method of the operation
-  context. One rule can therefore be carried by operations that agree on nothing, which is what the
-  previously unused `params` slot was always for.
-- **A `command` carries `slabel`/`label`/`tooltip`** like every other named element except an event, so
-  a client no longer has to fall back to its documentation for a menu entry.
-- **A `hint` may sit wherever wording may** - on a module, value object, entity id, aggregate id, enum,
-  entity, aggregate, method, command, and inside an attribute's or parameter's brace block - rather
-  than only on a context and a view.
+- **A business rule is checked against the refusal it names** - a rule that does not hold what its
+  exception needs is reported in the model rather than failing generation downstream.
+- **A rule usage is checked against what the rule declares** - the actuals bind positionally, so one too
+  few silently shifts the rest.
+- **A business rule declares the values it is handed and a `requires` condition** over them: `!`,
+  `&&`, `||`, parentheses, the six comparisons and `.is-empty()`, every name a cross reference.
+- **A rule usage binds its actuals** to what the carrying operation holds, so one rule can be carried by
+  operations that agree on nothing.
+- **`own-id` hands a rule the carrier's own identity**, in the actuals or on to a service call. A
+  constructor may not use it: it is what creates the identity.
+- **`own <attribute>` hands a rule what the carrier holds now**, which a bare name cannot reach when the
+  operation's parameter is named after the field it would overwrite.
+- **A condition may compare against a value written out in it**, such as `referenceCount == 0`. `null`
+  keeps its own spelling.
+- **A command's `message` is checked, and is stricter than an event's** - a plain variable or a dotted
+  path only, because the client renders it before sending and has no expression language.
+- **`identified-by` names the attribute that identifies a read model row**, as a cross reference rather
+  than the unchecked string `@Key` took.
+- **`key`/`no-key` make a business key a construct**: its attributes, an `on-collision` strategy, its own
+  `consistency` and an optional `display-as`. `no-key` needs documentation, so the reason cannot be a
+  shrug.
+- **A `command` carries `slabel`/`label`/`tooltip`** like every other named element except an event.
+- **A `hint` may sit wherever wording may**, rather than only on a context and a view.
 
 ## 1.27.0
 - **A dependency cycle between modules is now an error.** The modules a module depends on are read

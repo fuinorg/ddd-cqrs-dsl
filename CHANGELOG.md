@@ -6,54 +6,31 @@ The plugins have their own change notes:
 - [IntelliJ Plugin](intellij/CHANGELOG.md) 
 
 ## 1.0.0-SNAPSHOT
-- Grammar: `identified-by` on a value object, `key`/`no-key` on an aggregate or entity, attributes and a `requires` predicate on a business rule, bound actuals on a rule usage,
-  `slabel`/`label`/`tooltip` on a command, and a `hint` slot wherever wording may sit. Local cross
-  references (a rule's own attributes, a row's identity, a key's attributes, an enumeration's values)
-  are narrowed by `CqrsDslScopeProvider` so they cannot resolve to a same named element elsewhere.
+- Grammar: `identified-by` on a value object, `key`/`no-key` on an aggregate or entity, attributes and a
+  `requires` predicate on a business rule, bound actuals on a rule usage - the carrier's own identity
+  with `own-id` and its prior state with `own`, either handed to the rule or on to a service call - a
+  written-out value on the right of a comparison, `slabel`/`label`/`tooltip` on a command, and a `hint`
+  slot wherever wording may sit. Local cross references are narrowed by `CqrsDslScopeProvider` so they
+  cannot resolve to a same named element elsewhere.
+- A `business-rule` with a `requires` condition generates the class that verifies it; one without
+  generates nothing, because a stub would let a declared rule go unenforced with the build green.
+- The class that verifies everything one aggregate or entity declares is generated, one method per
+  operation, so the model is the complete list of what is enforced. A creating operation gets a static
+  method, having no instance to read state from.
+- A newly created write-once operation calls its validator in one line instead of carrying a
+  `// TODO Verify …` per rule. An existing file is untouched.
+- An aggregate's and an entity's declared attributes now reach the generated abstract, as fields with a
+  `public final` getter and a `protected final` setter. **This is not source compatible**: a write-once
+  class declaring its own getter for a declared attribute no longer compiles, which is deliberate.
+- A command's `message` is validated, and stricter than an event's, so the two renderers cannot drift.
 - Flutter: a row's identity is read from `identified-by` rather than parsed out of a `@Key` annotation,
-  so naming an attribute the row does not have is a resolution error instead of a screen with no
-  identity. A row that declares an `EntityIdPath` as its identity is recognised as identified by it -
-  a child of a root there are many of cannot be addressed by its own id - while an undeclared path
-  stays a column, because a row carries a path to another thing far more often than to itself. The
-  annotation is no longer read at all, and is gone from `cqrs-common`.
-- Flutter: a command now carries **the rules a client can answer for itself** - the predicate as a const
-  tree, plus where each value comes from. Advisory and deliberately incomplete: a rule handed a service
-  call (a question only the server can ask) or a parameter of the operation (nobody has typed it yet) is
-  left out entirely rather than half described, and a command with none carries no field at all, because
-  an empty list would read as "nothing guards this". Which rules a client can decide is now a question
-  the model answers rather than one somebody answers by reading Java.
-- A newly created write-once operation now **calls its validator in one line** - `new XRules(this).op(...)`,
-  or the static form for a create - instead of carrying one `// TODO Verify …` comment per rule. That
-  line is the whole contract between the two: adding a rule to an operation never means editing the
-  write-once file again. An existing file is untouched, being written once and never regenerated.
-- The class that **verifies everything one aggregate or entity declares** is now generated: one method
-  per operation, constructing each rule from the actuals the usage binds. Nothing can be skipped - the
-  write-once operation names its operation and nothing else, and no method on the validator takes a rule
-  from outside, so the model is the complete list of what is enforced. A creating operation gets a
-  static method, having no instance to read state from.
-- An aggregate's and an entity's **declared attributes now reach the generated abstract**, as fields with
-  a `public final` getter and a `protected final` setter - until now the abstract carried only the
-  identity, and every attribute the model declared lived as a hand-written field in the write-once class
-  with no accessor. A rule validator is a separate class and can only read what the aggregate exposes, so
-  it could read almost nothing. **This is not source compatible**: a write-once class that declares its
-  own getter for a declared attribute no longer compiles, which is deliberate - the alternative silently
-  shadows the field, leaving the validator reading one copy while the operations write another.
-- A `business-rule` that declares a `requires` condition now generates the class that verifies it: the
-  rule's attributes as its constructor, the condition as the check, and the model's own exception thrown
-  when it does not hold. `==` becomes `Objects.equals` (Java's own is identity and every attribute here
-  is a value object), only a comparison against `null` stays `== null`, and ordering a date is
-  `compareTo`. A rule with **no** `requires` generates nothing at all - those conditions are written by
-  hand, and a stub would let a newly declared rule appear unenforced with the build still green.
-- A command's `message` is validated: a plain variable or a dotted path, over the command's own
-  attributes or its target operation's parameters, plus the implicit `entityIdPath`. Stricter than an
-  event's message on purpose - the client renders a command's prompt before sending, and has no
-  expression language - so the two renderers cannot drift.
-- Flutter: a generated Dart enum now carries the attributes the model declares on it, as final fields
-  beside the wire name, plus an `operator []` to reach one by name. Without them a client cannot resolve
-  `${provider.id}` in a command message at all - its idea of the provider is the wire name `BAZG_CH`
-  where the model's `id` says `BAZG` - so the two renderers would disagree about the same sentence. An
-  attribute of a type no Dart `const` can hold is refused at generation time rather than emitted as
-  uncompilable Dart. An enumeration that declares no attributes generates exactly what it did.
-- Flutter: a command's own `slabel`/`label`/`tooltip` reach its descriptor and the translation bundle,
-  so a client captions a button with the wording the model gives rather than the documentation.
+  which is no longer read at all and is gone from `cqrs-common`. A declared `EntityIdPath` identity is
+  recognised as one; an undeclared path stays a column.
+- Flutter: a command carries the rules a client can answer for itself, as a const predicate tree plus
+  where each value comes from. Advisory and deliberately incomplete - a rule needing a service call or an
+  untyped parameter is left out entirely, and a command with none carries no field at all.
+- Flutter: a generated Dart enum carries the attributes the model declares on it, plus an `operator []`
+  to reach one by name, without which a client cannot resolve `${provider.id}` in a command message. An
+  attribute no Dart `const` can hold is refused at generation time.
+- Flutter: a command's own `slabel`/`label`/`tooltip` reach its descriptor and the translation bundle.
 - Initial version

@@ -186,6 +186,9 @@
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//RuleExpr"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//RuleOperand"/>
+    <genClasses ecoreClass="CqrsDsl.ecore#//Literal">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Literal/value"/>
+    </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Annotation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Annotation/attributes"/>
     </genClasses>
@@ -315,7 +318,7 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//RuleArgument"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//ServiceCallArgument">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ServiceCallArgument/method"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ServiceCallArgument/args"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ServiceCallArgument/args"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//AnnotationInstance">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AnnotationInstance/annotation"/>
@@ -368,9 +371,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessReaction/toState"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//ProcessReaction/armTimeout"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//ProcessReaction/cancelTimeout"/>
-    </genClasses>
-    <genClasses ecoreClass="CqrsDsl.ecore#//Literal">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Literal/value"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//JSON"/>
     <genClasses ecoreClass="CqrsDsl.ecore#//JsonObject">
@@ -425,10 +425,16 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//RuleNullOperand">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//RuleNullOperand/nullValue"/>
     </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//RuleLiteralOperand">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//RuleLiteralOperand/literal"/>
+    </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//LiteralArgument">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//LiteralArgument/literal"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//IdentityArgument"/>
+    <genClasses ecoreClass="CqrsDsl.ecore#//CarrierAttributeArgument">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//CarrierAttributeArgument/attribute"/>
+    </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//VariableArgument">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//VariableArgument/variable"/>
     </genClasses>

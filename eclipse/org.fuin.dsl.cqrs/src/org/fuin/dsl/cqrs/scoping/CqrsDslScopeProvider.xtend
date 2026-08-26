@@ -61,9 +61,13 @@ class CqrsDslScopeProvider extends AbstractCqrsDslScopeProvider {
 			}
 			// An actual is something the operation carrying the rule holds, and so is an argument
 			// handed to a service method.
-			case CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE,
-			case CqrsDslPackage.Literals.SERVICE_CALL_ARGUMENT__ARGS:
+			case CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE:
 				Scopes.scopeFor(context.carrierVariables)
+			// 'own' reaches past the operation's parameters to the state of the type itself, which is
+			// the one case a bare name cannot express: an edit's parameter commonly carries the very
+			// name of the field it would overwrite.
+			case CqrsDslPackage.Literals.CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE:
+				Scopes.scopeFor(context.declaringAttributes)
 			// A rule reaches outside itself only through the operation's declared context.
 			case CqrsDslPackage.Literals.SERVICE_CALL_ARGUMENT__METHOD:
 				Scopes.scopeFor(context.contextMethods)

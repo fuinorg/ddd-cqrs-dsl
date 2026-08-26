@@ -13,7 +13,10 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
+import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
+import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison
 import org.fuin.dsl.cqrs.cqrsDsl.RuleIsEmpty
@@ -315,7 +318,117 @@ class CqrsDslGrammarAdditionsTest {
 		'''.parsed
 		val call = model.getAllContentsOfType(ServiceCallArgument).head
 		Assertions.assertEquals("exists", call.method.name)
-		Assertions.assertEquals(#["newName"], call.args.map[name])
+		Assertions.assertEquals(#["newName"], call.args.map[(it as VariableArgument).variable.name])
+	}
+
+	/**
+	 * A service asked about the thing being acted on is handed its identity, which is not a declared
+	 * attribute and therefore cannot be a reference - the same reason a rule takes 'own-id' directly.
+	 */
+	@Test
+	def void serviceCallTakesOwnId() {
+		val model = '''
+			context foo {
+				module bar {
+
+					type String
+					type Boolean
+
+					/** Something went wrong. */
+					exception SomeException {
+						message "Nope"
+					}
+
+					aggregate-id ThingId identifies Thing {}
+
+					aggregate Thing identifier ThingId {
+
+						String name
+
+						/** Makes sure nothing else points at it. */
+						business-rule MustNotBeReferenced exception SomeException {
+							/** Whether anything still points at it. */
+							Boolean referenced
+							consistency strong
+							requires !referenced
+						}
+
+						/** Removes it. */
+						method remove business-rules MustNotBeReferenced(referenced(own-id)) {
+							operation-context RemoveService
+							service RemoveService {
+								/** Whether anything still points at the thing. */
+								method referenced {
+									/** The thing to count references for. */
+									ThingId thing
+									returns Boolean
+								}
+							}
+						}
+
+					}
+
+				}
+			}
+		'''.parsed
+		val call = model.getAllContentsOfType(ServiceCallArgument).head
+		Assertions.assertEquals("referenced", call.method.name)
+		Assertions.assertEquals(1, call.args.size)
+		Assertions.assertTrue(call.args.head instanceof IdentityArgument)
+	}
+
+	/**
+	 * A rule guarding an edit needs the value the carrier holds now as well as the one the operation
+	 * would give it, and an edit's parameter is commonly named after the very field it overwrites.
+	 * 'own' reaches past the parameters, so the two are told apart by the model rather than by naming.
+	 */
+	@Test
+	def void usageBindsThePriorValuePastAShadowingParameter() {
+		val model = '''
+			context foo {
+				module bar {
+
+					type String
+					type Boolean
+
+					/** Something went wrong. */
+					exception SomeException {
+						message "Nope"
+					}
+
+					aggregate-id ThingId identifies Thing {}
+
+					aggregate Thing identifier ThingId {
+
+						String name
+
+						/** Makes sure a locked thing keeps the name it has. */
+						business-rule LockedNameMustNotChange exception SomeException {
+							/** The name it carries now. */
+							String name
+							/** The name the edit would give it. */
+							String newName
+							consistency strong
+							requires name == newName
+						}
+
+						/** Renames it, under a parameter named after the field it overwrites. */
+						method rename business-rules LockedNameMustNotChange(own name, name) {
+							/** The new name. */
+							String name
+						}
+
+					}
+
+				}
+			}
+		'''.parsed
+		val aggregate = model.getAllContentsOfType(Aggregate).head
+		val actuals = model.getAllContentsOfType(BusinessRuleInstance).head.params
+		// The first actual is the field the parameter shadows, the second the parameter itself.
+		Assertions.assertSame(aggregate.attributes.head, (actuals.get(0) as CarrierAttributeArgument).attribute)
+		Assertions.assertSame(aggregate.methods.head.parameters.head,
+			(actuals.get(1) as VariableArgument).variable)
 	}
 
 	/** A plain value of the operation is an actual too, and so is a literal. */
