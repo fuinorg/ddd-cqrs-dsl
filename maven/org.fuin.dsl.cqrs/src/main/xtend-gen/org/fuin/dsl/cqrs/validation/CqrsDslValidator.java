@@ -71,6 +71,10 @@ import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -132,6 +136,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String RULE_EXCEPTION_NOT_SUPPLIED = "ruleExceptionNotSupplied";
 
   public static final String RULE_ACTUALS_MISMATCH = "ruleActualsMismatch";
+
+  public static final String RULE_COMPARISON_TYPE_MISMATCH = "ruleComparisonTypeMismatch";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
@@ -841,6 +847,53 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           CqrsDslValidator.RULE_EXCEPTION_NOT_SUPPLIED);
         return;
       }
+    }
+  }
+
+  /**
+   * Two attributes compared against each other must be of the same type.
+   * 
+   * <p>Nothing else catches this. The scope lets any of the rule's own attributes stand on the right,
+   * '==' generates 'Objects.equals', and Java is happy to compare two unrelated types - so a condition
+   * over a 'ReceiptType' and a 'CategoryType' links, compiles, runs, and is always false. A rule that
+   * always refuses is the worst of the failures this generator exists to prevent, because everything
+   * about it looks like it works.
+   */
+  @Check
+  public void checkComparisonOperandTypes(final RuleComparison comparison) {
+    final RuleAttrRef left = comparison.getLeft();
+    final RuleOperand right = comparison.getRight();
+    if (((!(left instanceof RuleAttrRef)) || (!(right instanceof RuleRefOperand)))) {
+      return;
+    }
+    final Attribute leftAttribute = ((RuleAttrRef) left).getAttribute();
+    Type _type = null;
+    if (leftAttribute!=null) {
+      _type=leftAttribute.getType();
+    }
+    final Type leftType = _type;
+    final EObject target = ((RuleRefOperand) right).getTarget();
+    if (((leftType == null) || (!(target instanceof Attribute)))) {
+      return;
+    }
+    final Attribute rightAttribute = ((Attribute) target);
+    final Type rightType = rightAttribute.getType();
+    if (((rightType != null) && (leftType != rightType))) {
+      String _name = leftAttribute.getName();
+      String _plus = ("\'" + _name);
+      String _plus_1 = (_plus + "\' is a ");
+      String _name_1 = leftType.getName();
+      String _plus_2 = (_plus_1 + _name_1);
+      String _plus_3 = (_plus_2 + " and \'");
+      String _name_2 = rightAttribute.getName();
+      String _plus_4 = (_plus_3 + _name_2);
+      String _plus_5 = (_plus_4 + "\' is a ");
+      String _name_3 = rightType.getName();
+      String _plus_6 = (_plus_5 + _name_3);
+      String _plus_7 = (_plus_6 + "; comparing them is always false");
+      this.error(_plus_7, comparison, 
+        CqrsDslPackage.Literals.RULE_COMPARISON__RIGHT, 
+        CqrsDslValidator.RULE_COMPARISON_TYPE_MISMATCH);
     }
   }
 

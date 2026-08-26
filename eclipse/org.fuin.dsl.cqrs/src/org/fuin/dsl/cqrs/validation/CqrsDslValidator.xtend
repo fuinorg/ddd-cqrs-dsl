@@ -37,6 +37,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 import org.fuin.dsl.cqrs.cqrsDsl.Import
 import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.ReturnType
+import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef
+import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison
+import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
 import org.fuin.dsl.cqrs.cqrsDsl.Service
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
@@ -115,6 +118,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val RULE_EXCEPTION_NOT_SUPPLIED = 'ruleExceptionNotSupplied'
 
 	public static val RULE_ACTUALS_MISMATCH = 'ruleActualsMismatch'
+
+	public static val RULE_COMPARISON_TYPE_MISMATCH = 'ruleComparisonTypeMismatch'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
@@ -718,6 +723,42 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				)
 				return
 			}
+		}
+	}
+
+	/**
+	 * Two attributes compared against each other must be of the same type.
+	 *
+	 * <p>Nothing else catches this. The scope lets any of the rule's own attributes stand on the right,
+	 * '==' generates 'Objects.equals', and Java is happy to compare two unrelated types - so a condition
+	 * over a 'ReceiptType' and a 'CategoryType' links, compiles, runs, and is always false. A rule that
+	 * always refuses is the worst of the failures this generator exists to prevent, because everything
+	 * about it looks like it works.
+	 */
+	@Check
+	def checkComparisonOperandTypes(RuleComparison comparison) {
+		val left = comparison.left
+		val right = comparison.right
+		if (!(left instanceof RuleAttrRef) || !(right instanceof RuleRefOperand)) {
+			return
+		}
+		val leftAttribute = (left as RuleAttrRef).attribute
+		val leftType = leftAttribute?.type
+		val target = (right as RuleRefOperand).target
+		if (leftType === null || !(target instanceof Attribute)) {
+			return
+		}
+		val rightAttribute = target as Attribute
+		val rightType = rightAttribute.type
+		if (rightType !== null && leftType !== rightType) {
+			error(
+				"'" + leftAttribute.name + "' is a " + leftType.name + " and '"
+					+ rightAttribute.name + "' is a " + rightType.name
+					+ "; comparing them is always false",
+				comparison,
+				CqrsDslPackage.Literals::RULE_COMPARISON__RIGHT,
+				RULE_COMPARISON_TYPE_MISMATCH
+			)
 		}
 	}
 

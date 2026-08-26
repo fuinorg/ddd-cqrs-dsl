@@ -104,6 +104,52 @@ public class CqrsBusinessRuleValidationTest {
     }
   }
 
+  @Test
+  public void testComparingTwoAttributesOfTheSameTypeIsFine() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("/** The thing being acted on. */");
+      _builder.newLine();
+      _builder.append("ThingId thing");
+      _builder.newLine();
+      _builder.append("/** The one it must not be. */");
+      _builder.newLine();
+      _builder.append("ThingId other");
+      _builder.newLine();
+      _builder.append("consistency strong");
+      _builder.newLine();
+      _builder.append("requires thing != other");
+      _builder.newLine();
+      this._validationTestHelper.assertNoIssues(this.parseHelper.parse(this.model(_builder.toString(), "MustBeOpen(own-id, own-id)")));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  @Test
+  public void testComparingTwoAttributesOfDifferentTypesIsAlwaysFalse() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("/** The thing being acted on. */");
+      _builder.newLine();
+      _builder.append("ThingId thing");
+      _builder.newLine();
+      _builder.append("/** Something else entirely. */");
+      _builder.newLine();
+      _builder.append("String text");
+      _builder.newLine();
+      _builder.append("consistency strong");
+      _builder.newLine();
+      _builder.append("requires thing != text");
+      _builder.newLine();
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.model(_builder.toString(), "MustBeOpen(own-id, own-id)")), 
+        CqrsDslPackage.Literals.RULE_COMPARISON, 
+        CqrsDslValidator.RULE_COMPARISON_TYPE_MISMATCH);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
   private String model(final String ruleBody, final String usage) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("context p {");

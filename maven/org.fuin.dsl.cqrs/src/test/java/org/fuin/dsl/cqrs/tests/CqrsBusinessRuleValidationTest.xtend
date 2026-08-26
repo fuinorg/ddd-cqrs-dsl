@@ -74,6 +74,35 @@ class CqrsBusinessRuleValidationTest {
 			CqrsDslValidator.RULE_ACTUALS_MISMATCH)
 	}
 
+	@Test
+	def void testComparingTwoAttributesOfTheSameTypeIsFine() {
+		parseHelper.parse(model('''
+			/** The thing being acted on. */
+			ThingId thing
+			/** The one it must not be. */
+			ThingId other
+			consistency strong
+			requires thing != other
+		''', "MustBeOpen(own-id, own-id)")).assertNoIssues
+	}
+
+	@Test
+	def void testComparingTwoAttributesOfDifferentTypesIsAlwaysFalse() {
+		// Nothing else catches this: the scope lets any of the rule's attributes stand on the right,
+		// "==" becomes Objects.equals, and Java compares two unrelated types happily. The rule would
+		// link, compile, run and always refuse - which looks exactly like a rule that works.
+		parseHelper.parse(model('''
+			/** The thing being acted on. */
+			ThingId thing
+			/** Something else entirely. */
+			String text
+			consistency strong
+			requires thing != text
+		''', "MustBeOpen(own-id, own-id)")).assertError(
+			CqrsDslPackage.Literals.RULE_COMPARISON,
+			CqrsDslValidator.RULE_COMPARISON_TYPE_MISMATCH)
+	}
+
 	private def String model(String ruleBody, String usage) '''
 		context p {
 			module c.n {
