@@ -256,7 +256,7 @@ abstract class AbstractDartSource<TYPE> extends AbstractSource<TYPE> {
     }
 
     /** Escapes a value for a single-quoted Dart string literal. */
-    protected static def String dartString(String value) {
+    static def String dartString(String value) {
         if (value === null) {
             return "null"
         }
@@ -270,7 +270,7 @@ abstract class AbstractDartSource<TYPE> extends AbstractSource<TYPE> {
      * attributes - <code>Create ${kind} category '${name}'</code>. Dart must not try to interpolate it,
      * so it is emitted as a raw string rather than escaped one character at a time.
      */
-    protected static def String dartStringRaw(String value) {
+    static def String dartStringRaw(String value) {
         if (value === null) {
             return "null"
         }

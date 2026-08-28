@@ -21,6 +21,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleOr
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
+import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.srcgen4j.commons.GenerateException
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
@@ -47,6 +48,12 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
  * </ul>
  *
  * <p>A rule with no condition is left out too: it is written by hand, so there is no predicate to ship.
+ *
+ * <p>Each one carries the refusal's own wording, so an action shown greyed out and the same action
+ * pressed anyway say one thing rather than two. It travels as the template the model wrote, because it
+ * names the thing it refused and only this side knows which thing that is. Its placeholders always
+ * resolve: the generator already refuses a model whose exception asks for something the rule does not
+ * hold, so every name in the message is a name the rule was handed.
  */
 class DartRuleDescriptors {
 
@@ -141,6 +148,7 @@ class DartRuleDescriptors {
         val parts = new ArrayList<String>()
         parts.add("  rule: '" + rule.name + "',")
         parts.add("  predicate: " + predicate(rule.requires) + ",")
+        parts.add("  reason: " + AbstractDartSource.dartStringRaw(rule.exception.message) + ",")
         if (!fromAttribute.empty) {
             val entries = new ArrayList<String>()
             for (entry : fromAttribute.entrySet) {

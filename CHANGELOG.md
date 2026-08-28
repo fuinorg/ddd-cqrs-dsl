@@ -29,6 +29,8 @@ The plugins have their own change notes:
 - Flutter: a command carries the rules a client can answer for itself, as a const predicate tree plus
   where each value comes from. Advisory and deliberately incomplete - a rule needing a service call or an
   untyped parameter is left out entirely, and a command with none carries no field at all.
+- Flutter: each of those rules also carries its refusal's own wording, so an action a screen greys out
+  and the same action pressed anyway say one thing rather than two.
 - Flutter: a generated Dart enum carries the attributes the model declares on it, plus an `operator []`
   to reach one by name, without which a client cannot resolve `${provider.id}` in a command message. An
   attribute no Dart `const` can hold is refused at generation time.

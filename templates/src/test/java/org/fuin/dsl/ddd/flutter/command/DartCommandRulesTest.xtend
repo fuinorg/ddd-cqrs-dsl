@@ -50,6 +50,14 @@ class DartCommandRulesTest {
     }
 
     @Test
+    def void testTheRefusalsOwnWordingTravelsWithTheRule() {
+        // A greyed-out action and the same action pressed anyway have to say one thing. The template
+        // stays a template: it names the thing it refused, and only the client knows which thing.
+        assertThat(generate("UnassignReceiptCommand"))
+            .contains("reason: r'Receipt ${receipt} backs no journal entry',")
+    }
+
+    @Test
     def void testTheRuleAndTheRowMayCallOneValueDifferentThings() {
         // The actuals bind where the rule is used, so the mapping travels rather than being assumed.
         assertThat(generate("UnassignReceiptCommand"))
