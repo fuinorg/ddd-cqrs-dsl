@@ -29,6 +29,9 @@ public final class TypeKeys {
     /** An <code>entity-id</code>: <code>«Name»</code>. */
     public static final String JAVA_ENTITY_ID = "java-entity-id";
 
+    /** An <code>entity-id-path</code>: <code>«Name»</code>. */
+    public static final String JAVA_ENTITY_ID_PATH = "java-entity-id-path";
+
     /** An <code>enum</code>: <code>«Name»</code>. */
     public static final String JAVA_ENUM = "java-enum";
 
@@ -245,6 +248,8 @@ public final class TypeKeys {
             return JAVA_AGGREGATE_ID;
         case "EntityId":
             return JAVA_ENTITY_ID;
+        case "EntityIdPathType":
+            return JAVA_ENTITY_ID_PATH;
         case "EnumObject":
             return JAVA_ENUM;
         case "Event":

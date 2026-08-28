@@ -1,0 +1,29 @@
+context p {
+
+    module x {
+
+        type String
+
+        type UUID
+
+        aggregate-id AnnualTransactionsId identifies AnnualTransactions base UUID { }
+
+        entity-id AccountTransactionId identifies Transaction base String { }
+
+        /** How a transaction is addressed: it lives inside one account-year. */
+        entity-id-path AccountTransactionPath {
+            AnnualTransactionsId / AccountTransactionId
+        }
+
+        /** A transaction that may hold another of its own kind. */
+        entity-id-path NestedTransactionPath {
+            AnnualTransactionsId / AccountTransactionId[1..*]
+        }
+
+        aggregate AnnualTransactions identifier AnnualTransactionsId { }
+
+        entity Transaction identifier AccountTransactionId root AnnualTransactions { }
+
+    }
+
+}

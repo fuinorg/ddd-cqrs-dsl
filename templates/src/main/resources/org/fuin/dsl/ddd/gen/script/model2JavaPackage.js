@@ -62,6 +62,7 @@ function model2JavaPackage(element, typeKey) {
         case 'java-aggregate-id-stream-factory':
         case 'java-entity-id':
         case 'java-entity-id-abstract':
+        case 'java-entity-id-path':
         case 'java-enum':
         case 'java-enum-abstract':
         case 'java-event':
