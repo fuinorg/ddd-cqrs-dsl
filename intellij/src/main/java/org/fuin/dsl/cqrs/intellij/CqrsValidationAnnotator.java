@@ -95,6 +95,7 @@ public final class CqrsValidationAnnotator implements Annotator {
         }
         if (element instanceof CqrsValueObject) {
             checkValueObjectBase((CqrsValueObject) element, holder);
+            checkRowAnswersTheGatesItOffers((CqrsValueObject) element, holder);
         } else if (element instanceof CqrsAttribute) {
             CqrsAttribute attribute = (CqrsAttribute) element;
             checkVariableNameLowerCase(attribute, holder);
@@ -628,6 +629,48 @@ public final class CqrsValidationAnnotator implements Annotator {
                 error(holder, instance, prefix + " (" + typeNames(inputs) + ") " + suffix);
             }
         }
+    }
+
+    // --- row gates ------------------------------------------------------------------------------
+
+    /**
+     * Reports a row that offers a command whose client-answerable gates it cannot answer.
+     *
+     * <p>The port of the Xtext validator's {@code checkRowAnswersTheGatesItOffers}, so the editor says
+     * what the build says. A menu is drawn on a row, and a command gated by a rule over the aggregate's
+     * own state can be left out of it rather than offered and refused - which the client decides from
+     * what the row publishes. A row that offers the command and omits what the gate reads makes the gate
+     * work on one screen and quietly do nothing on another.</p>
+     *
+     * <p><b>A warning rather than an error, deliberately.</b> Whether a row publishes what a rule reads
+     * is a modelling decision with real costs on the other side - a count is what a person wants to read
+     * where a collection is what the rule asks. What this removes is the silence, not the choice.</p>
+     */
+    private void checkRowAnswersTheGatesItOffers(@NotNull CqrsValueObject row, @NotNull AnnotationHolder holder) {
+        List<CqrsRowGates.Unanswered> unanswered = CqrsRowGates.of(row);
+        if (unanswered.isEmpty()) {
+            return;
+        }
+        PsiElement range = row.getNameIdentifier() != null ? row.getNameIdentifier() : row;
+        for (CqrsRowGates.Unanswered gate : unanswered) {
+            holder.newAnnotation(HighlightSeverity.WARNING,
+                    "'" + row.getName() + "' offers '" + gate.command() + "', which is gated by '"
+                            + gate.rule() + "', but does not publish " + quoted(gate.missing())
+                            + " - so a client cannot tell whether to offer the action and always will")
+                    .range(range).create();
+        }
+    }
+
+    /** Names as a reader would list them: 'a', 'b' and 'c'. */
+    private static @NotNull String quoted(@NotNull List<String> names) {
+        List<String> quoted = new ArrayList<>();
+        for (String name : names) {
+            quoted.add("'" + name + "'");
+        }
+        if (quoted.size() == 1) {
+            return quoted.get(0);
+        }
+        return String.join(", ", quoted.subList(0, quoted.size() - 1)) + " and " + quoted.get(quoted.size() - 1);
     }
 
     // --- helper ---------------------------------------------------------------------------------

@@ -52,7 +52,10 @@ import org.eclipse.emf.common.util.EList
 import org.fuin.dsl.cqrs.cqrsDsl.Type
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractVOExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
@@ -136,6 +139,8 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val IMPORT_UNUSED = 'importUnused'
 
 	public static val MODULE_DEPENDENCY_CYCLE = 'moduleDependencyCycle'
+
+	public static val ROW_CANNOT_ANSWER_GATE = 'rowCannotAnswerGate'
 
 	public static val SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents"
 
@@ -1443,5 +1448,148 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
     	}
     	return list
     }
+
+	/**
+	 * Warns when a view row offers a command whose client-answerable gates it cannot answer.
+	 *
+	 * <p>A menu is drawn on a row, and a command gated by a rule over the aggregate's own state can be
+	 * left out of that menu rather than offered and refused. The client decides that from what the row
+	 * publishes, so a row that offers the command and omits what the gate reads makes the gate work on
+	 * one screen and quietly do nothing on another. The silence is the problem: an unanswerable gate is
+	 * indistinguishable from a gate nobody wrote.
+	 *
+	 * <p><b>A warning rather than an error, deliberately.</b> Whether a row publishes what a rule reads
+	 * is a modelling decision with real costs on the other side - a count is what a person wants to read
+	 * where a collection is what the rule asks, and an identity provider's own id has no business on a
+	 * row merely so a menu can be shorter. So this states the gap and leaves the choice; what it removes
+	 * is the silence, not the omission.
+	 *
+	 * <p>It is also conservative in one direction and blind in another. Conservative, because it asks for
+	 * every value the rule is handed rather than only those its condition reads - which is what the
+	 * client actually needs to construct the rule at all. Blind, because a fact no view projects matches
+	 * no row and is never reported: a row missing one attribute is caught, an aggregate with no row is
+	 * not.
+	 *
+	 * <p><b>The build is the enforcement point.</b> SrcGen4J parses the whole model into one resource
+	 * set, so a build sees every command and every row. An editor validates one resource and reaches the
+	 * rest through the index, so a gate declared in a file that is not open may go unreported - the same
+	 * trade the module cycle check makes.
+	 */
+	@Check
+	def checkRowAnswersTheGatesItOffers(ValueObject row) {
+		if(CqrsModelArchives.isArchived(row.eResource?.URI)) return;
+
+		// Being identifiable is what makes a value object a row: it is how a client reads the row's own
+		// identity, and a row without one can be neither a command's target nor a detail route.
+		val identity = row.rowIdentity
+		if(identity === null || identity.type === null) return;
+
+		// A row is a type some view method hands back. A value object that merely holds a reference to
+		// something looks identified in exactly the same way and no menu is ever drawn on it - which is
+		// how a dead type and a nested one both got reported before this narrowed.
+		if(!returnedByAView(row)) return;
+
+		val published = new HashSet<String>
+		for (attribute : row.attributes.nullSafe) {
+			published.add(attribute.name)
+		}
+
+		for (command : commandsAddressing(identity.type, row)) {
+			val operation = command.target
+			if (operation === null || operation instanceof Constructor) {
+				// A create addresses no row, so no menu drawn on one offers it.
+			} else {
+				for (instance : operation.businessRules.nullSafe) {
+					reportUnanswerable(row, command, instance, published)
+				}
+			}
+		}
+	}
+
+	/** One warning per rule the row offers and cannot answer, naming what it would have to publish. */
+	private def reportUnanswerable(ValueObject row, Command command, BusinessRuleInstance instance,
+		Set<String> published) {
+		if(!instance.clientAnswerable) return;
+
+		val missing = new ArrayList<String>
+		for (name : instance.carrierAttributesRead) {
+			if (!published.contains(name)) {
+				missing.add(name)
+			}
+		}
+		if(missing.empty) return;
+
+		warning(
+			"'" + row.name + "' offers '" + command.name + "', which is gated by '"
+				+ instance.businessRule.name + "', but does not publish " + quoted(missing)
+				+ " - so a client cannot tell whether to offer the action and always will",
+			row, CqrsDslPackage.Literals::ABSTRACT_ELEMENT__NAME, ROW_CANNOT_ANSWER_GATE)
+	}
+
+	/** Whether some view method hands this type back, which is what makes it a row a menu is drawn on. */
+	private def boolean returnedByAView(ValueObject row) {
+		val resourceSet = row.eResource?.resourceSet
+		if (resourceSet === null) {
+			return false
+		}
+		for (resource : resourceSet.resources) {
+			val contents = resource.allContents
+			while (contents.hasNext) {
+				val next = contents.next
+				if (next instanceof View) {
+					for (method : next.methods.nullSafe) {
+						// A list method returns 'List<Row>', so the row is the generic argument rather
+						// than the declared type - the same unwrapping the Flutter target does.
+						val returns = method.returnType
+						val generics = returns?.generics
+						val returned = if (generics !== null && !generics.args.empty)
+								generics.args.get(0)
+							else
+								returns?.type
+						if (returned === row) {
+							return true
+						}
+					}
+				}
+			}
+		}
+		return false
+	}
+
+	/**
+	 * Every command in the model addressing the kind of thing this row identifies.
+	 *
+	 * <p>Matched on the identifier's own type rather than on a name derived from it, because that is
+	 * exactly what the wire carries: a row's identity travels typed, and a client offers a command whose
+	 * target has the same type.
+	 */
+	private def List<Command> commandsAddressing(Type idType, ValueObject row) {
+		val found = new ArrayList<Command>
+		val resourceSet = row.eResource?.resourceSet
+		if (resourceSet === null) {
+			return found
+		}
+		for (resource : resourceSet.resources) {
+			val contents = resource.allContents
+			while (contents.hasNext) {
+				val next = contents.next
+				if (next instanceof Command) {
+					if (next.entity?.idType === idType) {
+						found.add(next)
+					}
+				}
+			}
+		}
+		return found
+	}
+
+	/** Names as a reader would list them: 'a', 'b' and 'c'. */
+	private static def String quoted(List<String> names) {
+		val quoted = names.map["'" + it + "'"].toList
+		if (quoted.size === 1) {
+			return quoted.get(0)
+		}
+		return quoted.subList(0, quoted.size - 1).join(", ") + " and " + quoted.get(quoted.size - 1)
+	}
 
 }

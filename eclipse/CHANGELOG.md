@@ -3,6 +3,10 @@
 Reflects only changes made in the Eclipse plugin.
 
 ## 1.28.0
+- **A row is checked against the gates it offers** - a view row offering a command gated by a rule it
+  cannot answer is warned about, naming what it would have to publish. A warning rather than an error:
+  whether the row should publish it is a modelling decision with costs on the other side, and what this
+  removes is the silence rather than the choice.
 - **A business rule is checked against the refusal it names** - a rule that does not hold what its
   exception needs is reported in the model rather than failing generation downstream.
 - **A rule usage is checked against what the rule declares** - the actuals bind positionally, so one too

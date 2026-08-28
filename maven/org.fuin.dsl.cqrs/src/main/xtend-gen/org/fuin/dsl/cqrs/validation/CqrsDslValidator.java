@@ -33,10 +33,13 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId;
@@ -81,8 +84,11 @@ import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
 import org.fuin.dsl.cqrs.cqrsDsl.View;
 import org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions;
+import org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions;
+import org.fuin.dsl.cqrs.extensions.CqrsAbstractVOExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsAggregateExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions;
+import org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension;
 import org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions;
@@ -154,6 +160,8 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String IMPORT_UNUSED = "importUnused";
 
   public static final String MODULE_DEPENDENCY_CYCLE = "moduleDependencyCycle";
+
+  public static final String ROW_CANNOT_ANSWER_GATE = "rowCannotAnswerGate";
 
   public static final String SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents";
 
@@ -1589,5 +1597,228 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       list.add(attribute.getType());
     }
     return list;
+  }
+
+  /**
+   * Warns when a view row offers a command whose client-answerable gates it cannot answer.
+   * 
+   * <p>A menu is drawn on a row, and a command gated by a rule over the aggregate's own state can be
+   * left out of that menu rather than offered and refused. The client decides that from what the row
+   * publishes, so a row that offers the command and omits what the gate reads makes the gate work on
+   * one screen and quietly do nothing on another. The silence is the problem: an unanswerable gate is
+   * indistinguishable from a gate nobody wrote.
+   * 
+   * <p><b>A warning rather than an error, deliberately.</b> Whether a row publishes what a rule reads
+   * is a modelling decision with real costs on the other side - a count is what a person wants to read
+   * where a collection is what the rule asks, and an identity provider's own id has no business on a
+   * row merely so a menu can be shorter. So this states the gap and leaves the choice; what it removes
+   * is the silence, not the omission.
+   * 
+   * <p>It is also conservative in one direction and blind in another. Conservative, because it asks for
+   * every value the rule is handed rather than only those its condition reads - which is what the
+   * client actually needs to construct the rule at all. Blind, because a fact no view projects matches
+   * no row and is never reported: a row missing one attribute is caught, an aggregate with no row is
+   * not.
+   * 
+   * <p><b>The build is the enforcement point.</b> SrcGen4J parses the whole model into one resource
+   * set, so a build sees every command and every row. An editor validates one resource and reaches the
+   * rest through the index, so a gate declared in a file that is not open may go unreported - the same
+   * trade the module cycle check makes.
+   */
+  @Check
+  public void checkRowAnswersTheGatesItOffers(final ValueObject row) {
+    Resource _eResource = row.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    final Attribute identity = CqrsAbstractVOExtensions.rowIdentity(row);
+    if (((identity == null) || (identity.getType() == null))) {
+      return;
+    }
+    boolean _returnedByAView = this.returnedByAView(row);
+    boolean _not = (!_returnedByAView);
+    if (_not) {
+      return;
+    }
+    final HashSet<String> published = new HashSet<String>();
+    List<Attribute> _nullSafe = CqrsCollectionExtensions.<Attribute>nullSafe(row.getAttributes());
+    for (final Attribute attribute : _nullSafe) {
+      published.add(attribute.getName());
+    }
+    List<Command> _commandsAddressing = this.commandsAddressing(identity.getType(), row);
+    for (final Command command : _commandsAddressing) {
+      {
+        final AbstractMethod operation = command.getTarget();
+        if (((operation == null) || (operation instanceof Constructor))) {
+        } else {
+          List<BusinessRuleInstance> _nullSafe_1 = CqrsBusinessRulesExtensions.nullSafe(operation.getBusinessRules());
+          for (final BusinessRuleInstance instance : _nullSafe_1) {
+            this.reportUnanswerable(row, command, instance, published);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * One warning per rule the row offers and cannot answer, naming what it would have to publish.
+   */
+  private void reportUnanswerable(final ValueObject row, final Command command, final BusinessRuleInstance instance, final Set<String> published) {
+    boolean _clientAnswerable = CqrsBusinessRulesExtensions.clientAnswerable(instance);
+    boolean _not = (!_clientAnswerable);
+    if (_not) {
+      return;
+    }
+    final ArrayList<String> missing = new ArrayList<String>();
+    List<String> _carrierAttributesRead = CqrsBusinessRulesExtensions.carrierAttributesRead(instance);
+    for (final String name : _carrierAttributesRead) {
+      boolean _contains = published.contains(name);
+      boolean _not_1 = (!_contains);
+      if (_not_1) {
+        missing.add(name);
+      }
+    }
+    boolean _isEmpty = missing.isEmpty();
+    if (_isEmpty) {
+      return;
+    }
+    String _name = row.getName();
+    String _plus = ("\'" + _name);
+    String _plus_1 = (_plus + "\' offers \'");
+    String _name_1 = command.getName();
+    String _plus_2 = (_plus_1 + _name_1);
+    String _plus_3 = (_plus_2 + "\', which is gated by \'");
+    String _name_2 = instance.getBusinessRule().getName();
+    String _plus_4 = (_plus_3 + _name_2);
+    String _plus_5 = (_plus_4 + "\', but does not publish ");
+    String _quoted = CqrsDslValidator.quoted(missing);
+    String _plus_6 = (_plus_5 + _quoted);
+    String _plus_7 = (_plus_6 + " - so a client cannot tell whether to offer the action and always will");
+    this.warning(_plus_7, row, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, CqrsDslValidator.ROW_CANNOT_ANSWER_GATE);
+  }
+
+  /**
+   * Whether some view method hands this type back, which is what makes it a row a menu is drawn on.
+   */
+  private boolean returnedByAView(final ValueObject row) {
+    Resource _eResource = row.eResource();
+    ResourceSet _resourceSet = null;
+    if (_eResource!=null) {
+      _resourceSet=_eResource.getResourceSet();
+    }
+    final ResourceSet resourceSet = _resourceSet;
+    if ((resourceSet == null)) {
+      return false;
+    }
+    EList<Resource> _resources = resourceSet.getResources();
+    for (final Resource resource : _resources) {
+      {
+        final TreeIterator<EObject> contents = resource.getAllContents();
+        while (contents.hasNext()) {
+          {
+            final EObject next = contents.next();
+            if ((next instanceof View)) {
+              List<Method> _nullSafe = CqrsCollectionExtensions.<Method>nullSafe(((View)next).getMethods());
+              for (final Method method : _nullSafe) {
+                {
+                  final ReturnType returns = method.getReturnType();
+                  GenericArgs _generics = null;
+                  if (returns!=null) {
+                    _generics=returns.getGenerics();
+                  }
+                  final GenericArgs generics = _generics;
+                  Type _xifexpression = null;
+                  if (((generics != null) && (!generics.getArgs().isEmpty()))) {
+                    _xifexpression = generics.getArgs().get(0);
+                  } else {
+                    Type _type = null;
+                    if (returns!=null) {
+                      _type=returns.getType();
+                    }
+                    _xifexpression = _type;
+                  }
+                  final Type returned = _xifexpression;
+                  if ((returned == row)) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Every command in the model addressing the kind of thing this row identifies.
+   * 
+   * <p>Matched on the identifier's own type rather than on a name derived from it, because that is
+   * exactly what the wire carries: a row's identity travels typed, and a client offers a command whose
+   * target has the same type.
+   */
+  private List<Command> commandsAddressing(final Type idType, final ValueObject row) {
+    final ArrayList<Command> found = new ArrayList<Command>();
+    Resource _eResource = row.eResource();
+    ResourceSet _resourceSet = null;
+    if (_eResource!=null) {
+      _resourceSet=_eResource.getResourceSet();
+    }
+    final ResourceSet resourceSet = _resourceSet;
+    if ((resourceSet == null)) {
+      return found;
+    }
+    EList<Resource> _resources = resourceSet.getResources();
+    for (final Resource resource : _resources) {
+      {
+        final TreeIterator<EObject> contents = resource.getAllContents();
+        while (contents.hasNext()) {
+          {
+            final EObject next = contents.next();
+            if ((next instanceof Command)) {
+              AbstractEntity _entity = CqrsEObjectExtensions.getEntity(((Command)next));
+              AbstractEntityId _idType = null;
+              if (_entity!=null) {
+                _idType=CqrsAbstractEntityExtensions.getIdType(_entity);
+              }
+              boolean _tripleEquals = (_idType == idType);
+              if (_tripleEquals) {
+                found.add(((Command)next));
+              }
+            }
+          }
+        }
+      }
+    }
+    return found;
+  }
+
+  /**
+   * Names as a reader would list them: 'a', 'b' and 'c'.
+   */
+  private static String quoted(final List<String> names) {
+    final Function1<String, String> _function = (String it) -> {
+      return (("\'" + it) + "\'");
+    };
+    final List<String> quoted = IterableExtensions.<String>toList(ListExtensions.<String, String>map(names, _function));
+    int _size = quoted.size();
+    boolean _tripleEquals = (_size == 1);
+    if (_tripleEquals) {
+      return quoted.get(0);
+    }
+    int _size_1 = quoted.size();
+    int _minus = (_size_1 - 1);
+    String _join = IterableExtensions.join(quoted.subList(0, _minus), ", ");
+    String _plus = (_join + " and ");
+    int _size_2 = quoted.size();
+    int _minus_1 = (_size_2 - 1);
+    String _get = quoted.get(_minus_1);
+    return (_plus + _get);
   }
 }

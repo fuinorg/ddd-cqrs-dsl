@@ -24,6 +24,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.srcgen4j.commons.GenerateException
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
+
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
@@ -80,44 +82,13 @@ class DartRuleDescriptors {
             return out
         }
         for (instance : operation.businessRules.businessRuleInstances.nullSafe) {
-            if (answerable(instance)) {
+            // Which usages a client could answer is the model's own question, and the validator asks it
+            // of the views on the other side. One definition, so the two cannot drift apart.
+            if (instance.clientAnswerable) {
                 out.add(instance)
             }
         }
         return out
-    }
-
-    def private boolean answerable(BusinessRuleInstance instance) {
-        val rule = instance.businessRule
-        if (rule === null || rule.requires === null) {
-            return false
-        }
-        if (rule.attributes.nullSafe.size !== instance.params.nullSafe.size) {
-            return false
-        }
-        for (actual : instance.params.nullSafe) {
-            switch (actual) {
-                IdentityArgument: { /* the row knows its own identity */ }
-                CarrierAttributeArgument: { /* the row carries the state the carrier holds now */ }
-                VariableArgument: {
-                    if (parameterOfOperation(actual.variable)) {
-                        return false
-                    }
-                }
-                default:
-                    return false
-            }
-        }
-        return true
-    }
-
-    def private boolean parameterOfOperation(Variable variable) {
-        for (parameter : operation.parameters.nullSafe) {
-            if (parameter === variable) {
-                return true
-            }
-        }
-        return false
     }
 
     override toString() {
