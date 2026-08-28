@@ -174,6 +174,9 @@ public final class TypeKeys {
     public static final String DART_ENTITY_ID = "dart-entity-id";
 
     /** A single-value <code>value-object</code> as a Dart class carrying its invariants. */
+    /** An <code>entity-id-path</code> on the client: <code>«Name»</code>. */
+    public static final String DART_ENTITY_ID_PATH = "dart-entity-id-path";
+
     public static final String DART_VALUE_OBJECT = "dart-value-object";
 
     /** A multi-attribute <code>value-object</code> - a read-model row, with its descriptor. */

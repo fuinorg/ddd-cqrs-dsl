@@ -127,7 +127,7 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
      * declares an id without saying what it identifies. That is what the JVM side would produce for the
      * stream name too, so the two stay in step even where the model is incomplete.
      */
-    def private static String entityName(AbstractEntityId id) {
+    def static String entityName(AbstractEntityId id) {
         val named = switch (id) {
             AggregateId: id.aggregate?.name
             EntityId: id.entity?.name
