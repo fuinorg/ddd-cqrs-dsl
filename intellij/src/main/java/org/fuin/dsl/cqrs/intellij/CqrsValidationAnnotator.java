@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationInstance;
@@ -22,6 +23,9 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsDependencyDecl;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityIdPath;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsPathSegment;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsSegmentRange;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEventDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExceptionDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsExternalType;
@@ -139,6 +143,10 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkHintJson((CqrsHintDef) element, holder);
         } else if (element instanceof CqrsModuleDef) {
             checkModuleDependencyCycle((CqrsModuleDef) element, holder);
+        } else if (element instanceof CqrsEntityIdPath) {
+            checkEntityIdPathShape((CqrsEntityIdPath) element, holder);
+        } else if (element instanceof CqrsSegmentRange) {
+            checkSegmentRange((CqrsSegmentRange) element, holder);
         }
     }
 
@@ -628,6 +636,103 @@ public final class CqrsValidationAnnotator implements Annotator {
             if (!matches) {
                 error(holder, instance, prefix + " (" + typeNames(inputs) + ") " + suffix);
             }
+        }
+    }
+
+    // --- entity id path -------------------------------------------------------------------------
+
+    /**
+     * Reports a declared path that no real identifier path could have.
+     *
+     * <p>The port of the Xtext validator's {@code checkEntityIdPathShape}, so the editor refuses what the
+     * build refuses. A path begins at an aggregate root and names the chain of children down to the thing
+     * it addresses: {@code ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45}.</p>
+     *
+     * <p>An aggregate reached <em>inside</em> a composite identifier is not a step:
+     * {@code AnnualTransactionsId} is made of an account and a year, and the path still begins at
+     * {@code ANNUAL_TRANSACTIONS}. Writing the account as a first step is the mistake this catches most
+     * often, because the model's own prose calls the pair "the natural composite key (account, year)".</p>
+     */
+    private void checkEntityIdPathShape(@NotNull CqrsEntityIdPath path, @NotNull AnnotationHolder holder) {
+        final List<CqrsPathSegment> segments = path.getPathSegmentList();
+        if (segments.isEmpty()) {
+            return;
+        }
+        final PsiElement nameRange = path.getNameIdentifier() != null ? path.getNameIdentifier() : path;
+        if (segments.size() < 2) {
+            final CqrsNamedElement only = resolve(segments.get(0).getTypeRef());
+            error(holder, nameRange, "A path of one step is the identifier itself - use '"
+                    + (only == null ? "the identifier type" : only.getName()) + "' rather than a path");
+            return;
+        }
+
+        final CqrsNamedElement first = resolve(segments.get(0).getTypeRef());
+        if (first != null && !(first instanceof CqrsAggregateId)) {
+            error(holder, segments.get(0), "A path starts at an aggregate root, and '" + first.getName()
+                    + "' does not identify one");
+            return;
+        }
+        final CqrsNamedElement root = first == null ? null
+                : resolve(firstTypeRefAfter(first, CqrsTypes.KW_IDENTIFIES));
+
+        for (final CqrsPathSegment segment : segments.subList(1, segments.size())) {
+            final CqrsNamedElement type = resolve(segment.getTypeRef());
+            if (type == null) {
+                continue;
+            }
+            if (!(type instanceof CqrsEntityId)) {
+                error(holder, segment, "Only the first step is an aggregate; '" + type.getName()
+                        + "' has to identify an entity of '" + (root == null ? "the root" : root.getName()) + "'");
+                continue;
+            }
+            if (root == null) {
+                continue;
+            }
+            final CqrsNamedElement entity = resolve(firstTypeRefAfter(type, CqrsTypes.KW_IDENTIFIES));
+            if (!(entity instanceof CqrsEntityDef)) {
+                continue;
+            }
+            final CqrsNamedElement entityRoot = resolve(firstTypeRefAfter(entity, CqrsTypes.KW_ROOT));
+            if (entityRoot != null && entityRoot != root) {
+                error(holder, segment, "'" + entity.getName() + "' belongs to '" + entityRoot.getName()
+                        + "', not to '" + root.getName() + "', so it cannot be a step of this path");
+            }
+        }
+    }
+
+    /**
+     * Reports a step whose range can match nothing.
+     *
+     * <p>Written out rather than marked with a symbol, because "may repeat" does not say whether the step
+     * may also be absent - so the bounds are stated, and stated bounds can contradict each other. Caught
+     * where they are written rather than at runtime, where an impossible range silently rejects every
+     * path it is given.</p>
+     */
+    private void checkSegmentRange(@NotNull CqrsSegmentRange range, @NotNull AnnotationHolder holder) {
+        final List<Integer> bounds = new ArrayList<>();
+        for (PsiElement child = range.getFirstChild(); child != null; child = child.getNextSibling()) {
+            final IElementType type = child.getNode().getElementType();
+            if (type == CqrsTypes.STAR) {
+                return; // unbounded, so only the lower bound is written and it cannot contradict
+            }
+            if (type == CqrsTypes.NUMBER) {
+                try {
+                    bounds.add(Integer.valueOf(child.getText()));
+                } catch (final NumberFormatException ex) {
+                    return; // not a whole number, which the parser will already have complained about
+                }
+            }
+        }
+        if (bounds.size() < 2) {
+            return;
+        }
+        final int min = bounds.get(0);
+        final int max = bounds.get(1);
+        if (max < 1) {
+            error(holder, range,
+                    "A step that accepts no identifier at all cannot be part of a path; leave it out instead");
+        } else if (max < min) {
+            error(holder, range, "The range is empty: at least " + min + " but at most " + max);
         }
     }
 
