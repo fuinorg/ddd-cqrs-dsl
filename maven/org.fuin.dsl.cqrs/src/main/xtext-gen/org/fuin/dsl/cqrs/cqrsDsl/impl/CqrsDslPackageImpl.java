@@ -45,6 +45,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
@@ -75,6 +76,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
@@ -94,6 +96,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
@@ -310,6 +313,27 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass aggregateIdEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass entityIdPathTypeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass pathSegmentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass segmentRangeEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2013,6 +2037,105 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EReference getAggregateId_Aggregate()
   {
     return (EReference)aggregateIdEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getEntityIdPathType()
+  {
+    return entityIdPathTypeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getEntityIdPathType_Segments()
+  {
+    return (EReference)entityIdPathTypeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getPathSegment()
+  {
+    return pathSegmentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getPathSegment_Type()
+  {
+    return (EReference)pathSegmentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getPathSegment_Range()
+  {
+    return (EReference)pathSegmentEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getSegmentRange()
+  {
+    return segmentRangeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSegmentRange_Min()
+  {
+    return (EAttribute)segmentRangeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSegmentRange_Max()
+  {
+    return (EAttribute)segmentRangeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getSegmentRange_Unbounded()
+  {
+    return (EAttribute)segmentRangeEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -4292,6 +4415,18 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     aggregateIdEClass = createEClass(AGGREGATE_ID);
     createEReference(aggregateIdEClass, AGGREGATE_ID__AGGREGATE);
 
+    entityIdPathTypeEClass = createEClass(ENTITY_ID_PATH_TYPE);
+    createEReference(entityIdPathTypeEClass, ENTITY_ID_PATH_TYPE__SEGMENTS);
+
+    pathSegmentEClass = createEClass(PATH_SEGMENT);
+    createEReference(pathSegmentEClass, PATH_SEGMENT__TYPE);
+    createEReference(pathSegmentEClass, PATH_SEGMENT__RANGE);
+
+    segmentRangeEClass = createEClass(SEGMENT_RANGE);
+    createEAttribute(segmentRangeEClass, SEGMENT_RANGE__MIN);
+    createEAttribute(segmentRangeEClass, SEGMENT_RANGE__MAX);
+    createEAttribute(segmentRangeEClass, SEGMENT_RANGE__UNBOUNDED);
+
     enumObjectEClass = createEClass(ENUM_OBJECT);
     createEReference(enumObjectEClass, ENUM_OBJECT__BASE);
     createEReference(enumObjectEClass, ENUM_OBJECT__INSTANCES);
@@ -4588,6 +4723,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     valueObjectEClass.getESuperTypes().add(this.getAbstractVO());
     entityIdEClass.getESuperTypes().add(this.getAbstractEntityId());
     aggregateIdEClass.getESuperTypes().add(this.getAbstractEntityId());
+    entityIdPathTypeEClass.getESuperTypes().add(this.getType());
     enumObjectEClass.getESuperTypes().add(this.getInternalType());
     eventEClass.getESuperTypes().add(this.getAbstractElement());
     entityEClass.getESuperTypes().add(this.getAbstractEntity());
@@ -4761,6 +4897,18 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     initEClass(aggregateIdEClass, AggregateId.class, "AggregateId", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAggregateId_Aggregate(), this.getAggregate(), null, "aggregate", null, 0, 1, AggregateId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(entityIdPathTypeEClass, EntityIdPathType.class, "EntityIdPathType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getEntityIdPathType_Segments(), this.getPathSegment(), null, "segments", null, 0, -1, EntityIdPathType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(pathSegmentEClass, PathSegment.class, "PathSegment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getPathSegment_Type(), this.getAbstractEntityId(), null, "type", null, 0, 1, PathSegment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPathSegment_Range(), this.getSegmentRange(), null, "range", null, 0, 1, PathSegment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(segmentRangeEClass, SegmentRange.class, "SegmentRange", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSegmentRange_Min(), ecorePackage.getEInt(), "min", null, 0, 1, SegmentRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSegmentRange_Max(), ecorePackage.getEInt(), "max", null, 0, 1, SegmentRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSegmentRange_Unbounded(), ecorePackage.getEBoolean(), "unbounded", null, 0, 1, SegmentRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(enumObjectEClass, EnumObject.class, "EnumObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getEnumObject_Base(), this.getExternalType(), null, "base", null, 0, 1, EnumObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -39,6 +39,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -62,6 +63,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NoKey;
 import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
@@ -77,6 +79,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleNot;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
@@ -173,6 +176,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.ENTITY_ID:
 				sequence_EntityId(context, (EntityId) semanticObject); 
 				return; 
+			case CqrsDslPackage.ENTITY_ID_PATH_TYPE:
+				sequence_EntityIdPathType(context, (EntityIdPathType) semanticObject); 
+				return; 
 			case CqrsDslPackage.ENUM_INSTANCE:
 				sequence_EnumInstance(context, (EnumInstance) semanticObject); 
 				return; 
@@ -251,6 +257,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CqrsDslPackage.PARAMETER:
 				sequence_Parameter(context, (org.fuin.dsl.cqrs.cqrsDsl.Parameter) semanticObject); 
 				return; 
+			case CqrsDslPackage.PATH_SEGMENT:
+				sequence_PathSegment(context, (PathSegment) semanticObject); 
+				return; 
 			case CqrsDslPackage.PRECONDITIONS:
 				sequence_Preconditions(context, (Preconditions) semanticObject); 
 				return; 
@@ -295,6 +304,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.RULE_REF_OPERAND:
 				sequence_RuleOperand(context, (RuleRefOperand) semanticObject); 
+				return; 
+			case CqrsDslPackage.SEGMENT_RANGE:
+				sequence_SegmentRange(context, (SegmentRange) semanticObject); 
 				return; 
 			case CqrsDslPackage.SERVICE:
 				sequence_Service(context, (Service) semanticObject); 
@@ -736,6 +748,23 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		feeder.accept(grammarAccess.getDurationAccess().getTimeINTTerminalRuleCall_0_0(), semanticObject.getTime());
 		feeder.accept(grammarAccess.getDurationAccess().getUnitTimeUnitEnumRuleCall_1_0(), semanticObject.getUnit());
 		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     AbstractElement returns EntityIdPathType
+	 *     EntityElement returns EntityIdPathType
+	 *     Type returns EntityIdPathType
+	 *     EntityIdPathType returns EntityIdPathType
+	 *
+	 * Constraint:
+	 *     (doc=DOC? name=ID segments+=PathSegment segments+=PathSegment*)
+	 * </pre>
+	 */
+	protected void sequence_EntityIdPathType(ISerializationContext context, EntityIdPathType semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -1263,6 +1292,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     PathSegment returns PathSegment
+	 *
+	 * Constraint:
+	 *     (type=[AbstractEntityId|FQN] range=SegmentRange?)
+	 * </pre>
+	 */
+	protected void sequence_PathSegment(ISerializationContext context, PathSegment semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
 	 *     Preconditions returns Preconditions
 	 *
 	 * Constraint:
@@ -1608,6 +1651,20 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getRuleUnaryAccess().getExprRuleUnaryParserRuleCall_0_2_0(), semanticObject.getExpr());
 		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     SegmentRange returns SegmentRange
+	 *
+	 * Constraint:
+	 *     (min=INT (max=INT | unbounded?='*'))
+	 * </pre>
+	 */
+	protected void sequence_SegmentRange(ISerializationContext context, SegmentRange semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	

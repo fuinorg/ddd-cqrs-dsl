@@ -38,6 +38,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -65,6 +66,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
@@ -83,6 +85,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
@@ -384,6 +387,29 @@ public class CqrsDslSwitch<T> extends Switch<T>
         if (result == null) result = caseInternalType(aggregateId);
         if (result == null) result = caseType(aggregateId);
         if (result == null) result = caseAbstractElement(aggregateId);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE:
+      {
+        EntityIdPathType entityIdPathType = (EntityIdPathType)theEObject;
+        T result = caseEntityIdPathType(entityIdPathType);
+        if (result == null) result = caseType(entityIdPathType);
+        if (result == null) result = caseAbstractElement(entityIdPathType);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.PATH_SEGMENT:
+      {
+        PathSegment pathSegment = (PathSegment)theEObject;
+        T result = casePathSegment(pathSegment);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.SEGMENT_RANGE:
+      {
+        SegmentRange segmentRange = (SegmentRange)theEObject;
+        T result = caseSegmentRange(segmentRange);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1288,6 +1314,54 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAggregateId(AggregateId object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Entity Id Path Type</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Entity Id Path Type</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEntityIdPathType(EntityIdPathType object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Path Segment</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Path Segment</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T casePathSegment(PathSegment object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Segment Range</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Segment Range</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSegmentRange(SegmentRange object)
   {
     return null;
   }

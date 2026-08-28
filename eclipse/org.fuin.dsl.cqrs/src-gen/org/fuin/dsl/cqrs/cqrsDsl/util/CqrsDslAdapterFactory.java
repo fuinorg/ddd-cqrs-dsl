@@ -40,6 +40,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -67,6 +68,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
@@ -85,6 +87,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.StringLiteral;
@@ -298,6 +301,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAggregateId(AggregateId object)
       {
         return createAggregateIdAdapter();
+      }
+      @Override
+      public Adapter caseEntityIdPathType(EntityIdPathType object)
+      {
+        return createEntityIdPathTypeAdapter();
+      }
+      @Override
+      public Adapter casePathSegment(PathSegment object)
+      {
+        return createPathSegmentAdapter();
+      }
+      @Override
+      public Adapter caseSegmentRange(SegmentRange object)
+      {
+        return createSegmentRangeAdapter();
       }
       @Override
       public Adapter caseEnumObject(EnumObject object)
@@ -1027,6 +1045,51 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAggregateIdAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType <em>Entity Id Path Type</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType
+   * @generated
+   */
+  public Adapter createEntityIdPathTypeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.PathSegment <em>Path Segment</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.PathSegment
+   * @generated
+   */
+  public Adapter createPathSegmentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.SegmentRange <em>Segment Range</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.SegmentRange
+   * @generated
+   */
+  public Adapter createSegmentRangeAdapter()
   {
     return null;
   }

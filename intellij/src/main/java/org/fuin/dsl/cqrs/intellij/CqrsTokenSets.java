@@ -23,7 +23,7 @@ public final class CqrsTokenSets {
             CqrsTypes.KW_HINT, CqrsTypes.KW_TYPE,
             CqrsTypes.KW_ELEMENT, CqrsTypes.KW_GENERICS, CqrsTypes.KW_CONSTRAINT, CqrsTypes.KW_INPUT,
             CqrsTypes.KW_EXCEPTION, CqrsTypes.KW_BUSINESS_RULE, CqrsTypes.KW_ANNOTATION, CqrsTypes.KW_CID,
-            CqrsTypes.KW_MESSAGE, CqrsTypes.KW_VALUE_OBJECT, CqrsTypes.KW_BASE, CqrsTypes.KW_ENTITY_ID,
+            CqrsTypes.KW_MESSAGE, CqrsTypes.KW_VALUE_OBJECT, CqrsTypes.KW_BASE, CqrsTypes.KW_ENTITY_ID, CqrsTypes.KW_ENTITY_ID_PATH,
             CqrsTypes.KW_IDENTIFIES, CqrsTypes.KW_AGGREGATE_ID, CqrsTypes.KW_ENUM, CqrsTypes.KW_INSTANCES,
             CqrsTypes.KW_DEPRECATED, CqrsTypes.KW_EVENT, CqrsTypes.KW_COPIES_ATTRIBUTES_OF,
             CqrsTypes.KW_ENTITY, CqrsTypes.KW_IDENTIFIER, CqrsTypes.KW_ROOT, CqrsTypes.KW_AGGREGATE,

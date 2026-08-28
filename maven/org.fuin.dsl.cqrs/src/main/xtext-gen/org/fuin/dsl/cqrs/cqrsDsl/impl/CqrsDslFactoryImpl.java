@@ -46,6 +46,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.DomainModel;
 import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
@@ -77,6 +78,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.NullLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.NumberLiteral;
 import org.fuin.dsl.cqrs.cqrsDsl.OverriddenTypeMetaInfo;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.Preconditions;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
@@ -96,6 +98,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleNullOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOr;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.ServiceCallArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory;
@@ -189,6 +192,9 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.VALUE_OBJECT: return createValueObject();
       case CqrsDslPackage.ENTITY_ID: return createEntityId();
       case CqrsDslPackage.AGGREGATE_ID: return createAggregateId();
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE: return createEntityIdPathType();
+      case CqrsDslPackage.PATH_SEGMENT: return createPathSegment();
+      case CqrsDslPackage.SEGMENT_RANGE: return createSegmentRange();
       case CqrsDslPackage.ENUM_OBJECT: return createEnumObject();
       case CqrsDslPackage.ENUM_INSTANCE: return createEnumInstance();
       case CqrsDslPackage.EVENT: return createEvent();
@@ -656,6 +662,42 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     AggregateIdImpl aggregateId = new AggregateIdImpl();
     return aggregateId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EntityIdPathType createEntityIdPathType()
+  {
+    EntityIdPathTypeImpl entityIdPathType = new EntityIdPathTypeImpl();
+    return entityIdPathType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public PathSegment createPathSegment()
+  {
+    PathSegmentImpl pathSegment = new PathSegmentImpl();
+    return pathSegment;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public SegmentRange createSegmentRange()
+  {
+    SegmentRangeImpl segmentRange = new SegmentRangeImpl();
+    return segmentRange;
   }
 
   /**

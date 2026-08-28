@@ -53,6 +53,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
 
   // ---- Hyphenated keywords (must precede the ID rule) ----
   "value-object"            { return KW_VALUE_OBJECT; }
+  "entity-id-path"          { return KW_ENTITY_ID_PATH; }
   "entity-id"               { return KW_ENTITY_ID; }
   "aggregate-id"            { return KW_AGGREGATE_ID; }
   "business-rules"          { return KW_BUSINESS_RULES; }
@@ -216,7 +217,9 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   ">"                       { return GT; }
   "@"                       { return AT; }
   ","                       { return COMMA; }
+  ".."                      { return DOTDOT; }
   "."                       { return DOT; }
+  "/"                       { return SLASH; }
   "|"                       { return PIPE; }
   "*"                       { return STAR; }
   ":"                       { return COLON; }

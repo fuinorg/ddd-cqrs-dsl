@@ -468,13 +468,19 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cExternalTypeParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final RuleCall cInternalTypeParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		private final RuleCall cServiceParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final RuleCall cEntityIdPathTypeParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
 		
-		///** Common properties of all types. */
+		///**
+		// * Common properties of all types.
+		// *
+		// * A path type sits here beside a service rather than under 'InternalType', because it declares segments
+		// * rather than attributes and every member of 'InternalType' has to agree on those.
+		// */
 		//Type:
-		//    ExternalType | InternalType | Service;
+		//    ExternalType | InternalType | Service | EntityIdPathType;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//ExternalType | InternalType | Service
+		//ExternalType | InternalType | Service | EntityIdPathType
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//ExternalType
@@ -485,6 +491,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//Service
 		public RuleCall getServiceParserRuleCall_2() { return cServiceParserRuleCall_2; }
+		
+		//EntityIdPathType
+		public RuleCall getEntityIdPathTypeParserRuleCall_3() { return cEntityIdPathTypeParserRuleCall_3; }
 	}
 	public class InternalTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.InternalType");
@@ -2243,6 +2252,186 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_13() { return cRightCurlyBracketKeyword_13; }
+	}
+	public class EntityIdPathTypeElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EntityIdPathType");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDocAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cDocDOCTerminalRuleCall_0_0 = (RuleCall)cDocAssignment_0.eContents().get(0);
+		private final Keyword cEntityIdPathKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cSegmentsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cSegmentsPathSegmentParserRuleCall_4_0 = (RuleCall)cSegmentsAssignment_4.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cSolidusKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cSegmentsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cSegmentsPathSegmentParserRuleCall_5_1_0 = (RuleCall)cSegmentsAssignment_5_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		
+		///**
+		// * A typed path from an aggregate root down to the entity it addresses.
+		// *
+		// * A child of a root there are many of cannot be addressed by its own identifier - 'TRANSACTION 45' exists
+		// * in every account-year - so it travels as a path: the root's identifier, then the chain of children down
+		// * to the thing addressed, as in 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Untyped, such a path says
+		// * nothing about what it addresses, which is why a model can hold fourteen of them all pointing at a
+		// * transaction and state that nowhere, and why a check reading the model cannot tell one row's target from
+		// * another's. Declaring the shape says it once, for every attribute that uses it.
+		// *
+		// * The first segment is an aggregate identifier and every later one identifies an entity of that aggregate.
+		// * An aggregate referenced *inside* a composite identifier is not a segment: 'AnnualTransactionsId' is made
+		// * of an account and a year, and the path still begins at 'ANNUAL_TRANSACTIONS'.
+		// *
+		// * A segment takes exactly one identifier unless it states a range, which exists for an entity that may
+		// * contain another of its own kind: 'MASTER_DATA 1/MASTERDATA_ROLE[1..*]' addresses a role, a role inside a
+		// * role, and so on. The range is written out rather than marked with a symbol, because "may repeat" does
+		// * not say whether the step may also be absent - '[0..*]' lets it be skipped and '[1..2]' puts a ceiling on
+		// * the nesting. Unbounded is '*' rather than 'N': a single uppercase letter would be reserved everywhere
+		// * once ANTLR lexes it, costing a model the right to name a type that.
+		// */
+		//EntityIdPathType:
+		//    doc=DOC?
+		//    'entity-id-path' name=ID '{'
+		//        segments+=PathSegment ('/' segments+=PathSegment)*
+		//    '}';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//doc=DOC?
+		//'entity-id-path' name=ID '{'
+		//    segments+=PathSegment ('/' segments+=PathSegment)*
+		//'}'
+		public Group getGroup() { return cGroup; }
+		
+		//doc=DOC?
+		public Assignment getDocAssignment_0() { return cDocAssignment_0; }
+		
+		//DOC
+		public RuleCall getDocDOCTerminalRuleCall_0_0() { return cDocDOCTerminalRuleCall_0_0; }
+		
+		//'entity-id-path'
+		public Keyword getEntityIdPathKeyword_1() { return cEntityIdPathKeyword_1; }
+		
+		//name=ID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_2_0() { return cNameIDTerminalRuleCall_2_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
+		
+		//segments+=PathSegment
+		public Assignment getSegmentsAssignment_4() { return cSegmentsAssignment_4; }
+		
+		//PathSegment
+		public RuleCall getSegmentsPathSegmentParserRuleCall_4_0() { return cSegmentsPathSegmentParserRuleCall_4_0; }
+		
+		//('/' segments+=PathSegment)*
+		public Group getGroup_5() { return cGroup_5; }
+		
+		//'/'
+		public Keyword getSolidusKeyword_5_0() { return cSolidusKeyword_5_0; }
+		
+		//segments+=PathSegment
+		public Assignment getSegmentsAssignment_5_1() { return cSegmentsAssignment_5_1; }
+		
+		//PathSegment
+		public RuleCall getSegmentsPathSegmentParserRuleCall_5_1_0() { return cSegmentsPathSegmentParserRuleCall_5_1_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+	}
+	public class PathSegmentElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.PathSegment");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cTypeAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final CrossReference cTypeAbstractEntityIdCrossReference_0_0 = (CrossReference)cTypeAssignment_0.eContents().get(0);
+		private final RuleCall cTypeAbstractEntityIdFQNParserRuleCall_0_0_1 = (RuleCall)cTypeAbstractEntityIdCrossReference_0_0.eContents().get(1);
+		private final Assignment cRangeAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cRangeSegmentRangeParserRuleCall_1_0 = (RuleCall)cRangeAssignment_1.eContents().get(0);
+		
+		///**
+		// * One step of a path: the identifier type it is made of, and how many of them it accepts.
+		// *
+		// * The range is a nested object rather than two fields on the step, so that "no range written" can be told
+		// * from a range that happens to start at zero - an absent int reads as 0, and the two would be the same
+		// * thing. No range means exactly one.
+		// */
+		//PathSegment:
+		//    type=[AbstractEntityId|FQN] (range=SegmentRange)?;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//type=[AbstractEntityId|FQN] (range=SegmentRange)?
+		public Group getGroup() { return cGroup; }
+		
+		//type=[AbstractEntityId|FQN]
+		public Assignment getTypeAssignment_0() { return cTypeAssignment_0; }
+		
+		//[AbstractEntityId|FQN]
+		public CrossReference getTypeAbstractEntityIdCrossReference_0_0() { return cTypeAbstractEntityIdCrossReference_0_0; }
+		
+		//FQN
+		public RuleCall getTypeAbstractEntityIdFQNParserRuleCall_0_0_1() { return cTypeAbstractEntityIdFQNParserRuleCall_0_0_1; }
+		
+		//(range=SegmentRange)?
+		public Assignment getRangeAssignment_1() { return cRangeAssignment_1; }
+		
+		//SegmentRange
+		public RuleCall getRangeSegmentRangeParserRuleCall_1_0() { return cRangeSegmentRangeParserRuleCall_1_0; }
+	}
+	public class SegmentRangeElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.SegmentRange");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cLeftSquareBracketKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cMinAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cMinINTTerminalRuleCall_1_0 = (RuleCall)cMinAssignment_1.eContents().get(0);
+		private final Keyword cFullStopFullStopKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Assignment cMaxAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
+		private final RuleCall cMaxINTTerminalRuleCall_3_0_0 = (RuleCall)cMaxAssignment_3_0.eContents().get(0);
+		private final Assignment cUnboundedAssignment_3_1 = (Assignment)cAlternatives_3.eContents().get(1);
+		private final Keyword cUnboundedAsteriskKeyword_3_1_0 = (Keyword)cUnboundedAssignment_3_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		
+		///** How many identifiers of its type a step accepts; '*' is unbounded. */
+		//SegmentRange:
+		//    '[' min=INT '..' (max=INT | unbounded?='*') ']';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'[' min=INT '..' (max=INT | unbounded?='*') ']'
+		public Group getGroup() { return cGroup; }
+		
+		//'['
+		public Keyword getLeftSquareBracketKeyword_0() { return cLeftSquareBracketKeyword_0; }
+		
+		//min=INT
+		public Assignment getMinAssignment_1() { return cMinAssignment_1; }
+		
+		//INT
+		public RuleCall getMinINTTerminalRuleCall_1_0() { return cMinINTTerminalRuleCall_1_0; }
+		
+		//'..'
+		public Keyword getFullStopFullStopKeyword_2() { return cFullStopFullStopKeyword_2; }
+		
+		//(max=INT | unbounded?='*')
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
+		
+		//max=INT
+		public Assignment getMaxAssignment_3_0() { return cMaxAssignment_3_0; }
+		
+		//INT
+		public RuleCall getMaxINTTerminalRuleCall_3_0_0() { return cMaxINTTerminalRuleCall_3_0_0; }
+		
+		//unbounded?='*'
+		public Assignment getUnboundedAssignment_3_1() { return cUnboundedAssignment_3_1; }
+		
+		//'*'
+		public Keyword getUnboundedAsteriskKeyword_3_1_0() { return cUnboundedAsteriskKeyword_3_1_0; }
+		
+		//']'
+		public Keyword getRightSquareBracketKeyword_4() { return cRightSquareBracketKeyword_4; }
 	}
 	public class EnumObjectElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.EnumObject");
@@ -6447,6 +6636,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final ValueObjectElements pValueObject;
 	private final EntityIdElements pEntityId;
 	private final AggregateIdElements pAggregateId;
+	private final EntityIdPathTypeElements pEntityIdPathType;
+	private final PathSegmentElements pPathSegment;
+	private final SegmentRangeElements pSegmentRange;
 	private final EnumObjectElements pEnumObject;
 	private final EnumInstanceElements pEnumInstance;
 	private final EventElements pEvent;
@@ -6555,6 +6747,9 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pValueObject = new ValueObjectElements();
 		this.pEntityId = new EntityIdElements();
 		this.pAggregateId = new AggregateIdElements();
+		this.pEntityIdPathType = new EntityIdPathTypeElements();
+		this.pPathSegment = new PathSegmentElements();
+		this.pSegmentRange = new SegmentRangeElements();
 		this.pEnumObject = new EnumObjectElements();
 		this.pEnumInstance = new EnumInstanceElements();
 		this.pEvent = new EventElements();
@@ -6773,9 +6968,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getEntityElementAccess().getRule();
 	}
 	
-	///** Common properties of all types. */
+	///**
+	// * Common properties of all types.
+	// *
+	// * A path type sits here beside a service rather than under 'InternalType', because it declares segments
+	// * rather than attributes and every member of 'InternalType' has to agree on those.
+	// */
 	//Type:
-	//    ExternalType | InternalType | Service;
+	//    ExternalType | InternalType | Service | EntityIdPathType;
 	public TypeElements getTypeAccess() {
 		return pType;
 	}
@@ -7296,6 +7496,68 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getAggregateIdRule() {
 		return getAggregateIdAccess().getRule();
+	}
+	
+	///**
+	// * A typed path from an aggregate root down to the entity it addresses.
+	// *
+	// * A child of a root there are many of cannot be addressed by its own identifier - 'TRANSACTION 45' exists
+	// * in every account-year - so it travels as a path: the root's identifier, then the chain of children down
+	// * to the thing addressed, as in 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Untyped, such a path says
+	// * nothing about what it addresses, which is why a model can hold fourteen of them all pointing at a
+	// * transaction and state that nowhere, and why a check reading the model cannot tell one row's target from
+	// * another's. Declaring the shape says it once, for every attribute that uses it.
+	// *
+	// * The first segment is an aggregate identifier and every later one identifies an entity of that aggregate.
+	// * An aggregate referenced *inside* a composite identifier is not a segment: 'AnnualTransactionsId' is made
+	// * of an account and a year, and the path still begins at 'ANNUAL_TRANSACTIONS'.
+	// *
+	// * A segment takes exactly one identifier unless it states a range, which exists for an entity that may
+	// * contain another of its own kind: 'MASTER_DATA 1/MASTERDATA_ROLE[1..*]' addresses a role, a role inside a
+	// * role, and so on. The range is written out rather than marked with a symbol, because "may repeat" does
+	// * not say whether the step may also be absent - '[0..*]' lets it be skipped and '[1..2]' puts a ceiling on
+	// * the nesting. Unbounded is '*' rather than 'N': a single uppercase letter would be reserved everywhere
+	// * once ANTLR lexes it, costing a model the right to name a type that.
+	// */
+	//EntityIdPathType:
+	//    doc=DOC?
+	//    'entity-id-path' name=ID '{'
+	//        segments+=PathSegment ('/' segments+=PathSegment)*
+	//    '}';
+	public EntityIdPathTypeElements getEntityIdPathTypeAccess() {
+		return pEntityIdPathType;
+	}
+	
+	public ParserRule getEntityIdPathTypeRule() {
+		return getEntityIdPathTypeAccess().getRule();
+	}
+	
+	///**
+	// * One step of a path: the identifier type it is made of, and how many of them it accepts.
+	// *
+	// * The range is a nested object rather than two fields on the step, so that "no range written" can be told
+	// * from a range that happens to start at zero - an absent int reads as 0, and the two would be the same
+	// * thing. No range means exactly one.
+	// */
+	//PathSegment:
+	//    type=[AbstractEntityId|FQN] (range=SegmentRange)?;
+	public PathSegmentElements getPathSegmentAccess() {
+		return pPathSegment;
+	}
+	
+	public ParserRule getPathSegmentRule() {
+		return getPathSegmentAccess().getRule();
+	}
+	
+	///** How many identifiers of its type a step accepts; '*' is unbounded. */
+	//SegmentRange:
+	//    '[' min=INT '..' (max=INT | unbounded?='*') ']';
+	public SegmentRangeElements getSegmentRangeAccess() {
+		return pSegmentRange;
+	}
+	
+	public ParserRule getSegmentRangeRule() {
+		return getSegmentRangeAccess().getRule();
 	}
 	
 	///** A type with a limited set of named values. */

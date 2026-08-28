@@ -28,6 +28,9 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency
 import org.fuin.dsl.cqrs.cqrsDsl.Entity
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType
 import org.fuin.dsl.cqrs.cqrsDsl.Event
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
@@ -141,6 +144,14 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val MODULE_DEPENDENCY_CYCLE = 'moduleDependencyCycle'
 
 	public static val ROW_CANNOT_ANSWER_GATE = 'rowCannotAnswerGate'
+
+	public static val PATH_NEEDS_MORE_THAN_A_ROOT = 'pathNeedsMoreThanARoot'
+
+	public static val PATH_MUST_START_AT_A_ROOT = 'pathMustStartAtARoot'
+
+	public static val PATH_SEGMENT_NOT_OF_ROOT = 'pathSegmentNotOfRoot'
+
+	public static val PATH_RANGE_INVALID = 'pathRangeInvalid'
 
 	public static val SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents"
 
@@ -1590,6 +1601,79 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 			return quoted.get(0)
 		}
 		return quoted.subList(0, quoted.size - 1).join(", ") + " and " + quoted.get(quoted.size - 1)
+	}
+
+	/**
+	 * Checks that a declared path is a shape a real identifier path could have.
+	 *
+	 * <p>A path begins at an aggregate root and names the chain of children down to the thing it
+	 * addresses: 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Three things follow, and all three are
+	 * mistakes a reader would otherwise only find when a path failed to validate at runtime - or never,
+	 * because nothing generated would have said so.
+	 *
+	 * <p>An aggregate reached <em>inside</em> a composite identifier is not a step:
+	 * 'AnnualTransactionsId' is made of an account and a year, and the path still begins at
+	 * 'ANNUAL_TRANSACTIONS'. Writing the account as a first step is the mistake this catches most often,
+	 * because the prose of the model describes the pair as "the natural composite key (account, year)".
+	 */
+	@Check
+	def checkEntityIdPathShape(EntityIdPathType path) {
+		if(CqrsModelArchives.isArchived(path.eResource?.URI)) return;
+
+		val segments = path.segments.nullSafe
+		if (segments.size < 2) {
+			error("A path of one step is the identifier itself - use '"
+				+ (segments.head?.type?.name ?: "the identifier type") + "' rather than a path",
+				path, CqrsDslPackage.Literals::ABSTRACT_ELEMENT__NAME, PATH_NEEDS_MORE_THAN_A_ROOT)
+			return
+		}
+
+		val first = segments.head.type
+		if (first !== null && !(first instanceof AggregateId)) {
+			error("A path starts at an aggregate root, and '" + first.name + "' does not identify one",
+				segments.head, CqrsDslPackage.Literals::PATH_SEGMENT__TYPE, PATH_MUST_START_AT_A_ROOT)
+			return
+		}
+		val root = if(first instanceof AggregateId) first.aggregate else null
+
+		for (segment : segments.drop(1)) {
+			val type = segment.type
+			if (type !== null) {
+				if (!(type instanceof EntityId)) {
+					error("Only the first step is an aggregate; '" + type.name
+						+ "' has to identify an entity of '" + (root?.name ?: "the root") + "'",
+						segment, CqrsDslPackage.Literals::PATH_SEGMENT__TYPE, PATH_SEGMENT_NOT_OF_ROOT)
+				} else if (root !== null) {
+					val entity = (type as EntityId).entity
+					if (entity !== null && entity.root !== null && entity.root !== root) {
+						error("'" + entity.name + "' belongs to '" + entity.root.name + "', not to '"
+							+ root.name + "', so it cannot be a step of this path",
+							segment, CqrsDslPackage.Literals::PATH_SEGMENT__TYPE, PATH_SEGMENT_NOT_OF_ROOT)
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks that a step's range can match something.
+	 *
+	 * <p>Written out rather than marked with a symbol, because "may repeat" does not say whether the step
+	 * may also be absent - so the bounds are stated, and stated bounds can contradict each other. Caught
+	 * here rather than at runtime, where an impossible range silently rejects every path it is given.
+	 */
+	@Check
+	def checkSegmentRange(SegmentRange range) {
+		if(CqrsModelArchives.isArchived(range.eResource?.URI)) return;
+		if(range.unbounded) return;
+
+		if (range.max < 1) {
+			error("A step that accepts no identifier at all cannot be part of a path; leave it out instead",
+				range, CqrsDslPackage.Literals::SEGMENT_RANGE__MAX, PATH_RANGE_INVALID)
+		} else if (range.max < range.min) {
+			error("The range is empty: at least " + range.min + " but at most " + range.max,
+				range, CqrsDslPackage.Literals::SEGMENT_RANGE__MAX, PATH_RANGE_INVALID)
+		}
 	}
 
 }

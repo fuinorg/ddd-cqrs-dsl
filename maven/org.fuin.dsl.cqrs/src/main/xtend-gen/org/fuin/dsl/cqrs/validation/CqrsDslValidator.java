@@ -59,6 +59,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
@@ -69,6 +70,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
@@ -78,6 +80,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -162,6 +165,14 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String MODULE_DEPENDENCY_CYCLE = "moduleDependencyCycle";
 
   public static final String ROW_CANNOT_ANSWER_GATE = "rowCannotAnswerGate";
+
+  public static final String PATH_NEEDS_MORE_THAN_A_ROOT = "pathNeedsMoreThanARoot";
+
+  public static final String PATH_MUST_START_AT_A_ROOT = "pathMustStartAtARoot";
+
+  public static final String PATH_SEGMENT_NOT_OF_ROOT = "pathSegmentNotOfRoot";
+
+  public static final String PATH_RANGE_INVALID = "pathRangeInvalid";
 
   public static final String SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents";
 
@@ -1820,5 +1831,154 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     int _minus_1 = (_size_2 - 1);
     String _get = quoted.get(_minus_1);
     return (_plus + _get);
+  }
+
+  /**
+   * Checks that a declared path is a shape a real identifier path could have.
+   * 
+   * <p>A path begins at an aggregate root and names the chain of children down to the thing it
+   * addresses: 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Three things follow, and all three are
+   * mistakes a reader would otherwise only find when a path failed to validate at runtime - or never,
+   * because nothing generated would have said so.
+   * 
+   * <p>An aggregate reached <em>inside</em> a composite identifier is not a step:
+   * 'AnnualTransactionsId' is made of an account and a year, and the path still begins at
+   * 'ANNUAL_TRANSACTIONS'. Writing the account as a first step is the mistake this catches most often,
+   * because the prose of the model describes the pair as "the natural composite key (account, year)".
+   */
+  @Check
+  public void checkEntityIdPathShape(final EntityIdPathType path) {
+    Resource _eResource = path.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    final List<PathSegment> segments = CqrsCollectionExtensions.<PathSegment>nullSafe(path.getSegments());
+    int _size = segments.size();
+    boolean _lessThan = (_size < 2);
+    if (_lessThan) {
+      String _elvis = null;
+      PathSegment _head = IterableExtensions.<PathSegment>head(segments);
+      AbstractEntityId _type = null;
+      if (_head!=null) {
+        _type=_head.getType();
+      }
+      String _name = null;
+      if (_type!=null) {
+        _name=_type.getName();
+      }
+      if (_name != null) {
+        _elvis = _name;
+      } else {
+        _elvis = "the identifier type";
+      }
+      String _plus = ("A path of one step is the identifier itself - use \'" + _elvis);
+      String _plus_1 = (_plus + "\' rather than a path");
+      this.error(_plus_1, path, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, CqrsDslValidator.PATH_NEEDS_MORE_THAN_A_ROOT);
+      return;
+    }
+    final AbstractEntityId first = IterableExtensions.<PathSegment>head(segments).getType();
+    if (((first != null) && (!(first instanceof AggregateId)))) {
+      String _name_1 = first.getName();
+      String _plus_2 = ("A path starts at an aggregate root, and \'" + _name_1);
+      String _plus_3 = (_plus_2 + "\' does not identify one");
+      this.error(_plus_3, 
+        IterableExtensions.<PathSegment>head(segments), CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_MUST_START_AT_A_ROOT);
+      return;
+    }
+    Aggregate _xifexpression = null;
+    if ((first instanceof AggregateId)) {
+      _xifexpression = ((AggregateId)first).getAggregate();
+    } else {
+      _xifexpression = null;
+    }
+    final Aggregate root = _xifexpression;
+    Iterable<PathSegment> _drop = IterableExtensions.<PathSegment>drop(segments, 1);
+    for (final PathSegment segment : _drop) {
+      {
+        final AbstractEntityId type = segment.getType();
+        if ((type != null)) {
+          if ((!(type instanceof EntityId))) {
+            String _name_2 = type.getName();
+            String _plus_4 = ("Only the first step is an aggregate; \'" + _name_2);
+            String _plus_5 = (_plus_4 + "\' has to identify an entity of \'");
+            String _elvis_1 = null;
+            String _name_3 = null;
+            if (root!=null) {
+              _name_3=root.getName();
+            }
+            if (_name_3 != null) {
+              _elvis_1 = _name_3;
+            } else {
+              _elvis_1 = "the root";
+            }
+            String _plus_6 = (_plus_5 + _elvis_1);
+            String _plus_7 = (_plus_6 + "\'");
+            this.error(_plus_7, segment, CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_SEGMENT_NOT_OF_ROOT);
+          } else {
+            if ((root != null)) {
+              final Entity entity = ((EntityId) type).getEntity();
+              if ((((entity != null) && (entity.getRoot() != null)) && (entity.getRoot() != root))) {
+                String _name_4 = entity.getName();
+                String _plus_8 = ("\'" + _name_4);
+                String _plus_9 = (_plus_8 + "\' belongs to \'");
+                String _name_5 = entity.getRoot().getName();
+                String _plus_10 = (_plus_9 + _name_5);
+                String _plus_11 = (_plus_10 + "\', not to \'");
+                String _name_6 = root.getName();
+                String _plus_12 = (_plus_11 + _name_6);
+                String _plus_13 = (_plus_12 + "\', so it cannot be a step of this path");
+                this.error(_plus_13, segment, CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_SEGMENT_NOT_OF_ROOT);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks that a step's range can match something.
+   * 
+   * <p>Written out rather than marked with a symbol, because "may repeat" does not say whether the step
+   * may also be absent - so the bounds are stated, and stated bounds can contradict each other. Caught
+   * here rather than at runtime, where an impossible range silently rejects every path it is given.
+   */
+  @Check
+  public void checkSegmentRange(final SegmentRange range) {
+    Resource _eResource = range.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    boolean _isUnbounded = range.isUnbounded();
+    if (_isUnbounded) {
+      return;
+    }
+    int _max = range.getMax();
+    boolean _lessThan = (_max < 1);
+    if (_lessThan) {
+      this.error("A step that accepts no identifier at all cannot be part of a path; leave it out instead", range, CqrsDslPackage.Literals.SEGMENT_RANGE__MAX, CqrsDslValidator.PATH_RANGE_INVALID);
+    } else {
+      int _max_1 = range.getMax();
+      int _min = range.getMin();
+      boolean _lessThan_1 = (_max_1 < _min);
+      if (_lessThan_1) {
+        int _min_1 = range.getMin();
+        String _plus = ("The range is empty: at least " + Integer.valueOf(_min_1));
+        String _plus_1 = (_plus + " but at most ");
+        int _max_2 = range.getMax();
+        String _plus_2 = (_plus_1 + Integer.valueOf(_max_2));
+        this.error(_plus_2, range, CqrsDslPackage.Literals.SEGMENT_RANGE__MAX, CqrsDslValidator.PATH_RANGE_INVALID);
+      }
+    }
   }
 }

@@ -276,6 +276,33 @@ public interface CqrsDslFactory extends EFactory
   AggregateId createAggregateId();
 
   /**
+   * Returns a new object of class '<em>Entity Id Path Type</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Entity Id Path Type</em>'.
+   * @generated
+   */
+  EntityIdPathType createEntityIdPathType();
+
+  /**
+   * Returns a new object of class '<em>Path Segment</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Path Segment</em>'.
+   * @generated
+   */
+  PathSegment createPathSegment();
+
+  /**
+   * Returns a new object of class '<em>Segment Range</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Segment Range</em>'.
+   * @generated
+   */
+  SegmentRange createSegmentRange();
+
+  /**
    * Returns a new object of class '<em>Enum Object</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

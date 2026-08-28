@@ -81,9 +81,14 @@ AbstractElement:
 EntityElement returns AbstractElement:
 	Constraint | Annotation | Type | Exception | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 
-/** Common properties of all types. */
+/**
+ * Common properties of all types.
+ *
+ * A path type sits here beside a service rather than under 'InternalType', because it declares segments
+ * rather than attributes and every member of 'InternalType' has to agree on those.
+ */
 Type:
-	ExternalType | InternalType | Service;
+	ExternalType | InternalType | Service | EntityIdPathType;
 
 /** Common properties of types that are part of the domain model. */
 InternalType:
@@ -374,6 +379,47 @@ AggregateId:
 		constructors+=Constructor*
 		methods+=Method*
 	'}';
+
+/**
+ * A typed path from an aggregate root down to the entity it addresses.
+ *
+ * A child of a root there are many of cannot be addressed by its own identifier - 'TRANSACTION 45' exists
+ * in every account-year - so it travels as a path: the root's identifier, then the chain of children down
+ * to the thing addressed, as in 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Untyped, such a path says
+ * nothing about what it addresses, which is why a model can hold fourteen of them all pointing at a
+ * transaction and state that nowhere, and why a check reading the model cannot tell one row's target from
+ * another's. Declaring the shape says it once, for every attribute that uses it.
+ *
+ * The first segment is an aggregate identifier and every later one identifies an entity of that aggregate.
+ * An aggregate referenced *inside* a composite identifier is not a segment: 'AnnualTransactionsId' is made
+ * of an account and a year, and the path still begins at 'ANNUAL_TRANSACTIONS'.
+ *
+ * A segment takes exactly one identifier unless it states a range, which exists for an entity that may
+ * contain another of its own kind: 'MASTER_DATA 1/MASTERDATA_ROLE[1..*]' addresses a role, a role inside a
+ * role, and so on. The range is written out rather than marked with a symbol, because "may repeat" does
+ * not say whether the step may also be absent - '[0..*]' lets it be skipped and '[1..2]' puts a ceiling on
+ * the nesting. Unbounded is '*' rather than 'N': a single uppercase letter would be reserved everywhere
+ * once ANTLR lexes it, costing a model the right to name a type that.
+ */
+EntityIdPathType:
+	doc=DOC?
+	'entity-id-path' name=ID '{'
+		segments+=PathSegment ('/' segments+=PathSegment)*
+	'}';
+
+/**
+ * One step of a path: the identifier type it is made of, and how many of them it accepts.
+ *
+ * The range is a nested object rather than two fields on the step, so that "no range written" can be told
+ * from a range that happens to start at zero - an absent int reads as 0, and the two would be the same
+ * thing. No range means exactly one.
+ */
+PathSegment:
+	type=[AbstractEntityId|FQN] (range=SegmentRange)?;
+
+/** How many identifiers of its type a step accepts; '*' is unbounded. */
+SegmentRange:
+	'[' min=INT '..' (max=INT | unbounded?='*') ']';
 
 /** A type with a limited set of named values. */
 EnumObject:

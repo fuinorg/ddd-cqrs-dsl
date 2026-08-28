@@ -39,6 +39,26 @@ context foo {
 
 		aggregate-id ThingId identifies Thing {}
 
+		entity-id PartId identifies Part {}
+
+		/** A part is addressed through the thing it belongs to, because its number repeats per thing. */
+		entity-id-path PartPath {
+			ThingId / PartId
+		}
+
+		/** A part that may contain another part, so the step takes one or more. */
+		entity-id-path NestedPartPath {
+			ThingId / PartId[1..*]
+		}
+
+		/** A part that need not be there at all, and never more than two deep. */
+		entity-id-path OptionalPartPath {
+			ThingId / PartId[0..2]
+		}
+
+		/** A part of a thing. */
+		entity Part identifier PartId root Thing {}
+
 		/** Soft deleted, and able to come back. */
 		aggregate Thing identifier ThingId {
 

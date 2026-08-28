@@ -43,6 +43,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getRuleAtomAccess().getAlternatives_2(), "rule__RuleAtom__Alternatives_2");
 			builder.put(grammarAccess.getRuleOperandAccess().getAlternatives(), "rule__RuleOperand__Alternatives");
 			builder.put(grammarAccess.getRuleLiteralAccess().getAlternatives(), "rule__RuleLiteral__Alternatives");
+			builder.put(grammarAccess.getSegmentRangeAccess().getAlternatives_3(), "rule__SegmentRange__Alternatives_3");
 			builder.put(grammarAccess.getAbstractMethodAccess().getAlternatives(), "rule__AbstractMethod__Alternatives");
 			builder.put(grammarAccess.getVariableAccess().getAlternatives(), "rule__Variable__Alternatives");
 			builder.put(grammarAccess.getRuleArgumentAccess().getAlternatives(), "rule__RuleArgument__Alternatives");
@@ -116,6 +117,10 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAggregateIdAccess().getGroup(), "rule__AggregateId__Group__0");
 			builder.put(grammarAccess.getAggregateIdAccess().getGroup_3(), "rule__AggregateId__Group_3__0");
 			builder.put(grammarAccess.getAggregateIdAccess().getGroup_4(), "rule__AggregateId__Group_4__0");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getGroup(), "rule__EntityIdPathType__Group__0");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getGroup_5(), "rule__EntityIdPathType__Group_5__0");
+			builder.put(grammarAccess.getPathSegmentAccess().getGroup(), "rule__PathSegment__Group__0");
+			builder.put(grammarAccess.getSegmentRangeAccess().getGroup(), "rule__SegmentRange__Group__0");
 			builder.put(grammarAccess.getEnumObjectAccess().getGroup(), "rule__EnumObject__Group__0");
 			builder.put(grammarAccess.getEnumObjectAccess().getGroup_3(), "rule__EnumObject__Group_3__0");
 			builder.put(grammarAccess.getEnumInstanceAccess().getGroup(), "rule__EnumInstance__Group__0");
@@ -338,6 +343,15 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAggregateIdAccess().getAttributesAssignment_10(), "rule__AggregateId__AttributesAssignment_10");
 			builder.put(grammarAccess.getAggregateIdAccess().getConstructorsAssignment_11(), "rule__AggregateId__ConstructorsAssignment_11");
 			builder.put(grammarAccess.getAggregateIdAccess().getMethodsAssignment_12(), "rule__AggregateId__MethodsAssignment_12");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getDocAssignment_0(), "rule__EntityIdPathType__DocAssignment_0");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getNameAssignment_2(), "rule__EntityIdPathType__NameAssignment_2");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_4(), "rule__EntityIdPathType__SegmentsAssignment_4");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_5_1(), "rule__EntityIdPathType__SegmentsAssignment_5_1");
+			builder.put(grammarAccess.getPathSegmentAccess().getTypeAssignment_0(), "rule__PathSegment__TypeAssignment_0");
+			builder.put(grammarAccess.getPathSegmentAccess().getRangeAssignment_1(), "rule__PathSegment__RangeAssignment_1");
+			builder.put(grammarAccess.getSegmentRangeAccess().getMinAssignment_1(), "rule__SegmentRange__MinAssignment_1");
+			builder.put(grammarAccess.getSegmentRangeAccess().getMaxAssignment_3_0(), "rule__SegmentRange__MaxAssignment_3_0");
+			builder.put(grammarAccess.getSegmentRangeAccess().getUnboundedAssignment_3_1(), "rule__SegmentRange__UnboundedAssignment_3_1");
 			builder.put(grammarAccess.getEnumObjectAccess().getDocAssignment_0(), "rule__EnumObject__DocAssignment_0");
 			builder.put(grammarAccess.getEnumObjectAccess().getNameAssignment_2(), "rule__EnumObject__NameAssignment_2");
 			builder.put(grammarAccess.getEnumObjectAccess().getBaseAssignment_3_1(), "rule__EnumObject__BaseAssignment_3_1");

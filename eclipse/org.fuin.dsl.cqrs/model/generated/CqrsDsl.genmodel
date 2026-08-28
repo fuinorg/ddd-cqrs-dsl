@@ -207,6 +207,18 @@
     <genClasses ecoreClass="CqrsDsl.ecore#//AggregateId">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AggregateId/aggregate"/>
     </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//EntityIdPathType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//EntityIdPathType/segments"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//PathSegment">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//PathSegment/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//PathSegment/range"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//SegmentRange">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//SegmentRange/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//SegmentRange/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//SegmentRange/unbounded"/>
+    </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//EnumObject">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//EnumObject/base"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//EnumObject/instances"/>

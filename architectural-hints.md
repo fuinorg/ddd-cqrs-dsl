@@ -41,7 +41,12 @@ the highlighting set already exist), so it only needs the rule reference + the c
      ends in two optional trailing lists (`businessRule* method*`); pre-existing, not an error.
 
 **IntelliJ side (separate hand-written plugin) — a NEW keyword touches FOUR files, not one; reusing
-an existing keyword token in another rule needs only steps 2 (the rule reference) and 5:**
+an existing keyword token in another rule needs only steps 2 (the rule reference) and 5. A keyword that
+starts a NEW ELEMENT of a module or an entity touches a FIFTH: `element_start` in the `.bnf`, the token
+set `element_recover` is written against. Miss it and the parse fails in a way that points nowhere near
+the cause - `element*` parses the previous element, then the recovery loop eats the new declaration as
+garbage because `!(RBRACE | element_start)` still holds at its keyword, and the error is reported at the
+top level as "context, module or } expected".**
 2. `intellij/src/main/grammar/CqrsDsl.bnf` — for a new keyword, declare the token in the `tokens { }`
    block (e.g. `KW_REST_PATH='rest-path'`); for any keyword, reference the token in the rule
    (`view_def`). Reusing an existing token (`KW_CRON_SCHEDULE`) needs only the reference — no new decl.

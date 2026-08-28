@@ -232,6 +232,20 @@
   <eClassifiers xsi:type="ecore:EClass" name="AggregateId" eSuperTypes="#//AbstractEntityId">
     <eStructuralFeatures xsi:type="ecore:EReference" name="aggregate" eType="#//Aggregate"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityIdPathType" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segments" upperBound="-1"
+        eType="#//PathSegment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PathSegment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//AbstractEntityId"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//SegmentRange"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SegmentRange">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unbounded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumObject" eSuperTypes="#//InternalType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//ExternalType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"

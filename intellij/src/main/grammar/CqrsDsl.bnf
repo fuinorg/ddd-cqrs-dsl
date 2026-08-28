@@ -34,6 +34,7 @@
     KW_VALUE_OBJECT='value-object'
     KW_BASE='base'
     KW_ENTITY_ID='entity-id'
+    KW_ENTITY_ID_PATH='entity-id-path'
     KW_IDENTIFIES='identifies'
     KW_AGGREGATE_ID='aggregate-id'
     KW_ENUM='enum'
@@ -178,6 +179,8 @@
     AT='@'
     COMMA=','
     DOT='.'
+    DOTDOT='..'
+    SLASH='/'
     PIPE='|'
     STAR='*'
     COLON=':'
@@ -252,6 +255,7 @@ element ::= constraint_def
           | service_def
           | value_object
           | entity_id
+          | entity_id_path
           | aggregate_id
           | enum_object
           | entity_def
@@ -278,6 +282,7 @@ entity_element ::= constraint_def
           | service_def
           | value_object
           | entity_id
+          | entity_id_path
           | aggregate_id
           | enum_object
           | entity_def
@@ -296,7 +301,7 @@ entity_element ::= constraint_def
 private element_recover ::= !(RBRACE | element_start)
 // 'AT' (@) starts an annotation instance prefixing a value-object/event, so it must end recovery.
 private element_start ::= AT | KW_CONSTRAINT | KW_ANNOTATION | KW_TYPE | KW_SERVICE | KW_VALUE_OBJECT
-          | KW_ENTITY_ID | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
+          | KW_ENTITY_ID | KW_ENTITY_ID_PATH | KW_AGGREGATE_ID | KW_ENUM | KW_ENTITY | KW_AGGREGATE | KW_EXCEPTION
           | KW_BUSINESS_RULE | KW_EVENT | KW_COMMAND | KW_COMMAND_HANDLER | KW_PROJECTION | KW_VIEW | KW_PROCESS_MANAGER | KW_DATA_PROTECTION
           | KW_MODULE | KW_IMPORT
 
@@ -323,6 +328,19 @@ exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE 
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
+
+// A typed path from an aggregate root down to the entity it addresses. The first step is an aggregate
+// identifier and every later one identifies an entity of that aggregate; a step states a range only when
+// it takes other than exactly one, which is what an entity containing another of its own kind needs.
+entity_id_path ::= KW_ENTITY_ID_PATH ID LBRACE path_segment (SLASH path_segment)* RBRACE {
+  pin=1
+  implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
+  mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
+}
+
+path_segment ::= type_ref segment_range?
+
+segment_range ::= LBRACKET NUMBER DOTDOT (NUMBER | STAR) RBRACKET { pin=1 }
 
 value_object ::= annotation_instance* KW_VALUE_OBJECT ID (KW_BASE type_ref)? invariants? data_protection_instance? LBRACE type_meta_info hint_def* attribute* identified_by? constructor_def* method_def* RBRACE {
   pin=2
