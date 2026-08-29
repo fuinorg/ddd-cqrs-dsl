@@ -1,7 +1,6 @@
 package org.fuin.dsl.ddd.flutter.command
 
 import java.util.ArrayList
-import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import java.util.TreeSet
@@ -37,7 +36,6 @@ import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
  * <li><b>What it does.</b> A constructor creates, an operation firing an exodus event removes, anything
  * else modifies. That decides whether a screen offers it on a button, behind a row, or behind a
  * confirmation - and whether the command carries an aggregate version at all.</li>
- * <li><b>Which field a refusal belongs on.</b> See {@link #rejections}.</li>
  * </ul>
  */
 class DartCommandArtifactFactory extends AbstractDartSource<Command> {
@@ -84,7 +82,6 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         val aggregateTyped = if (aggregate?.idType === null) "aggregateId" else "aggregateId.typed"
         val bundle = bundleName(command.module)
         val versioned = !(command.target instanceof Constructor)
-        val rejections = rejections(command, attributes)
         val rules = new DartRuleDescriptors(command.target)
 
         '''
@@ -132,13 +129,6 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             rules: <RuleDescriptor>[
               «rules»
             ],
-            «ENDIF»
-            «IF !rejections.empty»
-            rejections: <String, String>{
-              «FOR entry : rejections.entrySet»
-              «dartString(entry.key)»: «dartString(entry.value)»,
-              «ENDFOR»
-            },
             «ENDIF»
             «IF !attributes.empty»
             attributes: <AttributeDescriptor>[
@@ -219,49 +209,6 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         return "CommandKind.modify"
     }
 
-    /**
-     * Which attribute each business rule's refusal belongs on, keyed by the exception's simple name.
-     *
-     * <p>A refusal arrives as the exception's class and the model's own wording, and says nothing about
-     * which field the rule was about - so a form would show "a category named X already exists" above
-     * itself rather than under the name. What is derived here is what the model actually states:
-     *
-     * <ol>
-     * <li>the exception carries an attribute with the same name as one of the command's, or</li>
-     * <li>the command has exactly one attribute, in which case any field-level refusal is about it.</li>
-     * </ol>
-     *
-     * <p><b>Anything else is left out rather than guessed.</b> Deriving it from the exception's class
-     * name works for <code>DuplicateCategoryNameException</code> and <code>name</code> and stops working
-     * the moment the attribute is called <code>newName</code>; a refusal shown on the wrong field is
-     * worse than one shown above the form. The model has no way to say it outright today - see
-     * <code>todo.md</code>.
-     */
-    def private static Map<String, String> rejections(Command command, List<DartAttribute> attributes) {
-        val out = new LinkedHashMap<String, String>()
-        val target = command.target
-        if (target === null) {
-            return out
-        }
-        val displayed = attributes.filter[displayed].toList
-        for (rule : target.businessRules?.businessRuleInstances.nullSafe) {
-            val exception = rule?.businessRule?.exception
-            if (exception !== null) {
-                // Exactly one, or none. Two of the command's attributes sharing a name with the
-                // exception's says the model has not decided which the rule is about, and a refusal
-                // shown on the wrong field is worse than one shown above the form.
-                val matching = displayed.filter[a | exception.attributes.nullSafe.exists[name == a.name]].toList
-                var String attribute = if(matching.size === 1) matching.get(0).name else null
-                if (attribute === null && displayed.size === 1) {
-                    attribute = displayed.get(0).name
-                }
-                if (attribute !== null) {
-                    out.put(exception.name, attribute)
-                }
-            }
-        }
-        return out
-    }
 
     def private descriptorOf(DartAttribute a, String bundle) {
         val meta = a.meta

@@ -33,9 +33,6 @@ class RenameCategoryCommand {
       label: 'Rename this category',
       tooltip: 'Gives the category another name',
     ),
-    rejections: <String, String>{
-      'DuplicateCategoryNameException': 'newName',
-    },
     attributes: <AttributeDescriptor>[
       AttributeDescriptor(
         name: 'newName',

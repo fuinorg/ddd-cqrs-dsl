@@ -99,17 +99,18 @@ class DartCommandArtifactFactoryTest {
     }
 
     @Test
-    def void testARefusalTheModelCannotPlaceIsLeftOut() {
-        // DuplicateCategoryNameException carries BOTH a name and a kind, and the create command has an
-        // attribute of each - so the model does not say which the rule is about. Guessing from the
-        // exception's class name would put it on "name" and would be a guess; a refusal shown on the
-        // wrong field is worse than one shown above the form. See todo.md.
+    def void testNoTableSaysWhereARefusalBelongs() {
+        // There used to be a "rejections" map here, from an exception's *simple* name to a field, which
+        // the client joined to the server's *qualified* name with a substring - so a rename left both
+        // builds green and the refusal silently stopped landing on its field.
+        //
+        // It also could not answer the case that motivated it: DuplicateCategoryNameException carries
+        // both a name and a kind, and a create has an attribute of each, so the model could not say
+        // which the rule was about and the entry was left out entirely. The server now sends the values
+        // the refusal concerned, and the client matches those against the command's own attributes - so
+        // the question is answered where the answer actually is, at the time of the refusal.
         assertThat(generate("CreateCategoryCommand")).doesNotContain("rejections")
-
-        // A rename has exactly one field, so any field-level refusal is about it. That the model does
-        // state.
-        assertThat(generate("RenameCategoryCommand"))
-            .contains("'DuplicateCategoryNameException': 'newName'")
+        assertThat(generate("RenameCategoryCommand")).doesNotContain("rejections")
     }
 
     @Test
