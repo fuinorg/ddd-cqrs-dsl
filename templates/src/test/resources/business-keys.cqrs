@@ -48,6 +48,70 @@ context de.fuin.keys {
             String value
         }
 
+        /** A read-model row for the category list: the identity and the key. */
+        value-object CategoryDetails {
+
+            /** The category's identifier. */
+            CategoryId id
+
+            CategoryName name {
+                slabel "Name"
+                label "Name"
+                tooltip "What this category is called"
+            }
+
+            CategoryKind kind {
+                slabel "Kind"
+                label "Kind"
+                tooltip "Which side of the ledger it classifies"
+            }
+
+        }
+
+        /** A row that carries only half the key, so it cannot be named by the key's format. */
+        value-object CategorySummary {
+
+            /** The category's identifier. */
+            CategoryId id
+
+            CategoryName name {
+                slabel "Name"
+                label "Name"
+                tooltip "What this category is called"
+            }
+
+        }
+
+        /** A row carrying a category as a reference rather than as its own identity. */
+        value-object EntryDetails {
+
+            /** The entry's identifier. */
+            EntryId id
+
+            /** The category it is classified under. */
+            CategoryId classifiedAs
+
+        }
+
+        /** Identifies an entry. */
+        aggregate-id EntryId identifies Entry base UUID {
+            slabel "EID"
+            label "Entry ID"
+            tooltip "Unique identifier of the entry"
+        }
+
+        /** Something classified by a category. */
+        aggregate Entry identifier EntryId {
+
+            slabel "Entry"
+            label "Entry"
+            tooltip "One entry"
+
+            /** The category it is classified under. */
+            CategoryId classifiedAs
+
+        }
+
         /** What the key is on. */
         aggregate Category identifier CategoryId {
 

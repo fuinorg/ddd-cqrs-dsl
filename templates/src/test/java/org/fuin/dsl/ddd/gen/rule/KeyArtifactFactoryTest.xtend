@@ -80,7 +80,7 @@ class KeyArtifactFactoryTest {
     }
 
     private def Key key() {
-        model.getAllContentsOfType(Aggregate).head.keys.head
+        model.getAllContentsOfType(Aggregate).findFirst[name == "Category"].keys.head
     }
 
     private def createTestee() {

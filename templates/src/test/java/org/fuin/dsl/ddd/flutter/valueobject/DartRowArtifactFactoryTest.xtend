@@ -134,6 +134,37 @@ class DartRowArtifactFactoryTest {
             new HashMap<String, Object>(), false).iterator.next.data, "UTF-8")
     }
 
+    /**
+     * A row is named to a person by the business key of the type it projects, which it reaches through
+     * its own identity attribute.
+     */
+    @Test
+    def void testARowIsNamedByTheKeyOfWhatItProjects() {
+        val generated = generateFrom("/business-keys.cqrs", "CategoryDetails")
+
+        // Raw, because "${" in an ordinary Dart literal is interpolation rather than text.
+        assertThat(generated).contains("displayFormat: r'${name} (${kind})',")
+    }
+
+    /**
+     * A key is declared over the write model and a row is a projection of it, so the two need not
+     * agree. Where the row cannot answer the whole format it says nothing, and the client falls back
+     * to the first displayed attribute visibly rather than rendering a label with a gap in it.
+     */
+    @Test
+    def void testARowCarryingHalfTheKeyIsNotNamedByIt() {
+        assertThat(generateFrom("/business-keys.cqrs", "CategorySummary")).doesNotContain("displayFormat")
+    }
+
+    /**
+     * A row carrying another type's id refers to it rather than being it, so it is not named after
+     * what that id identifies - which is the distinction the identity role draws.
+     */
+    @Test
+    def void testARowIsNotNamedByATypeItMerelyReferences() {
+        assertThat(generateFrom("/business-keys.cqrs", "EntryDetails")).doesNotContain("displayFormat")
+    }
+
     private def String generateFrom(String resource, String valueObject) {
         val DomainModel other = parser.parse(Utils.readAsString(class.getResource(resource)))
         validationTester.assertNoErrors(other)

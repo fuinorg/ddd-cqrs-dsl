@@ -4,6 +4,9 @@ import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import java.util.TreeSet
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
+import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
+import org.fuin.dsl.cqrs.cqrsDsl.EntityId
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.dsl.ddd.flutter.base.DartAttribute
@@ -107,7 +110,8 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
               «FOR a : attributes»
               «descriptorOf(a, bundle)»
               «ENDFOR»
-            ],
+            ],«IF displayFormat(attributes) !== null»
+            displayFormat: «dartStringRaw(displayFormat(attributes))»,«ENDIF»
           );
           «FOR a : attributes»
 
@@ -219,6 +223,65 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
             }
         }
         return "'" + className + "[" + out.join(", ") + "]'"
+    }
+
+    /**
+     * How to name one row of this type to a person, or <code>null</code> where nothing says.
+     *
+     * <p>The row reaches the type it projects through its own identity: that attribute is typed as the
+     * id which <code>identifies</code> an aggregate or an entity, and the business key of that type
+     * carries the format. It has to be the <em>identity</em> rather than any id on the row - a row
+     * carrying another type's id is referring to it rather than being it, and would otherwise be named
+     * after the wrong thing.
+     *
+     * <p><b>The row has to carry every attribute the format names.</b> A key is declared over the write
+     * model and a row is a projection of it, so the two need not agree; where they do not, this says
+     * nothing and the client falls back to the first displayed attribute - visibly, rather than
+     * rendering a label with a placeholder standing in it.
+     */
+    def private static String displayFormat(List<DartAttribute> attributes) {
+        val identity = attributes.findFirst[role == "AttributeRole.identifier" || role == "AttributeRole.key"]
+        if (identity === null) {
+            return null
+        }
+        val idType = identity.attribute.type
+        val AbstractEntity owner = switch (idType) {
+            AggregateId: idType.aggregate
+            EntityId: idType.entity
+            default: null
+        }
+        if (owner === null) {
+            return null
+        }
+        val key = owner.keys.nullSafe.findFirst[displayAs !== null]
+        if (key === null) {
+            return null
+        }
+        val carried = attributes.map[name].toSet
+        for (named : variablesIn(key.displayAs)) {
+            if (!carried.contains(named)) {
+                return null
+            }
+        }
+        return key.displayAs
+    }
+
+    /** The names a "${...}" format asks for, in the order it asks. */
+    def private static List<String> variablesIn(String format) {
+        val out = new ArrayList<String>()
+        var from = 0
+        while (true) {
+            val start = format.indexOf("${", from)
+            if (start < 0) {
+                return out
+            }
+            val end = format.indexOf("}", start + 2)
+            if (end < 0) {
+                return out
+            }
+            out.add(format.substring(start + 2, end))
+            from = end + 1
+        }
     }
 
     /**
