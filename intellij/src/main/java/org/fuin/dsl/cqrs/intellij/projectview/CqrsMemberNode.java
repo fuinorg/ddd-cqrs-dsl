@@ -31,11 +31,7 @@ public final class CqrsMemberNode extends ProjectViewNode<CqrsNamedElement> {
         if (element == null || !element.isValid()) {
             return Collections.emptyList();
         }
-        final List<AbstractTreeNode<?>> children = new ArrayList<>();
-        for (CqrsNamedElement child : CqrsMembers.childrenOf(element)) {
-            children.add(new CqrsMemberNode(myProject, child, getSettings()));
-        }
-        return children;
+        return CqrsKindGroupNode.groupsOf(myProject, element, CqrsMembers.childrenOf(element), getSettings());
     }
 
     @Override

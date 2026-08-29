@@ -3,7 +3,7 @@
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
 ## 1.35.0
-- `cid` is removed. It generated a number nothing on the result path ever read; an exception's `code` is now a readable short identifier.
+- Declarations are grouped by kind in the structure view and under the file in the Project view, so a module shows `aggregates`, `events`, `exceptions` and the rest instead of one run of 79 rows; the structure view has a toolbar toggle for it, and each row now carries its own icon rather than the file's. `cid` is removed. It generated a number nothing on the result path ever read; an exception's `code` is now a readable short identifier.
 
 ## 1.34.0
 - A business `key` now generates the uniqueness rule it stands for, so an operation names the key and says nothing else. Five more editor checks refuse what cannot be derived.

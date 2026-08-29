@@ -6,7 +6,6 @@ import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -41,9 +40,7 @@ public final class CqrsFileNode extends PsiFileNode implements FileNodeWithNeste
         final List<AbstractTreeNode<?>> children = new ArrayList<>(nestedFileNodes);
         final PsiFile file = getValue();
         if (file != null && file.isValid()) {
-            for (CqrsNamedElement child : CqrsMembers.childrenOf(file)) {
-                children.add(new CqrsMemberNode(myProject, child, getSettings()));
-            }
+            children.addAll(CqrsKindGroupNode.groupsOf(myProject, file, CqrsMembers.childrenOf(file), getSettings()));
         }
         return children;
     }

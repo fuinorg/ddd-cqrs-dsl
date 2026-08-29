@@ -61,6 +61,21 @@ public class CqrsTreeStructureProviderTest extends BasePlatformTestCase {
         return names;
     }
 
+    /** The rows under a node, whether they are groups or declarations. */
+    private List<String> rowNames(AbstractTreeNode<?> node) {
+        final List<String> names = new ArrayList<>();
+        for (AbstractTreeNode<?> child : node.getChildren()) {
+            names.add(child.toTestString(null));
+        }
+        return names;
+    }
+
+    /** Steps through the group a declaration is filed under. */
+    private AbstractTreeNode<?> onlyMemberOf(AbstractTreeNode<?> node) {
+        final AbstractTreeNode<?> group = node.getChildren().iterator().next();
+        return group.getChildren().iterator().next();
+    }
+
     public void testShowMembersOffLeavesTheFileNodeAlone() {
         // ViewSettings.DEFAULT answers false, which is the state the tree starts in.
         final Collection<AbstractTreeNode<?>> result = modify("test.cqrs", MODEL, ViewSettings.DEFAULT);
@@ -74,7 +89,11 @@ public class CqrsTreeStructureProviderTest extends BasePlatformTestCase {
 
         final AbstractTreeNode<?> node = result.iterator().next();
         assertTrue("Expected the file node to be swapped", node instanceof CqrsFileNode);
-        assertEquals(List.of("p"), childNames(node));
+
+        // Declarations are filed under their kind, so the file lists kinds and the kind lists what it
+        // holds - one context here, but the level is there whether or not it saves anything.
+        assertEquals(List.of("contexts"), rowNames(node));
+        assertEquals(List.of("p"), rowNames(node.getChildren().iterator().next()));
 
         // The handle is promised without parsing, so a directory of models renders without being read.
         assertTrue(((CqrsFileNode) node).isAlwaysShowPlus());
@@ -89,7 +108,7 @@ public class CqrsTreeStructureProviderTest extends BasePlatformTestCase {
 
     public void testMemberRowShowsTheBareNameAndNoLocationString() {
         final AbstractTreeNode<?> file = modify("test.cqrs", MODEL, SHOW_MEMBERS).iterator().next();
-        final AbstractTreeNode<?> context = file.getChildren().iterator().next();
+        final AbstractTreeNode<?> context = onlyMemberOf(file);
 
         // The presentation is a template until update() has run.
         context.update();
@@ -102,7 +121,7 @@ public class CqrsTreeStructureProviderTest extends BasePlatformTestCase {
 
     public void testMemberRowNavigatesToItsDeclaration() {
         final AbstractTreeNode<?> file = modify("test.cqrs", MODEL, SHOW_MEMBERS).iterator().next();
-        final AbstractTreeNode<?> context = file.getChildren().iterator().next();
+        final AbstractTreeNode<?> context = onlyMemberOf(file);
 
         assertTrue(context.canNavigateToSource());
     }

@@ -76,7 +76,9 @@ public abstract class CqrsNamedElementImpl extends ASTWrapperPsiElement implemen
 
             @Override
             public @Nullable Icon getIcon(boolean unused) {
-                return CqrsIcons.FILE;
+                // The declaration's own icon, not the file's. It is what the structure view draws, so
+                // without this every row of a model looks alike; go-to-symbol gains by it too.
+                return CqrsIcons.forElement(CqrsNamedElementImpl.this);
             }
         };
     }
