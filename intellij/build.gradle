@@ -138,6 +138,8 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.35.0</b> &ndash; <code>cid</code> is removed. It generated a number nothing on the result
+        path ever read; an exception's <code>code</code> is now a readable short identifier.</li>
     <li><b>1.34.0</b> &ndash; A business <code>key</code> now generates the uniqueness rule it stands
         for, so an operation names the key and says nothing else. Five more editor checks refuse what
         cannot be derived.</li>

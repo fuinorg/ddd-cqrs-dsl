@@ -3,7 +3,7 @@ Automatic-Module-Name: org.fuin.dsl.cqrs.ui.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: org.fuin.dsl.cqrs.ui.tests
 Bundle-Vendor: My Company
-Bundle-Version: 1.31.0.qualifier
+Bundle-Version: 1.32.0.qualifier
 Bundle-SymbolicName: org.fuin.dsl.cqrs.ui.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.fuin.dsl.cqrs.ui,

@@ -12,7 +12,7 @@ context p_exception {
 			message "Exception A"
 		}
 
-		exception ExceptionB cid 123 {
+		exception ExceptionB {
 			message "Exception B"
 		}
 
@@ -27,12 +27,12 @@ context p_exception {
 			message "Exception D: ${a} / ${b}"
 		}
 
-		exception ExceptionE cid 124 {
+		exception ExceptionE {
 			String a
 			message "Exception C: ${a}"
 		}
 
-		exception ExceptionF cid 125 {
+		exception ExceptionF {
 			String a
 			Integer b
 			message "Exception F: ${a} / ${b}"

@@ -29,7 +29,6 @@
     KW_EXCEPTION='exception'
     KW_BUSINESS_RULE='business-rule'
     KW_ANNOTATION='annotation'
-    KW_CID='cid'
     KW_MESSAGE='message'
     KW_VALUE_OBJECT='value-object'
     KW_BASE='base'
@@ -324,7 +323,7 @@ annotation_def ::= KW_ANNOTATION ID LBRACE attribute* RBRACE {
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
 }
 
-exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE STRING RBRACE {
+exception_def ::= KW_EXCEPTION ID LBRACE attribute* KW_MESSAGE STRING RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"

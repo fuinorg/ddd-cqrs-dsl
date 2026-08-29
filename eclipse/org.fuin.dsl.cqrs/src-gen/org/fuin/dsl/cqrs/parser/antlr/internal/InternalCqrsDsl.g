@@ -2759,40 +2759,16 @@ ruleException returns [EObject current=null]
 				}
 			)
 		)
-		(
-			otherlv_3='cid'
-			{
-				newLeafNode(otherlv_3, grammarAccess.getExceptionAccess().getCidKeyword_3_0());
-			}
-			(
-				(
-					lv_cid_4_0=RULE_INT
-					{
-						newLeafNode(lv_cid_4_0, grammarAccess.getExceptionAccess().getCidINTTerminalRuleCall_3_1_0());
-					}
-					{
-						if ($current==null) {
-							$current = createModelElement(grammarAccess.getExceptionRule());
-						}
-						setWithLastConsumed(
-							$current,
-							"cid",
-							lv_cid_4_0,
-							"org.fuin.dsl.cqrs.CqrsDsl.INT");
-					}
-				)
-			)
-		)?
-		otherlv_5='{'
+		otherlv_3='{'
 		{
-			newLeafNode(otherlv_5, grammarAccess.getExceptionAccess().getLeftCurlyBracketKeyword_4());
+			newLeafNode(otherlv_3, grammarAccess.getExceptionAccess().getLeftCurlyBracketKeyword_3());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getExceptionAccess().getAttributesAttributeParserRuleCall_5_0());
+					newCompositeNode(grammarAccess.getExceptionAccess().getAttributesAttributeParserRuleCall_4_0());
 				}
-				lv_attributes_6_0=ruleAttribute
+				lv_attributes_4_0=ruleAttribute
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getExceptionRule());
@@ -2800,21 +2776,21 @@ ruleException returns [EObject current=null]
 					add(
 						$current,
 						"attributes",
-						lv_attributes_6_0,
+						lv_attributes_4_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.Attribute");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_7='message'
+		otherlv_5='message'
 		{
-			newLeafNode(otherlv_7, grammarAccess.getExceptionAccess().getMessageKeyword_6());
+			newLeafNode(otherlv_5, grammarAccess.getExceptionAccess().getMessageKeyword_5());
 		}
 		(
 			(
-				lv_message_8_0=RULE_STRING
+				lv_message_6_0=RULE_STRING
 				{
-					newLeafNode(lv_message_8_0, grammarAccess.getExceptionAccess().getMessageSTRINGTerminalRuleCall_7_0());
+					newLeafNode(lv_message_6_0, grammarAccess.getExceptionAccess().getMessageSTRINGTerminalRuleCall_6_0());
 				}
 				{
 					if ($current==null) {
@@ -2823,14 +2799,14 @@ ruleException returns [EObject current=null]
 					setWithLastConsumed(
 						$current,
 						"message",
-						lv_message_8_0,
+						lv_message_6_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.STRING");
 				}
 			)
 		)
-		otherlv_9='}'
+		otherlv_7='}'
 		{
-			newLeafNode(otherlv_9, grammarAccess.getExceptionAccess().getRightCurlyBracketKeyword_8());
+			newLeafNode(otherlv_7, grammarAccess.getExceptionAccess().getRightCurlyBracketKeyword_7());
 		}
 	)
 ;

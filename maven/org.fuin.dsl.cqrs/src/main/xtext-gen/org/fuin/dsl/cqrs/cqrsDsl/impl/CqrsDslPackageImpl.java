@@ -1929,20 +1929,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EAttribute getException_Cid()
-  {
-    return (EAttribute)exceptionEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getException_Attributes()
   {
-    return (EReference)exceptionEClass.getEStructuralFeatures().get(1);
+    return (EReference)exceptionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1953,7 +1942,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EAttribute getException_Message()
   {
-    return (EAttribute)exceptionEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)exceptionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -4404,7 +4393,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEReference(annotationEClass, ANNOTATION__ATTRIBUTES);
 
     exceptionEClass = createEClass(EXCEPTION);
-    createEAttribute(exceptionEClass, EXCEPTION__CID);
     createEReference(exceptionEClass, EXCEPTION__ATTRIBUTES);
     createEAttribute(exceptionEClass, EXCEPTION__MESSAGE);
 
@@ -4891,7 +4879,6 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getAnnotation_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, Annotation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(exceptionEClass, org.fuin.dsl.cqrs.cqrsDsl.Exception.class, "Exception", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getException_Cid(), ecorePackage.getEInt(), "cid", null, 0, 1, org.fuin.dsl.cqrs.cqrsDsl.Exception.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getException_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, org.fuin.dsl.cqrs.cqrsDsl.Exception.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getException_Message(), ecorePackage.getEString(), "message", null, 0, 1, org.fuin.dsl.cqrs.cqrsDsl.Exception.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

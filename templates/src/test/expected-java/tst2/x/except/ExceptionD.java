@@ -24,7 +24,7 @@ import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 
 /**
- * Exception D - No CID - Multiple variables
+ * Exception D - Multiple variables
  */
 public final class ExceptionD extends Exception {
 

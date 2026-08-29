@@ -98,7 +98,6 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "input"                   { return KW_INPUT; }
   "exception"               { return KW_EXCEPTION; }
   "annotation"              { return KW_ANNOTATION; }
-  "cid"                     { return KW_CID; }
   "message"                 { return KW_MESSAGE; }
   "base"                    { return KW_BASE; }
   "identifies"              { return KW_IDENTIFIES; }

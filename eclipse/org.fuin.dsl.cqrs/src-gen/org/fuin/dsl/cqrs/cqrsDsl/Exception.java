@@ -14,7 +14,6 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Exception#getCid <em>Cid</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Exception#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Exception#getMessage <em>Message</em>}</li>
  * </ul>
@@ -25,28 +24,6 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Exception extends AbstractElement
 {
-  /**
-   * Returns the value of the '<em><b>Cid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Cid</em>' attribute.
-   * @see #setCid(int)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getException_Cid()
-   * @model
-   * @generated
-   */
-  int getCid();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Exception#getCid <em>Cid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Cid</em>' attribute.
-   * @see #getCid()
-   * @generated
-   */
-  void setCid(int value);
-
   /**
    * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Attribute}.

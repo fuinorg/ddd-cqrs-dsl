@@ -2,6 +2,10 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.32.0
+- **`cid` is removed.** It generated a `UniquelyNumberedException` whose number nothing on the result
+  path ever read; an exception's `code` is now a readable short identifier instead.
+
 ## 1.31.0
 - **A business `key` generates its uniqueness rule**, the service method answering whether the key is
   taken, and the values each operation hands them. Five checks refuse what cannot be derived.

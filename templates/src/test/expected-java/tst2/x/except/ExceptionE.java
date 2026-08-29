@@ -20,14 +20,13 @@ package p.shared.domain.x.except;
 import java.io.Serial;
 import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
-import org.fuin.objects4j.common.UniquelyNumberedException;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 
 /**
- * Exception E - With CID - Single variable
+ * Exception E - Single variable
  */
-public final class ExceptionE extends UniquelyNumberedException {
+public final class ExceptionE extends Exception {
 
     @Serial
     private static final long serialVersionUID = 1000L;
@@ -40,7 +39,7 @@ public final class ExceptionE extends UniquelyNumberedException {
      * @param a A.
      */
     public ExceptionE(final String a) {
-        super(124, Objects.requireNonNull(KeyValueEL.replace("Exception C: ${a}",  new KeyValue("a", a))));
+        super(Objects.requireNonNull(KeyValueEL.replace("Exception C: ${a}",  new KeyValue("a", a))));
         Contract.requireArgNotNull("a", a);
         
         this.a = a;

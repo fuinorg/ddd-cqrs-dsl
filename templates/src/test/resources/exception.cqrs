@@ -8,24 +8,24 @@ context p {
 	module x.except {
 		import p.x.types.*
 
-		/** Exception A - No CID - No variables */
+		/** Exception A - No variables */
 		exception ExceptionA {
 			message "Exception A"
 		}
 
-		/** Exception B - With CID - No variables */
-		exception ExceptionB cid 123 {
+		/** Exception B - No variables */
+		exception ExceptionB {
 			message "Exception B"
 		}
 
-		/** Exception C - No CID - Single variable */
+		/** Exception C - Single variable */
 		exception ExceptionC {
 			/** A. */
 			String a
 			message "Exception C: ${a}"
 		}
 
-		/** Exception D - No CID - Multiple variables */
+		/** Exception D - Multiple variables */
 		exception ExceptionD {
 			/** A. */
 			String a
@@ -34,15 +34,15 @@ context p {
 			message "Exception D: ${a} / ${b}"
 		}
 
-		/** Exception E - With CID - Single variable */
-		exception ExceptionE cid 124 {
+		/** Exception E - Single variable */
+		exception ExceptionE {
 			/** A. */
 			String a
 			message "Exception C: ${a}"
 		}
 
-		/** Exception F - With CID - Multiple variables */
-		exception ExceptionF cid 125{
+		/** Exception F - Multiple variables */
+		exception ExceptionF{
 			/** A. */
 			String a
 			/** B. */

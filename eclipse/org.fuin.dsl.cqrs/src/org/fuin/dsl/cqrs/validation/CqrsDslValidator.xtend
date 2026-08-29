@@ -156,7 +156,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 
 	public static val KEY_RULE_NAME_TAKEN = 'keyRuleNameTaken'
 
-	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
 	public static val DEPENDENCY_INVALID_COORDINATE = 'dependencyInvalidCoordinate'
 
@@ -1230,39 +1229,6 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					PROCESS_CORRELATION_KEY_UNKNOWN
 				)
 			}
-		}
-	}
-
-	@Check
-	def checkUniqueExceptionUID(Exception ex) {
-
-		var String name = null
-		var int max = 0
-		val Iterator<Exception> allExceptions = getAllExceptions(ex).iterator
-		while (allExceptions.hasNext) {
-			val Exception other = allExceptions.next
-
-			// Find highest number
-			if ((other.cid > max) && ex.context.name.equals(other.context.name)) {
-				max = other.cid
-			}
-
-			// Check for duplicate
-			if ((name === null) && (ex != other) && (ex.cid > 0) && (ex.cid == other.cid) &&
-				ex.context.name.equals(other.context.name)) {
-				name = other.name
-			}
-		}
-
-		if (name !== null) {
-			val String nextId = "" + (max + 1)
-			error(
-				"The CID is already used by exception '" + name + "'",
-				ex,
-				CqrsDslPackage.Literals::EXCEPTION__CID,
-				EXCEPTION_DUPLICATE_CID,
-				nextId
-			)
 		}
 	}
 

@@ -191,7 +191,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Annotation/attributes"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Exception">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Exception/cid"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Exception/attributes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Exception/message"/>
     </genClasses>

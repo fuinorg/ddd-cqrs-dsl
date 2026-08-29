@@ -20,14 +20,13 @@ package p.shared.domain.x.except;
 import java.io.Serial;
 import java.util.Objects;
 import org.fuin.objects4j.common.Contract;
-import org.fuin.objects4j.common.UniquelyNumberedException;
 import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 
 /**
- * Exception F - With CID - Multiple variables
+ * Exception F - Multiple variables
  */
-public final class ExceptionF extends UniquelyNumberedException {
+public final class ExceptionF extends Exception {
 
     @Serial
     private static final long serialVersionUID = 1000L;
@@ -43,7 +42,7 @@ public final class ExceptionF extends UniquelyNumberedException {
      * @param b B.
      */
     public ExceptionF(final String a, final int b) {
-        super(125, Objects.requireNonNull(KeyValueEL.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
+        super(Objects.requireNonNull(KeyValueEL.replace("Exception F: ${a} / ${b}",  new KeyValue("a", a), new KeyValue("b", b))));
         Contract.requireArgNotNull("a", a);
         Contract.requireArgNotNull("b", b);
         

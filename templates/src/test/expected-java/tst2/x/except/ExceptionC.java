@@ -24,7 +24,7 @@ import org.fuin.objects4j.core.KeyValue;
 import org.fuin.objects4j.core.KeyValueEL;
 
 /**
- * Exception C - No CID - Single variable
+ * Exception C - Single variable
  */
 public final class ExceptionC extends Exception {
 

@@ -913,7 +913,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Exception returns Exception
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID cid=INT? attributes+=Attribute* message=STRING)
+	 *     (doc=DOC? name=ID attributes+=Attribute* message=STRING)
 	 * </pre>
 	 */
 	protected void sequence_Exception(ISerializationContext context, org.fuin.dsl.cqrs.cqrsDsl.Exception semanticObject) {

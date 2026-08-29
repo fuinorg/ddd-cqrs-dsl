@@ -14,7 +14,7 @@ context p_07_exception {
         // An optional client id ('cid') and attributes can be added.
         // This is meant as a unique error number to support identifying the exact problem.
         // Attributes can be referenced in the message with ${NAME}.
-        exception LimitExceededException cid 1001 {
+        exception LimitExceededException {
 
             Integer limit
 

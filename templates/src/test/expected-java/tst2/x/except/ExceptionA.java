@@ -20,7 +20,7 @@ package p.shared.domain.x.except;
 import java.io.Serial;
 
 /**
- * Exception A - No CID - No variables
+ * Exception A - No variables
  */
 public final class ExceptionA extends Exception {
 

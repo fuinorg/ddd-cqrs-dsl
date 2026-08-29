@@ -345,7 +345,7 @@ Annotation:
 /** Describes an error condition. */
 Exception:
 	doc=DOC?
-	'exception' name=ID ('cid' cid=INT)? '{'
+	'exception' name=ID '{'
 		attributes+=Attribute* 
 		'message' message=STRING
 	'}';

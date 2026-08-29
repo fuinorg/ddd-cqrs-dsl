@@ -108,7 +108,6 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getRuleOperandAccess().getGroup_2(), "rule__RuleOperand__Group_2__0");
 			builder.put(grammarAccess.getAnnotationAccess().getGroup(), "rule__Annotation__Group__0");
 			builder.put(grammarAccess.getExceptionAccess().getGroup(), "rule__Exception__Group__0");
-			builder.put(grammarAccess.getExceptionAccess().getGroup_3(), "rule__Exception__Group_3__0");
 			builder.put(grammarAccess.getValueObjectAccess().getGroup(), "rule__ValueObject__Group__0");
 			builder.put(grammarAccess.getValueObjectAccess().getGroup_4(), "rule__ValueObject__Group_4__0");
 			builder.put(grammarAccess.getValueObjectAccess().getGroup_11(), "rule__ValueObject__Group_11__0");
@@ -308,9 +307,8 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAnnotationAccess().getAttributesAssignment_4(), "rule__Annotation__AttributesAssignment_4");
 			builder.put(grammarAccess.getExceptionAccess().getDocAssignment_0(), "rule__Exception__DocAssignment_0");
 			builder.put(grammarAccess.getExceptionAccess().getNameAssignment_2(), "rule__Exception__NameAssignment_2");
-			builder.put(grammarAccess.getExceptionAccess().getCidAssignment_3_1(), "rule__Exception__CidAssignment_3_1");
-			builder.put(grammarAccess.getExceptionAccess().getAttributesAssignment_5(), "rule__Exception__AttributesAssignment_5");
-			builder.put(grammarAccess.getExceptionAccess().getMessageAssignment_7(), "rule__Exception__MessageAssignment_7");
+			builder.put(grammarAccess.getExceptionAccess().getAttributesAssignment_4(), "rule__Exception__AttributesAssignment_4");
+			builder.put(grammarAccess.getExceptionAccess().getMessageAssignment_6(), "rule__Exception__MessageAssignment_6");
 			builder.put(grammarAccess.getValueObjectAccess().getDocAssignment_0(), "rule__ValueObject__DocAssignment_0");
 			builder.put(grammarAccess.getValueObjectAccess().getAnnotationsAssignment_1(), "rule__ValueObject__AnnotationsAssignment_1");
 			builder.put(grammarAccess.getValueObjectAccess().getNameAssignment_3(), "rule__ValueObject__NameAssignment_3");

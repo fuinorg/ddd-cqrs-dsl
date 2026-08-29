@@ -29,7 +29,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ExceptionImpl#getCid <em>Cid</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ExceptionImpl#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.ExceptionImpl#getMessage <em>Message</em>}</li>
  * </ul>
@@ -38,26 +37,6 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
  */
 public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.cqrs.cqrsDsl.Exception
 {
-  /**
-   * The default value of the '{@link #getCid() <em>Cid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCid()
-   * @generated
-   * @ordered
-   */
-  protected static final int CID_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getCid() <em>Cid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCid()
-   * @generated
-   * @ordered
-   */
-  protected int cid = CID_EDEFAULT;
-
   /**
    * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -107,31 +86,6 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
   protected EClass eStaticClass()
   {
     return CqrsDslPackage.Literals.EXCEPTION;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int getCid()
-  {
-    return cid;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setCid(int newCid)
-  {
-    int oldCid = cid;
-    cid = newCid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.EXCEPTION__CID, oldCid, cid));
   }
 
   /**
@@ -200,8 +154,6 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
   {
     switch (featureID)
     {
-      case CqrsDslPackage.EXCEPTION__CID:
-        return getCid();
       case CqrsDslPackage.EXCEPTION__ATTRIBUTES:
         return getAttributes();
       case CqrsDslPackage.EXCEPTION__MESSAGE:
@@ -221,9 +173,6 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
   {
     switch (featureID)
     {
-      case CqrsDslPackage.EXCEPTION__CID:
-        setCid((Integer)newValue);
-        return;
       case CqrsDslPackage.EXCEPTION__ATTRIBUTES:
         getAttributes().clear();
         getAttributes().addAll((Collection<? extends Attribute>)newValue);
@@ -245,9 +194,6 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
   {
     switch (featureID)
     {
-      case CqrsDslPackage.EXCEPTION__CID:
-        setCid(CID_EDEFAULT);
-        return;
       case CqrsDslPackage.EXCEPTION__ATTRIBUTES:
         getAttributes().clear();
         return;
@@ -268,8 +214,6 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
   {
     switch (featureID)
     {
-      case CqrsDslPackage.EXCEPTION__CID:
-        return cid != CID_EDEFAULT;
       case CqrsDslPackage.EXCEPTION__ATTRIBUTES:
         return attributes != null && !attributes.isEmpty();
       case CqrsDslPackage.EXCEPTION__MESSAGE:
@@ -289,9 +233,7 @@ public class ExceptionImpl extends AbstractElementImpl implements org.fuin.dsl.c
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (cid: ");
-    result.append(cid);
-    result.append(", message: ");
+    result.append(" (message: ");
     result.append(message);
     result.append(')');
     return result.toString();

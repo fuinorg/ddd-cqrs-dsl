@@ -4,7 +4,7 @@ context p_shared_business_rules {
 		/**
 		 * Expected the entity to be in normal state, but was already (soft) deleted.
 		 */
-		exception EntityInStateDeletedException cid 1002 {
+		exception EntityInStateDeletedException {
 			EntityIdPath entityIdPath
 		    message "Expected the entity to be in normal state, but was 'deleted': ${entityIdPath}"
 		}

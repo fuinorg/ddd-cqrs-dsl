@@ -1720,29 +1720,25 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cExceptionKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
-		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cCidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cCidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cCidINTTerminalRuleCall_3_1_0 = (RuleCall)cCidAssignment_3_1.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cAttributesAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cAttributesAttributeParserRuleCall_5_0 = (RuleCall)cAttributesAssignment_5.eContents().get(0);
-		private final Keyword cMessageKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		private final Assignment cMessageAssignment_7 = (Assignment)cGroup.eContents().get(7);
-		private final RuleCall cMessageSTRINGTerminalRuleCall_7_0 = (RuleCall)cMessageAssignment_7.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cAttributesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cAttributesAttributeParserRuleCall_4_0 = (RuleCall)cAttributesAssignment_4.eContents().get(0);
+		private final Keyword cMessageKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cMessageAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cMessageSTRINGTerminalRuleCall_6_0 = (RuleCall)cMessageAssignment_6.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		///** Describes an error condition. */
 		//Exception:
 		//    doc=DOC?
-		//    'exception' name=ID ('cid' cid=INT)? '{'
+		//    'exception' name=ID '{'
 		//        attributes+=Attribute*
 		//        'message' message=STRING
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
-		//'exception' name=ID ('cid' cid=INT)? '{'
+		//'exception' name=ID '{'
 		//    attributes+=Attribute*
 		//    'message' message=STRING
 		//'}'
@@ -1763,38 +1759,26 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//ID
 		public RuleCall getNameIDTerminalRuleCall_2_0() { return cNameIDTerminalRuleCall_2_0; }
 		
-		//('cid' cid=INT)?
-		public Group getGroup_3() { return cGroup_3; }
-		
-		//'cid'
-		public Keyword getCidKeyword_3_0() { return cCidKeyword_3_0; }
-		
-		//cid=INT
-		public Assignment getCidAssignment_3_1() { return cCidAssignment_3_1; }
-		
-		//INT
-		public RuleCall getCidINTTerminalRuleCall_3_1_0() { return cCidINTTerminalRuleCall_3_1_0; }
-		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
+		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
 		
 		//attributes+=Attribute*
-		public Assignment getAttributesAssignment_5() { return cAttributesAssignment_5; }
+		public Assignment getAttributesAssignment_4() { return cAttributesAssignment_4; }
 		
 		//Attribute
-		public RuleCall getAttributesAttributeParserRuleCall_5_0() { return cAttributesAttributeParserRuleCall_5_0; }
+		public RuleCall getAttributesAttributeParserRuleCall_4_0() { return cAttributesAttributeParserRuleCall_4_0; }
 		
 		//'message'
-		public Keyword getMessageKeyword_6() { return cMessageKeyword_6; }
+		public Keyword getMessageKeyword_5() { return cMessageKeyword_5; }
 		
 		//message=STRING
-		public Assignment getMessageAssignment_7() { return cMessageAssignment_7; }
+		public Assignment getMessageAssignment_6() { return cMessageAssignment_6; }
 		
 		//STRING
-		public RuleCall getMessageSTRINGTerminalRuleCall_7_0() { return cMessageSTRINGTerminalRuleCall_7_0; }
+		public RuleCall getMessageSTRINGTerminalRuleCall_6_0() { return cMessageSTRINGTerminalRuleCall_6_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 	public class ValueObjectElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.ValueObject");
@@ -7499,7 +7483,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///** Describes an error condition. */
 	//Exception:
 	//    doc=DOC?
-	//    'exception' name=ID ('cid' cid=INT)? '{'
+	//    'exception' name=ID '{'
 	//        attributes+=Attribute*
 	//        'message' message=STRING
 	//    '}';

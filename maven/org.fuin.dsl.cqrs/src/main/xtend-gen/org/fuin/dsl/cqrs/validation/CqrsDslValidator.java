@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -175,8 +174,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String KEY_USAGE_NEEDS_INLINE_CONTEXT = "keyUsageNeedsInlineContext";
 
   public static final String KEY_RULE_NAME_TAKEN = "keyRuleNameTaken";
-
-  public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
   public static final String DEPENDENCY_INVALID_COORDINATE = "dependencyInvalidCoordinate";
 
@@ -1424,32 +1421,6 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
           CqrsDslPackage.Literals.PROCESS_REACTION__CORRELATION_KEY, 
           CqrsDslValidator.PROCESS_CORRELATION_KEY_UNKNOWN);
       }
-    }
-  }
-
-  @Check
-  public void checkUniqueExceptionUID(final org.fuin.dsl.cqrs.cqrsDsl.Exception ex) {
-    String name = null;
-    int max = 0;
-    final Iterator<org.fuin.dsl.cqrs.cqrsDsl.Exception> allExceptions = this.getAllExceptions(ex).iterator();
-    while (allExceptions.hasNext()) {
-      {
-        final org.fuin.dsl.cqrs.cqrsDsl.Exception other = allExceptions.next();
-        if (((other.getCid() > max) && CqrsEObjectExtensions.getContext(ex).getName().equals(CqrsEObjectExtensions.getContext(other).getName()))) {
-          max = other.getCid();
-        }
-        if ((((((name == null) && (!Objects.equals(ex, other))) && (ex.getCid() > 0)) && (ex.getCid() == other.getCid())) && 
-          CqrsEObjectExtensions.getContext(ex).getName().equals(CqrsEObjectExtensions.getContext(other).getName()))) {
-          name = other.getName();
-        }
-      }
-    }
-    if ((name != null)) {
-      final String nextId = ("" + Integer.valueOf((max + 1)));
-      this.error(
-        (("The CID is already used by exception \'" + name) + "\'"), ex, 
-        CqrsDslPackage.Literals.EXCEPTION__CID, 
-        CqrsDslValidator.EXCEPTION_DUPLICATE_CID, nextId);
     }
   }
 

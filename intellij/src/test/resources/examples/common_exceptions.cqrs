@@ -4,7 +4,7 @@ context p_common_exceptions {
 		/**
 		 * Expected the entity to be in state 'deleted', but was not.
 		 */
-		exception EntityNotInStateDeletedException cid 1001 {
+		exception EntityNotInStateDeletedException {
 			EntityIdPath entityIdPath
 		    message "Expected the entity to be in state 'deleted', but was not: ${entityIdPath}"
 		}
@@ -12,7 +12,7 @@ context p_common_exceptions {
 		/**
 		 * Expected the entity to be in normal state, but was already (soft) deleted.
 		 */
-		exception EntityInStateDeletedException cid 1002 {
+		exception EntityInStateDeletedException {
 			EntityIdPath entityIdPath
 		    message "Expected the entity to be in normal state, but was 'deleted': ${entityIdPath}"
 		}

@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.35.0
+- `cid` is removed. It generated a number nothing on the result path ever read; an exception's `code` is now a readable short identifier.
+
 ## 1.34.0
 - A business `key` now generates the uniqueness rule it stands for, so an operation names the key and says nothing else. Five more editor checks refuse what cannot be derived.
 

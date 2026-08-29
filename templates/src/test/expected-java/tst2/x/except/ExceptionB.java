@@ -18,12 +18,11 @@
 package p.shared.domain.x.except;
 
 import java.io.Serial;
-import org.fuin.objects4j.common.UniquelyNumberedException;
 
 /**
- * Exception B - With CID - No variables
+ * Exception B - No variables
  */
-public final class ExceptionB extends UniquelyNumberedException {
+public final class ExceptionB extends Exception {
 
     @Serial
     private static final long serialVersionUID = 1000L;
@@ -32,7 +31,7 @@ public final class ExceptionB extends UniquelyNumberedException {
      * Constructs a new instance of the exception.
      */
     public ExceptionB() {
-        super(123, "Exception B");
+        super("Exception B");
     }
 
 }

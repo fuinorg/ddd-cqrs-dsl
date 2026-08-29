@@ -20,7 +20,7 @@ public final class CqrsNames {
      */
     private static final Set<String> KEYWORDS = Set.of(
             "context", "module", "import", "dependency", "local", "type", "element", "generics", "constraint", "input",
-            "exception", "annotation", "cid", "message", "base", "identifies", "enum", "instances",
+            "exception", "annotation", "message", "base", "identifies", "enum", "instances",
             "deprecated", "event", "entity", "identifier", "root", "aggregate", "constructor",
             "fires", "returns", "method", "ref", "slabel", "label", "tooltip", "prompt", "examples",
             "invariants", "preconditions", "service", "command", "target", "sla", "handles", "uses",
