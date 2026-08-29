@@ -36,6 +36,12 @@ class GenerateOptions {
     /** Key if to generate Jackson annotations (Type: Boolean). */
     public val static KEY_JACKSON = "jackson"
 
+    /**
+     * Key for the prefix of an exception's short identifier - the part before the dash, naming the
+     * project the way "DDD4J" names the library (Type: String).
+     */
+    public val static KEY_SHORT_ID_PREFIX = "shortIdPrefix"
+
 
     var String basePkg
 
@@ -52,6 +58,8 @@ class GenerateOptions {
     var boolean jackson
 
     var String copyrightHeader
+
+    var String shortIdPrefix
 
     /**
      * Default constructor.
@@ -75,6 +83,7 @@ class GenerateOptions {
         jaxbElements = Boolean.valueOf(varMap.nullSafe.get(KEY_JAXB_ELEMENTS))
         jsonb = Boolean.valueOf(varMap.nullSafe.get(KEY_JSONB))
         jackson = Boolean.valueOf(varMap.nullSafe.get(KEY_JACKSON))
+        shortIdPrefix = varMap.nullSafe.get(KEY_SHORT_ID_PREFIX)
 
         val String header = varMap.nullSafe.get(KEY_COPYRIGHT_HEADER)
         if (header === null) {
@@ -130,6 +139,17 @@ class GenerateOptions {
     }
 
     /**
+     * Returns the prefix an exception's short identifier starts with, naming the project the way
+     * "DDD4J" names the library.
+     *
+     * @return Prefix, or {@code null} when the model does not configure one - no short identifier is
+     *         generated then, and a refusal is identified by its class name as before.
+     */
+    def String getShortIdPrefix() {
+        return shortIdPrefix
+    }
+
+    /**
      * Returns the copyright header to use.
      *
      * @return Copyright header for source files.
@@ -177,6 +197,7 @@ class GenerateOptions {
             obj.jsonb = other.jsonb
             obj.jackson = other.jackson
             obj.copyrightHeader = other.copyrightHeader
+            obj.shortIdPrefix = other.shortIdPrefix
         }
 
         def Builder withBasePkg(String basePkg) {

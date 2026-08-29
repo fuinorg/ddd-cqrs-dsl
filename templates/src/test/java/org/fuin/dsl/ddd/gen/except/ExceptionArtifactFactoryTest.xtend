@@ -82,6 +82,47 @@ class ExceptionArtifactFactoryTest {
 
     }
 
+    /**
+     * A model that names a prefix gets a short identifier: what a support desk quotes, the way the
+     * library writes "DDD4J-AGGREGATE_NOT_FOUND". It is what the result's "code" then carries.
+     */
+    @Test
+    def void testCreateWithShortId() {
+        val ex = model.find(typeof(Exception), "ExceptionD")
+
+        val result = new String(createTestee("MELK").create(ex, new HashMap<String, Object>(), false)
+            .iterator.next.data)
+
+        assertThat(result).contains("public final class ExceptionD extends Exception implements ExceptionShortIdentifable {")
+        assertThat(result).contains("import org.fuin.objects4j.common.ExceptionShortIdentifable;")
+        assertThat(result).contains("public static final String SHORT_ID = \"MELK-EXCEPTION_D\";")
+        assertThat(result).contains("public static final String ELEMENT_NAME = \"exception-d\";")
+        assertThat(result).contains("public final String getShortId() {")
+    }
+
+    /** A model that names no prefix keeps the exception it had, identified by its class name. */
+    @Test
+    def void testCreateWithoutShortIdPrefix() {
+        val ex = model.find(typeof(Exception), "ExceptionD")
+
+        val result = new String(createTestee.create(ex, new HashMap<String, Object>(), false)
+            .iterator.next.data)
+
+        assertThat(result).doesNotContain("SHORT_ID")
+        assertThat(result).doesNotContain("ExceptionShortIdentifable")
+    }
+
+    private def createTestee(String shortIdPrefix) {
+        val factory = new ExceptionArtifactFactory()
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("exception", ExceptionArtifactFactory.name, "module", "folder")
+        config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
+        config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
+        config.addVariable(new Variable(GenerateOptions.KEY_SHORT_ID_PREFIX, shortIdPrefix))
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+        return factory
+    }
+
     private def createTestee() {
         val factory = new ExceptionArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("exception", ExceptionArtifactFactory.name, "module", "folder")

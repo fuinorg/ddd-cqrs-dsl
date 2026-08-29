@@ -23,6 +23,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import org.fuin.dsl.ddd.gen.base.TypeKeys
+import org.fuin.dsl.ddd.gen.extensions.TypeExtensions
 import java.util.List
 
 class ExceptionArtifactFactory extends AbstractSource<Exception> {
@@ -61,6 +62,9 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
 
     def addImports(CodeSnippetContext ctx, Exception ex) {
         ctx.requiresImport("java.io.Serial")
+        if (shortId(ex) !== null) {
+            ctx.requiresImport("org.fuin.objects4j.common.ExceptionShortIdentifable")
+        }
         if (ex.namedByARule) {
             ctx.requiresImport("org.fuin.dsl.cqrs.common.rules." + ex.baseClass)
         } else if (ex.cid > 0) {
@@ -82,10 +86,18 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
             /**
              * «ex.doc.text»
              */
-            public final class «className» extends «_uniquelyNumberedException(ex)» {
+            public final class «className» extends «_uniquelyNumberedException(ex)»«IF shortId(ex) !== null» implements ExceptionShortIdentifable«ENDIF» {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
+            «IF shortId(ex) !== null»
+            
+                /** Name this exception is transported under. */
+                public static final String ELEMENT_NAME = "«elementName(ex)»";
+            
+                /** Unique short identifier of this exception. */
+                public static final String SHORT_ID = "«shortId(ex)»";
+            «ENDIF»
             
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), ex)»
                 «new SrcJavaDocMethod(ctx, "Constructs a new instance of the exception.", null, ex.attributes.asParameters, null)»
@@ -94,12 +106,47 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
                     «new SrcParamsAssignment(ctx, ex.attributes.asParameters)»
                 }
             
+            «IF shortId(ex) !== null»
+                @Override
+                public final String getShortId() {
+                    return SHORT_ID;
+                }
+            
+            «ENDIF»
                 «new SrcGetters(ctx, GenerateOptions.empty(), "public final", ex.attributes)»
             }
         '''
 
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
 
+    }
+
+    /**
+     * The short identifier of an exception, or <code>null</code> where the model configures no prefix.
+     *
+     * <p>What a support desk quotes, which is what the <code>code</code> of a result is for: the
+     * project's prefix and the exception's own name, the way the library writes
+     * <code>DDD4J-AGGREGATE_NOT_FOUND</code>. "Exception" is dropped because every one of them ends
+     * that way and it says nothing.
+     *
+     * <p>Without a prefix nothing is generated and the refusal is identified by its class name instead,
+     * so a model that says nothing keeps the behaviour it had.
+     */
+    def private String shortId(Exception ex) {
+        val prefix = options.shortIdPrefix
+        if (prefix === null || prefix.empty) {
+            return null
+        }
+        return prefix + "-" + TypeExtensions.asEntityTypeConstant(withoutExceptionSuffix(ex.name))
+    }
+
+    /** The name the exception is transported under, as the library writes "aggregate-not-found-exception". */
+    def private static String elementName(Exception ex) {
+        return ex.name.replaceAll("(?<!^)(?=[A-Z])", "-").toLowerCase
+    }
+
+    def private static String withoutExceptionSuffix(String name) {
+        return if(name.endsWith("Exception") && name.length > "Exception".length) name.substring(0, name.length - "Exception".length) else name
     }
 
     def _uniquelyNumberedException(Exception ex) {
