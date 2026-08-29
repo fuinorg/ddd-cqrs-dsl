@@ -5,6 +5,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.Type
@@ -127,6 +128,7 @@ class DartAttribute {
             EnumObject: "ValueKind.enumeration"
             AggregateId: "ValueKind.identifier"
             EntityId: "ValueKind.identifier"
+            EntityIdPathType: "ValueKind.identifier"
             ValueObject case type.name == SOURCE_TYPE: "ValueKind.identifier"
             ValueObject case single(type): kindOfBase(type)
             ExternalType: kindOfExternal(type.name)
@@ -195,12 +197,14 @@ class DartAttribute {
             }
             return "AttributeRole.key"
         }
-        // No declaration, so only the type can say - and a path cannot. Rows carry paths to other
+        // No declaration, so only the type can say - and a bare path cannot. Rows carry paths to other
         // things as references far more often than as their own identity, so an undeclared one stays
-        // a column rather than silently becoming the row's identity.
+        // a column rather than silently becoming the row's identity. A *declared* path is different:
+        // it says which entity it addresses, so it is as good an answer as an id.
         return switch (type) {
             AggregateId: "AttributeRole.identifier"
             EntityId: "AttributeRole.identifier"
+            EntityIdPathType: "AttributeRole.identifier"
             default: "AttributeRole.data"
         }
     }
@@ -214,6 +218,7 @@ class DartAttribute {
         switch (type) {
             AggregateId: true
             EntityId: true
+            EntityIdPathType: true
             ExternalType: (type as ExternalType).name == PATH_TYPE
             default: false
         }
@@ -238,6 +243,7 @@ class DartAttribute {
             EnumObject: wrap(type.name + ".fromWire", required("String", json, key))
             AggregateId: wrap(type.name + ".fromWire", required("String", json, key))
             EntityId: wrap(type.name + ".fromWire", required("String", json, key))
+            EntityIdPathType: wrap(type.name + ".fromWire", required("String", json, key))
             ValueObject case single(type): wrap(type.name, required(baseOf(type), json, key))
             ValueObject: wrap(type.name + ".fromJson", required("Object", json, key))
             default: required(baseType, json, key)
@@ -266,6 +272,7 @@ class DartAttribute {
             EnumObject: field + (if(optional) "?" else "") + ".wireName"
             AggregateId: field + (if(optional) "?" else "") + ".typed"
             EntityId: field + (if(optional) "?" else "") + ".typed"
+            EntityIdPathType: field + (if(optional) "?" else "") + ".typed"
             ValueObject case single(type): field + (if(optional) "?" else "") + ".value"
             ValueObject: field + (if(optional) "?" else "") + ".toJson()"
             default: field
@@ -342,6 +349,7 @@ class DartAttribute {
             ValueObject: type.metaInfo
             EnumObject: type.metaInfo
             AbstractEntityId: type.metaInfo
+            EntityIdPathType: type.metaInfo
             default: own
         }
     }

@@ -14,6 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getSegments <em>Segments</em>}</li>
  * </ul>
  *
@@ -23,6 +24,28 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface EntityIdPathType extends Type
 {
+  /**
+   * Returns the value of the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Meta Info</em>' containment reference.
+   * @see #setMetaInfo(TypeMetaInfo)
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getEntityIdPathType_MetaInfo()
+   * @model containment="true"
+   * @generated
+   */
+  TypeMetaInfo getMetaInfo();
+
+  /**
+   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getMetaInfo <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Meta Info</em>' containment reference.
+   * @see #getMetaInfo()
+   * @generated
+   */
+  void setMetaInfo(TypeMetaInfo value);
+
   /**
    * Returns the value of the '<em><b>Segments</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.PathSegment}.

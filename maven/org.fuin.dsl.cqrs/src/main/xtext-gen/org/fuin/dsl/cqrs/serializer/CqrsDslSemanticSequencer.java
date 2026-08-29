@@ -40,6 +40,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -178,6 +179,9 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CqrsDslPackage.ENTITY_ID_PATH_TYPE:
 				sequence_EntityIdPathType(context, (EntityIdPathType) semanticObject); 
+				return; 
+			case CqrsDslPackage.ENTITY_PATH_ARGUMENT:
+				sequence_ServiceArgument(context, (EntityPathArgument) semanticObject); 
 				return; 
 			case CqrsDslPackage.ENUM_INSTANCE:
 				sequence_EnumInstance(context, (EnumInstance) semanticObject); 
@@ -760,7 +764,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     EntityIdPathType returns EntityIdPathType
 	 *
 	 * Constraint:
-	 *     (doc=DOC? name=ID segments+=PathSegment segments+=PathSegment*)
+	 *     (doc=DOC? name=ID metaInfo=TypeMetaInfo segments+=PathSegment segments+=PathSegment*)
 	 * </pre>
 	 */
 	protected void sequence_EntityIdPathType(ISerializationContext context, EntityIdPathType semanticObject) {
@@ -1684,8 +1688,23 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getServiceArgumentAccess().getAttributeAttributeIDTerminalRuleCall_1_2_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE, false));
+		feeder.accept(grammarAccess.getServiceArgumentAccess().getAttributeAttributeIDTerminalRuleCall_2_2_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE, false));
 		feeder.finish();
+	}
+	
+	
+	/**
+	 * <pre>
+	 * Contexts:
+	 *     RuleArgument returns EntityPathArgument
+	 *     ServiceArgument returns EntityPathArgument
+	 *
+	 * Constraint:
+	 *     {EntityPathArgument}
+	 * </pre>
+	 */
+	protected void sequence_ServiceArgument(ISerializationContext context, EntityPathArgument semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -1720,7 +1739,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getServiceArgumentAccess().getVariableVariableIDTerminalRuleCall_2_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE, false));
+		feeder.accept(grammarAccess.getServiceArgumentAccess().getVariableVariableIDTerminalRuleCall_3_1_0_1(), semanticObject.eGet(CqrsDslPackage.Literals.VARIABLE_ARGUMENT__VARIABLE, false));
 		feeder.finish();
 	}
 	

@@ -2262,13 +2262,15 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cSegmentsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cSegmentsPathSegmentParserRuleCall_4_0 = (RuleCall)cSegmentsAssignment_4.eContents().get(0);
-		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cSolidusKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cSegmentsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cSegmentsPathSegmentParserRuleCall_5_1_0 = (RuleCall)cSegmentsAssignment_5_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cMetaInfoAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cMetaInfoTypeMetaInfoParserRuleCall_4_0 = (RuleCall)cMetaInfoAssignment_4.eContents().get(0);
+		private final Assignment cSegmentsAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cSegmentsPathSegmentParserRuleCall_5_0 = (RuleCall)cSegmentsAssignment_5.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cSolidusKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cSegmentsAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cSegmentsPathSegmentParserRuleCall_6_1_0 = (RuleCall)cSegmentsAssignment_6_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		///**
 		// * A typed path from an aggregate root down to the entity it addresses.
@@ -2294,12 +2296,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//EntityIdPathType:
 		//    doc=DOC?
 		//    'entity-id-path' name=ID '{'
+		//        metaInfo=TypeMetaInfo
 		//        segments+=PathSegment ('/' segments+=PathSegment)*
 		//    '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//doc=DOC?
 		//'entity-id-path' name=ID '{'
+		//    metaInfo=TypeMetaInfo
 		//    segments+=PathSegment ('/' segments+=PathSegment)*
 		//'}'
 		public Group getGroup() { return cGroup; }
@@ -2322,26 +2326,32 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
 		
+		//metaInfo=TypeMetaInfo
+		public Assignment getMetaInfoAssignment_4() { return cMetaInfoAssignment_4; }
+		
+		//TypeMetaInfo
+		public RuleCall getMetaInfoTypeMetaInfoParserRuleCall_4_0() { return cMetaInfoTypeMetaInfoParserRuleCall_4_0; }
+		
 		//segments+=PathSegment
-		public Assignment getSegmentsAssignment_4() { return cSegmentsAssignment_4; }
+		public Assignment getSegmentsAssignment_5() { return cSegmentsAssignment_5; }
 		
 		//PathSegment
-		public RuleCall getSegmentsPathSegmentParserRuleCall_4_0() { return cSegmentsPathSegmentParserRuleCall_4_0; }
+		public RuleCall getSegmentsPathSegmentParserRuleCall_5_0() { return cSegmentsPathSegmentParserRuleCall_5_0; }
 		
 		//('/' segments+=PathSegment)*
-		public Group getGroup_5() { return cGroup_5; }
+		public Group getGroup_6() { return cGroup_6; }
 		
 		//'/'
-		public Keyword getSolidusKeyword_5_0() { return cSolidusKeyword_5_0; }
+		public Keyword getSolidusKeyword_6_0() { return cSolidusKeyword_6_0; }
 		
 		//segments+=PathSegment
-		public Assignment getSegmentsAssignment_5_1() { return cSegmentsAssignment_5_1; }
+		public Assignment getSegmentsAssignment_6_1() { return cSegmentsAssignment_6_1; }
 		
 		//PathSegment
-		public RuleCall getSegmentsPathSegmentParserRuleCall_5_1_0() { return cSegmentsPathSegmentParserRuleCall_5_1_0; }
+		public RuleCall getSegmentsPathSegmentParserRuleCall_6_1_0() { return cSegmentsPathSegmentParserRuleCall_6_1_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 	public class PathSegmentElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.PathSegment");
@@ -4511,16 +4521,19 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Action cIdentityArgumentAction_0_0 = (Action)cGroup_0.eContents().get(0);
 		private final Keyword cOwnIdKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
 		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
-		private final Action cCarrierAttributeArgumentAction_1_0 = (Action)cGroup_1.eContents().get(0);
-		private final Keyword cOwnKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
-		private final Assignment cAttributeAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final CrossReference cAttributeAttributeCrossReference_1_2_0 = (CrossReference)cAttributeAssignment_1_2.eContents().get(0);
-		private final RuleCall cAttributeAttributeIDTerminalRuleCall_1_2_0_1 = (RuleCall)cAttributeAttributeCrossReference_1_2_0.eContents().get(1);
+		private final Action cEntityPathArgumentAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Keyword cOwnPathKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
 		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
-		private final Action cVariableArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
-		private final Assignment cVariableAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final CrossReference cVariableVariableCrossReference_2_1_0 = (CrossReference)cVariableAssignment_2_1.eContents().get(0);
-		private final RuleCall cVariableVariableIDTerminalRuleCall_2_1_0_1 = (RuleCall)cVariableVariableCrossReference_2_1_0.eContents().get(1);
+		private final Action cCarrierAttributeArgumentAction_2_0 = (Action)cGroup_2.eContents().get(0);
+		private final Keyword cOwnKeyword_2_1 = (Keyword)cGroup_2.eContents().get(1);
+		private final Assignment cAttributeAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final CrossReference cAttributeAttributeCrossReference_2_2_0 = (CrossReference)cAttributeAssignment_2_2.eContents().get(0);
+		private final RuleCall cAttributeAttributeIDTerminalRuleCall_2_2_0_1 = (RuleCall)cAttributeAttributeCrossReference_2_2_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cAlternatives.eContents().get(3);
+		private final Action cVariableArgumentAction_3_0 = (Action)cGroup_3.eContents().get(0);
+		private final Assignment cVariableAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final CrossReference cVariableVariableCrossReference_3_1_0 = (CrossReference)cVariableAssignment_3_1.eContents().get(0);
+		private final RuleCall cVariableVariableIDTerminalRuleCall_3_1_0_1 = (RuleCall)cVariableVariableCrossReference_3_1_0.eContents().get(1);
 		
 		///**
 		// * One value handed over, either to a rule directly or on to a service the rule's answer comes from.
@@ -4532,14 +4545,21 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		// * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
 		// * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
 		// * the command, where the name is read by whoever sends it.
+		// *
+		// * 'own-path' is what addresses the carrier from its root, for an entity whose id does not address it
+		// * on its own: 'TRANSACTION 45' exists in every account-year, so a service asked about that transaction
+		// * cannot be handed 'own-id'. It reads as the 'entity-id-path' type declared for the carrier's chain,
+		// * so it is legal only on an entity inside a root and only where such a type exists.
 		// */
 		//ServiceArgument returns RuleArgument:
 		//    {IdentityArgument} 'own-id'
+		//    | {EntityPathArgument} 'own-path'
 		//    | {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
 		//    | {VariableArgument} variable=[Variable|ID];
 		@Override public ParserRule getRule() { return rule; }
 		
 		//{IdentityArgument} 'own-id'
+		//| {EntityPathArgument} 'own-path'
 		//| {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
 		//| {VariableArgument} variable=[Variable|ID]
 		public Alternatives getAlternatives() { return cAlternatives; }
@@ -4553,38 +4573,47 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'own-id'
 		public Keyword getOwnIdKeyword_0_1() { return cOwnIdKeyword_0_1; }
 		
-		//{CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
+		//{EntityPathArgument} 'own-path'
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{CarrierAttributeArgument}
-		public Action getCarrierAttributeArgumentAction_1_0() { return cCarrierAttributeArgumentAction_1_0; }
+		//{EntityPathArgument}
+		public Action getEntityPathArgumentAction_1_0() { return cEntityPathArgumentAction_1_0; }
 		
-		//'own'
-		public Keyword getOwnKeyword_1_1() { return cOwnKeyword_1_1; }
+		//'own-path'
+		public Keyword getOwnPathKeyword_1_1() { return cOwnPathKeyword_1_1; }
 		
-		//attribute=[Attribute|ID]
-		public Assignment getAttributeAssignment_1_2() { return cAttributeAssignment_1_2; }
-		
-		//[Attribute|ID]
-		public CrossReference getAttributeAttributeCrossReference_1_2_0() { return cAttributeAttributeCrossReference_1_2_0; }
-		
-		//ID
-		public RuleCall getAttributeAttributeIDTerminalRuleCall_1_2_0_1() { return cAttributeAttributeIDTerminalRuleCall_1_2_0_1; }
-		
-		//{VariableArgument} variable=[Variable|ID]
+		//{CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
 		public Group getGroup_2() { return cGroup_2; }
 		
-		//{VariableArgument}
-		public Action getVariableArgumentAction_2_0() { return cVariableArgumentAction_2_0; }
+		//{CarrierAttributeArgument}
+		public Action getCarrierAttributeArgumentAction_2_0() { return cCarrierAttributeArgumentAction_2_0; }
 		
-		//variable=[Variable|ID]
-		public Assignment getVariableAssignment_2_1() { return cVariableAssignment_2_1; }
+		//'own'
+		public Keyword getOwnKeyword_2_1() { return cOwnKeyword_2_1; }
 		
-		//[Variable|ID]
-		public CrossReference getVariableVariableCrossReference_2_1_0() { return cVariableVariableCrossReference_2_1_0; }
+		//attribute=[Attribute|ID]
+		public Assignment getAttributeAssignment_2_2() { return cAttributeAssignment_2_2; }
+		
+		//[Attribute|ID]
+		public CrossReference getAttributeAttributeCrossReference_2_2_0() { return cAttributeAttributeCrossReference_2_2_0; }
 		
 		//ID
-		public RuleCall getVariableVariableIDTerminalRuleCall_2_1_0_1() { return cVariableVariableIDTerminalRuleCall_2_1_0_1; }
+		public RuleCall getAttributeAttributeIDTerminalRuleCall_2_2_0_1() { return cAttributeAttributeIDTerminalRuleCall_2_2_0_1; }
+		
+		//{VariableArgument} variable=[Variable|ID]
+		public Group getGroup_3() { return cGroup_3; }
+		
+		//{VariableArgument}
+		public Action getVariableArgumentAction_3_0() { return cVariableArgumentAction_3_0; }
+		
+		//variable=[Variable|ID]
+		public Assignment getVariableAssignment_3_1() { return cVariableAssignment_3_1; }
+		
+		//[Variable|ID]
+		public CrossReference getVariableVariableCrossReference_3_1_0() { return cVariableVariableCrossReference_3_1_0; }
+		
+		//ID
+		public RuleCall getVariableVariableIDTerminalRuleCall_3_1_0_1() { return cVariableVariableIDTerminalRuleCall_3_1_0_1; }
 	}
 	public class AnnotationInstanceElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AnnotationInstance");
@@ -7522,6 +7551,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//EntityIdPathType:
 	//    doc=DOC?
 	//    'entity-id-path' name=ID '{'
+	//        metaInfo=TypeMetaInfo
 	//        segments+=PathSegment ('/' segments+=PathSegment)*
 	//    '}';
 	public EntityIdPathTypeElements getEntityIdPathTypeAccess() {
@@ -7969,9 +7999,15 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	// * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
 	// * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
 	// * the command, where the name is read by whoever sends it.
+	// *
+	// * 'own-path' is what addresses the carrier from its root, for an entity whose id does not address it
+	// * on its own: 'TRANSACTION 45' exists in every account-year, so a service asked about that transaction
+	// * cannot be handed 'own-id'. It reads as the 'entity-id-path' type declared for the carrier's chain,
+	// * so it is legal only on an entity inside a root and only where such a type exists.
 	// */
 	//ServiceArgument returns RuleArgument:
 	//    {IdentityArgument} 'own-id'
+	//    | {EntityPathArgument} 'own-path'
 	//    | {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
 	//    | {VariableArgument} variable=[Variable|ID];
 	public ServiceArgumentElements getServiceArgumentAccess() {

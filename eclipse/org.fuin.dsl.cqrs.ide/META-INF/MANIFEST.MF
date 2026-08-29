@@ -3,7 +3,7 @@ Automatic-Module-Name: org.fuin.dsl.cqrs.ide
 Bundle-ManifestVersion: 2
 Bundle-Name: org.fuin.dsl.cqrs.ide
 Bundle-Vendor: My Company
-Bundle-Version: 1.28.0.qualifier
+Bundle-Version: 1.29.0.qualifier
 Bundle-SymbolicName: org.fuin.dsl.cqrs.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.fuin.dsl.cqrs,

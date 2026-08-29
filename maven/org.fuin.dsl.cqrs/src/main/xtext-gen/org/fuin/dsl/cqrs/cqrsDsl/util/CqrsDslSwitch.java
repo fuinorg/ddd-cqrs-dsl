@@ -39,6 +39,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -847,6 +848,14 @@ public class CqrsDslSwitch<T> extends Switch<T>
         IdentityArgument identityArgument = (IdentityArgument)theEObject;
         T result = caseIdentityArgument(identityArgument);
         if (result == null) result = caseRuleArgument(identityArgument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.ENTITY_PATH_ARGUMENT:
+      {
+        EntityPathArgument entityPathArgument = (EntityPathArgument)theEObject;
+        T result = caseEntityPathArgument(entityPathArgument);
+        if (result == null) result = caseRuleArgument(entityPathArgument);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -2258,6 +2267,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseIdentityArgument(IdentityArgument object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Entity Path Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Entity Path Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEntityPathArgument(EntityPathArgument object)
   {
     return null;
   }

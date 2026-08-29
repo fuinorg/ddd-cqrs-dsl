@@ -8,6 +8,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CompareOp
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.RuleLiteralOperand
 import org.fuin.dsl.cqrs.cqrsDsl.RuleAnd
@@ -108,7 +109,8 @@ class DartRuleDescriptors {
         for (var i = 0; i < attributes.size; i++) {
             val name = attributes.get(i).name
             val actual = actuals.get(i)
-            if (actual instanceof IdentityArgument) {
+            if (actual instanceof IdentityArgument || actual instanceof EntityPathArgument) {
+                // Both read off the row's declared identity - a path is what identifies a child row.
                 fromIdentity.add(name)
             } else if (actual instanceof CarrierAttributeArgument) {
                 fromAttribute.put(name, actual.attribute.name)

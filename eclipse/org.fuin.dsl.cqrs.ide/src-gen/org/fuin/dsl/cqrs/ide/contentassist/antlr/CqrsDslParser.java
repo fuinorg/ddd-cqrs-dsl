@@ -118,7 +118,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAggregateIdAccess().getGroup_3(), "rule__AggregateId__Group_3__0");
 			builder.put(grammarAccess.getAggregateIdAccess().getGroup_4(), "rule__AggregateId__Group_4__0");
 			builder.put(grammarAccess.getEntityIdPathTypeAccess().getGroup(), "rule__EntityIdPathType__Group__0");
-			builder.put(grammarAccess.getEntityIdPathTypeAccess().getGroup_5(), "rule__EntityIdPathType__Group_5__0");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getGroup_6(), "rule__EntityIdPathType__Group_6__0");
 			builder.put(grammarAccess.getPathSegmentAccess().getGroup(), "rule__PathSegment__Group__0");
 			builder.put(grammarAccess.getSegmentRangeAccess().getGroup(), "rule__SegmentRange__Group__0");
 			builder.put(grammarAccess.getEnumObjectAccess().getGroup(), "rule__EnumObject__Group__0");
@@ -182,6 +182,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getServiceArgumentAccess().getGroup_0(), "rule__ServiceArgument__Group_0__0");
 			builder.put(grammarAccess.getServiceArgumentAccess().getGroup_1(), "rule__ServiceArgument__Group_1__0");
 			builder.put(grammarAccess.getServiceArgumentAccess().getGroup_2(), "rule__ServiceArgument__Group_2__0");
+			builder.put(grammarAccess.getServiceArgumentAccess().getGroup_3(), "rule__ServiceArgument__Group_3__0");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getGroup(), "rule__AnnotationInstance__Group__0");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getGroup_2(), "rule__AnnotationInstance__Group_2__0");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getGroup_2_2(), "rule__AnnotationInstance__Group_2_2__0");
@@ -345,8 +346,9 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAggregateIdAccess().getMethodsAssignment_12(), "rule__AggregateId__MethodsAssignment_12");
 			builder.put(grammarAccess.getEntityIdPathTypeAccess().getDocAssignment_0(), "rule__EntityIdPathType__DocAssignment_0");
 			builder.put(grammarAccess.getEntityIdPathTypeAccess().getNameAssignment_2(), "rule__EntityIdPathType__NameAssignment_2");
-			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_4(), "rule__EntityIdPathType__SegmentsAssignment_4");
-			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_5_1(), "rule__EntityIdPathType__SegmentsAssignment_5_1");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getMetaInfoAssignment_4(), "rule__EntityIdPathType__MetaInfoAssignment_4");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_5(), "rule__EntityIdPathType__SegmentsAssignment_5");
+			builder.put(grammarAccess.getEntityIdPathTypeAccess().getSegmentsAssignment_6_1(), "rule__EntityIdPathType__SegmentsAssignment_6_1");
 			builder.put(grammarAccess.getPathSegmentAccess().getTypeAssignment_0(), "rule__PathSegment__TypeAssignment_0");
 			builder.put(grammarAccess.getPathSegmentAccess().getRangeAssignment_1(), "rule__PathSegment__RangeAssignment_1");
 			builder.put(grammarAccess.getSegmentRangeAccess().getMinAssignment_1(), "rule__SegmentRange__MinAssignment_1");
@@ -481,8 +483,8 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getMethodAssignment_0_0_0(), "rule__ServiceCallArgument__MethodAssignment_0_0_0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getArgsAssignment_1_0(), "rule__ServiceCallArgument__ArgsAssignment_1_0");
 			builder.put(grammarAccess.getServiceCallArgumentAccess().getArgsAssignment_1_1_1(), "rule__ServiceCallArgument__ArgsAssignment_1_1_1");
-			builder.put(grammarAccess.getServiceArgumentAccess().getAttributeAssignment_1_2(), "rule__ServiceArgument__AttributeAssignment_1_2");
-			builder.put(grammarAccess.getServiceArgumentAccess().getVariableAssignment_2_1(), "rule__ServiceArgument__VariableAssignment_2_1");
+			builder.put(grammarAccess.getServiceArgumentAccess().getAttributeAssignment_2_2(), "rule__ServiceArgument__AttributeAssignment_2_2");
+			builder.put(grammarAccess.getServiceArgumentAccess().getVariableAssignment_3_1(), "rule__ServiceArgument__VariableAssignment_3_1");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getAnnotationAssignment_1(), "rule__AnnotationInstance__AnnotationAssignment_1");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getParamsAssignment_2_1(), "rule__AnnotationInstance__ParamsAssignment_2_1");
 			builder.put(grammarAccess.getAnnotationInstanceAccess().getParamsAssignment_2_2_1(), "rule__AnnotationInstance__ParamsAssignment_2_2_1");

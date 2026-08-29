@@ -404,6 +404,7 @@ AggregateId:
 EntityIdPathType:
 	doc=DOC?
 	'entity-id-path' name=ID '{'
+		metaInfo=TypeMetaInfo
 		segments+=PathSegment ('/' segments+=PathSegment)*
 	'}';
 
@@ -656,9 +657,15 @@ ServiceCallArgument:
  * a rule guarding an edit: 'requires linked == null || amount == newAmount' has to reach the field the
  * parameter shadows. Saying it rather than renaming the parameter keeps 'amount' called 'amount' in
  * the command, where the name is read by whoever sends it.
+ *
+ * 'own-path' is what addresses the carrier from its root, for an entity whose id does not address it
+ * on its own: 'TRANSACTION 45' exists in every account-year, so a service asked about that transaction
+ * cannot be handed 'own-id'. It reads as the 'entity-id-path' type declared for the carrier's chain,
+ * so it is legal only on an entity inside a root and only where such a type exists.
  */
 ServiceArgument returns RuleArgument:
 	{IdentityArgument} 'own-id'
+	| {EntityPathArgument} 'own-path'
 	| {CarrierAttributeArgument} 'own' attribute=[Attribute|ID]
 	| {VariableArgument} variable=[Variable|ID];
 

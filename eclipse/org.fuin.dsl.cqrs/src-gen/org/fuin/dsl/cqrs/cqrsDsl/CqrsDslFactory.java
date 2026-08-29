@@ -807,6 +807,15 @@ public interface CqrsDslFactory extends EFactory
   IdentityArgument createIdentityArgument();
 
   /**
+   * Returns a new object of class '<em>Entity Path Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Entity Path Argument</em>'.
+   * @generated
+   */
+  EntityPathArgument createEntityPathArgument();
+
+  /**
    * Returns a new object of class '<em>Carrier Attribute Argument</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

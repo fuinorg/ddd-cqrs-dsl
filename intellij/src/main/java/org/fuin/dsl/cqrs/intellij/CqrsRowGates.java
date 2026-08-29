@@ -255,8 +255,8 @@ public final class CqrsRowGates {
             if (bound == null) {
                 return List.of(); // a service call or a literal: not on the client at all
             }
-            if (bound.getIdentityArgument() != null) {
-                continue; // the row knows its own identity
+            if (bound.getIdentityArgument() != null || bound.getEntityPathArgument() != null) {
+                continue; // the row knows its own identity, path included
             }
             String name = nameOfArgument(bound);
             if (name == null || parameters.contains(name)) {

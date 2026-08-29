@@ -1,6 +1,12 @@
 package org.fuin.dsl.cqrs.intellij;
 
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.project.IndexNotReadyException;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
@@ -20,6 +26,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstructorDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsElement;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityElement;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityPathArgument;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsDependencyDecl;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsEntityId;
@@ -59,6 +66,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -147,6 +155,8 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkEntityIdPathShape((CqrsEntityIdPath) element, holder);
         } else if (element instanceof CqrsSegmentRange) {
             checkSegmentRange((CqrsSegmentRange) element, holder);
+        } else if (element instanceof CqrsEntityPathArgument) {
+            checkOwnPath((CqrsEntityPathArgument) element, holder);
         }
     }
 
@@ -698,6 +708,81 @@ public final class CqrsValidationAnnotator implements Annotator {
                         + "', not to '" + root.getName() + "', so it cannot be a step of this path");
             }
         }
+    }
+
+    /**
+     * Reports an 'own-path' the model cannot give a type to.
+     *
+     * <p>The port of the Xtext validator's {@code checkOwnPath}. It addresses the carrier from its root,
+     * so it needs a carrier that has one: an aggregate is addressed by its own id and has nothing to
+     * prepend, and a constructor has no carrier at all. It also needs an 'entity-id-path' declared for
+     * the chain it would read as - without one there is no type to hand over, and falling back to an
+     * anonymous path would put back the untyped reference the declaration exists to remove.</p>
+     */
+    private void checkOwnPath(@NotNull CqrsEntityPathArgument argument, @NotNull AnnotationHolder holder) {
+        if (PsiTreeUtil.getParentOfType(argument, CqrsConstructorDef.class) != null) {
+            error(holder, argument, "'own-path' has nothing to read in a constructor, which is what creates the carrier");
+            return;
+        }
+        final CqrsEntityDef entity = PsiTreeUtil.getParentOfType(argument, CqrsEntityDef.class);
+        if (entity == null) {
+            error(holder, argument, "'own-path' addresses an entity from its root; an aggregate is addressed by 'own-id'");
+            return;
+        }
+        final CqrsNamedElement root = resolve(firstTypeRefAfter(entity, CqrsTypes.KW_ROOT));
+        if (root == null) {
+            return;
+        }
+        if (pathTypeFor(entity, root) == null) {
+            error(holder, argument, "No 'entity-id-path' addresses a '" + entity.getName() + "' inside '"
+                    + root.getName() + "', so 'own-path' has no type to read as; declare one");
+        }
+    }
+
+    /**
+     * The declared path addressing the given entity from its root, or {@code null} if the project declares
+     * none. Matched on the chain rather than on a name, the same way the Xtext side matches it.
+     *
+     * <p>Project-wide rather than per file: a module may be declared in more than one file, and the path
+     * is commonly declared in the half the entity is not in.</p>
+     */
+    private @Nullable CqrsEntityIdPath pathTypeFor(@NotNull CqrsEntityDef entity, @NotNull CqrsNamedElement root) {
+        for (final CqrsEntityIdPath path : declaredPaths(entity)) {
+            final List<CqrsPathSegment> segments = path.getPathSegmentList();
+            if (segments.size() != 2) {
+                continue;
+            }
+            final CqrsNamedElement first = resolve(segments.get(0).getTypeRef());
+            final CqrsNamedElement last = resolve(segments.get(1).getTypeRef());
+            if (!(first instanceof CqrsAggregateId) || !(last instanceof CqrsEntityId)) {
+                continue;
+            }
+            if (resolve(firstTypeRefAfter(first, CqrsTypes.KW_IDENTIFIES)) == root
+                    && resolve(firstTypeRefAfter(last, CqrsTypes.KW_IDENTIFIES)) == entity) {
+                return path;
+            }
+        }
+        return null;
+    }
+
+    /** Every path declaration in the project, or just this file's while the index is still building. */
+    private static Collection<CqrsEntityIdPath> declaredPaths(@NotNull CqrsEntityDef entity) {
+        final Project project = entity.getProject();
+        final Collection<VirtualFile> files;
+        try {
+            files = FileTypeIndex.getFiles(CqrsFileType.INSTANCE, GlobalSearchScope.projectScope(project));
+        } catch (IndexNotReadyException notReady) {
+            return PsiTreeUtil.findChildrenOfType(entity.getContainingFile(), CqrsEntityIdPath.class);
+        }
+        final List<CqrsEntityIdPath> paths = new ArrayList<>();
+        final PsiManager psiManager = PsiManager.getInstance(project);
+        for (final VirtualFile vf : files) {
+            final PsiFile psiFile = psiManager.findFile(vf);
+            if (psiFile instanceof CqrsFile) {
+                paths.addAll(PsiTreeUtil.findChildrenOfType(psiFile, CqrsEntityIdPath.class));
+            }
+        }
+        return paths;
     }
 
     /**

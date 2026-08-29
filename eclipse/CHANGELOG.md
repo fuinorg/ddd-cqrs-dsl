@@ -2,6 +2,13 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.29.0
+- **`entity-id-path` declares how an entity is addressed from its root**, with an optional `[min..max]`
+  range on a step that may repeat. An entity id is unique inside its root and nowhere else, so a
+  reference carrying only the id addresses nothing.
+- **`own-path` hands a rule or a service what addresses the carrier**, beside `own-id` and
+  `own <attribute>`. Reported on an aggregate, in a constructor, and where no path is declared.
+
 ## 1.28.0
 - **A row is checked against the gates it offers** - a view row offering a command gated by a rule it
   cannot answer is warned about, naming what it would have to publish. A warning rather than an error:

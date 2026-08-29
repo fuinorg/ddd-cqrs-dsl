@@ -91,6 +91,11 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
         ctx.requiresReference(TypeKeys.refKey(entity.idTypeNullsafe))
         ctx.requiresReference(TypeKeys.refKey(entity.rootNullsafe))
         ctx.requiresReference(TypeKeys.refKey(entity.rootNullsafe.idTypeNullsafe))
+        // Only when the model declares a path for this chain; without one there is no getPath() to type.
+        if (entity.pathTypeNullable !== null) {
+            ctx.requiresReference(TypeKeys.refKey(entity.pathTypeNullable))
+            ctx.requiresImport("org.fuin.ddd4j.core.EntityIdPath")
+        }
     }
 
     def create(SimpleCodeSnippetContext ctx, Entity entity, String pkg, String className, Attribute idVar) {
@@ -116,6 +121,21 @@ class AbstractEntityArtifactFactory extends AbstractSource<Entity> {
                 public final «entity.idTypeNullsafe.name» getId() {
                     return id;
                 }
+                «IF entity.pathTypeNullable !== null»
+
+                /**
+                 * Returns what addresses this entity from its root.
+                 *
+                 * <p>The identifier alone does not: it is unique inside the root, and the same one exists
+                 * in every other. Public because a rule hands it to a service that has to look the entity
+                 * up somewhere else, which {@code getRootId()} being protected does not allow.</p>
+                 *
+                 * @return Path to this entity.
+                 */
+                public final «entity.pathTypeNullable.name» getPath() {
+                    return new «entity.pathTypeNullable.name»(new EntityIdPath(getRootId(), getId()));
+                }
+                «ENDIF»
 
                 «new SrcAbstractChildEntityLocatorMethods(ctx, GenerateOptions.empty(), entity)»
                 «new SrcGetters(ctx, GenerateOptions.empty(), "public final", entity.attributes.nullSafe.toList)»

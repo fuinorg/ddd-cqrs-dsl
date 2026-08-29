@@ -81,6 +81,7 @@ NUMBER={HEX}|({INT}|{DECIMAL})("."({INT}|{DECIMAL}))?
   "no-key"                  { return KW_NO_KEY; }
   "is-empty"                { return KW_IS_EMPTY; }
   "own-id"                  { return KW_OWN_ID; }
+  "own-path"                { return KW_OWN_PATH; }
 
   // ---- Structural keywords ----
   "own"                     { return KW_OWN; }

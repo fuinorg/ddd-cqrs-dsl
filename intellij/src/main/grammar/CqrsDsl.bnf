@@ -167,6 +167,7 @@
     KW_REQUIRES='requires'
     KW_IS_EMPTY='is-empty'
     KW_OWN_ID='own-id'
+    KW_OWN_PATH='own-path'
     KW_OWN='own'
 
     // Punctuation
@@ -332,7 +333,7 @@ exception_def ::= KW_EXCEPTION ID (KW_CID NUMBER)? LBRACE attribute* KW_MESSAGE 
 // A typed path from an aggregate root down to the entity it addresses. The first step is an aggregate
 // identifier and every later one identifies an entity of that aggregate; a step states a range only when
 // it takes other than exactly one, which is what an entity containing another of its own kind needs.
-entity_id_path ::= KW_ENTITY_ID_PATH ID LBRACE path_segment (SLASH path_segment)* RBRACE {
+entity_id_path ::= KW_ENTITY_ID_PATH ID LBRACE type_meta_info path_segment (SLASH path_segment)* RBRACE {
   pin=1
   implements="org.fuin.dsl.cqrs.intellij.psi.CqrsNamedElement"
   mixin="org.fuin.dsl.cqrs.intellij.psi.impl.CqrsNamedElementImpl"
@@ -513,6 +514,9 @@ rule_argument ::= service_call_argument | service_argument | literal
 
 identity_argument ::= KW_OWN_ID
 
+// What addresses the carrier from its root, for an entity whose id does not address it on its own.
+entity_path_argument ::= KW_OWN_PATH
+
 // What the carrier holds now, as against what the operation would give it. A bare name resolves to
 // the operation's parameter, which an edit commonly names after the very field it would overwrite.
 carrier_attribute_argument ::= KW_OWN ID
@@ -521,7 +525,7 @@ service_call_argument ::= ID LPAREN (service_argument (COMMA service_argument)*)
 
 // A service asked about the thing being acted on is handed its identity, for the same reason a rule
 // takes 'own-id' directly: it is not a declared attribute, so nothing can point at it.
-service_argument ::= identity_argument | carrier_attribute_argument | variable_argument
+service_argument ::= identity_argument | entity_path_argument | carrier_attribute_argument | variable_argument
 
 variable_argument ::= ID
 

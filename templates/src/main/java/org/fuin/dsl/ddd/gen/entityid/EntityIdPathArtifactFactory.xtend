@@ -61,6 +61,7 @@ class EntityIdPathArtifactFactory extends AbstractSource<EntityIdPathType> {
         val SimpleCodeSnippetContext ctx = new SimpleCodeSnippetContext(refReg)
         ctx.requiresImport("jakarta.annotation.Generated")
         ctx.requiresImport("java.io.Serial")
+        ctx.requiresImport("java.util.Objects")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityIdFactory")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityIdPath")
         ctx.requiresImport("org.fuin.ddd4j.core.EntityIdPathSpec")
@@ -81,6 +82,7 @@ class EntityIdPathArtifactFactory extends AbstractSource<EntityIdPathType> {
             throws GenerateException {
 
         val leaf = path.segments.nullSafe.last
+        val start = path.segments.nullSafe.head
         val src = '''
             «new SrcJavaDocType(path.doc)»
             @Immutable
@@ -126,6 +128,18 @@ class EntityIdPathArtifactFactory extends AbstractSource<EntityIdPathType> {
                 }
 
                 /**
+                 * Returns the root this path starts at, which is its first step.
+                 *
+                 * <p>Typed, unlike {@code asEntityIdPath().first()}: the shape is checked when the path is
+                 * built, so what the first step is cannot be in doubt afterwards.</p>
+                 *
+                 * @return Identifier of the «start.type.name» this path starts at.
+                 */
+                public «start.type.name» first() {
+                    return («start.type.name») path.first();
+                }
+
+                /**
                  * Returns the path as ddd-4-java models it, for the operations declared there.
                  *
                  * @return The wrapped path.
@@ -136,6 +150,16 @@ class EntityIdPathArtifactFactory extends AbstractSource<EntityIdPathType> {
 
                 @Override
                 public String asBaseType() {
+                    return path.asBaseType();
+                }
+
+                /**
+                 * The path as it reads, which is what an exception message interpolating it wants. Without
+                 * this the base class leaves Object's version in place and a refusal names the thing it
+                 * refused as "SomethingPath@1f3a2b".
+                 */
+                @Override
+                public String toString() {
                     return path.asBaseType();
                 }
 
@@ -151,7 +175,9 @@ class EntityIdPathArtifactFactory extends AbstractSource<EntityIdPathType> {
                     if (value == null) {
                         return null;
                     }
-                    return new «className»(EntityIdPath.valueOf(factory, value));
+                    // Not null: the null case is answered above, and only a null input makes
+                    // EntityIdPath.valueOf answer with one.
+                    return new «className»(Objects.requireNonNull(EntityIdPath.valueOf(factory, value)));
                 }
 
                 /**

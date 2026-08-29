@@ -47,6 +47,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
@@ -251,6 +252,7 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.RULE_LITERAL_OPERAND: return createRuleLiteralOperand();
       case CqrsDslPackage.LITERAL_ARGUMENT: return createLiteralArgument();
       case CqrsDslPackage.IDENTITY_ARGUMENT: return createIdentityArgument();
+      case CqrsDslPackage.ENTITY_PATH_ARGUMENT: return createEntityPathArgument();
       case CqrsDslPackage.CARRIER_ATTRIBUTE_ARGUMENT: return createCarrierAttributeArgument();
       case CqrsDslPackage.VARIABLE_ARGUMENT: return createVariableArgument();
       default:
@@ -1370,6 +1372,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     IdentityArgumentImpl identityArgument = new IdentityArgumentImpl();
     return identityArgument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EntityPathArgument createEntityPathArgument()
+  {
+    EntityPathArgumentImpl entityPathArgument = new EntityPathArgumentImpl();
+    return entityPathArgument;
   }
 
   /**

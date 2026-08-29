@@ -41,6 +41,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
@@ -596,6 +597,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseIdentityArgument(IdentityArgument object)
       {
         return createIdentityArgumentAdapter();
+      }
+      @Override
+      public Adapter caseEntityPathArgument(EntityPathArgument object)
+      {
+        return createEntityPathArgumentAdapter();
       }
       @Override
       public Adapter caseCarrierAttributeArgument(CarrierAttributeArgument object)
@@ -1930,6 +1936,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createIdentityArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument <em>Entity Path Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
+   * @generated
+   */
+  public Adapter createEntityPathArgumentAdapter()
   {
     return null;
   }

@@ -46,6 +46,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Duration;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject;
 import org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy;
@@ -726,6 +727,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass identityArgumentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass entityPathArgumentEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2056,9 +2064,20 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getEntityIdPathType_Segments()
+  public EReference getEntityIdPathType_MetaInfo()
   {
     return (EReference)entityIdPathTypeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getEntityIdPathType_Segments()
+  {
+    return (EReference)entityIdPathTypeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -4102,6 +4121,17 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
+  public EClass getEntityPathArgument()
+  {
+    return entityPathArgumentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getCarrierAttributeArgument()
   {
     return carrierAttributeArgumentEClass;
@@ -4416,6 +4446,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEReference(aggregateIdEClass, AGGREGATE_ID__AGGREGATE);
 
     entityIdPathTypeEClass = createEClass(ENTITY_ID_PATH_TYPE);
+    createEReference(entityIdPathTypeEClass, ENTITY_ID_PATH_TYPE__META_INFO);
     createEReference(entityIdPathTypeEClass, ENTITY_ID_PATH_TYPE__SEGMENTS);
 
     pathSegmentEClass = createEClass(PATH_SEGMENT);
@@ -4661,6 +4692,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
 
     identityArgumentEClass = createEClass(IDENTITY_ARGUMENT);
 
+    entityPathArgumentEClass = createEClass(ENTITY_PATH_ARGUMENT);
+
     carrierAttributeArgumentEClass = createEClass(CARRIER_ATTRIBUTE_ARGUMENT);
     createEReference(carrierAttributeArgumentEClass, CARRIER_ATTRIBUTE_ARGUMENT__ATTRIBUTE);
 
@@ -4760,6 +4793,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     ruleLiteralOperandEClass.getESuperTypes().add(this.getRuleOperand());
     literalArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     identityArgumentEClass.getESuperTypes().add(this.getRuleArgument());
+    entityPathArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     carrierAttributeArgumentEClass.getESuperTypes().add(this.getRuleArgument());
     variableArgumentEClass.getESuperTypes().add(this.getRuleArgument());
 
@@ -4899,6 +4933,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getAggregateId_Aggregate(), this.getAggregate(), null, "aggregate", null, 0, 1, AggregateId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(entityIdPathTypeEClass, EntityIdPathType.class, "EntityIdPathType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getEntityIdPathType_MetaInfo(), this.getTypeMetaInfo(), null, "metaInfo", null, 0, 1, EntityIdPathType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getEntityIdPathType_Segments(), this.getPathSegment(), null, "segments", null, 0, -1, EntityIdPathType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(pathSegmentEClass, PathSegment.class, "PathSegment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -5143,6 +5178,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getLiteralArgument_Literal(), this.getLiteral(), null, "literal", null, 0, 1, LiteralArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(identityArgumentEClass, IdentityArgument.class, "IdentityArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(entityPathArgumentEClass, EntityPathArgument.class, "EntityPathArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(carrierAttributeArgumentEClass, CarrierAttributeArgument.class, "CarrierAttributeArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCarrierAttributeArgument_Attribute(), this.getAttribute(), null, "attribute", null, 0, 1, CarrierAttributeArgument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

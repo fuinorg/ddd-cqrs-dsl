@@ -3,6 +3,7 @@ package org.fuin.dsl.ddd.gen.rule
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Method
@@ -64,6 +65,13 @@ class SrcRuleConstruction {
                         + ": a creating operation has no instance yet")
                 }
                 return carrier + ".getId()"
+            }
+            EntityPathArgument: {
+                if (carrier === null) {
+                    throw new GenerateException("'own-path' has nothing to read in " + operation.name
+                        + ": a creating operation has no instance yet")
+                }
+                return carrier + ".getPath()"
             }
             CarrierAttributeArgument: {
                 if (carrier === null) {

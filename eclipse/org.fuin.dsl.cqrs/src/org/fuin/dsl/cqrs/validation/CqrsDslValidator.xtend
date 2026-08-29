@@ -31,6 +31,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.EntityId
 import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange
 import org.fuin.dsl.cqrs.cqrsDsl.PathSegment
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Event
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
@@ -118,6 +119,12 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val COMMAND_MSG_UNCLOSED_VAR = 'commandMsgUnclosedVar'
 
 	public static val RULE_OWN_ID_IN_CONSTRUCTOR = 'ruleOwnIdInConstructor'
+
+	public static val RULE_OWN_PATH_IN_CONSTRUCTOR = 'ruleOwnPathInConstructor'
+
+	public static val RULE_OWN_PATH_NOT_ON_ENTITY = 'ruleOwnPathNotOnEntity'
+
+	public static val RULE_OWN_PATH_HAS_NO_TYPE = 'ruleOwnPathHasNoType'
 
 	public static val RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR = 'ruleOwnAttributeInConstructor'
 
@@ -813,6 +820,42 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				null,
 				RULE_OWN_ID_IN_CONSTRUCTOR
 			)
+		}
+	}
+
+	/**
+	 * 'own-path' addresses the carrier from its root, so it needs a carrier that has one - an entity
+	 * inside an aggregate. An aggregate is addressed by its own id and has nothing to prepend; a
+	 * constructor has no carrier at all.
+	 *
+	 * <p>It also needs an 'entity-id-path' declared for the chain it would read as. Without one there is
+	 * no type to hand over, and inventing an anonymous path here would put back the untyped reference the
+	 * declaration exists to remove - so this says which declaration is missing rather than falling back.
+	 */
+	@Check
+	def checkOwnPath(EntityPathArgument argument) {
+		if(CqrsModelArchives.isArchived(argument.eResource?.URI)) return;
+
+		if (EcoreUtil2.getContainerOfType(argument, Constructor) !== null) {
+			error("'own-path' has nothing to read in a constructor, which is what creates the carrier",
+				argument, null, RULE_OWN_PATH_IN_CONSTRUCTOR)
+			return
+		}
+
+		val entity = EcoreUtil2.getContainerOfType(argument, Entity)
+		if (entity === null) {
+			error("'own-path' addresses an entity from its root; an aggregate is addressed by 'own-id'",
+				argument, null, RULE_OWN_PATH_NOT_ON_ENTITY)
+			return
+		}
+		if (entity.root === null) {
+			return
+		}
+
+		if (entity.pathTypeNullable === null) {
+			error("No 'entity-id-path' addresses a '" + entity.name + "' inside '" + entity.root.name
+				+ "', so 'own-path' has no type to read as; declare one",
+				argument, null, RULE_OWN_PATH_HAS_NO_TYPE)
 		}
 	}
 

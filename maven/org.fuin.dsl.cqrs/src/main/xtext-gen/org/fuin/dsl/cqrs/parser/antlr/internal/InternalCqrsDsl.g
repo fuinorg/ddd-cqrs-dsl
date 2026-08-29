@@ -3646,9 +3646,28 @@ ruleEntityIdPathType returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEntityIdPathTypeAccess().getSegmentsPathSegmentParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getEntityIdPathTypeAccess().getMetaInfoTypeMetaInfoParserRuleCall_4_0());
 				}
-				lv_segments_4_0=rulePathSegment
+				lv_metaInfo_4_0=ruleTypeMetaInfo
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getEntityIdPathTypeRule());
+					}
+					set(
+						$current,
+						"metaInfo",
+						lv_metaInfo_4_0,
+						"org.fuin.dsl.cqrs.CqrsDsl.TypeMetaInfo");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getEntityIdPathTypeAccess().getSegmentsPathSegmentParserRuleCall_5_0());
+				}
+				lv_segments_5_0=rulePathSegment
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEntityIdPathTypeRule());
@@ -3656,23 +3675,23 @@ ruleEntityIdPathType returns [EObject current=null]
 					add(
 						$current,
 						"segments",
-						lv_segments_4_0,
+						lv_segments_5_0,
 						"org.fuin.dsl.cqrs.CqrsDsl.PathSegment");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
 		(
-			otherlv_5='/'
+			otherlv_6='/'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getEntityIdPathTypeAccess().getSolidusKeyword_5_0());
+				newLeafNode(otherlv_6, grammarAccess.getEntityIdPathTypeAccess().getSolidusKeyword_6_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getEntityIdPathTypeAccess().getSegmentsPathSegmentParserRuleCall_5_1_0());
+						newCompositeNode(grammarAccess.getEntityIdPathTypeAccess().getSegmentsPathSegmentParserRuleCall_6_1_0());
 					}
-					lv_segments_6_0=rulePathSegment
+					lv_segments_7_0=rulePathSegment
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getEntityIdPathTypeRule());
@@ -3680,16 +3699,16 @@ ruleEntityIdPathType returns [EObject current=null]
 						add(
 							$current,
 							"segments",
-							lv_segments_6_0,
+							lv_segments_7_0,
 							"org.fuin.dsl.cqrs.CqrsDsl.PathSegment");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)
 		)*
-		otherlv_7='}'
+		otherlv_8='}'
 		{
-			newLeafNode(otherlv_7, grammarAccess.getEntityIdPathTypeAccess().getRightCurlyBracketKeyword_6());
+			newLeafNode(otherlv_8, grammarAccess.getEntityIdPathTypeAccess().getRightCurlyBracketKeyword_7());
 		}
 	)
 ;
@@ -7031,37 +7050,28 @@ ruleServiceArgument returns [EObject current=null]
 			(
 				{
 					$current = forceCreateModelElement(
-						grammarAccess.getServiceArgumentAccess().getCarrierAttributeArgumentAction_1_0(),
+						grammarAccess.getServiceArgumentAccess().getEntityPathArgumentAction_1_0(),
 						$current);
 				}
 			)
-			otherlv_3='own'
+			otherlv_3='own-path'
 			{
-				newLeafNode(otherlv_3, grammarAccess.getServiceArgumentAccess().getOwnKeyword_1_1());
+				newLeafNode(otherlv_3, grammarAccess.getServiceArgumentAccess().getOwnPathKeyword_1_1());
 			}
-			(
-				(
-					{
-						if ($current==null) {
-							$current = createModelElement(grammarAccess.getServiceArgumentRule());
-						}
-					}
-					otherlv_4=RULE_ID
-					{
-						newLeafNode(otherlv_4, grammarAccess.getServiceArgumentAccess().getAttributeAttributeCrossReference_1_2_0());
-					}
-				)
-			)
 		)
 		    |
 		(
 			(
 				{
 					$current = forceCreateModelElement(
-						grammarAccess.getServiceArgumentAccess().getVariableArgumentAction_2_0(),
+						grammarAccess.getServiceArgumentAccess().getCarrierAttributeArgumentAction_2_0(),
 						$current);
 				}
 			)
+			otherlv_5='own'
+			{
+				newLeafNode(otherlv_5, grammarAccess.getServiceArgumentAccess().getOwnKeyword_2_1());
+			}
 			(
 				(
 					{
@@ -7071,7 +7081,30 @@ ruleServiceArgument returns [EObject current=null]
 					}
 					otherlv_6=RULE_ID
 					{
-						newLeafNode(otherlv_6, grammarAccess.getServiceArgumentAccess().getVariableVariableCrossReference_2_1_0());
+						newLeafNode(otherlv_6, grammarAccess.getServiceArgumentAccess().getAttributeAttributeCrossReference_2_2_0());
+					}
+				)
+			)
+		)
+		    |
+		(
+			(
+				{
+					$current = forceCreateModelElement(
+						grammarAccess.getServiceArgumentAccess().getVariableArgumentAction_3_0(),
+						$current);
+				}
+			)
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getServiceArgumentRule());
+						}
+					}
+					otherlv_8=RULE_ID
+					{
+						newLeafNode(otherlv_8, grammarAccess.getServiceArgumentAccess().getVariableVariableCrossReference_3_1_0());
 					}
 				)
 			)

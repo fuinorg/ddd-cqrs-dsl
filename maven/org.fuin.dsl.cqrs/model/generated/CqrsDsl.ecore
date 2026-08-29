@@ -233,6 +233,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="aggregate" eType="#//Aggregate"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityIdPathType" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metaInfo" eType="#//TypeMetaInfo"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="segments" upperBound="-1"
         eType="#//PathSegment" containment="true"/>
   </eClassifiers>
@@ -540,6 +542,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IdentityArgument" eSuperTypes="#//RuleArgument"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityPathArgument" eSuperTypes="#//RuleArgument"/>
   <eClassifiers xsi:type="ecore:EClass" name="CarrierAttributeArgument" eSuperTypes="#//RuleArgument">
     <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" eType="#//Attribute"/>
   </eClassifiers>

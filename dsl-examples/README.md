@@ -38,6 +38,7 @@ comment explaining what it shows. They follow the grammar in
 | [29-business-key](29-business-key.cqrs) | `key` — the natural key: `attributes`, `on-collision refuse`/`overwrite`/`skip`, its own `consistency` and a `display-as` format; and `no-key` for a type that has none on purpose |
 | [30-soft-delete](30-soft-delete.cqrs) | Modelling a soft delete without a construct for it: a `Boolean` the type declares, a shared rule that reads it, and the guard said on every operation |
 | [31-business-rule-predicate](31-business-rule-predicate.cqrs) | A `business-rule`'s own attributes and its `requires` condition over them (comparisons, `.is-empty()`, `!`/`&&`/`||`), plus the actuals a usage binds — a field, a parameter, a service method or a literal |
+| [32-entity-id-path](32-entity-id-path.cqrs) | `entity-id-path` — how an entity is addressed from the root that owns it, with a `[min..max]` range on a step that may repeat; and `own-path`, the actual that hands a rule or a service what addresses the carrier |
 
 Open them with the Eclipse plugin or the
 [IntelliJ IDEA plugin](../intellij/README.md) for syntax highlighting and code completion.

@@ -1951,13 +1951,22 @@ public interface CqrsDslPackage extends EPackage
   int ENTITY_ID_PATH_TYPE__NAME = TYPE__NAME;
 
   /**
+   * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENTITY_ID_PATH_TYPE__META_INFO = TYPE_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Segments</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ENTITY_ID_PATH_TYPE__SEGMENTS = TYPE_FEATURE_COUNT + 0;
+  int ENTITY_ID_PATH_TYPE__SEGMENTS = TYPE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Entity Id Path Type</em>' class.
@@ -1966,7 +1975,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ENTITY_ID_PATH_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 1;
+  int ENTITY_ID_PATH_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.PathSegmentImpl <em>Path Segment</em>}' class.
@@ -4943,6 +4952,25 @@ public interface CqrsDslPackage extends EPackage
   int IDENTITY_ARGUMENT_FEATURE_COUNT = RULE_ARGUMENT_FEATURE_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EntityPathArgumentImpl <em>Entity Path Argument</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.EntityPathArgumentImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEntityPathArgument()
+   * @generated
+   */
+  int ENTITY_PATH_ARGUMENT = 87;
+
+  /**
+   * The number of structural features of the '<em>Entity Path Argument</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ENTITY_PATH_ARGUMENT_FEATURE_COUNT = RULE_ARGUMENT_FEATURE_COUNT + 0;
+
+  /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CarrierAttributeArgumentImpl <em>Carrier Attribute Argument</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4950,7 +4978,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCarrierAttributeArgument()
    * @generated
    */
-  int CARRIER_ATTRIBUTE_ARGUMENT = 87;
+  int CARRIER_ATTRIBUTE_ARGUMENT = 88;
 
   /**
    * The feature id for the '<em><b>Attribute</b></em>' reference.
@@ -4978,7 +5006,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getVariableArgument()
    * @generated
    */
-  int VARIABLE_ARGUMENT = 88;
+  int VARIABLE_ARGUMENT = 89;
 
   /**
    * The feature id for the '<em><b>Variable</b></em>' reference.
@@ -5006,7 +5034,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTimeUnit()
    * @generated
    */
-  int TIME_UNIT = 89;
+  int TIME_UNIT = 90;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel <em>Consistency Level</em>}' enum.
@@ -5016,7 +5044,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConsistencyLevel()
    * @generated
    */
-  int CONSISTENCY_LEVEL = 90;
+  int CONSISTENCY_LEVEL = 91;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection <em>Inconsistency Detection</em>}' enum.
@@ -5026,7 +5054,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyDetection()
    * @generated
    */
-  int INCONSISTENCY_DETECTION = 91;
+  int INCONSISTENCY_DETECTION = 92;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution <em>Inconsistency Resolution</em>}' enum.
@@ -5036,7 +5064,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyResolution()
    * @generated
    */
-  int INCONSISTENCY_RESOLUTION = 92;
+  int INCONSISTENCY_RESOLUTION = 93;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}' enum.
@@ -5046,7 +5074,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProtectionLevel()
    * @generated
    */
-  int PROTECTION_LEVEL = 93;
+  int PROTECTION_LEVEL = 94;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}' enum.
@@ -5056,7 +5084,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLawfulBasis()
    * @generated
    */
-  int LAWFUL_BASIS = 94;
+  int LAWFUL_BASIS = 95;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}' enum.
@@ -5066,7 +5094,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getSpecialCategory()
    * @generated
    */
-  int SPECIAL_CATEGORY = 95;
+  int SPECIAL_CATEGORY = 96;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}' enum.
@@ -5076,7 +5104,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getErasureStrategy()
    * @generated
    */
-  int ERASURE_STRATEGY = 96;
+  int ERASURE_STRATEGY = 97;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.CompareOp <em>Compare Op</em>}' enum.
@@ -5086,7 +5114,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCompareOp()
    * @generated
    */
-  int COMPARE_OP = 97;
+  int COMPARE_OP = 98;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.CollisionStrategy <em>Collision Strategy</em>}' enum.
@@ -5096,7 +5124,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCollisionStrategy()
    * @generated
    */
-  int COLLISION_STRATEGY = 98;
+  int COLLISION_STRATEGY = 99;
 
 
   /**
@@ -6246,6 +6274,17 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EClass getEntityIdPathType();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getMetaInfo <em>Meta Info</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Meta Info</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getMetaInfo()
+   * @see #getEntityIdPathType()
+   * @generated
+   */
+  EReference getEntityIdPathType_MetaInfo();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType#getSegments <em>Segments</em>}'.
@@ -8236,6 +8275,16 @@ public interface CqrsDslPackage extends EPackage
   EClass getIdentityArgument();
 
   /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument <em>Entity Path Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Entity Path Argument</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
+   * @generated
+   */
+  EClass getEntityPathArgument();
+
+  /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument <em>Carrier Attribute Argument</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -9313,6 +9362,14 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EClass ENTITY_ID_PATH_TYPE = eINSTANCE.getEntityIdPathType();
+
+    /**
+     * The meta object literal for the '<em><b>Meta Info</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ENTITY_ID_PATH_TYPE__META_INFO = eINSTANCE.getEntityIdPathType_MetaInfo();
 
     /**
      * The meta object literal for the '<em><b>Segments</b></em>' containment reference list feature.
@@ -10917,6 +10974,16 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EClass IDENTITY_ARGUMENT = eINSTANCE.getIdentityArgument();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EntityPathArgumentImpl <em>Entity Path Argument</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.EntityPathArgumentImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEntityPathArgument()
+     * @generated
+     */
+    EClass ENTITY_PATH_ARGUMENT = eINSTANCE.getEntityPathArgument();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.CarrierAttributeArgumentImpl <em>Carrier Attribute Argument</em>}' class.

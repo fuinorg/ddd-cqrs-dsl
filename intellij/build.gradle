@@ -138,6 +138,11 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.32.0</b> &ndash; <code>entity-id-path</code> declares how an entity is addressed from its
+        root, with an optional <code>[min..max]</code> range on a step that may repeat; an entity id is
+        unique inside its root and nowhere else, so a reference carrying only the id addresses nothing.
+        <code>own-path</code> hands a rule or a service that address, beside <code>own-id</code>. Both
+        are checked in the editor.</li>
     <li><b>1.31.0</b> &ndash; A row that offers a command it cannot decide is now reported as a
         warning, the same rule the Eclipse plugin and the generator build apply: a command gated by a
         rule over the aggregate's own state can be left out of a menu rather than offered and refused,

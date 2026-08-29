@@ -1,0 +1,121 @@
+context p_32_entity_id_path {
+
+    module warehouse {
+
+        type String
+        type Boolean
+
+        aggregate-id BinId identifies Bin base String {}
+
+        entity-id SlotId identifies Slot base String {}
+
+        entity-id ShelfId identifies Shelf base String {}
+
+        // A path says how a thing is addressed from the root that owns it. An entity id is unique
+        // inside its root and nowhere else - "SLOT 3" exists in every bin - so a reference that
+        // carries only the id addresses nothing. Declaring the path gives that reference a type,
+        // and the generated Java checks the shape rather than only that each step parses.
+        //
+        // The first step is always an aggregate id: a path starts at a root. Every later step
+        // identifies an entity of that root.
+        /** How a slot inside a bin is addressed. */
+        entity-id-path SlotPath {
+
+            slabel "Slot"
+            label "Slot"
+            tooltip "Which slot, named by the bin it sits in"
+
+            BinId / SlotId
+        }
+
+        // A step may repeat, which is what a self-nesting entity needs: a shelf holds shelves.
+        // '[1..*]' is "one or more" - a range rather than a symbol, because "may repeat" does not
+        // say whether the step may also be absent. The default, written or not, is '[1..1]'.
+        /** How a shelf inside a bin is addressed, however deeply it is nested. */
+        entity-id-path ShelfPath {
+
+            slabel "Shelf"
+            label "Shelf"
+            tooltip "Which shelf, named by the bin it sits in and the shelves above it"
+
+            BinId / ShelfId[1..*]
+        }
+
+        /** Refused because the slot is already taken. */
+        exception SlotTakenException {
+            /** The slot that is taken. */
+            SlotPath slot
+            message "Slot ${slot} is already taken"
+        }
+
+        /** Makes sure nothing else claims the slot. */
+        business-rule SlotMustBeFree exception SlotTakenException {
+
+            /** Whether something already claims it, as the caller found out. */
+            Boolean claimed
+
+            /** The slot, which the refusal names. */
+            SlotPath slot
+
+            consistency strong
+
+            requires !claimed
+        }
+
+        aggregate Bin identifier BinId {
+
+            /** Where the bin stands. */
+            String location
+
+        }
+
+        entity Slot identifier SlotId root Bin {
+
+            /** What the slot holds. */
+            String content
+
+            // 'own-path' is what addresses this entity from its root, and it reads as the declared
+            // path for the chain - 'SlotPath' here. 'own-id' would hand over a bare 'SlotId', which
+            // the service could not look up: it exists in every other bin too. Legal only on an
+            // entity, and only where a path for the chain is declared.
+            /**
+             * Claims the slot, refusing if something else already holds it.
+             */
+            method claim business-rules SlotMustBeFree(claimed(own-path), own-path) fires SlotClaimedEvent {
+
+                operation-context ClaimService
+
+                /** Asks whoever tracks claims whether this slot is spoken for. */
+                service ClaimService {
+
+                    /** Returns true if the slot is already claimed. */
+                    method claimed {
+
+                        /** The slot to look up. */
+                        SlotPath slot
+
+                        /** True if something claims it. */
+                        returns Boolean
+
+                    }
+
+                }
+
+                /** The slot was claimed. */
+                event SlotClaimedEvent {
+                    message "Claimed slot"
+                }
+
+            }
+
+        }
+
+        entity Shelf identifier ShelfId root Bin {
+
+            /** What the shelf is called. */
+            String name
+
+        }
+
+    }
+}

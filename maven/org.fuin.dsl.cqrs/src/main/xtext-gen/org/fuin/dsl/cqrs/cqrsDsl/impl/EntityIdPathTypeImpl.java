@@ -5,6 +5,7 @@ package org.fuin.dsl.cqrs.cqrsDsl.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -12,12 +13,15 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
 import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
+import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,6 +31,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EntityIdPathTypeImpl#getMetaInfo <em>Meta Info</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.EntityIdPathTypeImpl#getSegments <em>Segments</em>}</li>
  * </ul>
  *
@@ -34,6 +39,16 @@ import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
  */
 public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
 {
+  /**
+   * The cached value of the '{@link #getMetaInfo() <em>Meta Info</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMetaInfo()
+   * @generated
+   * @ordered
+   */
+  protected TypeMetaInfo metaInfo;
+
   /**
    * The cached value of the '{@link #getSegments() <em>Segments</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -71,6 +86,56 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
    * @generated
    */
   @Override
+  public TypeMetaInfo getMetaInfo()
+  {
+    return metaInfo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetMetaInfo(TypeMetaInfo newMetaInfo, NotificationChain msgs)
+  {
+    TypeMetaInfo oldMetaInfo = metaInfo;
+    metaInfo = newMetaInfo;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO, oldMetaInfo, newMetaInfo);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setMetaInfo(TypeMetaInfo newMetaInfo)
+  {
+    if (newMetaInfo != metaInfo)
+    {
+      NotificationChain msgs = null;
+      if (metaInfo != null)
+        msgs = ((InternalEObject)metaInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO, null, msgs);
+      if (newMetaInfo != null)
+        msgs = ((InternalEObject)newMetaInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO, null, msgs);
+      msgs = basicSetMetaInfo(newMetaInfo, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO, newMetaInfo, newMetaInfo));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<PathSegment> getSegments()
   {
     if (segments == null)
@@ -90,6 +155,8 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO:
+        return basicSetMetaInfo(null, msgs);
       case CqrsDslPackage.ENTITY_ID_PATH_TYPE__SEGMENTS:
         return ((InternalEList<?>)getSegments()).basicRemove(otherEnd, msgs);
     }
@@ -106,6 +173,8 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO:
+        return getMetaInfo();
       case CqrsDslPackage.ENTITY_ID_PATH_TYPE__SEGMENTS:
         return getSegments();
     }
@@ -123,6 +192,9 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO:
+        setMetaInfo((TypeMetaInfo)newValue);
+        return;
       case CqrsDslPackage.ENTITY_ID_PATH_TYPE__SEGMENTS:
         getSegments().clear();
         getSegments().addAll((Collection<? extends PathSegment>)newValue);
@@ -141,6 +213,9 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO:
+        setMetaInfo((TypeMetaInfo)null);
+        return;
       case CqrsDslPackage.ENTITY_ID_PATH_TYPE__SEGMENTS:
         getSegments().clear();
         return;
@@ -158,6 +233,8 @@ public class EntityIdPathTypeImpl extends TypeImpl implements EntityIdPathType
   {
     switch (featureID)
     {
+      case CqrsDslPackage.ENTITY_ID_PATH_TYPE__META_INFO:
+        return metaInfo != null;
       case CqrsDslPackage.ENTITY_ID_PATH_TYPE__SEGMENTS:
         return segments != null && !segments.isEmpty();
     }

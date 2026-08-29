@@ -7,6 +7,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
@@ -67,6 +68,7 @@ class CqrsBusinessRulesExtensions {
 		for (actual : instance.params.nullSafe) {
 			switch (actual) {
 				IdentityArgument: { /* the row knows its own identity */ }
+				EntityPathArgument: { /* likewise: a row addressed by a path carries that path */ }
 				CarrierAttributeArgument: { /* the row carries the state the carrier holds now */ }
 				VariableArgument: {
 					if (operation.declares(actual.variable)) {
