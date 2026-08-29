@@ -10,6 +10,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
+import org.fuin.dsl.cqrs.cqrsDsl.Key
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
 
@@ -51,6 +52,30 @@ class CqrsBusinessRulesExtensions {
 	 *
 	 * @return <code>true</code> when a client could decide it.
 	 */
+	/**
+	 * Whether the generated validator verifies this usage rather than leaving it to the operation.
+	 *
+	 * <p>A rule declaring a <code>requires</code> condition is generated whole; one declaring only its
+	 * attributes is written by hand and the call is emitted anyway, so that a rule nobody has written
+	 * does not compile. A rule declaring <em>neither</em> is the case left out - there is nothing to
+	 * call and nothing to write one from - and it keeps its <code>// TODO Verify</code> line with the
+	 * operation instead. A business key always derives both, so a key usage is always verified.</p>
+	 *
+	 * @param instance Usage of a rule or a key by one operation.
+	 *
+	 * @return <code>true</code> when the validator carries it.
+	 */
+	static def boolean verifiedByValidator(BusinessRuleInstance instance) {
+		val rule = instance?.businessRule
+		if (rule instanceof Key) {
+			return true
+		}
+		if (rule instanceof BusinessRule) {
+			return rule.requires !== null || !rule.attributes.nullSafe.empty
+		}
+		return false
+	}
+
 	/**
 	 * The declared rule a usage names, or <code>null</code> where it names a business key.
 	 *

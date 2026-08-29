@@ -267,6 +267,10 @@ public final class TypeKeys {
             return JAVA_SERVICE;
         case "BusinessRule":
             return JAVA_BUSINESS_RULE;
+        // A key derives a uniqueness rule, which is the same kind of artifact under the same key - so
+        // whatever constructs a rule reaches a derived one without knowing which it got.
+        case "Key":
+            return JAVA_BUSINESS_RULE;
         case "Aggregate":
             return JAVA_AGGREGATE;
         case "Entity":

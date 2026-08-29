@@ -37,7 +37,14 @@ class CqrsKeyUsageTest {
 	/** The usual case: the operation names the key and says nothing else about it. */
 	@Test
 	def void testAnOperationNamesAKey() {
-		val model = parseHelper.parse(aggregate("business-rules NamePerKind", "String name"))
+		val model = parseHelper.parse(aggregate("business-rules NamePerKind", '''
+			String name
+			Kind kind
+			operation-context CreateService
+			/** Answers whether the key is free. */
+			service CreateService {
+			}
+		'''))
 		model.assertNoErrors
 		val instance = model.getAllContentsOfType(Aggregate).head.constructors.head.businessRules
 			.businessRuleInstances.head
@@ -186,6 +193,91 @@ class CqrsKeyUsageTest {
 		''')).assertError(CqrsDslPackage.Literals.KEY, CqrsDslValidator.KEY_SEVERAL_DISPLAY_KEYS)
 	}
 
+	/**
+	 * A key derives a rule named after it, and that is usually what the rule it replaces is already
+	 * called. Both would generate a class of that name into one package.
+	 */
+	@Test
+	def void testTheDerivedRuleNameCollidesWithADeclaredRule() {
+		parseHelper.parse(aggregate(null, "String name", '''
+			/** Makes sure the name is free. */
+			business-rule NamePerKindMustBeUnique exception DuplicateNameException {
+
+				/** Whether it is taken. */
+				Boolean taken
+
+				consistency strong
+
+				requires !taken
+			}
+
+			/** No two things of the same kind share a name. */
+			key NamePerKind exception DuplicateNameException {
+				attributes name, kind
+				on-collision refuse
+				consistency strong
+			}
+		''')).assertError(CqrsDslPackage.Literals.KEY, CqrsDslValidator.KEY_RULE_NAME_TAKEN)
+	}
+
+	/** A collision the model answers by overwriting is not something an operation is refused for. */
+	@Test
+	def void testAnOperationCannotBeGuardedByAKeyThatDoesNotRefuse() {
+		parseHelper.parse(aggregate("business-rules NamePerKind", "String name", '''
+			/** A later one replaces the earlier. */
+			key NamePerKind {
+				attributes name, kind
+				on-collision overwrite
+				consistency strong
+			}
+		''')).assertError(CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE,
+				CqrsDslValidator.KEY_USAGE_DOES_NOT_REFUSE)
+	}
+
+	/**
+	 * Two key attributes of one type and a parameter of it: each attribute matches that parameter, so
+	 * both would be read off it and half the composite key would be checked against the wrong value.
+	 */
+	@Test
+	def void testTwoKeyAttributesSharingATypeCannotBePairedUp() {
+		parseHelper.parse(aggregate("business-rules SameType", '''
+			String name
+			operation-context CreateService
+			/** Answers whether the key is free. */
+			service CreateService {
+			}
+		''', '''
+			/** Both halves are strings, and the operation offers one. */
+			key SameType exception DuplicateNameException {
+				attributes name, alias
+				on-collision refuse
+				consistency strong
+			}
+		''')).assertError(CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE,
+				CqrsDslValidator.KEY_ACTUAL_AMBIGUOUS)
+	}
+
+	/** The answer has to be declared somewhere, and that somewhere is the operation's own service. */
+	@Test
+	def void testADerivedUsageNeedsAnOperationContext() {
+		parseHelper.parse(aggregate("business-rules NamePerKind", "String name"))
+			.assertError(CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE,
+				CqrsDslValidator.KEY_USAGE_NEEDS_INLINE_CONTEXT)
+	}
+
+	/** A creating operation has no prior state, so every key attribute has to arrive as an argument. */
+	@Test
+	def void testACreateThatCannotReachAKeyAttribute() {
+		parseHelper.parse(aggregate("business-rules NamePerKind", '''
+			String name
+			operation-context CreateService
+			/** Answers whether the key is free. */
+			service CreateService {
+			}
+		''')).assertError(CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE,
+				CqrsDslValidator.KEY_ACTUAL_UNREACHABLE)
+	}
+
 	private def CharSequence aggregate(String usage, CharSequence body) {
 		return aggregate(usage, body, '''
 			/** No two things of the same kind share a name. */
@@ -203,6 +295,7 @@ class CqrsKeyUsageTest {
 
 				type String
 				type Boolean
+				type Kind
 
 				/** Reported when the name is taken. */
 				exception DuplicateNameException {
@@ -214,7 +307,10 @@ class CqrsKeyUsageTest {
 				aggregate Thing identifier ThingId {
 
 					String name
-					String kind
+					Kind kind
+
+					/** A second name, so a key can be made of two of one type. */
+					String alias
 
 					«keys»
 

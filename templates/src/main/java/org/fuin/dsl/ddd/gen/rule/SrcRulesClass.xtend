@@ -93,8 +93,7 @@ class SrcRulesClass {
     def static List<BusinessRuleInstance> decidable(AbstractMethod operation) {
         val out = new ArrayList<BusinessRuleInstance>()
         for (instance : operation.businessRules?.businessRuleInstances.nullSafe) {
-            val rule = instance.declaredRule
-            if (rule !== null && (rule.requires !== null || !rule.attributes.nullSafe.empty)) {
+            if (instance.verifiedByValidator) {
                 out.add(instance)
             }
         }

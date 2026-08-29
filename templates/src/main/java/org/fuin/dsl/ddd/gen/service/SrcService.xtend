@@ -1,5 +1,6 @@
 package org.fuin.dsl.ddd.gen.service
 
+import java.util.ArrayList
 import java.util.List
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Service
@@ -7,6 +8,7 @@ import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocType
 import org.fuin.dsl.ddd.gen.base.SrcMethodSignature
+import org.fuin.dsl.ddd.gen.rule.KeyDerivation
 import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
@@ -35,7 +37,20 @@ class SrcService implements CodeSnippet {
      * @param service Service to create the source for.
      */
     new(CodeSnippetContext ctx, Service service) {
-        this(ctx, service.name, new SrcJavaDocType(service.doc).toString, service.methods)
+        this(ctx, service.name, new SrcJavaDocType(service.doc).toString, declaredAndDerived(service))
+    }
+
+    /**
+     * What the interface declares: the model's own methods, then whatever a business key adds.
+     *
+     * <p>A key checked by the operation this service serves needs an answer to "is it taken", and the
+     * key derives that method rather than the model writing it out. Appended rather than mixed in, so
+     * the interface reads in the order the model does.</p>
+     */
+    def private static List<Method> declaredAndDerived(Service service) {
+        val out = new ArrayList<Method>(service.methods.nullSafe.toList)
+        out.addAll(KeyDerivation.derivedMethods(service))
+        return out
     }
 
     /**

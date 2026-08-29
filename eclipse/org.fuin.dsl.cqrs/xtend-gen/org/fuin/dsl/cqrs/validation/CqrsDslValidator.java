@@ -166,6 +166,16 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   public static final String KEY_DISPLAY_UNKNOWN_VAR = "keyDisplayUnknownVar";
 
+  public static final String KEY_ACTUAL_AMBIGUOUS = "keyActualAmbiguous";
+
+  public static final String KEY_ACTUAL_UNREACHABLE = "keyActualUnreachable";
+
+  public static final String KEY_USAGE_DOES_NOT_REFUSE = "keyUsageDoesNotRefuse";
+
+  public static final String KEY_USAGE_NEEDS_INLINE_CONTEXT = "keyUsageNeedsInlineContext";
+
+  public static final String KEY_RULE_NAME_TAKEN = "keyRuleNameTaken";
+
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
   public static final String DEPENDENCY_INVALID_COORDINATE = "dependencyInvalidCoordinate";
@@ -974,6 +984,160 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
       this.error(_plus_9, instance, 
         CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
         CqrsDslValidator.RULE_ACTUALS_MISMATCH);
+    }
+  }
+
+  /**
+   * Checks that the rule a key derives does not collide with one written by hand.
+   * 
+   * <p>A key called <code>Iban</code> derives <code>IbanMustBeUnique</code>, which is what the rule
+   * it replaces is usually already called. Both generate a class of that name into the same package,
+   * and the second one written wins silently - so migrating a model to a key means deleting the rule,
+   * and this is what says so.</p>
+   */
+  @Check
+  public void checkKeyRuleNameIsFree(final Key key) {
+    final org.fuin.dsl.cqrs.cqrsDsl.Module module = EcoreUtil2.<org.fuin.dsl.cqrs.cqrsDsl.Module>getContainerOfType(key, org.fuin.dsl.cqrs.cqrsDsl.Module.class);
+    if ((module == null)) {
+      return;
+    }
+    final String derived = CqrsKeyExtensions.ruleName(key);
+    List<BusinessRule> _allContentsOfType = EcoreUtil2.<BusinessRule>getAllContentsOfType(module, BusinessRule.class);
+    for (final BusinessRule rule : _allContentsOfType) {
+      String _name = rule.getName();
+      boolean _equals = Objects.equals(_name, derived);
+      if (_equals) {
+        String _name_1 = key.getName();
+        String _plus = (_name_1 + " derives a rule called ");
+        String _plus_1 = (_plus + derived);
+        String _plus_2 = (_plus_1 + ", and one of that name is already");
+        String _plus_3 = (_plus_2 + " written by hand - the key replaces it, so the declared rule goes");
+        this.error(_plus_3, key, 
+          CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, 
+          CqrsDslValidator.KEY_RULE_NAME_TAKEN);
+        return;
+      }
+    }
+  }
+
+  /**
+   * Checks that an operation only says it checks a key that can refuse it.
+   * 
+   * <p>A collision the model answers with 'overwrite' or 'skip' is what the handler does with the
+   * second occurrence, not a reason to refuse an operation. Naming one here reads as a guard and
+   * generates nothing, which is the shape this whole construct exists to stop.</p>
+   */
+  @Check
+  public void checkKeyUsageRefuses(final BusinessRuleInstance instance) {
+    final AbstractBusinessRule rule = instance.getBusinessRule();
+    if (((!(rule instanceof Key)) || rule.eIsProxy())) {
+      return;
+    }
+    final Key key = ((Key) rule);
+    boolean _refuses = CqrsKeyExtensions.refuses(key);
+    boolean _not = (!_refuses);
+    if (_not) {
+      String _name = key.getName();
+      String _plus = (_name + " ");
+      String _literal = key.getOnCollision().getLiteral();
+      String _plus_1 = (_plus + _literal);
+      String _plus_2 = (_plus_1 + "s a collision rather than refusing it, so no operation is guarded by it");
+      this.error(_plus_2, instance, 
+        CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+        CqrsDslValidator.KEY_USAGE_DOES_NOT_REFUSE);
+    }
+  }
+
+  /**
+   * Checks that an operation deriving a key's actuals declares the service that answers them.
+   * 
+   * <p>A key asks whether anything else already holds it, which is a question about every other
+   * instance and one a rule never reaches for itself. The method that answers is derived onto the
+   * operation's own 'operation-context', so there has to be one and it has to be the operation's:
+   * a service declared at module level is shared by operations that check nothing, and putting a
+   * derived method there would oblige all of them to implement it.</p>
+   */
+  @Check
+  public void checkDerivedKeyHasSomewhereToAsk(final BusinessRuleInstance instance) {
+    final AbstractBusinessRule rule = instance.getBusinessRule();
+    if ((((!(rule instanceof Key)) || rule.eIsProxy()) || (!CqrsCollectionExtensions.<RuleArgument>nullSafe(instance.getParams()).isEmpty()))) {
+      return;
+    }
+    final AbstractMethod operation = EcoreUtil2.<AbstractMethod>getContainerOfType(instance, AbstractMethod.class);
+    if ((operation == null)) {
+      return;
+    }
+    final Service service = operation.getOperationContext();
+    if (((service == null) || (!CqrsCollectionExtensions.<Service>nullSafe(operation.getServices()).contains(service)))) {
+      String _name = operation.getName();
+      String _plus = (_name + " checks ");
+      String _name_1 = ((Key) rule).getName();
+      String _plus_1 = (_plus + _name_1);
+      String _plus_2 = (_plus_1 + ", which asks whether the key is taken, so it needs an \'operation-context\' service");
+      String _plus_3 = (_plus_2 + " of its own for that answer to be declared on");
+      this.error(_plus_3, instance, 
+        CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+        CqrsDslValidator.KEY_USAGE_NEEDS_INLINE_CONTEXT);
+    }
+  }
+
+  /**
+   * Checks that a usage naming a key, and saying nothing else, can be worked out.
+   * 
+   * <p>A key attribute binds to the operation's parameter of its type, and to what the carrier already
+   * holds where there is none. Two failures make that impossible, and both are silent if this does not
+   * catch them: two parameters of the same type leave nothing to choose between, and a creating
+   * operation has no prior state to fall back on - it is what brings the instance into being.</p>
+   * 
+   * <p>Both are refused rather than guessed. A uniqueness check made against the wrong value still
+   * compiles, still runs and still passes, which is the whole defect class the construct removes. A
+   * model in that position writes the actuals out instead.</p>
+   */
+  @Check
+  public void checkDerivedKeyActualsBind(final BusinessRuleInstance instance) {
+    final AbstractBusinessRule rule = instance.getBusinessRule();
+    if ((((!(rule instanceof Key)) || rule.eIsProxy()) || (!CqrsCollectionExtensions.<RuleArgument>nullSafe(instance.getParams()).isEmpty()))) {
+      return;
+    }
+    final Key key = ((Key) rule);
+    final AbstractMethod operation = EcoreUtil2.<AbstractMethod>getContainerOfType(instance, AbstractMethod.class);
+    if ((operation == null)) {
+      return;
+    }
+    List<Attribute> _ambiguousAttributes = CqrsKeyExtensions.ambiguousAttributes(key, operation);
+    for (final Attribute attribute : _ambiguousAttributes) {
+      {
+        String _name = operation.getName();
+        String _plus = (_name + " has more than one parameter of ");
+        String _name_1 = attribute.getName();
+        String _plus_1 = (_plus + _name_1);
+        String _plus_2 = (_plus_1 + "\'s type, so ");
+        String _name_2 = key.getName();
+        String _plus_3 = (_plus_2 + _name_2);
+        String _plus_4 = (_plus_3 + " cannot say which one it is keyed on - write the actuals out");
+        this.error(_plus_4, instance, 
+          CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+          CqrsDslValidator.KEY_ACTUAL_AMBIGUOUS);
+        return;
+      }
+    }
+    if ((operation instanceof Constructor)) {
+      EList<Attribute> _keyAttributes = key.getKeyAttributes();
+      for (final Attribute attribute_1 : _keyAttributes) {
+        Parameter _boundParameter = CqrsKeyExtensions.boundParameter(key, attribute_1, operation);
+        boolean _tripleEquals = (_boundParameter == null);
+        if (_tripleEquals) {
+          String _name = ((Constructor)operation).getName();
+          String _plus = (_name + " creates, so it has no prior state to read \'");
+          String _name_1 = attribute_1.getName();
+          String _plus_1 = (_plus + _name_1);
+          String _plus_2 = (_plus_1 + "\' from, and takes no parameter of its type");
+          this.error(_plus_2, instance, 
+            CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+            CqrsDslValidator.KEY_ACTUAL_UNREACHABLE);
+          return;
+        }
+      }
     }
   }
 

@@ -125,6 +125,50 @@ public class CqrsKeyUsageTest extends BasePlatformTestCase {
                 """, null), "already says how this type is displayed").size());
     }
 
+    /** A key derives a rule named after it, and that is usually what the rule it replaces is called. */
+    public void testTheDerivedRuleNameCollidesWithADeclaredRule() {
+        assertEquals(1, errors(model("""
+                    /** Makes sure the name is free. */
+                    business-rule NamePerKindMustBeUnique exception DuplicateNameException {
+                        /** Whether it is taken. */
+                        Boolean taken
+                        consistency strong
+                        requires !taken
+                    }
+
+                    /** No two things of the same kind share a name. */
+                    key NamePerKind exception DuplicateNameException {
+                        attributes name, kind
+                        on-collision refuse
+                        consistency strong
+                    }
+                """, null), "already written by hand").size());
+    }
+
+    /** A collision the model answers by overwriting is not something an operation is refused for. */
+    public void testAnOperationCannotBeGuardedByAKeyThatDoesNotRefuse() {
+        assertEquals(1, errors(model("""
+                    /** A later one replaces the earlier. */
+                    key NamePerKind {
+                        attributes name, kind
+                        on-collision overwrite
+                        consistency strong
+                    }
+                """, "business-rules NamePerKind"), "no operation is guarded by it").size());
+    }
+
+    /** The answer has to be declared somewhere, and that somewhere is the operation's own service. */
+    public void testADerivedUsageNeedsAnOperationContext() {
+        assertEquals(1, errors(model("""
+                    /** No two things of the same kind share a name. */
+                    key NamePerKind exception DuplicateNameException {
+                        attributes name, kind
+                        on-collision refuse
+                        consistency strong
+                    }
+                """, "business-rules NamePerKind"), "needs an 'operation-context' service").size());
+    }
+
     /** An aggregate carrying the given keys, and a constructor optionally checking one. */
     private static String model(String keys, String usage) {
         return """

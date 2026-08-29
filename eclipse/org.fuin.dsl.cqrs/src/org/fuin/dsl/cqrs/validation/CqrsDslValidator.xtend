@@ -71,6 +71,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.eclipse.xtext.EcoreUtil2
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.Constructor
@@ -144,6 +145,16 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val KEY_SEVERAL_DISPLAY_KEYS = 'keySeveralDisplayKeys'
 
 	public static val KEY_DISPLAY_UNKNOWN_VAR = 'keyDisplayUnknownVar'
+
+	public static val KEY_ACTUAL_AMBIGUOUS = 'keyActualAmbiguous'
+
+	public static val KEY_ACTUAL_UNREACHABLE = 'keyActualUnreachable'
+
+	public static val KEY_USAGE_DOES_NOT_REFUSE = 'keyUsageDoesNotRefuse'
+
+	public static val KEY_USAGE_NEEDS_INLINE_CONTEXT = 'keyUsageNeedsInlineContext'
+
+	public static val KEY_RULE_NAME_TAKEN = 'keyRuleNameTaken'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
@@ -834,6 +845,141 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
 				RULE_ACTUALS_MISMATCH
 			)
+		}
+	}
+
+	/**
+	 * Checks that the rule a key derives does not collide with one written by hand.
+	 *
+	 * <p>A key called <code>Iban</code> derives <code>IbanMustBeUnique</code>, which is what the rule
+	 * it replaces is usually already called. Both generate a class of that name into the same package,
+	 * and the second one written wins silently - so migrating a model to a key means deleting the rule,
+	 * and this is what says so.</p>
+	 */
+	@Check
+	def checkKeyRuleNameIsFree(Key key) {
+		val module = EcoreUtil2.getContainerOfType(key, Module)
+		if (module === null) {
+			return
+		}
+		val derived = key.ruleName
+		for (rule : EcoreUtil2.getAllContentsOfType(module, BusinessRule)) {
+			if (rule.name == derived) {
+				error(
+					key.name + " derives a rule called " + derived + ", and one of that name is already"
+						+ " written by hand - the key replaces it, so the declared rule goes",
+					key,
+					CqrsDslPackage.Literals::ABSTRACT_ELEMENT__NAME,
+					KEY_RULE_NAME_TAKEN
+				)
+				return
+			}
+		}
+	}
+
+	/**
+	 * Checks that an operation only says it checks a key that can refuse it.
+	 *
+	 * <p>A collision the model answers with 'overwrite' or 'skip' is what the handler does with the
+	 * second occurrence, not a reason to refuse an operation. Naming one here reads as a guard and
+	 * generates nothing, which is the shape this whole construct exists to stop.</p>
+	 */
+	@Check
+	def checkKeyUsageRefuses(BusinessRuleInstance instance) {
+		val rule = instance.businessRule
+		if (!(rule instanceof Key) || rule.eIsProxy) {
+			return
+		}
+		val key = rule as Key
+		if (!key.refuses) {
+			error(
+				key.name + " " + key.onCollision.literal
+					+ "s a collision rather than refusing it, so no operation is guarded by it",
+				instance,
+				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+				KEY_USAGE_DOES_NOT_REFUSE
+			)
+		}
+	}
+
+	/**
+	 * Checks that an operation deriving a key's actuals declares the service that answers them.
+	 *
+	 * <p>A key asks whether anything else already holds it, which is a question about every other
+	 * instance and one a rule never reaches for itself. The method that answers is derived onto the
+	 * operation's own 'operation-context', so there has to be one and it has to be the operation's:
+	 * a service declared at module level is shared by operations that check nothing, and putting a
+	 * derived method there would oblige all of them to implement it.</p>
+	 */
+	@Check
+	def checkDerivedKeyHasSomewhereToAsk(BusinessRuleInstance instance) {
+		val rule = instance.businessRule
+		if (!(rule instanceof Key) || rule.eIsProxy || !instance.params.nullSafe.empty) {
+			return
+		}
+		val operation = EcoreUtil2.getContainerOfType(instance, AbstractMethod)
+		if (operation === null) {
+			return
+		}
+		val service = operation.operationContext
+		if (service === null || !operation.services.nullSafe.contains(service)) {
+			error(
+				operation.name + " checks " + (rule as Key).name
+					+ ", which asks whether the key is taken, so it needs an 'operation-context' service"
+					+ " of its own for that answer to be declared on",
+				instance,
+				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+				KEY_USAGE_NEEDS_INLINE_CONTEXT
+			)
+		}
+	}
+
+	/**
+	 * Checks that a usage naming a key, and saying nothing else, can be worked out.
+	 *
+	 * <p>A key attribute binds to the operation's parameter of its type, and to what the carrier already
+	 * holds where there is none. Two failures make that impossible, and both are silent if this does not
+	 * catch them: two parameters of the same type leave nothing to choose between, and a creating
+	 * operation has no prior state to fall back on - it is what brings the instance into being.</p>
+	 *
+	 * <p>Both are refused rather than guessed. A uniqueness check made against the wrong value still
+	 * compiles, still runs and still passes, which is the whole defect class the construct removes. A
+	 * model in that position writes the actuals out instead.</p>
+	 */
+	@Check
+	def checkDerivedKeyActualsBind(BusinessRuleInstance instance) {
+		val rule = instance.businessRule
+		if (!(rule instanceof Key) || rule.eIsProxy || !instance.params.nullSafe.empty) {
+			return
+		}
+		val key = rule as Key
+		val operation = EcoreUtil2.getContainerOfType(instance, AbstractMethod)
+		if (operation === null) {
+			return
+		}
+		for (attribute : key.ambiguousAttributes(operation)) {
+			error(
+				operation.name + " has more than one parameter of " + attribute.name + "'s type, so "
+					+ key.name + " cannot say which one it is keyed on - write the actuals out",
+				instance,
+				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+				KEY_ACTUAL_AMBIGUOUS
+			)
+			return
+		}
+		if (operation instanceof Constructor) {
+			for (attribute : key.keyAttributes) {
+				if (key.boundParameter(attribute, operation) === null) {
+					error(
+						operation.name + " creates, so it has no prior state to read '" + attribute.name
+							+ "' from, and takes no parameter of its type",
+						instance,
+						CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+						KEY_ACTUAL_UNREACHABLE
+					)
+					return
+				}
+			}
 		}
 	}
 

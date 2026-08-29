@@ -1,0 +1,119 @@
+/*
+ * A business key on an aggregate, checked by the two operations that can collide with it: the one that
+ * creates and the one that edits. Everything the key generates - the rule, the service method that
+ * answers it, and what each operation hands them - is derived from this and nothing else.
+ */
+context de.fuin.keys {
+
+    module categories {
+
+        slabel "Categories"
+        label "Categories"
+        tooltip "A key over the name and the kind"
+
+        type String
+
+        type Boolean
+
+        type UUID
+
+        aggregate-id CategoryId identifies Category base UUID {
+            slabel "CATID"
+            label "Category ID"
+            tooltip "Unique identifier of the category"
+        }
+
+        /** Reported when the name is taken for that kind. */
+        exception DuplicateNameException {
+            /** The name that already exists. */
+            CategoryName name
+            /** The kind the name already exists for. */
+            CategoryKind kind
+            message "A ${kind} category named '${name}' already exists"
+        }
+
+        /** What the category is called. */
+        value-object CategoryName base String {
+            slabel "Name"
+            label "Name"
+            tooltip "What this category is called"
+            String value
+        }
+
+        /** Which side of the ledger it classifies. */
+        value-object CategoryKind base String {
+            slabel "Kind"
+            label "Kind"
+            tooltip "Which side of the ledger it classifies"
+            String value
+        }
+
+        /** What the key is on. */
+        aggregate Category identifier CategoryId {
+
+            slabel "Category"
+            label "Category"
+            tooltip "One category"
+
+            /** The category's name. */
+            CategoryName name
+
+            /** Which side of the ledger it classifies. */
+            CategoryKind kind
+
+            /** No two categories of the same kind share a name. */
+            key NamePerKind exception DuplicateNameException {
+                attributes name, kind
+                on-collision refuse
+                consistency strong
+                display-as "${name} (${kind})"
+            }
+
+            /** Creates one. Every value the key is made of arrives as an argument. */
+            constructor create business-rules NamePerKind fires CategoryCreatedEvent {
+
+                /** The category's name. */
+                CategoryName name
+
+                /** Which side of the ledger it classifies. */
+                CategoryKind kind
+
+                operation-context CreateService
+
+                /** Answers what the operation cannot answer itself. */
+                service CreateService {
+                }
+
+                /** A category was created. */
+                event CategoryCreatedEvent {
+                    /** The category's name. */
+                    CategoryName name
+                }
+
+            }
+
+            /** Renames one. The new name arrives as an argument; the kind is read off the carrier. */
+            method rename business-rules NamePerKind fires CategoryRenamedEvent {
+
+                /** The new name. */
+                CategoryName newName
+
+                operation-context RenameService
+
+                /** Answers what the operation cannot answer itself. */
+                service RenameService {
+                }
+
+                /** A category was renamed. */
+                event CategoryRenamedEvent {
+                    /** The new name. */
+                    CategoryName newName
+                }
+
+            }
+
+        }
+
+    }
+
+}

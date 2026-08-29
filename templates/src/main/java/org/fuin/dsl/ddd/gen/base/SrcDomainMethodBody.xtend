@@ -138,8 +138,7 @@ class SrcDomainMethodBody implements CodeSnippet {
      * declaring the values they decide from.
      */
     def private decidableInstances() {
-        return businessRuleInstances.filter[
-            declaredRule?.requires !== null || !(declaredRule?.attributes).nullSafe.empty].toList
+        return businessRuleInstances.filter[verifiedByValidator].toList
     }
 
     /**
@@ -150,8 +149,7 @@ class SrcDomainMethodBody implements CodeSnippet {
      * guarded", which is exactly what it is not.
      */
     def private handWrittenInstances() {
-        return businessRuleInstances.filter[
-            declaredRule?.requires === null && (declaredRule?.attributes).nullSafe.empty].toList
+        return businessRuleInstances.filter[!verifiedByValidator].toList
     }
 
     /**

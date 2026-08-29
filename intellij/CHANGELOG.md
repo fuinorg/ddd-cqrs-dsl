@@ -2,8 +2,11 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.34.0
+- A business `key` now generates the uniqueness rule it stands for, so an operation names the key and says nothing else. Five more editor checks refuse what cannot be derived.
+
 ## 1.33.0
-- An operation can say it checks a business `key`, naming it where it names a `business-rule`: the resolver used to accept only a rule declaration there, so a correct model was marked as broken. The editor also refuses what the build refuses - a key needs an exception exactly when it refuses a collision, a type is displayed by at most one key, and a `display-as` format may only name attributes the declaring type has.
+- An operation can name a business `key` where it names a `business-rule`; the resolver accepted only a rule declaration there, so a correct model was marked as broken. Four editor checks on a key's placement, exception and `display-as`.
 
 ## 1.32.0
 - `entity-id-path` declares how an entity is addressed from its root, with an optional `[min..max]` range on a step that may repeat; an entity id is unique inside its root and nowhere else, so a reference carrying only the id addresses nothing. `own-path` hands a rule or a service that address, beside `own-id`. Both are checked in the editor.

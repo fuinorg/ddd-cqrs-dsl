@@ -56,6 +56,8 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessState;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsParameter;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsPreconditions;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsServiceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsBusinessRule;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsBusinessRuleInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsKeyDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypeRef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
@@ -164,6 +166,9 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkKeyExceptionMatchesCollision(key, holder);
             checkOneDisplayKeyPerType(key, holder);
             checkDisplayAsVariables(key, holder);
+            checkKeyRuleNameIsFree(key, holder);
+        } else if (element instanceof CqrsBusinessRuleInstance) {
+            checkKeyUsage((CqrsBusinessRuleInstance) element, holder);
         }
     }
 
@@ -237,6 +242,84 @@ public final class CqrsValidationAnnotator implements Annotator {
         String unknown = findUnknownVar(attributeNames(attributes), stringValue(format));
         if (unknown != null) {
             error(holder, format, "A variable '" + unknown + "' is not an attribute of this type");
+        }
+    }
+
+    /**
+     * Reports a key whose derived rule collides with one written by hand.
+     *
+     * <p>The port of the Xtext validator's {@code checkKeyRuleNameIsFree}. A key called {@code Iban}
+     * derives {@code IbanMustBeUnique}, which is what the rule it replaces is usually already called;
+     * both generate a class of that name into one package and the second one written wins silently.</p>
+     */
+    private void checkKeyRuleNameIsFree(@NotNull CqrsKeyDef key, @NotNull AnnotationHolder holder) {
+        CqrsModuleDef module = PsiTreeUtil.getParentOfType(key, CqrsModuleDef.class);
+        if (module == null || key.getName() == null) {
+            return;
+        }
+        String derived = CqrsKeys.ruleName(key);
+        for (CqrsBusinessRule rule : PsiTreeUtil.findChildrenOfType(module, CqrsBusinessRule.class)) {
+            if (derived.equals(rule.getName())) {
+                error(holder, nameRange(key), key.getName() + " derives a rule called " + derived
+                        + ", and one of that name is already written by hand - the key replaces it,"
+                        + " so the declared rule goes");
+                return;
+            }
+        }
+    }
+
+    /**
+     * Reports what an operation cannot say about a business key it names.
+     *
+     * <p>The port of the Xtext validator's {@code checkKeyUsageRefuses},
+     * {@code checkDerivedKeyHasSomewhereToAsk} and {@code checkDerivedKeyActualsBind}. A usage that
+     * names the key and stops has everything else derived from the key and the operation, and the three
+     * shapes that cannot be derived are refused rather than guessed - a uniqueness check made against
+     * the wrong value still compiles, still runs and still passes.</p>
+     */
+    private void checkKeyUsage(@NotNull CqrsBusinessRuleInstance instance, @NotNull AnnotationHolder holder) {
+        CqrsNamedElement declaration = resolve(instance.getTypeRef());
+        if (!(declaration instanceof CqrsKeyDef)) {
+            return;
+        }
+        CqrsKeyDef key = (CqrsKeyDef) declaration;
+        if (!CqrsKeys.refuses(key)) {
+            String strategy = key.getCollisionStrategy() == null ? "" : key.getCollisionStrategy().getText().trim();
+            error(holder, instance.getTypeRef(), key.getName() + " " + strategy
+                    + "s a collision rather than refusing it, so no operation is guarded by it");
+            return;
+        }
+        if (!instance.getRuleArgumentList().isEmpty()) {
+            // The model says what it hands over, so nothing is derived and nothing below applies.
+            return;
+        }
+        PsiElement operation = CqrsKeys.operationOf(instance);
+        if (operation == null) {
+            return;
+        }
+        String operationName = ((CqrsNamedElement) operation).getName();
+        if (!CqrsKeys.hasOwnOperationContext(operation)) {
+            error(holder, instance.getTypeRef(), operationName + " checks " + key.getName()
+                    + ", which asks whether the key is taken, so it needs an 'operation-context' service"
+                    + " of its own for that answer to be declared on");
+            return;
+        }
+        List<String> ambiguous = CqrsKeys.ambiguousAttributes(key, operation);
+        if (!ambiguous.isEmpty()) {
+            error(holder, instance.getTypeRef(), operationName + " has more than one parameter of "
+                    + ambiguous.get(0) + "'s type, so " + key.getName()
+                    + " cannot say which one it is keyed on - write the actuals out");
+            return;
+        }
+        if (CqrsKeys.creates(operation)) {
+            for (String name : CqrsKeys.attributeNames(key)) {
+                if (!CqrsKeys.bindsToAParameter(key, name, operation)) {
+                    error(holder, instance.getTypeRef(), operationName
+                            + " creates, so it has no prior state to read '" + name
+                            + "' from, and takes no parameter of its type");
+                    return;
+                }
+            }
         }
     }
 

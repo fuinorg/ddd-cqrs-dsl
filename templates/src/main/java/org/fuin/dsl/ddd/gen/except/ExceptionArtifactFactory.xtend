@@ -1,7 +1,7 @@
 package org.fuin.dsl.ddd.gen.except
 
 import java.util.Map
-import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
 import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.dsl.ddd.gen.base.GenerateOptions
@@ -129,13 +129,16 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
      * commonly split over a public file declaring the refusals and a private one declaring the rules
      * that raise them, and those are two resources.
      */
+    // A business key names its refusal the same way a rule does, and derives a rule that throws it, so
+    // the two are asked about together - a key's exception dropping to the plain base would make the
+    // generated rule's verify() throw something BusinessRule does not declare.
     def private boolean namedByARule(Exception ex) {
         val resource = ex.eResource
         if (resource === null || resource.resourceSet === null) {
             return false
         }
         for (other : resource.resourceSet.resources) {
-            for (rule : other.allContents.toIterable.filter(BusinessRule)) {
+            for (rule : other.allContents.toIterable.filter(AbstractBusinessRule)) {
                 if (rule.exception === ex) {
                     return true
                 }

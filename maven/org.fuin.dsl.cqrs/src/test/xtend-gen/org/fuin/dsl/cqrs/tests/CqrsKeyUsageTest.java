@@ -47,7 +47,20 @@ public class CqrsKeyUsageTest {
   @Test
   public void testAnOperationNamesAKey() {
     try {
-      final DomainModel model = this.parseHelper.parse(this.aggregate("business-rules NamePerKind", "String name"));
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("String name");
+      _builder.newLine();
+      _builder.append("Kind kind");
+      _builder.newLine();
+      _builder.append("operation-context CreateService");
+      _builder.newLine();
+      _builder.append("/** Answers whether the key is free. */");
+      _builder.newLine();
+      _builder.append("service CreateService {");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      final DomainModel model = this.parseHelper.parse(this.aggregate("business-rules NamePerKind", _builder));
       this._validationTestHelper.assertNoErrors(model);
       final BusinessRuleInstance instance = IterableExtensions.<BusinessRuleInstance>head(IterableExtensions.<Constructor>head(IterableExtensions.<Aggregate>head(EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class)).getConstructors()).getBusinessRules().getBusinessRuleInstances());
       Assertions.assertFalse(instance.getBusinessRule().eIsProxy(), "the key did not resolve");
@@ -354,6 +367,164 @@ public class CqrsKeyUsageTest {
     }
   }
 
+  /**
+   * A key derives a rule named after it, and that is usually what the rule it replaces is already
+   * called. Both would generate a class of that name into one package.
+   */
+  @Test
+  public void testTheDerivedRuleNameCollidesWithADeclaredRule() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("/** Makes sure the name is free. */");
+      _builder.newLine();
+      _builder.append("business-rule NamePerKindMustBeUnique exception DuplicateNameException {");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("/** Whether it is taken. */");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("Boolean taken");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("consistency strong");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("requires !taken");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("/** No two things of the same kind share a name. */");
+      _builder.newLine();
+      _builder.append("key NamePerKind exception DuplicateNameException {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("attributes name, kind");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("on-collision refuse");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("consistency strong");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.aggregate(null, "String name", _builder)), CqrsDslPackage.Literals.KEY, CqrsDslValidator.KEY_RULE_NAME_TAKEN);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * A collision the model answers by overwriting is not something an operation is refused for.
+   */
+  @Test
+  public void testAnOperationCannotBeGuardedByAKeyThatDoesNotRefuse() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("/** A later one replaces the earlier. */");
+      _builder.newLine();
+      _builder.append("key NamePerKind {");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("attributes name, kind");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("on-collision overwrite");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("consistency strong");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.aggregate("business-rules NamePerKind", "String name", _builder)), CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE, 
+        CqrsDslValidator.KEY_USAGE_DOES_NOT_REFUSE);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * Two key attributes of one type and a parameter of it: each attribute matches that parameter, so
+   * both would be read off it and half the composite key would be checked against the wrong value.
+   */
+  @Test
+  public void testTwoKeyAttributesSharingATypeCannotBePairedUp() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("String name");
+      _builder.newLine();
+      _builder.append("operation-context CreateService");
+      _builder.newLine();
+      _builder.append("/** Answers whether the key is free. */");
+      _builder.newLine();
+      _builder.append("service CreateService {");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("/** Both halves are strings, and the operation offers one. */");
+      _builder_1.newLine();
+      _builder_1.append("key SameType exception DuplicateNameException {");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("attributes name, alias");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("on-collision refuse");
+      _builder_1.newLine();
+      _builder_1.append("\t");
+      _builder_1.append("consistency strong");
+      _builder_1.newLine();
+      _builder_1.append("}");
+      _builder_1.newLine();
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.aggregate("business-rules SameType", _builder, _builder_1)), CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE, 
+        CqrsDslValidator.KEY_ACTUAL_AMBIGUOUS);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * The answer has to be declared somewhere, and that somewhere is the operation's own service.
+   */
+  @Test
+  public void testADerivedUsageNeedsAnOperationContext() {
+    try {
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.aggregate("business-rules NamePerKind", "String name")), CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE, 
+        CqrsDslValidator.KEY_USAGE_NEEDS_INLINE_CONTEXT);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
+  /**
+   * A creating operation has no prior state, so every key attribute has to arrive as an argument.
+   */
+  @Test
+  public void testACreateThatCannotReachAKeyAttribute() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("String name");
+      _builder.newLine();
+      _builder.append("operation-context CreateService");
+      _builder.newLine();
+      _builder.append("/** Answers whether the key is free. */");
+      _builder.newLine();
+      _builder.append("service CreateService {");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      this._validationTestHelper.assertError(this.parseHelper.parse(this.aggregate("business-rules NamePerKind", _builder)), CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE, 
+        CqrsDslValidator.KEY_ACTUAL_UNREACHABLE);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+
   private CharSequence aggregate(final String usage, final CharSequence body) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("/** No two things of the same kind share a name. */");
@@ -388,6 +559,9 @@ public class CqrsKeyUsageTest {
     _builder.append("\t\t");
     _builder.append("type Boolean");
     _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("type Kind");
+    _builder.newLine();
     _builder.newLine();
     _builder.append("\t\t");
     _builder.append("/** Reported when the name is taken. */");
@@ -414,7 +588,14 @@ public class CqrsKeyUsageTest {
     _builder.append("String name");
     _builder.newLine();
     _builder.append("\t\t\t");
-    _builder.append("String kind");
+    _builder.append("Kind kind");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("/** A second name, so a key can be made of two of one type. */");
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("String alias");
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t\t\t");

@@ -4,13 +4,7 @@ import java.util.List
 import java.util.Map
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
 import org.fuin.dsl.ddd.gen.base.AbstractSource
-import org.fuin.dsl.ddd.gen.base.GenerateOptions
 import org.fuin.dsl.ddd.gen.base.SrcAll
-import org.fuin.dsl.ddd.gen.base.SrcGetters
-import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
-import org.fuin.dsl.ddd.gen.base.SrcParamsAssignment
-import org.fuin.dsl.ddd.gen.base.SrcParamsDecl
-import org.fuin.dsl.ddd.gen.base.SrcVarsDecl
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
@@ -19,7 +13,6 @@ import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
-import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
@@ -98,54 +91,11 @@ class BusinessRuleArtifactFactory extends AbstractSource<BusinessRule> {
 
         // Rendered before the template, because rendering is what decides whether "Objects" is imported.
         val String condition = new SrcRuleCondition(ctx, rule.requires).toString
-        val String arguments = exceptionArguments(rule)
 
-        val String src = '''
-            /**
-             * «rule.doc.text»
-             */
-            public final class «className» implements BusinessRule {
-
-                «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), rule.attributes.nullSafe.toList)»
-                «new SrcJavaDocMethod(ctx, "Constructor with the values this rule decides from.", null, rule.attributes.nullSafe.toList.asParameters, null)»
-                public «className»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), rule.attributes.nullSafe.toList.asParameters)») {
-                    «new SrcParamsAssignment(ctx, rule.attributes.nullSafe.toList.asParameters)»
-                }
-
-                @Override
-                public void verify() throws «rule.exception.name» {
-                    if (!(«condition»)) {
-                        throw new «rule.exception.name»(«arguments»);
-                    }
-                }
-
-                «new SrcGetters(ctx, GenerateOptions.empty(), "public", rule.attributes.nullSafe.toList)»
-            }
-        '''
+        val String src = new SrcRuleVerifierClass(ctx, className, rule.doc.text,
+            rule.attributes.nullSafe.toList, rule.exception, condition).toString
 
         new SrcAll(ctx, copyrightHeader, pkg, ctx.imports, src).toString
-    }
-
-    /**
-     * The values the refusal is constructed from, taken from the rule's own attributes by name.
-     *
-     * <p>An exception declares what it needs in order to name the thing it refused, and a rule declares
-     * what it decides from; the overlap is by name, which is why a rule commonly carries an attribute
-     * that plays no part in its condition. An exception asking for something the rule does not hold is
-     * a model error rather than something to fill with a placeholder - it would compile as a missing
-     * argument in generated code, which is a poor place to read the problem.
-     */
-    def private String exceptionArguments(BusinessRule rule) throws GenerateException {
-        val names = rule.attributes.nullSafe.map[name].toList
-        val args = newArrayList
-        for (attribute : rule.exception.attributes.nullSafe) {
-            if (!names.contains(attribute.name)) {
-                throw new GenerateException(rule.exception.name + " needs '" + attribute.name
-                    + "', which " + rule.name + " does not declare - a rule can only name what it holds")
-            }
-            args.add(attribute.name)
-        }
-        return args.join(", ")
     }
 
 }

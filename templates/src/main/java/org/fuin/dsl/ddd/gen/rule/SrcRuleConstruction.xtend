@@ -5,6 +5,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
 import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument
+import org.fuin.dsl.cqrs.cqrsDsl.Key
 import org.fuin.dsl.cqrs.cqrsDsl.LiteralArgument
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument
@@ -14,6 +15,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
 import org.fuin.srcgen4j.commons.GenerateException
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsKeyExtensions.*
+import static extension org.fuin.dsl.ddd.gen.rule.KeyDerivation.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 
 /**
@@ -52,8 +55,34 @@ class SrcRuleConstruction {
     }
 
     override toString() {
+        val rule = instance.businessRule
+        if (rule instanceof Key) {
+            // A key usage names the key and stops. What it hands over follows from the key and the
+            // operation, and the build has already refused the two shapes that cannot be worked out.
+            val args = if (instance.params.nullSafe.empty) {
+                    rule.actuals(operation, contextVariable(rule), carrier)
+                } else {
+                    instance.params.map[argument]
+                }
+            return "new " + rule.ruleName + "(" + args.join(", ") + ").verify();"
+        }
         val args = instance.params.nullSafe.map[argument].join(", ")
-        return "new " + instance.businessRule.name + "(" + args + ").verify();"
+        return "new " + rule.name + "(" + args + ").verify();"
+    }
+
+    /**
+     * The parameter holding the service that answers whether a derived key is taken.
+     *
+     * <p>A key is a question about everything else of its kind, and a rule never reaches for that
+     * itself, so the operation has to declare where the answer comes from.</p>
+     */
+    def private String contextVariable(Key key) throws GenerateException {
+        val service = operation.operationContext
+        if (service === null) {
+            throw new GenerateException(operation.name + " checks " + key.name
+                + ", which asks whether the key is taken, and declares no 'operation-context' to ask")
+        }
+        return service.name.toFirstLower
     }
 
     def private String argument(RuleArgument arg) throws GenerateException {

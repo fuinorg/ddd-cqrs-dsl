@@ -12,6 +12,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
@@ -32,6 +33,34 @@ public class CqrsBusinessRulesExtensions {
       return new ArrayList<BusinessRuleInstance>();
     }
     return businessRules.getBusinessRuleInstances();
+  }
+
+  /**
+   * Whether the generated validator verifies this usage rather than leaving it to the operation.
+   * 
+   * <p>A rule declaring a <code>requires</code> condition is generated whole; one declaring only its
+   * attributes is written by hand and the call is emitted anyway, so that a rule nobody has written
+   * does not compile. A rule declaring <em>neither</em> is the case left out - there is nothing to
+   * call and nothing to write one from - and it keeps its <code>// TODO Verify</code> line with the
+   * operation instead. A business key always derives both, so a key usage is always verified.</p>
+   * 
+   * @param instance Usage of a rule or a key by one operation.
+   * 
+   * @return <code>true</code> when the validator carries it.
+   */
+  public static boolean verifiedByValidator(final BusinessRuleInstance instance) {
+    AbstractBusinessRule _businessRule = null;
+    if (instance!=null) {
+      _businessRule=instance.getBusinessRule();
+    }
+    final AbstractBusinessRule rule = _businessRule;
+    if ((rule instanceof Key)) {
+      return true;
+    }
+    if ((rule instanceof BusinessRule)) {
+      return ((((BusinessRule)rule).getRequires() != null) || (!CqrsCollectionExtensions.<Attribute>nullSafe(((BusinessRule)rule).getAttributes()).isEmpty()));
+    }
+    return false;
   }
 
   /**

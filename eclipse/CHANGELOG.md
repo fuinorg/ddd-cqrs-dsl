@@ -2,11 +2,13 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.31.0
+- **A business `key` generates its uniqueness rule**, the service method answering whether the key is
+  taken, and the values each operation hands them. Five checks refuse what cannot be derived.
+
 ## 1.30.0
-- **An operation can say it checks a business `key`**, naming it where it names a `business-rule`; a key
-  is refused outside the type it identifies, is required to carry an exception exactly when it refuses a
-  collision, may mark at most one key per type with `display-as`, and has that format checked against the
-  declaring type's attributes.
+- **An operation can name a business `key` where it names a `business-rule`**, with four checks on where
+  a key may sit, its exception, its one `display-as` per type, and the attributes that format names.
 
 ## 1.29.0
 - **`entity-id-path` declares how an entity is addressed from its root**, with an optional `[min..max]`
