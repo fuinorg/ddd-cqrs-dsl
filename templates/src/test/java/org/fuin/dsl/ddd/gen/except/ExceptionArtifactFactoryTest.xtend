@@ -96,7 +96,6 @@ class ExceptionArtifactFactoryTest {
         assertThat(result).contains("public final class ExceptionD extends Exception implements ExceptionShortIdentifable {")
         assertThat(result).contains("import org.fuin.objects4j.common.ExceptionShortIdentifable;")
         assertThat(result).contains("public static final String SHORT_ID = \"MELK-EXCEPTION_D\";")
-        assertThat(result).contains("public static final String ELEMENT_NAME = \"exception-d\";")
         assertThat(result).contains("public final String getShortId() {")
     }
 
@@ -112,12 +111,34 @@ class ExceptionArtifactFactoryTest {
         assertThat(result).doesNotContain("ExceptionShortIdentifable")
     }
 
+    /**
+     * The name an exception travels under is generated because its data class needs it, so it follows
+     * the flavour rather than the short identifier - the two are separate reasons.
+     */
+    @Test
+    def void testCreateWithElementName() {
+        val ex = model.find(typeof(Exception), "ExceptionD")
+
+        val result = new String(createTestee(null, true).create(ex, new HashMap<String, Object>(), false)
+            .iterator.next.data)
+
+        assertThat(result).contains("public static final String ELEMENT_NAME = \"exception-d\";")
+        assertThat(result).doesNotContain("SHORT_ID")
+    }
+
     private def createTestee(String shortIdPrefix) {
+        return createTestee(shortIdPrefix, false)
+    }
+
+    private def createTestee(String shortIdPrefix, boolean jackson) {
         val factory = new ExceptionArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("exception", ExceptionArtifactFactory.name, "module", "folder")
         config.addVariable(new Variable(GenerateOptions.KEY_BASE_PKG, EXAMPLES_CONCRETE))
         config.addVariable(new Variable(GenerateOptions.KEY_COPYRIGHT_HEADER, Utils.readAsString("required-header.txt")))
-        config.addVariable(new Variable(GenerateOptions.KEY_SHORT_ID_PREFIX, shortIdPrefix))
+        if (shortIdPrefix !== null) {
+            config.addVariable(new Variable(GenerateOptions.KEY_SHORT_ID_PREFIX, shortIdPrefix))
+        }
+        config.addVariable(new Variable(GenerateOptions.KEY_JACKSON, String.valueOf(jackson)))
         config.init(new DefaultContext(), null)
         factory.init(config)
         return factory

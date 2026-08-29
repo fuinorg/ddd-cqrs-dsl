@@ -106,6 +106,7 @@ function module(typeKey) {
         case 'java-event':
         case 'java-event-test':
         case 'java-exception':
+        case 'java-exception-data':
         case 'java-constraint':
         case 'java-constraint-validator':
         case 'java-package-info':

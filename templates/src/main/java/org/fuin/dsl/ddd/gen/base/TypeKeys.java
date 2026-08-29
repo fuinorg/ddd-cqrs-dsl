@@ -41,6 +41,9 @@ public final class TypeKeys {
     /** An <code>exception</code>: <code>«Name»</code>. */
     public static final String JAVA_EXCEPTION = "java-exception";
 
+    /** Class carrying an exception's data to a client, so a refusal can say what it was about. */
+    public static final String JAVA_EXCEPTION_DATA = "java-exception-data";
+
     /** A <code>command</code>: <code>«Name»</code>. */
     public static final String JAVA_COMMAND = "java-command";
 

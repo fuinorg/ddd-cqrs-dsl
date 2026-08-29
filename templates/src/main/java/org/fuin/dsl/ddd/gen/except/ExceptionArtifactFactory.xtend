@@ -90,10 +90,12 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
-            «IF shortId(ex) !== null»
+            «IF carriesData»
             
                 /** Name this exception is transported under. */
                 public static final String ELEMENT_NAME = "«elementName(ex)»";
+            «ENDIF»
+            «IF shortId(ex) !== null»
             
                 /** Unique short identifier of this exception. */
                 public static final String SHORT_ID = "«shortId(ex)»";
@@ -132,6 +134,14 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
      * <p>Without a prefix nothing is generated and the refusal is identified by its class name instead,
      * so a model that says nothing keeps the behaviour it had.
      */
+    /**
+     * Whether a class carrying this exception's data is generated beside it, which is what needs the
+     * element name. Same condition the data factory itself applies.
+     */
+    def private boolean carriesData() {
+        return options.jackson
+    }
+
     def private String shortId(Exception ex) {
         val prefix = options.shortIdPrefix
         if (prefix === null || prefix.empty) {
