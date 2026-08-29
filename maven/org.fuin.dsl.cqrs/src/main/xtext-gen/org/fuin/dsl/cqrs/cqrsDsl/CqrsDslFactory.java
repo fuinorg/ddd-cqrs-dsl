@@ -366,6 +366,15 @@ public interface CqrsDslFactory extends EFactory
   NoKey createNoKey();
 
   /**
+   * Returns a new object of class '<em>Abstract Business Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Abstract Business Rule</em>'.
+   * @generated
+   */
+  AbstractBusinessRule createAbstractBusinessRule();
+
+  /**
    * Returns a new object of class '<em>Abstract Method</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

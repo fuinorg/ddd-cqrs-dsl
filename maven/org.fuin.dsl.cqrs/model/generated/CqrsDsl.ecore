@@ -189,12 +189,9 @@
         eType="#//Attribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BusinessRule" eSuperTypes="#//AbstractElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//Exception"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessRule" eSuperTypes="#//AbstractBusinessRule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
         eType="#//Attribute" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="consistency" eType="#//Consistency"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requires" eType="#//RuleExpr"
         containment="true"/>
   </eClassifiers>
@@ -277,15 +274,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="Aggregate" eSuperTypes="#//AbstractEntity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="idType" eType="#//AggregateId"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Key">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//Exception"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" unique="false"
+  <eClassifiers xsi:type="ecore:EClass" name="Key" eSuperTypes="#//AbstractBusinessRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyAttributes" unique="false"
         upperBound="-1" eType="#//Attribute"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="onCollision" eType="#//CollisionStrategy"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="consistency" eType="#//Consistency"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayAs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CollisionStrategy">
@@ -295,6 +287,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NoKey">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractBusinessRule" eSuperTypes="#//AbstractElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//Exception"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consistency" eType="#//Consistency"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractMethod">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -389,7 +386,7 @@
         eType="#//Literal" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BusinessRuleInstance">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="businessRule" eType="#//BusinessRule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="businessRule" eType="#//AbstractBusinessRule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="params" upperBound="-1"
         eType="#//RuleArgument" containment="true"/>
   </eClassifiers>

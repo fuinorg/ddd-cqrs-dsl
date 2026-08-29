@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
-import org.fuin.dsl.cqrs.cqrsDsl.Consistency;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 
@@ -32,26 +31,14 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getException <em>Exception</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getAttributes <em>Attributes</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getConsistency <em>Consistency</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl#getRequires <em>Requires</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRule
+public class BusinessRuleImpl extends AbstractBusinessRuleImpl implements BusinessRule
 {
-  /**
-   * The cached value of the '{@link #getException() <em>Exception</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getException()
-   * @generated
-   * @ordered
-   */
-  protected org.fuin.dsl.cqrs.cqrsDsl.Exception exception;
-
   /**
    * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -61,16 +48,6 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * @ordered
    */
   protected EList<Attribute> attributes;
-
-  /**
-   * The cached value of the '{@link #getConsistency() <em>Consistency</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConsistency()
-   * @generated
-   * @ordered
-   */
-  protected Consistency consistency;
 
   /**
    * The cached value of the '{@link #getRequires() <em>Requires</em>}' containment reference.
@@ -109,51 +86,6 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
    * @generated
    */
   @Override
-  public org.fuin.dsl.cqrs.cqrsDsl.Exception getException()
-  {
-    if (exception != null && exception.eIsProxy())
-    {
-      InternalEObject oldException = (InternalEObject)exception;
-      exception = (org.fuin.dsl.cqrs.cqrsDsl.Exception)eResolveProxy(oldException);
-      if (exception != oldException)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CqrsDslPackage.BUSINESS_RULE__EXCEPTION, oldException, exception));
-      }
-    }
-    return exception;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public org.fuin.dsl.cqrs.cqrsDsl.Exception basicGetException()
-  {
-    return exception;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setException(org.fuin.dsl.cqrs.cqrsDsl.Exception newException)
-  {
-    org.fuin.dsl.cqrs.cqrsDsl.Exception oldException = exception;
-    exception = newException;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__EXCEPTION, oldException, exception));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EList<Attribute> getAttributes()
   {
     if (attributes == null)
@@ -161,56 +93,6 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
       attributes = new EObjectContainmentEList<Attribute>(Attribute.class, this, CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES);
     }
     return attributes;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Consistency getConsistency()
-  {
-    return consistency;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetConsistency(Consistency newConsistency, NotificationChain msgs)
-  {
-    Consistency oldConsistency = consistency;
-    consistency = newConsistency;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__CONSISTENCY, oldConsistency, newConsistency);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setConsistency(Consistency newConsistency)
-  {
-    if (newConsistency != consistency)
-    {
-      NotificationChain msgs = null;
-      if (consistency != null)
-        msgs = ((InternalEObject)consistency).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.BUSINESS_RULE__CONSISTENCY, null, msgs);
-      if (newConsistency != null)
-        msgs = ((InternalEObject)newConsistency).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CqrsDslPackage.BUSINESS_RULE__CONSISTENCY, null, msgs);
-      msgs = basicSetConsistency(newConsistency, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE__CONSISTENCY, newConsistency, newConsistency));
   }
 
   /**
@@ -275,8 +157,6 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
     {
       case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
         return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
-      case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
-        return basicSetConsistency(null, msgs);
       case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
         return basicSetRequires(null, msgs);
     }
@@ -293,13 +173,8 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
-        if (resolve) return getException();
-        return basicGetException();
       case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
         return getAttributes();
-      case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
-        return getConsistency();
       case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
         return getRequires();
     }
@@ -317,15 +192,9 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
-        setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)newValue);
-        return;
       case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
         getAttributes().clear();
         getAttributes().addAll((Collection<? extends Attribute>)newValue);
-        return;
-      case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
-        setConsistency((Consistency)newValue);
         return;
       case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
         setRequires((RuleExpr)newValue);
@@ -344,14 +213,8 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
-        setException((org.fuin.dsl.cqrs.cqrsDsl.Exception)null);
-        return;
       case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
         getAttributes().clear();
-        return;
-      case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
-        setConsistency((Consistency)null);
         return;
       case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
         setRequires((RuleExpr)null);
@@ -370,12 +233,8 @@ public class BusinessRuleImpl extends AbstractElementImpl implements BusinessRul
   {
     switch (featureID)
     {
-      case CqrsDslPackage.BUSINESS_RULE__EXCEPTION:
-        return exception != null;
       case CqrsDslPackage.BUSINESS_RULE__ATTRIBUTES:
         return attributes != null && !attributes.isEmpty();
-      case CqrsDslPackage.BUSINESS_RULE__CONSISTENCY:
-        return consistency != null;
       case CqrsDslPackage.BUSINESS_RULE__REQUIRES:
         return requires != null;
     }

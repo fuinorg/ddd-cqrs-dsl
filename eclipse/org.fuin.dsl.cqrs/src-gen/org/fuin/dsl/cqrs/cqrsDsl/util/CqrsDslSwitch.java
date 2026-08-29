@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
@@ -315,6 +316,7 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         BusinessRule businessRule = (BusinessRule)theEObject;
         T result = caseBusinessRule(businessRule);
+        if (result == null) result = caseAbstractBusinessRule(businessRule);
         if (result == null) result = caseAbstractElement(businessRule);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -465,6 +467,8 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         Key key = (Key)theEObject;
         T result = caseKey(key);
+        if (result == null) result = caseAbstractBusinessRule(key);
+        if (result == null) result = caseAbstractElement(key);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -472,6 +476,14 @@ public class CqrsDslSwitch<T> extends Switch<T>
       {
         NoKey noKey = (NoKey)theEObject;
         T result = caseNoKey(noKey);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CqrsDslPackage.ABSTRACT_BUSINESS_RULE:
+      {
+        AbstractBusinessRule abstractBusinessRule = (AbstractBusinessRule)theEObject;
+        T result = caseAbstractBusinessRule(abstractBusinessRule);
+        if (result == null) result = caseAbstractElement(abstractBusinessRule);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1483,6 +1495,22 @@ public class CqrsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseNoKey(NoKey object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Abstract Business Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Abstract Business Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAbstractBusinessRule(AbstractBusinessRule object)
   {
     return null;
   }

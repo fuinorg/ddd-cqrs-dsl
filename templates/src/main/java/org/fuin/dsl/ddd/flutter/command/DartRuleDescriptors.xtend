@@ -101,7 +101,7 @@ class DartRuleDescriptors {
     }
 
     def private String descriptor(BusinessRuleInstance instance) throws GenerateException {
-        val rule = instance.businessRule
+        val rule = instance.declaredRule
         val fromAttribute = new LinkedHashMap<String, String>()
         val fromIdentity = new ArrayList<String>()
         val attributes = rule.attributes.nullSafe.toList

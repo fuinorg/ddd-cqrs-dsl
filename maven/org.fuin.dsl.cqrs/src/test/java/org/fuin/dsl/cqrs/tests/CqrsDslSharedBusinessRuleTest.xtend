@@ -278,7 +278,7 @@ class CqrsDslSharedBusinessRuleTest {
 	private def BusinessRule referencedRule(DomainModel model) {
 		val orders = model.contexts.findFirst[name == "shop"].modules.head
 		val order = orders.elements.filter(Aggregate).head
-		return order.methods.head.businessRules.businessRuleInstances.head.businessRule
+		return order.methods.head.businessRules.businessRuleInstances.head.businessRule as BusinessRule
 	}
 
 	private def DomainModel parse(CharSequence text) {

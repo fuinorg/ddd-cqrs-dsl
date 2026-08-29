@@ -239,11 +239,11 @@ public class CqrsDslGrammarAdditionsTest {
     final DomainModel model = this.parsed(_builder);
     final Aggregate thing = IterableExtensions.<Aggregate>head(EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class));
     final Key key = IterableExtensions.<Key>head(thing.getKeys());
-    Assertions.assertEquals(2, key.getAttributes().size());
+    Assertions.assertEquals(2, key.getKeyAttributes().size());
     final Function1<Attribute, String> _function = (Attribute it) -> {
       return it.getName();
     };
-    Assertions.assertEquals(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("name", "kind")), ListExtensions.<Attribute, String>map(key.getAttributes(), _function));
+    Assertions.assertEquals(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("name", "kind")), ListExtensions.<Attribute, String>map(key.getKeyAttributes(), _function));
     Assertions.assertEquals("refuse", key.getOnCollision().getLiteral());
   }
 

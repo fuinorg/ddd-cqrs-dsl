@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
@@ -203,6 +204,7 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
       case CqrsDslPackage.AGGREGATE: return createAggregate();
       case CqrsDslPackage.KEY: return createKey();
       case CqrsDslPackage.NO_KEY: return createNoKey();
+      case CqrsDslPackage.ABSTRACT_BUSINESS_RULE: return createAbstractBusinessRule();
       case CqrsDslPackage.ABSTRACT_METHOD: return createAbstractMethod();
       case CqrsDslPackage.CONSTRUCTOR: return createConstructor();
       case CqrsDslPackage.RETURN_TYPE: return createReturnType();
@@ -784,6 +786,18 @@ public class CqrsDslFactoryImpl extends EFactoryImpl implements CqrsDslFactory
   {
     NoKeyImpl noKey = new NoKeyImpl();
     return noKey;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public AbstractBusinessRule createAbstractBusinessRule()
+  {
+    AbstractBusinessRuleImpl abstractBusinessRule = new AbstractBusinessRuleImpl();
+    return abstractBusinessRule;
   }
 
   /**

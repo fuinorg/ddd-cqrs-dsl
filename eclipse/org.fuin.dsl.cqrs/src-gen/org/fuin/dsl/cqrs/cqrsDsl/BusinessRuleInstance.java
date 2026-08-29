@@ -31,12 +31,12 @@ public interface BusinessRuleInstance extends EObject
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Business Rule</em>' reference.
-   * @see #setBusinessRule(BusinessRule)
+   * @see #setBusinessRule(AbstractBusinessRule)
    * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRuleInstance_BusinessRule()
    * @model
    * @generated
    */
-  BusinessRule getBusinessRule();
+  AbstractBusinessRule getBusinessRule();
 
   /**
    * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance#getBusinessRule <em>Business Rule</em>}' reference.
@@ -46,7 +46,7 @@ public interface BusinessRuleInstance extends EObject
    * @see #getBusinessRule()
    * @generated
    */
-  void setBusinessRule(BusinessRule value);
+  void setBusinessRule(AbstractBusinessRule value);
 
   /**
    * Returns the value of the '<em><b>Params</b></em>' containment reference list.

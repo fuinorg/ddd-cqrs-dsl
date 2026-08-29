@@ -2,6 +2,12 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.33.0
+- An operation can say it checks a business `key`, naming it where it names a `business-rule`: the resolver used to accept only a rule declaration there, so a correct model was marked as broken. The editor also refuses what the build refuses - a key needs an exception exactly when it refuses a collision, a type is displayed by at most one key, and a `display-as` format may only name attributes the declaring type has.
+
+## 1.32.0
+- `entity-id-path` declares how an entity is addressed from its root, with an optional `[min..max]` range on a step that may repeat; an entity id is unique inside its root and nowhere else, so a reference carrying only the id addresses nothing. `own-path` hands a rule or a service that address, beside `own-id`. Both are checked in the editor.
+
 ## 1.31.0
 - A row that offers a command it cannot decide is now reported as a warning, the same rule the Eclipse plugin and the generator build apply: a command gated by a rule over the aggregate's own state can be left out of a menu rather than offered and refused, and the client decides that from what the row publishes - so a row omitting what the gate reads makes the gate work on one screen and quietly do nothing on another. A warning rather than an error, because whether the row should publish it is a modelling decision with real costs on the other side. The lookup is cached per change, so it costs nothing while typing. The grammar gained the constructs for business keys and generated business rules. A read model row names its identity with `identified-by`; an aggregate or entity declares a `key` or states `no-key` on purpose. A `business-rule` declares the attributes it is handed and a `requires` condition over them, and a rule usage binds its actuals - including the carrier's own identity with `own-id` and its prior state with `own`. A `command` carries its own wording, and a `hint` may sit wherever wording may.
 

@@ -14,9 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getAttributes <em>Attributes</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getRequires <em>Requires</em>}</li>
  * </ul>
  *
@@ -24,30 +22,8 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface BusinessRule extends AbstractElement
+public interface BusinessRule extends AbstractBusinessRule
 {
-  /**
-   * Returns the value of the '<em><b>Exception</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Exception</em>' reference.
-   * @see #setException(org.fuin.dsl.cqrs.cqrsDsl.Exception)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRule_Exception()
-   * @model
-   * @generated
-   */
-  org.fuin.dsl.cqrs.cqrsDsl.Exception getException();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Exception</em>' reference.
-   * @see #getException()
-   * @generated
-   */
-  void setException(org.fuin.dsl.cqrs.cqrsDsl.Exception value);
-
   /**
    * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Attribute}.
@@ -59,28 +35,6 @@ public interface BusinessRule extends AbstractElement
    * @generated
    */
   EList<Attribute> getAttributes();
-
-  /**
-   * Returns the value of the '<em><b>Consistency</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Consistency</em>' containment reference.
-   * @see #setConsistency(Consistency)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getBusinessRule_Consistency()
-   * @model containment="true"
-   * @generated
-   */
-  Consistency getConsistency();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Consistency</em>' containment reference.
-   * @see #getConsistency()
-   * @generated
-   */
-  void setConsistency(Consistency value);
 
   /**
    * Returns the value of the '<em><b>Requires</b></em>' containment reference.

@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtext.EcoreUtil2
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod
+import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument
@@ -50,19 +51,40 @@ class CqrsBusinessRulesExtensions {
 	 *
 	 * @return <code>true</code> when a client could decide it.
 	 */
+	/**
+	 * The declared rule a usage names, or <code>null</code> where it names a business key.
+	 *
+	 * <p>A key derives its rule rather than declaring one, and nothing generates that yet. Until it
+	 * does, a key usage answers like a rule the model has said nothing about: it keeps its
+	 * <code>// TODO Verify</code> line with the operation instead of being quietly left out.</p>
+	 *
+	 * @param instance Usage of a rule or a key by one operation.
+	 *
+	 * @return Declared rule or <code>null</code>.
+	 */
+	static def BusinessRule declaredRule(BusinessRuleInstance instance) {
+		val rule = instance?.businessRule
+		return if (rule instanceof BusinessRule) rule else null
+	}
+
 	static def boolean clientAnswerable(BusinessRuleInstance instance) {
 		if (instance === null) {
 			return false
 		}
 		val rule = instance.businessRule
-		if (rule === null || rule.requires === null) {
+		if (!(rule instanceof BusinessRule)) {
+			// A business key asks the server whether the key is taken, so no client can answer it.
+			return false
+		}
+		val declaring = rule as BusinessRule
+		if (declaring.requires === null) {
 			return false
 		}
 		val operation = EcoreUtil2.getContainerOfType(instance, AbstractMethod)
 		if (operation === null) {
 			return false
 		}
-		if (rule.attributes.nullSafe.size !== instance.params.nullSafe.size) {
+		if (declaring.attributes.nullSafe.size !== instance.params.nullSafe.size) {
 			return false
 		}
 		for (actual : instance.params.nullSafe) {

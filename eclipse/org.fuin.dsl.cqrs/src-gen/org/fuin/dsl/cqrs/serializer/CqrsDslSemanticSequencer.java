@@ -483,7 +483,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BusinessRuleInstance returns BusinessRuleInstance
 	 *
 	 * Constraint:
-	 *     (businessRule=[BusinessRule|FQN] (params+=RuleArgument params+=RuleArgument*)?)
+	 *     (businessRule=[AbstractBusinessRule|FQN] (params+=RuleArgument params+=RuleArgument*)?)
 	 * </pre>
 	 */
 	protected void sequence_BusinessRuleInstance(ISerializationContext context, BusinessRuleInstance semanticObject) {
@@ -496,6 +496,7 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Contexts:
 	 *     AbstractElement returns BusinessRule
 	 *     BusinessRule returns BusinessRule
+	 *     AbstractBusinessRule returns BusinessRule
 	 *
 	 * Constraint:
 	 *     (
@@ -1121,15 +1122,17 @@ public class CqrsDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	/**
 	 * <pre>
 	 * Contexts:
+	 *     AbstractElement returns Key
 	 *     Key returns Key
+	 *     AbstractBusinessRule returns Key
 	 *
 	 * Constraint:
 	 *     (
 	 *         doc=DOC 
 	 *         name=ID 
 	 *         exception=[Exception|FQN]? 
-	 *         attributes+=[Attribute|ID] 
-	 *         attributes+=[Attribute|ID]* 
+	 *         keyAttributes+=[Attribute|ID] 
+	 *         keyAttributes+=[Attribute|ID]* 
 	 *         onCollision=CollisionStrategy 
 	 *         consistency=Consistency 
 	 *         displayAs=STRING?

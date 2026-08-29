@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
@@ -48,7 +48,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected BusinessRule businessRule;
+  protected AbstractBusinessRule businessRule;
 
   /**
    * The cached value of the '{@link #getParams() <em>Params</em>}' containment reference list.
@@ -87,12 +87,12 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * @generated
    */
   @Override
-  public BusinessRule getBusinessRule()
+  public AbstractBusinessRule getBusinessRule()
   {
     if (businessRule != null && businessRule.eIsProxy())
     {
       InternalEObject oldBusinessRule = (InternalEObject)businessRule;
-      businessRule = (BusinessRule)eResolveProxy(oldBusinessRule);
+      businessRule = (AbstractBusinessRule)eResolveProxy(oldBusinessRule);
       if (businessRule != oldBusinessRule)
       {
         if (eNotificationRequired())
@@ -107,7 +107,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public BusinessRule basicGetBusinessRule()
+  public AbstractBusinessRule basicGetBusinessRule()
   {
     return businessRule;
   }
@@ -118,9 +118,9 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
    * @generated
    */
   @Override
-  public void setBusinessRule(BusinessRule newBusinessRule)
+  public void setBusinessRule(AbstractBusinessRule newBusinessRule)
   {
-    BusinessRule oldBusinessRule = businessRule;
+    AbstractBusinessRule oldBusinessRule = businessRule;
     businessRule = newBusinessRule;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, CqrsDslPackage.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, oldBusinessRule, businessRule));
@@ -188,7 +188,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
     switch (featureID)
     {
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE__BUSINESS_RULE:
-        setBusinessRule((BusinessRule)newValue);
+        setBusinessRule((AbstractBusinessRule)newValue);
         return;
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE__PARAMS:
         getParams().clear();
@@ -209,7 +209,7 @@ public class BusinessRuleInstanceImpl extends MinimalEObjectImpl.Container imple
     switch (featureID)
     {
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE__BUSINESS_RULE:
-        setBusinessRule((BusinessRule)null);
+        setBusinessRule((AbstractBusinessRule)null);
         return;
       case CqrsDslPackage.BUSINESS_RULE_INSTANCE__PARAMS:
         getParams().clear();

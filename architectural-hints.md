@@ -95,6 +95,15 @@ were hit while adding the business-key, soft-delete and business-rule-predicate 
   unreachable. Introducing a shared super-type rule (`X: A | B;`) instead is worse: `Attribute` then
   has two supertypes and EMF emits each inherited feature constant twice
   (`ATTRIBUTE__DOC ist bereits definiert`), which fails the Java compile rather than the generation.
+- **Where a shared super-type rule *is* the answer, put it inside the existing union rather than beside
+  it.** `AbstractBusinessRule: BusinessRule | Key;` declared on its own gives `BusinessRule` both
+  `AbstractElement` and `AbstractBusinessRule` as parents, and the same duplicate-constant failure
+  (`BUSINESS_RULE__DOC ist bereits definiert`). Replacing `BusinessRule` with `AbstractBusinessRule`
+  inside `AbstractElement`'s alternatives makes it one chain. The price is that the new alternative
+  parses wherever the union does — a `key` at module level — so the validator has to refuse it there.
+  And two features of the same name cannot merge across the alternatives when one is a containment and
+  the other a reference: a rule *declares* its attributes and a key *references* the type's, so the
+  key's feature was renamed to `keyAttributes` while the keyword a model writes stayed `attributes`.
 
 The check that catches all of this is not the DSL's own build. Regenerate, then run the console
 verifier over a real corpus — `java -jar maven/console/target/ddd-cqrs-dsl-console.jar dsl-examples`

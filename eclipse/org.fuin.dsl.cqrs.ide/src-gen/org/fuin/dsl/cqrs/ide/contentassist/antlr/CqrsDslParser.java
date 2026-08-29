@@ -44,6 +44,7 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getRuleOperandAccess().getAlternatives(), "rule__RuleOperand__Alternatives");
 			builder.put(grammarAccess.getRuleLiteralAccess().getAlternatives(), "rule__RuleLiteral__Alternatives");
 			builder.put(grammarAccess.getSegmentRangeAccess().getAlternatives_3(), "rule__SegmentRange__Alternatives_3");
+			builder.put(grammarAccess.getAbstractBusinessRuleAccess().getAlternatives(), "rule__AbstractBusinessRule__Alternatives");
 			builder.put(grammarAccess.getAbstractMethodAccess().getAlternatives(), "rule__AbstractMethod__Alternatives");
 			builder.put(grammarAccess.getVariableAccess().getAlternatives(), "rule__Variable__Alternatives");
 			builder.put(grammarAccess.getRuleArgumentAccess().getAlternatives(), "rule__RuleArgument__Alternatives");
@@ -407,8 +408,8 @@ public class CqrsDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getKeyAccess().getDocAssignment_0(), "rule__Key__DocAssignment_0");
 			builder.put(grammarAccess.getKeyAccess().getNameAssignment_2(), "rule__Key__NameAssignment_2");
 			builder.put(grammarAccess.getKeyAccess().getExceptionAssignment_3_1(), "rule__Key__ExceptionAssignment_3_1");
-			builder.put(grammarAccess.getKeyAccess().getAttributesAssignment_6(), "rule__Key__AttributesAssignment_6");
-			builder.put(grammarAccess.getKeyAccess().getAttributesAssignment_7_1(), "rule__Key__AttributesAssignment_7_1");
+			builder.put(grammarAccess.getKeyAccess().getKeyAttributesAssignment_6(), "rule__Key__KeyAttributesAssignment_6");
+			builder.put(grammarAccess.getKeyAccess().getKeyAttributesAssignment_7_1(), "rule__Key__KeyAttributesAssignment_7_1");
 			builder.put(grammarAccess.getKeyAccess().getOnCollisionAssignment_9(), "rule__Key__OnCollisionAssignment_9");
 			builder.put(grammarAccess.getKeyAccess().getConsistencyAssignment_10(), "rule__Key__ConsistencyAssignment_10");
 			builder.put(grammarAccess.getKeyAccess().getDisplayAsAssignment_11_1(), "rule__Key__DisplayAsAssignment_11_1");

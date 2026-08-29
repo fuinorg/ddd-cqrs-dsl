@@ -45,7 +45,7 @@ class CqrsDslScopeProvider extends AbstractCqrsDslScopeProvider {
 			case CqrsDslPackage.Literals.VALUE_OBJECT__IDENTIFIED_BY:
 				Scopes.scopeFor(EcoreUtil2.getContainerOfType(context, ValueObject).attributes)
 			// A business key is made of attributes of the type that declares it.
-			case CqrsDslPackage.Literals.KEY__ATTRIBUTES:
+			case CqrsDslPackage.Literals.KEY__KEY_ATTRIBUTES:
 				Scopes.scopeFor(context.declaringAttributes)
 			// The left hand side of a condition is an attribute the rule itself declares.
 			case CqrsDslPackage.Literals.RULE_ATTR_REF__ATTRIBUTE:

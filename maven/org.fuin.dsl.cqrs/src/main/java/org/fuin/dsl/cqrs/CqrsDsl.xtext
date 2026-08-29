@@ -68,9 +68,14 @@ Hint:
 /**
  * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
  * part of it so a rule that applies across contexts can be declared once at module level.
+ *
+ * It is 'AbstractBusinessRule' rather than 'BusinessRule' so that a rule and a key take their 'doc'
+ * and 'name' from one place. Listing both supertypes side by side gives each of them twice, and EMF
+ * writes the duplicate straight into the generated package. The cost is that a 'key' parses here as
+ * well, where it has no type to name attributes of; 'checkKeyIsDeclaredInAType' refuses it there.
  */
 AbstractElement:
-	Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+	Constraint | Annotation | Type | Exception | AbstractBusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 
 /**
  * What an entity or an aggregate may hold as a nested element: everything a module may hold, except a
@@ -493,7 +498,7 @@ Aggregate:
 Key:
 	doc=DOC
 	'key' name=ID ('exception' exception=[Exception|FQN])? '{'
-		'attributes' attributes+=[Attribute|ID] (',' attributes+=[Attribute|ID])*
+		'attributes' keyAttributes+=[Attribute|ID] (',' keyAttributes+=[Attribute|ID])*
 		'on-collision' onCollision=CollisionStrategy
 		consistency=Consistency
 		('display-as' displayAs=STRING)?
@@ -515,6 +520,18 @@ enum CollisionStrategy:
 NoKey:
 	doc=DOC
 	'no-key';
+
+/**
+ * What an operation may name where it says which rules it checks. A business key derives a uniqueness
+ * rule, so an operation has to be able to name one - and naming it, rather than letting the generator
+ * work out which operations check a key, is what keeps the model saying where a key is enforced.
+ *
+ * The feature holding a key's attributes is called 'keyAttributes' rather than 'attributes' for this
+ * union's sake: a rule *declares* its attributes and a key *references* the type's, so merging two
+ * features of the same name across the alternatives would mean merging a containment with a reference.
+ */
+AbstractBusinessRule:
+	BusinessRule | Key;
 
 /** Common properties of methods. */
 AbstractMethod:
@@ -623,7 +640,7 @@ ConstraintInstance:
  * value may be a method parameter on one and a field on another, and the service differs too.
  */
 BusinessRuleInstance:
-	businessRule=[BusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
+	businessRule=[AbstractBusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
 
 /**
  * One actual of a business rule usage - a value the carrier holds, a service method that answers a

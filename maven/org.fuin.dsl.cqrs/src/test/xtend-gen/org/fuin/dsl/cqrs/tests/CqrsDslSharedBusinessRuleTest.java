@@ -18,6 +18,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
@@ -544,7 +545,8 @@ public class CqrsDslSharedBusinessRuleTest {
     };
     final org.fuin.dsl.cqrs.cqrsDsl.Module orders = IterableExtensions.<org.fuin.dsl.cqrs.cqrsDsl.Module>head(IterableExtensions.<Context>findFirst(model.getContexts(), _function).getModules());
     final Aggregate order = IterableExtensions.<Aggregate>head(Iterables.<Aggregate>filter(orders.getElements(), Aggregate.class));
-    return IterableExtensions.<BusinessRuleInstance>head(IterableExtensions.<Method>head(order.getMethods()).getBusinessRules().getBusinessRuleInstances()).getBusinessRule();
+    AbstractBusinessRule _businessRule = IterableExtensions.<BusinessRuleInstance>head(IterableExtensions.<Method>head(order.getMethods()).getBusinessRules().getBusinessRuleInstances()).getBusinessRule();
+    return ((BusinessRule) _businessRule);
   }
 
   private DomainModel parse(final CharSequence text) {

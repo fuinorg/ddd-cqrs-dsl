@@ -625,11 +625,11 @@ ruleAbstractElement returns [EObject current=null]
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getAbstractElementAccess().getBusinessRuleParserRuleCall_4());
+			newCompositeNode(grammarAccess.getAbstractElementAccess().getAbstractBusinessRuleParserRuleCall_4());
 		}
-		this_BusinessRule_4=ruleBusinessRule
+		this_AbstractBusinessRule_4=ruleAbstractBusinessRule
 		{
-			$current = $this_BusinessRule_4.current;
+			$current = $this_AbstractBusinessRule_4.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
@@ -5072,7 +5072,7 @@ ruleKey returns [EObject current=null]
 				}
 				otherlv_7=RULE_ID
 				{
-					newLeafNode(otherlv_7, grammarAccess.getKeyAccess().getAttributesAttributeCrossReference_6_0());
+					newLeafNode(otherlv_7, grammarAccess.getKeyAccess().getKeyAttributesAttributeCrossReference_6_0());
 				}
 			)
 		)
@@ -5090,7 +5090,7 @@ ruleKey returns [EObject current=null]
 					}
 					otherlv_9=RULE_ID
 					{
-						newLeafNode(otherlv_9, grammarAccess.getKeyAccess().getAttributesAttributeCrossReference_7_1_0());
+						newLeafNode(otherlv_9, grammarAccess.getKeyAccess().getKeyAttributesAttributeCrossReference_7_1_0());
 					}
 				)
 			)
@@ -5205,6 +5205,42 @@ ruleNoKey returns [EObject current=null]
 		otherlv_1='no-key'
 		{
 			newLeafNode(otherlv_1, grammarAccess.getNoKeyAccess().getNoKeyKeyword_1());
+		}
+	)
+;
+
+// Entry rule entryRuleAbstractBusinessRule
+entryRuleAbstractBusinessRule returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getAbstractBusinessRuleRule()); }
+	iv_ruleAbstractBusinessRule=ruleAbstractBusinessRule
+	{ $current=$iv_ruleAbstractBusinessRule.current; }
+	EOF;
+
+// Rule AbstractBusinessRule
+ruleAbstractBusinessRule returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		{
+			newCompositeNode(grammarAccess.getAbstractBusinessRuleAccess().getBusinessRuleParserRuleCall_0());
+		}
+		this_BusinessRule_0=ruleBusinessRule
+		{
+			$current = $this_BusinessRule_0.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getAbstractBusinessRuleAccess().getKeyParserRuleCall_1());
+		}
+		this_Key_1=ruleKey
+		{
+			$current = $this_Key_1.current;
+			afterParserOrEnumRuleCall();
 		}
 	)
 ;
@@ -6773,7 +6809,7 @@ ruleBusinessRuleInstance returns [EObject current=null]
 					}
 				}
 				{
-					newCompositeNode(grammarAccess.getBusinessRuleInstanceAccess().getBusinessRuleBusinessRuleCrossReference_0_0());
+					newCompositeNode(grammarAccess.getBusinessRuleInstanceAccess().getBusinessRuleAbstractBusinessRuleCrossReference_0_0());
 				}
 				ruleFQN
 				{

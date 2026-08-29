@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
@@ -384,6 +385,13 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   private EClass noKeyEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass abstractBusinessRuleEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1822,7 +1830,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getBusinessRule_Exception()
+  public EReference getBusinessRule_Attributes()
   {
     return (EReference)businessRuleEClass.getEStructuralFeatures().get(0);
   }
@@ -1833,31 +1841,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EReference getBusinessRule_Attributes()
-  {
-    return (EReference)businessRuleEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getBusinessRule_Consistency()
-  {
-    return (EReference)businessRuleEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getBusinessRule_Requires()
   {
-    return (EReference)businessRuleEClass.getEStructuralFeatures().get(3);
+    return (EReference)businessRuleEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2383,42 +2369,9 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
    * @generated
    */
   @Override
-  public EAttribute getKey_Doc()
+  public EReference getKey_KeyAttributes()
   {
-    return (EAttribute)keyEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getKey_Name()
-  {
-    return (EAttribute)keyEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getKey_Exception()
-  {
-    return (EReference)keyEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getKey_Attributes()
-  {
-    return (EReference)keyEClass.getEStructuralFeatures().get(3);
+    return (EReference)keyEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2429,18 +2382,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EAttribute getKey_OnCollision()
   {
-    return (EAttribute)keyEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getKey_Consistency()
-  {
-    return (EReference)keyEClass.getEStructuralFeatures().get(5);
+    return (EAttribute)keyEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2451,7 +2393,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   @Override
   public EAttribute getKey_DisplayAs()
   {
-    return (EAttribute)keyEClass.getEStructuralFeatures().get(6);
+    return (EAttribute)keyEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2474,6 +2416,39 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
   public EAttribute getNoKey_Doc()
   {
     return (EAttribute)noKeyEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getAbstractBusinessRule()
+  {
+    return abstractBusinessRuleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAbstractBusinessRule_Exception()
+  {
+    return (EReference)abstractBusinessRuleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAbstractBusinessRule_Consistency()
+  {
+    return (EReference)abstractBusinessRuleEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -4415,9 +4390,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEAttribute(constraintEClass, CONSTRAINT__MESSAGE);
 
     businessRuleEClass = createEClass(BUSINESS_RULE);
-    createEReference(businessRuleEClass, BUSINESS_RULE__EXCEPTION);
     createEReference(businessRuleEClass, BUSINESS_RULE__ATTRIBUTES);
-    createEReference(businessRuleEClass, BUSINESS_RULE__CONSISTENCY);
     createEReference(businessRuleEClass, BUSINESS_RULE__REQUIRES);
 
     ruleExprEClass = createEClass(RULE_EXPR);
@@ -4483,16 +4456,16 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     createEReference(aggregateEClass, AGGREGATE__ID_TYPE);
 
     keyEClass = createEClass(KEY);
-    createEAttribute(keyEClass, KEY__DOC);
-    createEAttribute(keyEClass, KEY__NAME);
-    createEReference(keyEClass, KEY__EXCEPTION);
-    createEReference(keyEClass, KEY__ATTRIBUTES);
+    createEReference(keyEClass, KEY__KEY_ATTRIBUTES);
     createEAttribute(keyEClass, KEY__ON_COLLISION);
-    createEReference(keyEClass, KEY__CONSISTENCY);
     createEAttribute(keyEClass, KEY__DISPLAY_AS);
 
     noKeyEClass = createEClass(NO_KEY);
     createEAttribute(noKeyEClass, NO_KEY__DOC);
+
+    abstractBusinessRuleEClass = createEClass(ABSTRACT_BUSINESS_RULE);
+    createEReference(abstractBusinessRuleEClass, ABSTRACT_BUSINESS_RULE__EXCEPTION);
+    createEReference(abstractBusinessRuleEClass, ABSTRACT_BUSINESS_RULE__CONSISTENCY);
 
     abstractMethodEClass = createEClass(ABSTRACT_METHOD);
     createEAttribute(abstractMethodEClass, ABSTRACT_METHOD__DOC);
@@ -4750,7 +4723,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     externalTypeEClass.getESuperTypes().add(this.getType());
     dataProtectionEClass.getESuperTypes().add(this.getAbstractElement());
     constraintEClass.getESuperTypes().add(this.getAbstractElement());
-    businessRuleEClass.getESuperTypes().add(this.getAbstractElement());
+    businessRuleEClass.getESuperTypes().add(this.getAbstractBusinessRule());
     annotationEClass.getESuperTypes().add(this.getAbstractElement());
     exceptionEClass.getESuperTypes().add(this.getAbstractElement());
     valueObjectEClass.getESuperTypes().add(this.getAbstractVO());
@@ -4761,6 +4734,8 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     eventEClass.getESuperTypes().add(this.getAbstractElement());
     entityEClass.getESuperTypes().add(this.getAbstractEntity());
     aggregateEClass.getESuperTypes().add(this.getAbstractEntity());
+    keyEClass.getESuperTypes().add(this.getAbstractBusinessRule());
+    abstractBusinessRuleEClass.getESuperTypes().add(this.getAbstractElement());
     constructorEClass.getESuperTypes().add(this.getAbstractMethod());
     methodEClass.getESuperTypes().add(this.getAbstractMethod());
     attributeEClass.getESuperTypes().add(this.getVariable());
@@ -4902,9 +4877,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEAttribute(getConstraint_Message(), ecorePackage.getEString(), "message", null, 0, 1, Constraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(businessRuleEClass, BusinessRule.class, "BusinessRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getBusinessRule_Exception(), this.getException(), null, "exception", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBusinessRule_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBusinessRule_Consistency(), this.getConsistency(), null, "consistency", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBusinessRule_Requires(), this.getRuleExpr(), null, "requires", null, 0, 1, BusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(ruleExprEClass, RuleExpr.class, "RuleExpr", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -4970,16 +4943,16 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getAggregate_IdType(), this.getAggregateId(), null, "idType", null, 0, 1, Aggregate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(keyEClass, Key.class, "Key", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getKey_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getKey_Name(), ecorePackage.getEString(), "name", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getKey_Exception(), this.getException(), null, "exception", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getKey_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getKey_KeyAttributes(), this.getAttribute(), null, "keyAttributes", null, 0, -1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getKey_OnCollision(), this.getCollisionStrategy(), "onCollision", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getKey_Consistency(), this.getConsistency(), null, "consistency", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getKey_DisplayAs(), ecorePackage.getEString(), "displayAs", null, 0, 1, Key.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(noKeyEClass, NoKey.class, "NoKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getNoKey_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, NoKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(abstractBusinessRuleEClass, AbstractBusinessRule.class, "AbstractBusinessRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getAbstractBusinessRule_Exception(), this.getException(), null, "exception", null, 0, 1, AbstractBusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAbstractBusinessRule_Consistency(), this.getConsistency(), null, "consistency", null, 0, 1, AbstractBusinessRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(abstractMethodEClass, AbstractMethod.class, "AbstractMethod", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAbstractMethod_Doc(), ecorePackage.getEString(), "doc", null, 0, 1, AbstractMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5051,7 +5024,7 @@ public class CqrsDslPackageImpl extends EPackageImpl implements CqrsDslPackage
     initEReference(getConstraintInstance_Params(), this.getLiteral(), null, "params", null, 0, -1, ConstraintInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(businessRuleInstanceEClass, BusinessRuleInstance.class, "BusinessRuleInstance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getBusinessRuleInstance_BusinessRule(), this.getBusinessRule(), null, "businessRule", null, 0, 1, BusinessRuleInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBusinessRuleInstance_BusinessRule(), this.getAbstractBusinessRule(), null, "businessRule", null, 0, 1, BusinessRuleInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBusinessRuleInstance_Params(), this.getRuleArgument(), null, "params", null, 0, -1, BusinessRuleInstance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(ruleArgumentEClass, RuleArgument.class, "RuleArgument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -2,6 +2,12 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.30.0
+- **An operation can say it checks a business `key`**, naming it where it names a `business-rule`; a key
+  is refused outside the type it identifies, is required to carry an exception exactly when it refuses a
+  collision, may mark at most one key per type with `display-as`, and has that format checked against the
+  declaring type's attributes.
+
 ## 1.29.0
 - **`entity-id-path` declares how an entity is addressed from its root**, with an optional `[min..max]`
   range on a step that may repeat. An entity id is unique inside its root and nowhere else, so a

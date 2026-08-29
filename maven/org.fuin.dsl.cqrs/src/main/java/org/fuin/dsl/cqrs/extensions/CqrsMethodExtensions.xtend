@@ -7,6 +7,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 
@@ -16,8 +17,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance
 class CqrsMethodExtensions {
 
 
-	def static List<BusinessRule> allBusinessRules(Method method) {
-		val List<BusinessRule> list = new ArrayList<BusinessRule>();
+	def static List<AbstractBusinessRule> allBusinessRules(Method method) {
+		val List<AbstractBusinessRule> list = new ArrayList<AbstractBusinessRule>();
 		if ((method.refMethod !== null) && (method != method.refMethod)) {
 			list.addAll(method.refMethod.allBusinessRules);
 		}

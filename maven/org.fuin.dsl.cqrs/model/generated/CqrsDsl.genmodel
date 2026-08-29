@@ -179,9 +179,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Constraint/message"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//BusinessRule">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/exception"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/attributes"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/consistency"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//BusinessRule/requires"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//RuleExpr"/>
@@ -245,16 +243,16 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Aggregate/idType"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//Key">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Key/doc"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Key/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Key/exception"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Key/attributes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Key/keyAttributes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Key/onCollision"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//Key/consistency"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//Key/displayAs"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//NoKey">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//NoKey/doc"/>
+    </genClasses>
+    <genClasses ecoreClass="CqrsDsl.ecore#//AbstractBusinessRule">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractBusinessRule/exception"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CqrsDsl.ecore#//AbstractBusinessRule/consistency"/>
     </genClasses>
     <genClasses ecoreClass="CqrsDsl.ecore#//AbstractMethod">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CqrsDsl.ecore#//AbstractMethod/doc"/>

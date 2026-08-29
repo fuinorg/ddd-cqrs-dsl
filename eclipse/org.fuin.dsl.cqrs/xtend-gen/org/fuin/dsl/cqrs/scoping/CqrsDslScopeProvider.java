@@ -51,7 +51,7 @@ public class CqrsDslScopeProvider extends AbstractCqrsDslScopeProvider {
       _switchResult = Scopes.scopeFor(EcoreUtil2.<ValueObject>getContainerOfType(context, ValueObject.class).getAttributes());
     }
     if (!_matched) {
-      if (Objects.equals(reference, CqrsDslPackage.Literals.KEY__ATTRIBUTES)) {
+      if (Objects.equals(reference, CqrsDslPackage.Literals.KEY__KEY_ATTRIBUTES)) {
         _matched=true;
         _switchResult = Scopes.scopeFor(this.declaringAttributes(context));
       }

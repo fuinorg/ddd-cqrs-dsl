@@ -18,6 +18,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationInstance;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAttribute;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsCollisionStrategy;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConsistency;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConsistencyLevel;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsWeakConsistency;
@@ -55,6 +56,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsProcessState;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsParameter;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsPreconditions;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsServiceDef;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsKeyDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypeRef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsTypes;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsValueObject;
@@ -157,6 +159,84 @@ public final class CqrsValidationAnnotator implements Annotator {
             checkSegmentRange((CqrsSegmentRange) element, holder);
         } else if (element instanceof CqrsEntityPathArgument) {
             checkOwnPath((CqrsEntityPathArgument) element, holder);
+        } else if (element instanceof CqrsKeyDef) {
+            CqrsKeyDef key = (CqrsKeyDef) element;
+            checkKeyExceptionMatchesCollision(key, holder);
+            checkOneDisplayKeyPerType(key, holder);
+            checkDisplayAsVariables(key, holder);
+        }
+    }
+
+    // --- business keys --------------------------------------------------------------------------
+
+    /**
+     * Reports a key whose collision behaviour and exception disagree.
+     *
+     * <p>The port of the Xtext validator's {@code checkKeyExceptionMatchesCollision}. Only a key that
+     * refuses throws anything: {@code overwrite} and {@code skip} say what the handler does with the
+     * second occurrence, and neither refuses anybody. An exception declared beside one of those is
+     * generated, never raised, and reads as a refusal that can happen.</p>
+     *
+     * <p>The Xtext validator also refuses a key written outside a type. There is nothing to port: this
+     * grammar only matches {@code key_def} inside an aggregate or an entity, so the editor rejects it
+     * as a parse error before any annotator sees it.</p>
+     */
+    private void checkKeyExceptionMatchesCollision(@NotNull CqrsKeyDef key, @NotNull AnnotationHolder holder) {
+        CqrsCollisionStrategy strategy = key.getCollisionStrategy();
+        if (strategy == null) {
+            return;
+        }
+        boolean refuses = "refuse".equals(strategy.getText().trim());
+        CqrsTypeRef exception = key.getTypeRef();
+        if (refuses && exception == null) {
+            error(holder, nameRange(key),
+                    "'" + key.getName() + "' refuses a collision, so it needs the exception that says so");
+        } else if (!refuses && exception != null) {
+            error(holder, exception, "'" + key.getName() + "' " + strategy.getText().trim()
+                    + "s a collision rather than refusing it, so it has nothing to throw");
+        }
+    }
+
+    /**
+     * Reports a second key saying how its type is displayed.
+     *
+     * <p>The port of the Xtext validator's {@code checkOneDisplayKeyPerType}. {@code display-as}
+     * carries a format and its presence is the marking, so two of them are two answers to "what does a
+     * picker show" with no precedence rule to choose between them.</p>
+     */
+    private void checkOneDisplayKeyPerType(@NotNull CqrsKeyDef key, @NotNull AnnotationHolder holder) {
+        PsiElement format = key.getString();
+        if (format == null) {
+            return;
+        }
+        List<CqrsKeyDef> displaying = new ArrayList<>();
+        for (CqrsKeyDef sibling : PsiTreeUtil.getChildrenOfTypeAsList(key.getParent(), CqrsKeyDef.class)) {
+            if (sibling.getString() != null) {
+                displaying.add(sibling);
+            }
+        }
+        if (displaying.size() > 1 && displaying.get(0) != key) {
+            error(holder, format, "'" + displaying.get(0).getName() + "' already says how this type is displayed");
+        }
+    }
+
+    /**
+     * Reports a {@code display-as} format naming something the declaring type does not have.
+     *
+     * <p>The port of the Xtext validator's {@code checkVariablesInDisplayAs}. Deliberately the whole
+     * type rather than the key's own attributes: what a person recognises a thing by is not always what
+     * makes it unique - an account is keyed by its IBAN and read as "Business current account
+     * (CH93...)", and its name is no part of the key.</p>
+     */
+    private void checkDisplayAsVariables(@NotNull CqrsKeyDef key, @NotNull AnnotationHolder holder) {
+        PsiElement format = key.getString();
+        if (format == null) {
+            return;
+        }
+        List<CqrsAttribute> attributes = PsiTreeUtil.getChildrenOfTypeAsList(key.getParent(), CqrsAttribute.class);
+        String unknown = findUnknownVar(attributeNames(attributes), stringValue(format));
+        if (unknown != null) {
+            error(holder, format, "A variable '" + unknown + "' is not an attribute of this type");
         }
     }
 

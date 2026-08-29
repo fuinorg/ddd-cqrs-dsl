@@ -3,15 +3,18 @@ package org.fuin.dsl.cqrs.extensions;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.xtext.EcoreUtil2;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRules;
 import org.fuin.dsl.cqrs.cqrsDsl.CarrierAttributeArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleArgument;
+import org.fuin.dsl.cqrs.cqrsDsl.RuleExpr;
 import org.fuin.dsl.cqrs.cqrsDsl.Variable;
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument;
 
@@ -32,38 +35,50 @@ public class CqrsBusinessRulesExtensions {
   }
 
   /**
-   * Whether a client could answer this usage of a rule for itself, from the row it is looking at.
+   * The declared rule a usage names, or <code>null</code> where it names a business key.
    * 
-   * <p>The server verifies everything the model declares. This is the subset a screen could decide
-   * before sending anything, so it can avoid offering an action that is certain to be refused - and
-   * the model is what answers it, rather than somebody reading the generated Java.
+   * <p>A key derives its rule rather than declaring one, and nothing generates that yet. Until it
+   * does, a key usage answers like a rule the model has said nothing about: it keeps its
+   * <code>// TODO Verify</code> line with the operation instead of being quietly left out.</p>
    * 
-   * <p>A rule is answerable only when every value it is handed is on the client. A <b>service call</b>
-   * is a question only the server can ask; a <b>parameter of the operation</b> has not been typed yet
-   * at the moment a menu decides whether to offer the action; a <b>literal</b> comes from neither the
-   * row nor its identity. A rule with no condition is written by hand and has no predicate to ship.
+   * @param instance Usage of a rule or a key by one operation.
    * 
-   * <p>Deliberately all-or-nothing: an attribute bound to something the client cannot reach makes the
-   * whole usage unanswerable, even where the condition never reads it. Half a rule decided from what
-   * the client happened to have would be worse than none.
-   * 
-   * @param instance Usage of a rule by one operation.
-   * 
-   * @return <code>true</code> when a client could decide it.
+   * @return Declared rule or <code>null</code>.
    */
+  public static BusinessRule declaredRule(final BusinessRuleInstance instance) {
+    AbstractBusinessRule _businessRule = null;
+    if (instance!=null) {
+      _businessRule=instance.getBusinessRule();
+    }
+    final AbstractBusinessRule rule = _businessRule;
+    BusinessRule _xifexpression = null;
+    if ((rule instanceof BusinessRule)) {
+      _xifexpression = ((BusinessRule)rule);
+    } else {
+      _xifexpression = null;
+    }
+    return _xifexpression;
+  }
+
   public static boolean clientAnswerable(final BusinessRuleInstance instance) {
     if ((instance == null)) {
       return false;
     }
-    final BusinessRule rule = instance.getBusinessRule();
-    if (((rule == null) || (rule.getRequires() == null))) {
+    final AbstractBusinessRule rule = instance.getBusinessRule();
+    if ((!(rule instanceof BusinessRule))) {
+      return false;
+    }
+    final BusinessRule declaring = ((BusinessRule) rule);
+    RuleExpr _requires = declaring.getRequires();
+    boolean _tripleEquals = (_requires == null);
+    if (_tripleEquals) {
       return false;
     }
     final AbstractMethod operation = EcoreUtil2.<AbstractMethod>getContainerOfType(instance, AbstractMethod.class);
     if ((operation == null)) {
       return false;
     }
-    int _size = CqrsCollectionExtensions.<Attribute>nullSafe(rule.getAttributes()).size();
+    int _size = CqrsCollectionExtensions.<Attribute>nullSafe(declaring.getAttributes()).size();
     int _size_1 = CqrsCollectionExtensions.<RuleArgument>nullSafe(instance.getParams()).size();
     boolean _tripleNotEquals = (_size != _size_1);
     if (_tripleNotEquals) {
@@ -74,6 +89,11 @@ public class CqrsBusinessRulesExtensions {
       boolean _matched = false;
       if (actual instanceof IdentityArgument) {
         _matched=true;
+      }
+      if (!_matched) {
+        if (actual instanceof EntityPathArgument) {
+          _matched=true;
+        }
       }
       if (!_matched) {
         if (actual instanceof CarrierAttributeArgument) {

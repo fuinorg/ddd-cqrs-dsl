@@ -10,6 +10,7 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
@@ -352,6 +353,11 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseNoKey(NoKey object)
       {
         return createNoKeyAdapter();
+      }
+      @Override
+      public Adapter caseAbstractBusinessRule(AbstractBusinessRule object)
+      {
+        return createAbstractBusinessRuleAdapter();
       }
       @Override
       public Adapter caseAbstractMethod(AbstractMethod object)
@@ -1201,6 +1207,21 @@ public class CqrsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createNoKeyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule <em>Abstract Business Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule
+   * @generated
+   */
+  public Adapter createAbstractBusinessRuleAdapter()
   {
     return null;
   }

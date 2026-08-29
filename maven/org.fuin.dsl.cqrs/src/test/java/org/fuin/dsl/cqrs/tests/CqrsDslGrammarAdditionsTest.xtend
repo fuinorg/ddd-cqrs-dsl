@@ -130,8 +130,8 @@ class CqrsDslGrammarAdditionsTest {
 		'''.parsed
 		val thing = model.getAllContentsOfType(Aggregate).head
 		val key = thing.keys.head
-		Assertions.assertEquals(2, key.attributes.size)
-		Assertions.assertEquals(#["name", "kind"], key.attributes.map[name])
+		Assertions.assertEquals(2, key.keyAttributes.size)
+		Assertions.assertEquals(#["name", "kind"], key.keyAttributes.map[it.name])
 		Assertions.assertEquals("refuse", key.onCollision.literal)
 	}
 

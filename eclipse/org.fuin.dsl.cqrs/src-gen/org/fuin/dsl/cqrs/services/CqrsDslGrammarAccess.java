@@ -345,7 +345,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cAnnotationParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		private final RuleCall cTypeParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		private final RuleCall cExceptionParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
-		private final RuleCall cBusinessRuleParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
+		private final RuleCall cAbstractBusinessRuleParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
 		private final RuleCall cEventParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
 		private final RuleCall cCommandParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
 		private final RuleCall cCommandHandlerParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
@@ -357,12 +357,17 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		///**
 		// * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
 		// * part of it so a rule that applies across contexts can be declared once at module level.
+		// *
+		// * It is 'AbstractBusinessRule' rather than 'BusinessRule' so that a rule and a key take their 'doc'
+		// * and 'name' from one place. Listing both supertypes side by side gives each of them twice, and EMF
+		// * writes the duplicate straight into the generated package. The cost is that a 'key' parses here as
+		// * well, where it has no type to name attributes of; 'checkKeyIsDeclaredInAType' refuses it there.
 		// */
 		//AbstractElement:
-		//    Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+		//    Constraint | Annotation | Type | Exception | AbstractBusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection
+		//Constraint | Annotation | Type | Exception | AbstractBusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Constraint
@@ -377,8 +382,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Exception
 		public RuleCall getExceptionParserRuleCall_3() { return cExceptionParserRuleCall_3; }
 		
-		//BusinessRule
-		public RuleCall getBusinessRuleParserRuleCall_4() { return cBusinessRuleParserRuleCall_4; }
+		//AbstractBusinessRule
+		public RuleCall getAbstractBusinessRuleParserRuleCall_4() { return cAbstractBusinessRuleParserRuleCall_4; }
 		
 		//Event
 		public RuleCall getEventParserRuleCall_5() { return cEventParserRuleCall_5; }
@@ -3138,14 +3143,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cExceptionExceptionFQNParserRuleCall_3_1_0_1 = (RuleCall)cExceptionExceptionCrossReference_3_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		private final Keyword cAttributesKeyword_5 = (Keyword)cGroup.eContents().get(5);
-		private final Assignment cAttributesAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final CrossReference cAttributesAttributeCrossReference_6_0 = (CrossReference)cAttributesAssignment_6.eContents().get(0);
-		private final RuleCall cAttributesAttributeIDTerminalRuleCall_6_0_1 = (RuleCall)cAttributesAttributeCrossReference_6_0.eContents().get(1);
+		private final Assignment cKeyAttributesAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final CrossReference cKeyAttributesAttributeCrossReference_6_0 = (CrossReference)cKeyAttributesAssignment_6.eContents().get(0);
+		private final RuleCall cKeyAttributesAttributeIDTerminalRuleCall_6_0_1 = (RuleCall)cKeyAttributesAttributeCrossReference_6_0.eContents().get(1);
 		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
 		private final Keyword cCommaKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
-		private final Assignment cAttributesAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
-		private final CrossReference cAttributesAttributeCrossReference_7_1_0 = (CrossReference)cAttributesAssignment_7_1.eContents().get(0);
-		private final RuleCall cAttributesAttributeIDTerminalRuleCall_7_1_0_1 = (RuleCall)cAttributesAttributeCrossReference_7_1_0.eContents().get(1);
+		private final Assignment cKeyAttributesAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final CrossReference cKeyAttributesAttributeCrossReference_7_1_0 = (CrossReference)cKeyAttributesAssignment_7_1.eContents().get(0);
+		private final RuleCall cKeyAttributesAttributeIDTerminalRuleCall_7_1_0_1 = (RuleCall)cKeyAttributesAttributeCrossReference_7_1_0.eContents().get(1);
 		private final Keyword cOnCollisionKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		private final Assignment cOnCollisionAssignment_9 = (Assignment)cGroup.eContents().get(9);
 		private final RuleCall cOnCollisionCollisionStrategyEnumRuleCall_9_0 = (RuleCall)cOnCollisionAssignment_9.eContents().get(0);
@@ -3169,7 +3174,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//Key:
 		//    doc=DOC
 		//    'key' name=ID ('exception' exception=[Exception|FQN])? '{'
-		//        'attributes' attributes+=[Attribute|ID] (',' attributes+=[Attribute|ID])*
+		//        'attributes' keyAttributes+=[Attribute|ID] (',' keyAttributes+=[Attribute|ID])*
 		//        'on-collision' onCollision=CollisionStrategy
 		//        consistency=Consistency
 		//        ('display-as' displayAs=STRING)?
@@ -3178,7 +3183,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//doc=DOC
 		//'key' name=ID ('exception' exception=[Exception|FQN])? '{'
-		//    'attributes' attributes+=[Attribute|ID] (',' attributes+=[Attribute|ID])*
+		//    'attributes' keyAttributes+=[Attribute|ID] (',' keyAttributes+=[Attribute|ID])*
 		//    'on-collision' onCollision=CollisionStrategy
 		//    consistency=Consistency
 		//    ('display-as' displayAs=STRING)?
@@ -3221,29 +3226,29 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'attributes'
 		public Keyword getAttributesKeyword_5() { return cAttributesKeyword_5; }
 		
-		//attributes+=[Attribute|ID]
-		public Assignment getAttributesAssignment_6() { return cAttributesAssignment_6; }
+		//keyAttributes+=[Attribute|ID]
+		public Assignment getKeyAttributesAssignment_6() { return cKeyAttributesAssignment_6; }
 		
 		//[Attribute|ID]
-		public CrossReference getAttributesAttributeCrossReference_6_0() { return cAttributesAttributeCrossReference_6_0; }
+		public CrossReference getKeyAttributesAttributeCrossReference_6_0() { return cKeyAttributesAttributeCrossReference_6_0; }
 		
 		//ID
-		public RuleCall getAttributesAttributeIDTerminalRuleCall_6_0_1() { return cAttributesAttributeIDTerminalRuleCall_6_0_1; }
+		public RuleCall getKeyAttributesAttributeIDTerminalRuleCall_6_0_1() { return cKeyAttributesAttributeIDTerminalRuleCall_6_0_1; }
 		
-		//(',' attributes+=[Attribute|ID])*
+		//(',' keyAttributes+=[Attribute|ID])*
 		public Group getGroup_7() { return cGroup_7; }
 		
 		//','
 		public Keyword getCommaKeyword_7_0() { return cCommaKeyword_7_0; }
 		
-		//attributes+=[Attribute|ID]
-		public Assignment getAttributesAssignment_7_1() { return cAttributesAssignment_7_1; }
+		//keyAttributes+=[Attribute|ID]
+		public Assignment getKeyAttributesAssignment_7_1() { return cKeyAttributesAssignment_7_1; }
 		
 		//[Attribute|ID]
-		public CrossReference getAttributesAttributeCrossReference_7_1_0() { return cAttributesAttributeCrossReference_7_1_0; }
+		public CrossReference getKeyAttributesAttributeCrossReference_7_1_0() { return cKeyAttributesAttributeCrossReference_7_1_0; }
 		
 		//ID
-		public RuleCall getAttributesAttributeIDTerminalRuleCall_7_1_0_1() { return cAttributesAttributeIDTerminalRuleCall_7_1_0_1; }
+		public RuleCall getKeyAttributesAttributeIDTerminalRuleCall_7_1_0_1() { return cKeyAttributesAttributeIDTerminalRuleCall_7_1_0_1; }
 		
 		//'on-collision'
 		public Keyword getOnCollisionKeyword_8() { return cOnCollisionKeyword_8; }
@@ -3303,6 +3308,34 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//'no-key'
 		public Keyword getNoKeyKeyword_1() { return cNoKeyKeyword_1; }
+	}
+	public class AbstractBusinessRuleElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AbstractBusinessRule");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cBusinessRuleParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cKeyParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		///**
+		// * What an operation may name where it says which rules it checks. A business key derives a uniqueness
+		// * rule, so an operation has to be able to name one - and naming it, rather than letting the generator
+		// * work out which operations check a key, is what keeps the model saying where a key is enforced.
+		// *
+		// * The feature holding a key's attributes is called 'keyAttributes' rather than 'attributes' for this
+		// * union's sake: a rule *declares* its attributes and a key *references* the type's, so merging two
+		// * features of the same name across the alternatives would mean merging a containment with a reference.
+		// */
+		//AbstractBusinessRule:
+		//    BusinessRule | Key;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//BusinessRule | Key
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//BusinessRule
+		public RuleCall getBusinessRuleParserRuleCall_0() { return cBusinessRuleParserRuleCall_0; }
+		
+		//Key
+		public RuleCall getKeyParserRuleCall_1() { return cKeyParserRuleCall_1; }
 	}
 	public class AbstractMethodElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.AbstractMethod");
@@ -4334,8 +4367,8 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.fuin.dsl.cqrs.CqrsDsl.BusinessRuleInstance");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cBusinessRuleAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final CrossReference cBusinessRuleBusinessRuleCrossReference_0_0 = (CrossReference)cBusinessRuleAssignment_0.eContents().get(0);
-		private final RuleCall cBusinessRuleBusinessRuleFQNParserRuleCall_0_0_1 = (RuleCall)cBusinessRuleBusinessRuleCrossReference_0_0.eContents().get(1);
+		private final CrossReference cBusinessRuleAbstractBusinessRuleCrossReference_0_0 = (CrossReference)cBusinessRuleAssignment_0.eContents().get(0);
+		private final RuleCall cBusinessRuleAbstractBusinessRuleFQNParserRuleCall_0_0_1 = (RuleCall)cBusinessRuleAbstractBusinessRuleCrossReference_0_0.eContents().get(1);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
 		private final Keyword cLeftParenthesisKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
 		private final Assignment cParamsAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
@@ -4352,20 +4385,20 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		// * value may be a method parameter on one and a field on another, and the service differs too.
 		// */
 		//BusinessRuleInstance:
-		//    businessRule=[BusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
+		//    businessRule=[AbstractBusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//businessRule=[BusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?
+		//businessRule=[AbstractBusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?
 		public Group getGroup() { return cGroup; }
 		
-		//businessRule=[BusinessRule|FQN]
+		//businessRule=[AbstractBusinessRule|FQN]
 		public Assignment getBusinessRuleAssignment_0() { return cBusinessRuleAssignment_0; }
 		
-		//[BusinessRule|FQN]
-		public CrossReference getBusinessRuleBusinessRuleCrossReference_0_0() { return cBusinessRuleBusinessRuleCrossReference_0_0; }
+		//[AbstractBusinessRule|FQN]
+		public CrossReference getBusinessRuleAbstractBusinessRuleCrossReference_0_0() { return cBusinessRuleAbstractBusinessRuleCrossReference_0_0; }
 		
 		//FQN
-		public RuleCall getBusinessRuleBusinessRuleFQNParserRuleCall_0_0_1() { return cBusinessRuleBusinessRuleFQNParserRuleCall_0_0_1; }
+		public RuleCall getBusinessRuleAbstractBusinessRuleFQNParserRuleCall_0_0_1() { return cBusinessRuleAbstractBusinessRuleFQNParserRuleCall_0_0_1; }
 		
 		//('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?
 		public Group getGroup_1() { return cGroup_1; }
@@ -6676,6 +6709,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final KeyElements pKey;
 	private final CollisionStrategyElements eCollisionStrategy;
 	private final NoKeyElements pNoKey;
+	private final AbstractBusinessRuleElements pAbstractBusinessRule;
 	private final AbstractMethodElements pAbstractMethod;
 	private final ConstructorElements pConstructor;
 	private final ReturnTypeElements pReturnType;
@@ -6787,6 +6821,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pKey = new KeyElements();
 		this.eCollisionStrategy = new CollisionStrategyElements();
 		this.pNoKey = new NoKeyElements();
+		this.pAbstractBusinessRule = new AbstractBusinessRuleElements();
 		this.pAbstractMethod = new AbstractMethodElements();
 		this.pConstructor = new ConstructorElements();
 		this.pReturnType = new ReturnTypeElements();
@@ -6970,9 +7005,14 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	///**
 	// * Common properties of domain model elements. Only a module holds these directly - 'BusinessRule' is
 	// * part of it so a rule that applies across contexts can be declared once at module level.
+	// *
+	// * It is 'AbstractBusinessRule' rather than 'BusinessRule' so that a rule and a key take their 'doc'
+	// * and 'name' from one place. Listing both supertypes side by side gives each of them twice, and EMF
+	// * writes the duplicate straight into the generated package. The cost is that a 'key' parses here as
+	// * well, where it has no type to name attributes of; 'checkKeyIsDeclaredInAType' refuses it there.
 	// */
 	//AbstractElement:
-	//    Constraint | Annotation | Type | Exception | BusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
+	//    Constraint | Annotation | Type | Exception | AbstractBusinessRule | Event | Command | CommandHandler | Projection | View | ProcessManager | DataProtection;
 	public AbstractElementElements getAbstractElementAccess() {
 		return pAbstractElement;
 	}
@@ -7695,7 +7735,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//Key:
 	//    doc=DOC
 	//    'key' name=ID ('exception' exception=[Exception|FQN])? '{'
-	//        'attributes' attributes+=[Attribute|ID] (',' attributes+=[Attribute|ID])*
+	//        'attributes' keyAttributes+=[Attribute|ID] (',' keyAttributes+=[Attribute|ID])*
 	//        'on-collision' onCollision=CollisionStrategy
 	//        consistency=Consistency
 	//        ('display-as' displayAs=STRING)?
@@ -7737,6 +7777,25 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getNoKeyRule() {
 		return getNoKeyAccess().getRule();
+	}
+	
+	///**
+	// * What an operation may name where it says which rules it checks. A business key derives a uniqueness
+	// * rule, so an operation has to be able to name one - and naming it, rather than letting the generator
+	// * work out which operations check a key, is what keeps the model saying where a key is enforced.
+	// *
+	// * The feature holding a key's attributes is called 'keyAttributes' rather than 'attributes' for this
+	// * union's sake: a rule *declares* its attributes and a key *references* the type's, so merging two
+	// * features of the same name across the alternatives would mean merging a containment with a reference.
+	// */
+	//AbstractBusinessRule:
+	//    BusinessRule | Key;
+	public AbstractBusinessRuleElements getAbstractBusinessRuleAccess() {
+		return pAbstractBusinessRule;
+	}
+	
+	public ParserRule getAbstractBusinessRuleRule() {
+		return getAbstractBusinessRuleAccess().getRule();
 	}
 	
 	///** Common properties of methods. */
@@ -7944,7 +8003,7 @@ public class CqrsDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	// * value may be a method parameter on one and a field on another, and the service differs too.
 	// */
 	//BusinessRuleInstance:
-	//    businessRule=[BusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
+	//    businessRule=[AbstractBusinessRule|FQN] ('(' params+=RuleArgument (',' params+=RuleArgument)* ')')?;
 	public BusinessRuleInstanceElements getBusinessRuleInstanceAccess() {
 		return pBusinessRuleInstance;
 	}

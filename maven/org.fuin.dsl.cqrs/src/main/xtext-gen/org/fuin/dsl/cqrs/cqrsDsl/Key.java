@@ -5,8 +5,6 @@ package org.fuin.dsl.cqrs.cqrsDsl;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Key</b></em>'.
@@ -16,12 +14,8 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getDoc <em>Doc</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getName <em>Name</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getException <em>Exception</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getKeyAttributes <em>Key Attributes</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getOnCollision <em>On Collision</em>}</li>
- *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getConsistency <em>Consistency</em>}</li>
  *   <li>{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getDisplayAs <em>Display As</em>}</li>
  * </ul>
  *
@@ -29,85 +23,19 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Key extends EObject
+public interface Key extends AbstractBusinessRule
 {
   /**
-   * Returns the value of the '<em><b>Doc</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Doc</em>' attribute.
-   * @see #setDoc(String)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_Doc()
-   * @model
-   * @generated
-   */
-  String getDoc();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getDoc <em>Doc</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Doc</em>' attribute.
-   * @see #getDoc()
-   * @generated
-   */
-  void setDoc(String value);
-
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_Name()
-   * @model
-   * @generated
-   */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Exception</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Exception</em>' reference.
-   * @see #setException(org.fuin.dsl.cqrs.cqrsDsl.Exception)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_Exception()
-   * @model
-   * @generated
-   */
-  org.fuin.dsl.cqrs.cqrsDsl.Exception getException();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getException <em>Exception</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Exception</em>' reference.
-   * @see #getException()
-   * @generated
-   */
-  void setException(org.fuin.dsl.cqrs.cqrsDsl.Exception value);
-
-  /**
-   * Returns the value of the '<em><b>Attributes</b></em>' reference list.
+   * Returns the value of the '<em><b>Key Attributes</b></em>' reference list.
    * The list contents are of type {@link org.fuin.dsl.cqrs.cqrsDsl.Attribute}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Attributes</em>' reference list.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_Attributes()
+   * @return the value of the '<em>Key Attributes</em>' reference list.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_KeyAttributes()
    * @model
    * @generated
    */
-  EList<Attribute> getAttributes();
+  EList<Attribute> getKeyAttributes();
 
   /**
    * Returns the value of the '<em><b>On Collision</b></em>' attribute.
@@ -133,28 +61,6 @@ public interface Key extends EObject
    * @generated
    */
   void setOnCollision(CollisionStrategy value);
-
-  /**
-   * Returns the value of the '<em><b>Consistency</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Consistency</em>' containment reference.
-   * @see #setConsistency(Consistency)
-   * @see org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage#getKey_Consistency()
-   * @model containment="true"
-   * @generated
-   */
-  Consistency getConsistency();
-
-  /**
-   * Sets the value of the '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getConsistency <em>Consistency</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Consistency</em>' containment reference.
-   * @see #getConsistency()
-   * @generated
-   */
-  void setConsistency(Consistency value);
 
   /**
    * Returns the value of the '<em><b>Display As</b></em>' attribute.

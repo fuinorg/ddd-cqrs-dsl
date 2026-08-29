@@ -1311,6 +1311,61 @@ public interface CqrsDslPackage extends EPackage
   int CONSTRAINT_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
 
   /**
+   * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractBusinessRuleImpl <em>Abstract Business Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractBusinessRuleImpl
+   * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAbstractBusinessRule()
+   * @generated
+   */
+  int ABSTRACT_BUSINESS_RULE = 38;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_BUSINESS_RULE__DOC = ABSTRACT_ELEMENT__DOC;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_BUSINESS_RULE__NAME = ABSTRACT_ELEMENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Exception</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_BUSINESS_RULE__EXCEPTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Consistency</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_BUSINESS_RULE__CONSISTENCY = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Abstract Business Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ABSTRACT_BUSINESS_RULE_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.BusinessRuleImpl <em>Business Rule</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1327,7 +1382,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__DOC = ABSTRACT_ELEMENT__DOC;
+  int BUSINESS_RULE__DOC = ABSTRACT_BUSINESS_RULE__DOC;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1336,7 +1391,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__NAME = ABSTRACT_ELEMENT__NAME;
+  int BUSINESS_RULE__NAME = ABSTRACT_BUSINESS_RULE__NAME;
 
   /**
    * The feature id for the '<em><b>Exception</b></em>' reference.
@@ -1345,16 +1400,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__EXCEPTION = ABSTRACT_ELEMENT_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BUSINESS_RULE__ATTRIBUTES = ABSTRACT_ELEMENT_FEATURE_COUNT + 1;
+  int BUSINESS_RULE__EXCEPTION = ABSTRACT_BUSINESS_RULE__EXCEPTION;
 
   /**
    * The feature id for the '<em><b>Consistency</b></em>' containment reference.
@@ -1363,7 +1409,16 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__CONSISTENCY = ABSTRACT_ELEMENT_FEATURE_COUNT + 2;
+  int BUSINESS_RULE__CONSISTENCY = ABSTRACT_BUSINESS_RULE__CONSISTENCY;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BUSINESS_RULE__ATTRIBUTES = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Requires</b></em>' containment reference.
@@ -1372,7 +1427,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE__REQUIRES = ABSTRACT_ELEMENT_FEATURE_COUNT + 3;
+  int BUSINESS_RULE__REQUIRES = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Business Rule</em>' class.
@@ -1381,7 +1436,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUSINESS_RULE_FEATURE_COUNT = ABSTRACT_ELEMENT_FEATURE_COUNT + 4;
+  int BUSINESS_RULE_FEATURE_COUNT = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.RuleExprImpl <em>Rule Expr</em>}' class.
@@ -2613,7 +2668,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY__DOC = 0;
+  int KEY__DOC = ABSTRACT_BUSINESS_RULE__DOC;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2622,7 +2677,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY__NAME = 1;
+  int KEY__NAME = ABSTRACT_BUSINESS_RULE__NAME;
 
   /**
    * The feature id for the '<em><b>Exception</b></em>' reference.
@@ -2631,25 +2686,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY__EXCEPTION = 2;
-
-  /**
-   * The feature id for the '<em><b>Attributes</b></em>' reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int KEY__ATTRIBUTES = 3;
-
-  /**
-   * The feature id for the '<em><b>On Collision</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int KEY__ON_COLLISION = 4;
+  int KEY__EXCEPTION = ABSTRACT_BUSINESS_RULE__EXCEPTION;
 
   /**
    * The feature id for the '<em><b>Consistency</b></em>' containment reference.
@@ -2658,7 +2695,25 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY__CONSISTENCY = 5;
+  int KEY__CONSISTENCY = ABSTRACT_BUSINESS_RULE__CONSISTENCY;
+
+  /**
+   * The feature id for the '<em><b>Key Attributes</b></em>' reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int KEY__KEY_ATTRIBUTES = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>On Collision</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int KEY__ON_COLLISION = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Display As</b></em>' attribute.
@@ -2667,7 +2722,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY__DISPLAY_AS = 6;
+  int KEY__DISPLAY_AS = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Key</em>' class.
@@ -2676,7 +2731,7 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int KEY_FEATURE_COUNT = 7;
+  int KEY_FEATURE_COUNT = ABSTRACT_BUSINESS_RULE_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.NoKeyImpl <em>No Key</em>}' class.
@@ -2714,7 +2769,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAbstractMethod()
    * @generated
    */
-  int ABSTRACT_METHOD = 38;
+  int ABSTRACT_METHOD = 39;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2814,7 +2869,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConstructor()
    * @generated
    */
-  int CONSTRUCTOR = 39;
+  int CONSTRUCTOR = 40;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2914,7 +2969,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getReturnType()
    * @generated
    */
-  int RETURN_TYPE = 40;
+  int RETURN_TYPE = 41;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -2969,7 +3024,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getMethod()
    * @generated
    */
-  int METHOD = 41;
+  int METHOD = 42;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3114,7 +3169,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTypeMetaInfo()
    * @generated
    */
-  int TYPE_META_INFO = 42;
+  int TYPE_META_INFO = 43;
 
   /**
    * The feature id for the '<em><b>Slabel</b></em>' attribute.
@@ -3178,7 +3233,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getVariable()
    * @generated
    */
-  int VARIABLE = 43;
+  int VARIABLE = 44;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3251,7 +3306,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getGenericArgs()
    * @generated
    */
-  int GENERIC_ARGS = 44;
+  int GENERIC_ARGS = 45;
 
   /**
    * The feature id for the '<em><b>Args</b></em>' reference list.
@@ -3279,7 +3334,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAttribute()
    * @generated
    */
-  int ATTRIBUTE = 45;
+  int ATTRIBUTE = 46;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3370,7 +3425,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getParameter()
    * @generated
    */
-  int PARAMETER = 46;
+  int PARAMETER = 47;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3461,7 +3516,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInvariants()
    * @generated
    */
-  int INVARIANTS = 47;
+  int INVARIANTS = 48;
 
   /**
    * The feature id for the '<em><b>Constraint Instances</b></em>' containment reference list.
@@ -3489,7 +3544,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getPreconditions()
    * @generated
    */
-  int PRECONDITIONS = 48;
+  int PRECONDITIONS = 49;
 
   /**
    * The feature id for the '<em><b>Constraint Instances</b></em>' containment reference list.
@@ -3517,7 +3572,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBusinessRules()
    * @generated
    */
-  int BUSINESS_RULES = 49;
+  int BUSINESS_RULES = 50;
 
   /**
    * The feature id for the '<em><b>Business Rule Instances</b></em>' containment reference list.
@@ -3545,7 +3600,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getOverriddenTypeMetaInfo()
    * @generated
    */
-  int OVERRIDDEN_TYPE_META_INFO = 50;
+  int OVERRIDDEN_TYPE_META_INFO = 51;
 
   /**
    * The feature id for the '<em><b>Meta Info</b></em>' containment reference.
@@ -3582,7 +3637,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConstraintInstance()
    * @generated
    */
-  int CONSTRAINT_INSTANCE = 51;
+  int CONSTRAINT_INSTANCE = 52;
 
   /**
    * The feature id for the '<em><b>Constraint</b></em>' reference.
@@ -3619,7 +3674,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBusinessRuleInstance()
    * @generated
    */
-  int BUSINESS_RULE_INSTANCE = 52;
+  int BUSINESS_RULE_INSTANCE = 53;
 
   /**
    * The feature id for the '<em><b>Business Rule</b></em>' reference.
@@ -3656,7 +3711,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleArgument()
    * @generated
    */
-  int RULE_ARGUMENT = 53;
+  int RULE_ARGUMENT = 54;
 
   /**
    * The number of structural features of the '<em>Rule Argument</em>' class.
@@ -3675,7 +3730,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getServiceCallArgument()
    * @generated
    */
-  int SERVICE_CALL_ARGUMENT = 54;
+  int SERVICE_CALL_ARGUMENT = 55;
 
   /**
    * The feature id for the '<em><b>Method</b></em>' reference.
@@ -3712,7 +3767,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAnnotationInstance()
    * @generated
    */
-  int ANNOTATION_INSTANCE = 55;
+  int ANNOTATION_INSTANCE = 56;
 
   /**
    * The feature id for the '<em><b>Annotation</b></em>' reference.
@@ -3749,7 +3804,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getService()
    * @generated
    */
-  int SERVICE = 56;
+  int SERVICE = 57;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3804,7 +3859,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCommand()
    * @generated
    */
-  int COMMAND = 57;
+  int COMMAND = 58;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3895,7 +3950,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCommandHandler()
    * @generated
    */
-  int COMMAND_HANDLER = 58;
+  int COMMAND_HANDLER = 59;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3950,7 +4005,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProjection()
    * @generated
    */
-  int PROJECTION = 59;
+  int PROJECTION = 60;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -3996,7 +4051,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getView()
    * @generated
    */
-  int VIEW = 60;
+  int VIEW = 61;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -4096,7 +4151,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessManager()
    * @generated
    */
-  int PROCESS_MANAGER = 61;
+  int PROCESS_MANAGER = 62;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -4169,7 +4224,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessState()
    * @generated
    */
-  int PROCESS_STATE = 62;
+  int PROCESS_STATE = 63;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -4206,7 +4261,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProcessReaction()
    * @generated
    */
-  int PROCESS_REACTION = 63;
+  int PROCESS_REACTION = 64;
 
   /**
    * The feature id for the '<em><b>Doc</b></em>' attribute.
@@ -4297,7 +4352,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJSON()
    * @generated
    */
-  int JSON = 64;
+  int JSON = 65;
 
   /**
    * The number of structural features of the '<em>JSON</em>' class.
@@ -4316,7 +4371,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonObject()
    * @generated
    */
-  int JSON_OBJECT = 65;
+  int JSON_OBJECT = 66;
 
   /**
    * The feature id for the '<em><b>Members</b></em>' containment reference list.
@@ -4344,7 +4399,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonMember()
    * @generated
    */
-  int JSON_MEMBER = 66;
+  int JSON_MEMBER = 67;
 
   /**
    * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -4381,7 +4436,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonArray()
    * @generated
    */
-  int JSON_ARRAY = 67;
+  int JSON_ARRAY = 68;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -4409,7 +4464,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonString()
    * @generated
    */
-  int JSON_STRING = 68;
+  int JSON_STRING = 69;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4437,7 +4492,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonNumber()
    * @generated
    */
-  int JSON_NUMBER = 69;
+  int JSON_NUMBER = 70;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4465,7 +4520,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonBoolean()
    * @generated
    */
-  int JSON_BOOLEAN = 70;
+  int JSON_BOOLEAN = 71;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4493,7 +4548,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getJsonNull()
    * @generated
    */
-  int JSON_NULL = 71;
+  int JSON_NULL = 72;
 
   /**
    * The number of structural features of the '<em>Json Null</em>' class.
@@ -4512,7 +4567,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 72;
+  int BOOLEAN_LITERAL = 73;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4540,7 +4595,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 73;
+  int NULL_LITERAL = 74;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4568,7 +4623,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getNumberLiteral()
    * @generated
    */
-  int NUMBER_LITERAL = 74;
+  int NUMBER_LITERAL = 75;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4596,7 +4651,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 75;
+  int STRING_LITERAL = 76;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -4624,7 +4679,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleOr()
    * @generated
    */
-  int RULE_OR = 76;
+  int RULE_OR = 77;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -4661,7 +4716,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleAnd()
    * @generated
    */
-  int RULE_AND = 77;
+  int RULE_AND = 78;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -4698,7 +4753,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleNot()
    * @generated
    */
-  int RULE_NOT = 78;
+  int RULE_NOT = 79;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -4726,7 +4781,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleAttrRef()
    * @generated
    */
-  int RULE_ATTR_REF = 79;
+  int RULE_ATTR_REF = 80;
 
   /**
    * The feature id for the '<em><b>Attribute</b></em>' reference.
@@ -4754,7 +4809,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleComparison()
    * @generated
    */
-  int RULE_COMPARISON = 80;
+  int RULE_COMPARISON = 81;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -4800,7 +4855,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleIsEmpty()
    * @generated
    */
-  int RULE_IS_EMPTY = 81;
+  int RULE_IS_EMPTY = 82;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -4828,7 +4883,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleRefOperand()
    * @generated
    */
-  int RULE_REF_OPERAND = 82;
+  int RULE_REF_OPERAND = 83;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' reference.
@@ -4856,7 +4911,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleNullOperand()
    * @generated
    */
-  int RULE_NULL_OPERAND = 83;
+  int RULE_NULL_OPERAND = 84;
 
   /**
    * The feature id for the '<em><b>Null Value</b></em>' attribute.
@@ -4884,7 +4939,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getRuleLiteralOperand()
    * @generated
    */
-  int RULE_LITERAL_OPERAND = 84;
+  int RULE_LITERAL_OPERAND = 85;
 
   /**
    * The feature id for the '<em><b>Literal</b></em>' containment reference.
@@ -4912,7 +4967,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLiteralArgument()
    * @generated
    */
-  int LITERAL_ARGUMENT = 85;
+  int LITERAL_ARGUMENT = 86;
 
   /**
    * The feature id for the '<em><b>Literal</b></em>' containment reference.
@@ -4940,7 +4995,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getIdentityArgument()
    * @generated
    */
-  int IDENTITY_ARGUMENT = 86;
+  int IDENTITY_ARGUMENT = 87;
 
   /**
    * The number of structural features of the '<em>Identity Argument</em>' class.
@@ -4959,7 +5014,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getEntityPathArgument()
    * @generated
    */
-  int ENTITY_PATH_ARGUMENT = 87;
+  int ENTITY_PATH_ARGUMENT = 88;
 
   /**
    * The number of structural features of the '<em>Entity Path Argument</em>' class.
@@ -4978,7 +5033,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCarrierAttributeArgument()
    * @generated
    */
-  int CARRIER_ATTRIBUTE_ARGUMENT = 88;
+  int CARRIER_ATTRIBUTE_ARGUMENT = 89;
 
   /**
    * The feature id for the '<em><b>Attribute</b></em>' reference.
@@ -5006,7 +5061,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getVariableArgument()
    * @generated
    */
-  int VARIABLE_ARGUMENT = 89;
+  int VARIABLE_ARGUMENT = 90;
 
   /**
    * The feature id for the '<em><b>Variable</b></em>' reference.
@@ -5034,7 +5089,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getTimeUnit()
    * @generated
    */
-  int TIME_UNIT = 90;
+  int TIME_UNIT = 91;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ConsistencyLevel <em>Consistency Level</em>}' enum.
@@ -5044,7 +5099,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getConsistencyLevel()
    * @generated
    */
-  int CONSISTENCY_LEVEL = 91;
+  int CONSISTENCY_LEVEL = 92;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyDetection <em>Inconsistency Detection</em>}' enum.
@@ -5054,7 +5109,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyDetection()
    * @generated
    */
-  int INCONSISTENCY_DETECTION = 92;
+  int INCONSISTENCY_DETECTION = 93;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.InconsistencyResolution <em>Inconsistency Resolution</em>}' enum.
@@ -5064,7 +5119,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getInconsistencyResolution()
    * @generated
    */
-  int INCONSISTENCY_RESOLUTION = 93;
+  int INCONSISTENCY_RESOLUTION = 94;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ProtectionLevel <em>Protection Level</em>}' enum.
@@ -5074,7 +5129,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getProtectionLevel()
    * @generated
    */
-  int PROTECTION_LEVEL = 94;
+  int PROTECTION_LEVEL = 95;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.LawfulBasis <em>Lawful Basis</em>}' enum.
@@ -5084,7 +5139,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getLawfulBasis()
    * @generated
    */
-  int LAWFUL_BASIS = 95;
+  int LAWFUL_BASIS = 96;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.SpecialCategory <em>Special Category</em>}' enum.
@@ -5094,7 +5149,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getSpecialCategory()
    * @generated
    */
-  int SPECIAL_CATEGORY = 96;
+  int SPECIAL_CATEGORY = 97;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.ErasureStrategy <em>Erasure Strategy</em>}' enum.
@@ -5104,7 +5159,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getErasureStrategy()
    * @generated
    */
-  int ERASURE_STRATEGY = 97;
+  int ERASURE_STRATEGY = 98;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.CompareOp <em>Compare Op</em>}' enum.
@@ -5114,7 +5169,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCompareOp()
    * @generated
    */
-  int COMPARE_OP = 98;
+  int COMPARE_OP = 99;
 
   /**
    * The meta object id for the '{@link org.fuin.dsl.cqrs.cqrsDsl.CollisionStrategy <em>Collision Strategy</em>}' enum.
@@ -5124,7 +5179,7 @@ public interface CqrsDslPackage extends EPackage
    * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getCollisionStrategy()
    * @generated
    */
-  int COLLISION_STRATEGY = 99;
+  int COLLISION_STRATEGY = 100;
 
 
   /**
@@ -6043,17 +6098,6 @@ public interface CqrsDslPackage extends EPackage
   EClass getBusinessRule();
 
   /**
-   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException <em>Exception</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Exception</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getException()
-   * @see #getBusinessRule()
-   * @generated
-   */
-  EReference getBusinessRule_Exception();
-
-  /**
    * Returns the meta object for the containment reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getAttributes <em>Attributes</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6063,17 +6107,6 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EReference getBusinessRule_Attributes();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency <em>Consistency</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Consistency</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getConsistency()
-   * @see #getBusinessRule()
-   * @generated
-   */
-  EReference getBusinessRule_Consistency();
 
   /**
    * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.BusinessRule#getRequires <em>Requires</em>}'.
@@ -6587,48 +6620,15 @@ public interface CqrsDslPackage extends EPackage
   EClass getKey();
 
   /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getDoc <em>Doc</em>}'.
+   * Returns the meta object for the reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getKeyAttributes <em>Key Attributes</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Doc</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getDoc()
+   * @return the meta object for the reference list '<em>Key Attributes</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getKeyAttributes()
    * @see #getKey()
    * @generated
    */
-  EAttribute getKey_Doc();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getName()
-   * @see #getKey()
-   * @generated
-   */
-  EAttribute getKey_Name();
-
-  /**
-   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getException <em>Exception</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Exception</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getException()
-   * @see #getKey()
-   * @generated
-   */
-  EReference getKey_Exception();
-
-  /**
-   * Returns the meta object for the reference list '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getAttributes <em>Attributes</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference list '<em>Attributes</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getAttributes()
-   * @see #getKey()
-   * @generated
-   */
-  EReference getKey_Attributes();
+  EReference getKey_KeyAttributes();
 
   /**
    * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getOnCollision <em>On Collision</em>}'.
@@ -6640,17 +6640,6 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EAttribute getKey_OnCollision();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getConsistency <em>Consistency</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Consistency</em>'.
-   * @see org.fuin.dsl.cqrs.cqrsDsl.Key#getConsistency()
-   * @see #getKey()
-   * @generated
-   */
-  EReference getKey_Consistency();
 
   /**
    * Returns the meta object for the attribute '{@link org.fuin.dsl.cqrs.cqrsDsl.Key#getDisplayAs <em>Display As</em>}'.
@@ -6683,6 +6672,38 @@ public interface CqrsDslPackage extends EPackage
    * @generated
    */
   EAttribute getNoKey_Doc();
+
+  /**
+   * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule <em>Abstract Business Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Abstract Business Rule</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule
+   * @generated
+   */
+  EClass getAbstractBusinessRule();
+
+  /**
+   * Returns the meta object for the reference '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule#getException <em>Exception</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Exception</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule#getException()
+   * @see #getAbstractBusinessRule()
+   * @generated
+   */
+  EReference getAbstractBusinessRule_Exception();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule#getConsistency <em>Consistency</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Consistency</em>'.
+   * @see org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule#getConsistency()
+   * @see #getAbstractBusinessRule()
+   * @generated
+   */
+  EReference getAbstractBusinessRule_Consistency();
 
   /**
    * Returns the meta object for class '{@link org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod <em>Abstract Method</em>}'.
@@ -9170,28 +9191,12 @@ public interface CqrsDslPackage extends EPackage
     EClass BUSINESS_RULE = eINSTANCE.getBusinessRule();
 
     /**
-     * The meta object literal for the '<em><b>Exception</b></em>' reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BUSINESS_RULE__EXCEPTION = eINSTANCE.getBusinessRule_Exception();
-
-    /**
      * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EReference BUSINESS_RULE__ATTRIBUTES = eINSTANCE.getBusinessRule_Attributes();
-
-    /**
-     * The meta object literal for the '<em><b>Consistency</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BUSINESS_RULE__CONSISTENCY = eINSTANCE.getBusinessRule_Consistency();
 
     /**
      * The meta object literal for the '<em><b>Requires</b></em>' containment reference feature.
@@ -9612,36 +9617,12 @@ public interface CqrsDslPackage extends EPackage
     EClass KEY = eINSTANCE.getKey();
 
     /**
-     * The meta object literal for the '<em><b>Doc</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Key Attributes</b></em>' reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute KEY__DOC = eINSTANCE.getKey_Doc();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute KEY__NAME = eINSTANCE.getKey_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Exception</b></em>' reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference KEY__EXCEPTION = eINSTANCE.getKey_Exception();
-
-    /**
-     * The meta object literal for the '<em><b>Attributes</b></em>' reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference KEY__ATTRIBUTES = eINSTANCE.getKey_Attributes();
+    EReference KEY__KEY_ATTRIBUTES = eINSTANCE.getKey_KeyAttributes();
 
     /**
      * The meta object literal for the '<em><b>On Collision</b></em>' attribute feature.
@@ -9650,14 +9631,6 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EAttribute KEY__ON_COLLISION = eINSTANCE.getKey_OnCollision();
-
-    /**
-     * The meta object literal for the '<em><b>Consistency</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference KEY__CONSISTENCY = eINSTANCE.getKey_Consistency();
 
     /**
      * The meta object literal for the '<em><b>Display As</b></em>' attribute feature.
@@ -9684,6 +9657,32 @@ public interface CqrsDslPackage extends EPackage
      * @generated
      */
     EAttribute NO_KEY__DOC = eINSTANCE.getNoKey_Doc();
+
+    /**
+     * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractBusinessRuleImpl <em>Abstract Business Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractBusinessRuleImpl
+     * @see org.fuin.dsl.cqrs.cqrsDsl.impl.CqrsDslPackageImpl#getAbstractBusinessRule()
+     * @generated
+     */
+    EClass ABSTRACT_BUSINESS_RULE = eINSTANCE.getAbstractBusinessRule();
+
+    /**
+     * The meta object literal for the '<em><b>Exception</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ABSTRACT_BUSINESS_RULE__EXCEPTION = eINSTANCE.getAbstractBusinessRule_Exception();
+
+    /**
+     * The meta object literal for the '<em><b>Consistency</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ABSTRACT_BUSINESS_RULE__CONSISTENCY = eINSTANCE.getAbstractBusinessRule_Consistency();
 
     /**
      * The meta object literal for the '{@link org.fuin.dsl.cqrs.cqrsDsl.impl.AbstractMethodImpl <em>Abstract Method</em>}' class.

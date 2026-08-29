@@ -37,6 +37,7 @@ import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.fuin.dsl.cqrs.analysis.CqrsModuleDependencies;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
@@ -59,6 +60,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.CqrsDslPackage;
 import org.fuin.dsl.cqrs.cqrsDsl.Dependency;
 import org.fuin.dsl.cqrs.cqrsDsl.Entity;
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType;
+import org.fuin.dsl.cqrs.cqrsDsl.EntityPathArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Event;
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType;
 import org.fuin.dsl.cqrs.cqrsDsl.GenericArgs;
@@ -66,9 +69,11 @@ import org.fuin.dsl.cqrs.cqrsDsl.Hint;
 import org.fuin.dsl.cqrs.cqrsDsl.IdentityArgument;
 import org.fuin.dsl.cqrs.cqrsDsl.Import;
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType;
+import org.fuin.dsl.cqrs.cqrsDsl.Key;
 import org.fuin.dsl.cqrs.cqrsDsl.Literal;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
+import org.fuin.dsl.cqrs.cqrsDsl.PathSegment;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessManager;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessReaction;
 import org.fuin.dsl.cqrs.cqrsDsl.ProcessState;
@@ -78,6 +83,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleAttrRef;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleComparison;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleOperand;
 import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand;
+import org.fuin.dsl.cqrs.cqrsDsl.SegmentRange;
 import org.fuin.dsl.cqrs.cqrsDsl.Service;
 import org.fuin.dsl.cqrs.cqrsDsl.Type;
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject;
@@ -93,6 +99,7 @@ import org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension;
 import org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions;
+import org.fuin.dsl.cqrs.extensions.CqrsKeyExtensions;
 import org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions;
 import org.fuin.dsl.cqrs.scoping.CqrsDependencies;
 import org.fuin.dsl.cqrs.scoping.CqrsModelArchives;
@@ -137,6 +144,12 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
 
   public static final String RULE_OWN_ID_IN_CONSTRUCTOR = "ruleOwnIdInConstructor";
 
+  public static final String RULE_OWN_PATH_IN_CONSTRUCTOR = "ruleOwnPathInConstructor";
+
+  public static final String RULE_OWN_PATH_NOT_ON_ENTITY = "ruleOwnPathNotOnEntity";
+
+  public static final String RULE_OWN_PATH_HAS_NO_TYPE = "ruleOwnPathHasNoType";
+
   public static final String RULE_OWN_ATTRIBUTE_IN_CONSTRUCTOR = "ruleOwnAttributeInConstructor";
 
   public static final String RULE_EXCEPTION_NOT_SUPPLIED = "ruleExceptionNotSupplied";
@@ -144,6 +157,14 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String RULE_ACTUALS_MISMATCH = "ruleActualsMismatch";
 
   public static final String RULE_COMPARISON_TYPE_MISMATCH = "ruleComparisonTypeMismatch";
+
+  public static final String KEY_OUTSIDE_TYPE = "keyOutsideType";
+
+  public static final String KEY_EXCEPTION_MISMATCH = "keyExceptionMismatch";
+
+  public static final String KEY_SEVERAL_DISPLAY_KEYS = "keySeveralDisplayKeys";
+
+  public static final String KEY_DISPLAY_UNKNOWN_VAR = "keyDisplayUnknownVar";
 
   public static final String EXCEPTION_DUPLICATE_CID = "exceptionDuplicateCID";
 
@@ -162,6 +183,14 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String MODULE_DEPENDENCY_CYCLE = "moduleDependencyCycle";
 
   public static final String ROW_CANNOT_ANSWER_GATE = "rowCannotAnswerGate";
+
+  public static final String PATH_NEEDS_MORE_THAN_A_ROOT = "pathNeedsMoreThanARoot";
+
+  public static final String PATH_MUST_START_AT_A_ROOT = "pathMustStartAtARoot";
+
+  public static final String PATH_SEGMENT_NOT_OF_ROOT = "pathSegmentNotOfRoot";
+
+  public static final String PATH_RANGE_INVALID = "pathRangeInvalid";
 
   public static final String SERVICE_METHOD_CANNOT_FIRE_EVENTS = "serviceMethodCannotFireEvents";
 
@@ -851,7 +880,7 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         String _plus_3 = (_plus_2 + _name_2);
         String _plus_4 = (_plus_3 + " does not declare it");
         this.error(_plus_4, rule, 
-          CqrsDslPackage.Literals.BUSINESS_RULE__EXCEPTION, 
+          CqrsDslPackage.Literals.ABSTRACT_BUSINESS_RULE__EXCEPTION, 
           CqrsDslValidator.RULE_EXCEPTION_NOT_SUPPLIED);
         return;
       }
@@ -914,22 +943,140 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
    */
   @Check
   public void checkRuleActuals(final BusinessRuleInstance instance) {
-    final BusinessRule rule = instance.getBusinessRule();
+    final AbstractBusinessRule rule = instance.getBusinessRule();
     if (((rule == null) || rule.eIsProxy())) {
       return;
     }
-    final int expected = CqrsCollectionExtensions.<Attribute>nullSafe(rule.getAttributes()).size();
     final int actual = CqrsCollectionExtensions.<RuleArgument>nullSafe(instance.getParams()).size();
+    if ((rule instanceof Key)) {
+      final int full = CqrsKeyExtensions.derivedAttributeCount(((Key)rule));
+      if (((actual != 0) && (actual != full))) {
+        String _name = ((Key)rule).getName();
+        String _plus = (_name + " is derived from no values or from all ");
+        String _plus_1 = (_plus + Integer.valueOf(full));
+        String _plus_2 = (_plus_1 + ", but ");
+        String _plus_3 = (_plus_2 + Integer.valueOf(actual));
+        String _plus_4 = (_plus_3 + " were given");
+        this.error(_plus_4, instance, 
+          CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
+          CqrsDslValidator.RULE_ACTUALS_MISMATCH);
+      }
+      return;
+    }
+    final int expected = CqrsCollectionExtensions.<Attribute>nullSafe(((BusinessRule) rule).getAttributes()).size();
     if ((expected != actual)) {
-      String _name = rule.getName();
-      String _plus = (_name + " decides from ");
-      String _plus_1 = (_plus + Integer.valueOf(expected));
-      String _plus_2 = (_plus_1 + " value(s), but ");
-      String _plus_3 = (_plus_2 + Integer.valueOf(actual));
-      String _plus_4 = (_plus_3 + " were given");
-      this.error(_plus_4, instance, 
+      String _name_1 = rule.getName();
+      String _plus_5 = (_name_1 + " decides from ");
+      String _plus_6 = (_plus_5 + Integer.valueOf(expected));
+      String _plus_7 = (_plus_6 + " value(s), but ");
+      String _plus_8 = (_plus_7 + Integer.valueOf(actual));
+      String _plus_9 = (_plus_8 + " were given");
+      this.error(_plus_9, instance, 
         CqrsDslPackage.Literals.BUSINESS_RULE_INSTANCE__BUSINESS_RULE, 
         CqrsDslValidator.RULE_ACTUALS_MISMATCH);
+    }
+  }
+
+  /**
+   * Checks that a business key is declared inside the type it is a key of.
+   * 
+   * <p>A key parses at module level because 'AbstractElement' has to carry the union a rule usage
+   * references. There is nothing for it to be a key of there: its attributes are attributes of the
+   * declaring type, so every one of them would fail to link, and the reason would read as four
+   * unrelated errors instead of one.
+   */
+  @Check
+  public void checkKeyIsDeclaredInAType(final Key key) {
+    EObject _eContainer = key.eContainer();
+    boolean _not = (!(_eContainer instanceof AbstractEntity));
+    if (_not) {
+      String _name = key.getName();
+      String _plus = ("A business key belongs to the aggregate or entity it identifies, and \'" + _name);
+      String _plus_1 = (_plus + "\' is declared outside one");
+      this.error(_plus_1, key, 
+        CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, 
+        CqrsDslValidator.KEY_OUTSIDE_TYPE);
+    }
+  }
+
+  /**
+   * Checks that a key carries an exception exactly when a collision is a refusal.
+   * 
+   * <p>'overwrite' and 'skip' are what the handler does with the second occurrence; neither refuses
+   * anybody, so neither has anything to throw. An exception declared beside one is generated, never
+   * raised, and reads as a refusal that can happen.
+   */
+  @Check
+  public void checkKeyExceptionMatchesCollision(final Key key) {
+    if ((CqrsKeyExtensions.refuses(key) && (key.getException() == null))) {
+      String _name = key.getName();
+      String _plus = ("\'" + _name);
+      String _plus_1 = (_plus + "\' refuses a collision, so it needs the exception that says so");
+      this.error(_plus_1, key, 
+        CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, 
+        CqrsDslValidator.KEY_EXCEPTION_MISMATCH);
+    }
+    if (((!CqrsKeyExtensions.refuses(key)) && (key.getException() != null))) {
+      String _name_1 = key.getName();
+      String _plus_2 = ("\'" + _name_1);
+      String _plus_3 = (_plus_2 + "\' ");
+      String _literal = key.getOnCollision().getLiteral();
+      String _plus_4 = (_plus_3 + _literal);
+      String _plus_5 = (_plus_4 + "s a collision rather than refusing it, so it has nothing to throw");
+      this.error(_plus_5, key, 
+        CqrsDslPackage.Literals.ABSTRACT_BUSINESS_RULE__EXCEPTION, 
+        CqrsDslValidator.KEY_EXCEPTION_MISMATCH);
+    }
+  }
+
+  /**
+   * Checks that a type marks at most one of its keys as the one it is displayed by.
+   * 
+   * <p>'display-as' carries a format and its presence is the marking, so two of them are two answers
+   * to "what does a picker show", with no precedence rule to pick between them.
+   */
+  @Check
+  public void checkOneDisplayKeyPerType(final Key key) {
+    if (((key.getDisplayAs() == null) || (!(key.eContainer() instanceof AbstractEntity)))) {
+      return;
+    }
+    EObject _eContainer = key.eContainer();
+    final Function1<Key, Boolean> _function = (Key it) -> {
+      String _displayAs = it.getDisplayAs();
+      return Boolean.valueOf((_displayAs != null));
+    };
+    final List<Key> displaying = IterableExtensions.<Key>toList(IterableExtensions.<Key>filter(((AbstractEntity) _eContainer).getKeys(), _function));
+    if (((displaying.size() > 1) && (displaying.get(0) != key))) {
+      String _name = displaying.get(0).getName();
+      String _plus = ("\'" + _name);
+      String _plus_1 = (_plus + "\' already says how this type is displayed");
+      this.error(_plus_1, key, 
+        CqrsDslPackage.Literals.KEY__DISPLAY_AS, 
+        CqrsDslValidator.KEY_SEVERAL_DISPLAY_KEYS);
+    }
+  }
+
+  /**
+   * Checks that every variable in 'display-as' names an attribute of the declaring type.
+   * 
+   * <p>Deliberately the whole type rather than the key's own attributes: what a person recognises a
+   * thing by is not always what makes it unique. An account is keyed by its IBAN and read as
+   * "Business current account (CH93...)", and its name is no part of the key.
+   */
+  @Check
+  public void checkVariablesInDisplayAs(final Key key) {
+    if (((key.getDisplayAs() == null) || (!(key.eContainer() instanceof AbstractEntity)))) {
+      return;
+    }
+    EObject _eContainer = key.eContainer();
+    final String name = CqrsDslValidator.findUnknownVar(CqrsAttributeExtensions.asNames(((AbstractEntity) _eContainer).getAttributes()), key.getDisplayAs());
+    if ((name != null)) {
+      EObject _eContainer_1 = key.eContainer();
+      String _name = ((AbstractEntity) _eContainer_1).getName();
+      String _plus = ((("A variable \'" + name) + "\' is not an attribute of ") + _name);
+      this.error(_plus, key, 
+        CqrsDslPackage.Literals.KEY__DISPLAY_AS, 
+        CqrsDslValidator.KEY_DISPLAY_UNKNOWN_VAR);
     }
   }
 
@@ -941,6 +1088,55 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         "\'own-id\' has nothing to read in a constructor, which is what creates the identity", argument, 
         null, 
         CqrsDslValidator.RULE_OWN_ID_IN_CONSTRUCTOR);
+    }
+  }
+
+  /**
+   * 'own-path' addresses the carrier from its root, so it needs a carrier that has one - an entity
+   * inside an aggregate. An aggregate is addressed by its own id and has nothing to prepend; a
+   * constructor has no carrier at all.
+   * 
+   * <p>It also needs an 'entity-id-path' declared for the chain it would read as. Without one there is
+   * no type to hand over, and inventing an anonymous path here would put back the untyped reference the
+   * declaration exists to remove - so this says which declaration is missing rather than falling back.
+   */
+  @Check
+  public void checkOwnPath(final EntityPathArgument argument) {
+    Resource _eResource = argument.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    Constructor _containerOfType = EcoreUtil2.<Constructor>getContainerOfType(argument, Constructor.class);
+    boolean _tripleNotEquals = (_containerOfType != null);
+    if (_tripleNotEquals) {
+      this.error("\'own-path\' has nothing to read in a constructor, which is what creates the carrier", argument, null, CqrsDslValidator.RULE_OWN_PATH_IN_CONSTRUCTOR);
+      return;
+    }
+    final Entity entity = EcoreUtil2.<Entity>getContainerOfType(argument, Entity.class);
+    if ((entity == null)) {
+      this.error("\'own-path\' addresses an entity from its root; an aggregate is addressed by \'own-id\'", argument, null, CqrsDslValidator.RULE_OWN_PATH_NOT_ON_ENTITY);
+      return;
+    }
+    Aggregate _root = entity.getRoot();
+    boolean _tripleEquals = (_root == null);
+    if (_tripleEquals) {
+      return;
+    }
+    EntityIdPathType _pathTypeNullable = CqrsEntityExtensions.getPathTypeNullable(entity);
+    boolean _tripleEquals_1 = (_pathTypeNullable == null);
+    if (_tripleEquals_1) {
+      String _name = entity.getName();
+      String _plus = ("No \'entity-id-path\' addresses a \'" + _name);
+      String _plus_1 = (_plus + "\' inside \'");
+      String _name_1 = entity.getRoot().getName();
+      String _plus_2 = (_plus_1 + _name_1);
+      String _plus_3 = (_plus_2 + "\', so \'own-path\' has no type to read as; declare one");
+      this.error(_plus_3, argument, null, CqrsDslValidator.RULE_OWN_PATH_HAS_NO_TYPE);
     }
   }
 
@@ -1820,5 +2016,154 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
     int _minus_1 = (_size_2 - 1);
     String _get = quoted.get(_minus_1);
     return (_plus + _get);
+  }
+
+  /**
+   * Checks that a declared path is a shape a real identifier path could have.
+   * 
+   * <p>A path begins at an aggregate root and names the chain of children down to the thing it
+   * addresses: 'ANNUAL_TRANSACTIONS 2026-a/TRANSACTION 45'. Three things follow, and all three are
+   * mistakes a reader would otherwise only find when a path failed to validate at runtime - or never,
+   * because nothing generated would have said so.
+   * 
+   * <p>An aggregate reached <em>inside</em> a composite identifier is not a step:
+   * 'AnnualTransactionsId' is made of an account and a year, and the path still begins at
+   * 'ANNUAL_TRANSACTIONS'. Writing the account as a first step is the mistake this catches most often,
+   * because the prose of the model describes the pair as "the natural composite key (account, year)".
+   */
+  @Check
+  public void checkEntityIdPathShape(final EntityIdPathType path) {
+    Resource _eResource = path.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    final List<PathSegment> segments = CqrsCollectionExtensions.<PathSegment>nullSafe(path.getSegments());
+    int _size = segments.size();
+    boolean _lessThan = (_size < 2);
+    if (_lessThan) {
+      String _elvis = null;
+      PathSegment _head = IterableExtensions.<PathSegment>head(segments);
+      AbstractEntityId _type = null;
+      if (_head!=null) {
+        _type=_head.getType();
+      }
+      String _name = null;
+      if (_type!=null) {
+        _name=_type.getName();
+      }
+      if (_name != null) {
+        _elvis = _name;
+      } else {
+        _elvis = "the identifier type";
+      }
+      String _plus = ("A path of one step is the identifier itself - use \'" + _elvis);
+      String _plus_1 = (_plus + "\' rather than a path");
+      this.error(_plus_1, path, CqrsDslPackage.Literals.ABSTRACT_ELEMENT__NAME, CqrsDslValidator.PATH_NEEDS_MORE_THAN_A_ROOT);
+      return;
+    }
+    final AbstractEntityId first = IterableExtensions.<PathSegment>head(segments).getType();
+    if (((first != null) && (!(first instanceof AggregateId)))) {
+      String _name_1 = first.getName();
+      String _plus_2 = ("A path starts at an aggregate root, and \'" + _name_1);
+      String _plus_3 = (_plus_2 + "\' does not identify one");
+      this.error(_plus_3, 
+        IterableExtensions.<PathSegment>head(segments), CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_MUST_START_AT_A_ROOT);
+      return;
+    }
+    Aggregate _xifexpression = null;
+    if ((first instanceof AggregateId)) {
+      _xifexpression = ((AggregateId)first).getAggregate();
+    } else {
+      _xifexpression = null;
+    }
+    final Aggregate root = _xifexpression;
+    Iterable<PathSegment> _drop = IterableExtensions.<PathSegment>drop(segments, 1);
+    for (final PathSegment segment : _drop) {
+      {
+        final AbstractEntityId type = segment.getType();
+        if ((type != null)) {
+          if ((!(type instanceof EntityId))) {
+            String _name_2 = type.getName();
+            String _plus_4 = ("Only the first step is an aggregate; \'" + _name_2);
+            String _plus_5 = (_plus_4 + "\' has to identify an entity of \'");
+            String _elvis_1 = null;
+            String _name_3 = null;
+            if (root!=null) {
+              _name_3=root.getName();
+            }
+            if (_name_3 != null) {
+              _elvis_1 = _name_3;
+            } else {
+              _elvis_1 = "the root";
+            }
+            String _plus_6 = (_plus_5 + _elvis_1);
+            String _plus_7 = (_plus_6 + "\'");
+            this.error(_plus_7, segment, CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_SEGMENT_NOT_OF_ROOT);
+          } else {
+            if ((root != null)) {
+              final Entity entity = ((EntityId) type).getEntity();
+              if ((((entity != null) && (entity.getRoot() != null)) && (entity.getRoot() != root))) {
+                String _name_4 = entity.getName();
+                String _plus_8 = ("\'" + _name_4);
+                String _plus_9 = (_plus_8 + "\' belongs to \'");
+                String _name_5 = entity.getRoot().getName();
+                String _plus_10 = (_plus_9 + _name_5);
+                String _plus_11 = (_plus_10 + "\', not to \'");
+                String _name_6 = root.getName();
+                String _plus_12 = (_plus_11 + _name_6);
+                String _plus_13 = (_plus_12 + "\', so it cannot be a step of this path");
+                this.error(_plus_13, segment, CqrsDslPackage.Literals.PATH_SEGMENT__TYPE, CqrsDslValidator.PATH_SEGMENT_NOT_OF_ROOT);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks that a step's range can match something.
+   * 
+   * <p>Written out rather than marked with a symbol, because "may repeat" does not say whether the step
+   * may also be absent - so the bounds are stated, and stated bounds can contradict each other. Caught
+   * here rather than at runtime, where an impossible range silently rejects every path it is given.
+   */
+  @Check
+  public void checkSegmentRange(final SegmentRange range) {
+    Resource _eResource = range.eResource();
+    URI _uRI = null;
+    if (_eResource!=null) {
+      _uRI=_eResource.getURI();
+    }
+    boolean _isArchived = CqrsModelArchives.isArchived(_uRI);
+    if (_isArchived) {
+      return;
+    }
+    boolean _isUnbounded = range.isUnbounded();
+    if (_isUnbounded) {
+      return;
+    }
+    int _max = range.getMax();
+    boolean _lessThan = (_max < 1);
+    if (_lessThan) {
+      this.error("A step that accepts no identifier at all cannot be part of a path; leave it out instead", range, CqrsDslPackage.Literals.SEGMENT_RANGE__MAX, CqrsDslValidator.PATH_RANGE_INVALID);
+    } else {
+      int _max_1 = range.getMax();
+      int _min = range.getMin();
+      boolean _lessThan_1 = (_max_1 < _min);
+      if (_lessThan_1) {
+        int _min_1 = range.getMin();
+        String _plus = ("The range is empty: at least " + Integer.valueOf(_min_1));
+        String _plus_1 = (_plus + " but at most ");
+        int _max_2 = range.getMax();
+        String _plus_2 = (_plus_1 + Integer.valueOf(_max_2));
+        this.error(_plus_2, range, CqrsDslPackage.Literals.SEGMENT_RANGE__MAX, CqrsDslValidator.PATH_RANGE_INVALID);
+      }
+    }
   }
 }

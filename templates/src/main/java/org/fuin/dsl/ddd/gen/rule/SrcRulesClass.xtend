@@ -18,6 +18,7 @@ import static org.fuin.dsl.cqrs.cqrsDsl.CqrsDslFactory.eINSTANCE
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsDslFactoryExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
@@ -92,7 +93,7 @@ class SrcRulesClass {
     def static List<BusinessRuleInstance> decidable(AbstractMethod operation) {
         val out = new ArrayList<BusinessRuleInstance>()
         for (instance : operation.businessRules?.businessRuleInstances.nullSafe) {
-            val rule = instance.businessRule
+            val rule = instance.declaredRule
             if (rule !== null && (rule.requires !== null || !rule.attributes.nullSafe.empty)) {
                 out.add(instance)
             }

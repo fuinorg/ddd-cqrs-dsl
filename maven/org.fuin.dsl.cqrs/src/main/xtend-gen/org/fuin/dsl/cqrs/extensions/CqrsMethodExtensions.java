@@ -3,7 +3,7 @@ package org.fuin.dsl.cqrs.extensions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.fuin.dsl.cqrs.cqrsDsl.BusinessRule;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractBusinessRule;
 import org.fuin.dsl.cqrs.cqrsDsl.BusinessRuleInstance;
 import org.fuin.dsl.cqrs.cqrsDsl.Method;
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
@@ -13,8 +13,8 @@ import org.fuin.dsl.cqrs.cqrsDsl.Parameter;
  */
 @SuppressWarnings("all")
 public class CqrsMethodExtensions {
-  public static List<BusinessRule> allBusinessRules(final Method method) {
-    final List<BusinessRule> list = new ArrayList<BusinessRule>();
+  public static List<AbstractBusinessRule> allBusinessRules(final Method method) {
+    final List<AbstractBusinessRule> list = new ArrayList<AbstractBusinessRule>();
     if (((method.getRefMethod() != null) && (!Objects.equals(method, method.getRefMethod())))) {
       list.addAll(CqrsMethodExtensions.allBusinessRules(method.getRefMethod()));
     }

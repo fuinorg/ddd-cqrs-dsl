@@ -16,6 +16,7 @@ import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAggregateId;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsAnnotationDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsBusinessRule;
+import org.fuin.dsl.cqrs.intellij.psi.CqrsKeyDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandDef;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsCommandHandler;
 import org.fuin.dsl.cqrs.intellij.psi.CqrsConstraintDef;
@@ -310,8 +311,10 @@ public final class CqrsResolveUtil {
         if (type == CqrsTypes.KW_INVARIANTS || type == CqrsTypes.KW_PRECONDITIONS) {
             return kind(CqrsConstraintDef.class);
         }
+        // A business key derives a uniqueness rule, so an operation names one exactly where it names
+        // a rule. Two PSI classes rather than one, as for 'target' below.
         if (type == CqrsTypes.KW_BUSINESS_RULES) {
-            return kind(CqrsBusinessRule.class);
+            return decl -> decl instanceof CqrsBusinessRule || decl instanceof CqrsKeyDef;
         }
         if (type == CqrsTypes.AT) {
             return kind(CqrsAnnotationDef.class);

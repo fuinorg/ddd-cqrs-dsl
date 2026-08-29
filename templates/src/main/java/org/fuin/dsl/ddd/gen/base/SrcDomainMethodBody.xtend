@@ -17,6 +17,7 @@ import org.fuin.srcgen4j.core.emf.CodeSnippet
 import org.fuin.srcgen4j.core.emf.CodeSnippetContext
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 
 /**
@@ -138,7 +139,7 @@ class SrcDomainMethodBody implements CodeSnippet {
      */
     def private decidableInstances() {
         return businessRuleInstances.filter[
-            businessRule?.requires !== null || !(businessRule?.attributes).nullSafe.empty].toList
+            declaredRule?.requires !== null || !(declaredRule?.attributes).nullSafe.empty].toList
     }
 
     /**
@@ -150,7 +151,7 @@ class SrcDomainMethodBody implements CodeSnippet {
      */
     def private handWrittenInstances() {
         return businessRuleInstances.filter[
-            businessRule?.requires === null && (businessRule?.attributes).nullSafe.empty].toList
+            declaredRule?.requires === null && (declaredRule?.attributes).nullSafe.empty].toList
     }
 
     /**

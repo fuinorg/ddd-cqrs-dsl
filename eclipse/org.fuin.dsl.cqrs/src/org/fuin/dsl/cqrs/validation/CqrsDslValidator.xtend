@@ -17,6 +17,7 @@ import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider
 import org.eclipse.xtext.validation.Check
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
@@ -36,6 +37,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Event
 import org.fuin.dsl.cqrs.cqrsDsl.Exception
 import org.fuin.dsl.cqrs.cqrsDsl.ExternalType
 import org.fuin.dsl.cqrs.cqrsDsl.InternalType
+import org.fuin.dsl.cqrs.cqrsDsl.Key
 import org.fuin.dsl.cqrs.cqrsDsl.Method
 import org.fuin.dsl.cqrs.cqrsDsl.Parameter
 import org.fuin.dsl.cqrs.cqrsDsl.Import
@@ -63,6 +65,7 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsConstraintExtension.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEntityExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsKeyExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsParameterExtensions.*
 import org.eclipse.xtext.EcoreUtil2
@@ -133,6 +136,14 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val RULE_ACTUALS_MISMATCH = 'ruleActualsMismatch'
 
 	public static val RULE_COMPARISON_TYPE_MISMATCH = 'ruleComparisonTypeMismatch'
+
+	public static val KEY_OUTSIDE_TYPE = 'keyOutsideType'
+
+	public static val KEY_EXCEPTION_MISMATCH = 'keyExceptionMismatch'
+
+	public static val KEY_SEVERAL_DISPLAY_KEYS = 'keySeveralDisplayKeys'
+
+	public static val KEY_DISPLAY_UNKNOWN_VAR = 'keyDisplayUnknownVar'
 
 	public static val EXCEPTION_DUPLICATE_CID = 'exceptionDuplicateCID'
 
@@ -741,7 +752,7 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 					rule.exception.name + " needs '" + attribute.name + "' to say what it refused, and "
 						+ rule.name + " does not declare it",
 					rule,
-					CqrsDslPackage.Literals::BUSINESS_RULE__EXCEPTION,
+					CqrsDslPackage.Literals::ABSTRACT_BUSINESS_RULE__EXCEPTION,
 					RULE_EXCEPTION_NOT_SUPPLIED
 				)
 				return
@@ -798,14 +809,125 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		if (rule === null || rule.eIsProxy) {
 			return
 		}
-		val expected = rule.attributes.nullSafe.size
 		val actual = instance.params.nullSafe.size
+		if (rule instanceof Key) {
+			// A key usage says nothing by default: the generator derives the actuals from the key and
+			// the operation carrying it. Writing them out is still allowed - a model that says them
+			// says all of them - so the two legal counts are none and the full set.
+			val full = rule.derivedAttributeCount
+			if (actual !== 0 && actual !== full) {
+				error(
+					rule.name + " is derived from no values or from all " + full + ", but " + actual
+						+ " were given",
+					instance,
+					CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
+					RULE_ACTUALS_MISMATCH
+				)
+			}
+			return
+		}
+		val expected = (rule as BusinessRule).attributes.nullSafe.size
 		if (expected !== actual) {
 			error(
 				rule.name + " decides from " + expected + " value(s), but " + actual + " were given",
 				instance,
 				CqrsDslPackage.Literals::BUSINESS_RULE_INSTANCE__BUSINESS_RULE,
 				RULE_ACTUALS_MISMATCH
+			)
+		}
+	}
+
+	/**
+	 * Checks that a business key is declared inside the type it is a key of.
+	 *
+	 * <p>A key parses at module level because 'AbstractElement' has to carry the union a rule usage
+	 * references. There is nothing for it to be a key of there: its attributes are attributes of the
+	 * declaring type, so every one of them would fail to link, and the reason would read as four
+	 * unrelated errors instead of one.
+	 */
+	@Check
+	def checkKeyIsDeclaredInAType(Key key) {
+		if (!(key.eContainer instanceof AbstractEntity)) {
+			error(
+				"A business key belongs to the aggregate or entity it identifies, and '" + key.name
+					+ "' is declared outside one",
+				key,
+				CqrsDslPackage.Literals::ABSTRACT_ELEMENT__NAME,
+				KEY_OUTSIDE_TYPE
+			)
+		}
+	}
+
+	/**
+	 * Checks that a key carries an exception exactly when a collision is a refusal.
+	 *
+	 * <p>'overwrite' and 'skip' are what the handler does with the second occurrence; neither refuses
+	 * anybody, so neither has anything to throw. An exception declared beside one is generated, never
+	 * raised, and reads as a refusal that can happen.
+	 */
+	@Check
+	def checkKeyExceptionMatchesCollision(Key key) {
+		if (key.refuses && key.exception === null) {
+			error(
+				"'" + key.name + "' refuses a collision, so it needs the exception that says so",
+				key,
+				CqrsDslPackage.Literals::ABSTRACT_ELEMENT__NAME,
+				KEY_EXCEPTION_MISMATCH
+			)
+		}
+		if (!key.refuses && key.exception !== null) {
+			error(
+				"'" + key.name + "' " + key.onCollision.literal
+					+ "s a collision rather than refusing it, so it has nothing to throw",
+				key,
+				CqrsDslPackage.Literals::ABSTRACT_BUSINESS_RULE__EXCEPTION,
+				KEY_EXCEPTION_MISMATCH
+			)
+		}
+	}
+
+	/**
+	 * Checks that a type marks at most one of its keys as the one it is displayed by.
+	 *
+	 * <p>'display-as' carries a format and its presence is the marking, so two of them are two answers
+	 * to "what does a picker show", with no precedence rule to pick between them.
+	 */
+	@Check
+	def checkOneDisplayKeyPerType(Key key) {
+		if (key.displayAs === null || !(key.eContainer instanceof AbstractEntity)) {
+			return
+		}
+		val displaying = (key.eContainer as AbstractEntity).keys.filter[displayAs !== null].toList
+		if (displaying.size > 1 && displaying.get(0) !== key) {
+			error(
+				"'" + displaying.get(0).name + "' already says how this type is displayed",
+				key,
+				CqrsDslPackage.Literals::KEY__DISPLAY_AS,
+				KEY_SEVERAL_DISPLAY_KEYS
+			)
+		}
+	}
+
+	/**
+	 * Checks that every variable in 'display-as' names an attribute of the declaring type.
+	 *
+	 * <p>Deliberately the whole type rather than the key's own attributes: what a person recognises a
+	 * thing by is not always what makes it unique. An account is keyed by its IBAN and read as
+	 * "Business current account (CH93...)", and its name is no part of the key.
+	 */
+	@Check
+	def checkVariablesInDisplayAs(Key key) {
+		if (key.displayAs === null || !(key.eContainer instanceof AbstractEntity)) {
+			return
+		}
+		val name = findUnknownVar((key.eContainer as AbstractEntity).attributes.asNames, key.displayAs)
+		if (name !== null) {
+			error(
+				"A variable '" + name + "' is not an attribute of "
+					+ (key.eContainer as AbstractEntity).name,
+				key,
+				CqrsDslPackage.Literals::KEY__DISPLAY_AS,
+				KEY_DISPLAY_UNKNOWN_VAR
 			)
 		}
 	}
