@@ -108,7 +108,7 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
             name: «dartString(className)»,
             attributes: <AttributeDescriptor>[
               «FOR a : attributes»
-              «descriptorOf(a, bundle)»
+              «descriptorOf(a, bundle, className)»
               «ENDFOR»
             ],«IF displayFormat(attributes) !== null»
             displayFormat: «dartStringRaw(displayFormat(attributes))»,«ENDIF»
@@ -296,7 +296,7 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
         return vo.identifiedBy?.name
     }
 
-    def private descriptorOf(DartAttribute a, String bundle) {
+    def private descriptorOf(DartAttribute a, String bundle, String owner) {
         val meta = a.meta
         '''
         AttributeDescriptor(
@@ -308,8 +308,8 @@ class DartRowArtifactFactory extends AbstractDartSource<ValueObject> {
           optional: true,«ENDIF»«IF a.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
           text: ModelText(
-            bundle: «dartString(bundle)»,
-            key: «dartString(a.name)»,
+            bundle: «dartString(a.wordingBundle(bundle))»,
+            key: «dartString(a.metaKey(owner))»,
             shortLabel: «dartStringOrNull(meta?.slabel)»,
             label: «dartStringOrNull(meta?.label)»,
             tooltip: «dartStringOrNull(meta?.tooltip)»,«IF meta?.prompt !== null»

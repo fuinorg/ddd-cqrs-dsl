@@ -1,5 +1,6 @@
 import 'package:melkheftken_contract/src-gen/categories/category_id.dart';
 import 'package:melkheftken_contract/src/descriptor/command_descriptor.dart';
+import 'package:melkheftken_contract/src/descriptor/model_text.dart';
 
 /// Delete a custom category.
 class RemoveCategoryCommand {
@@ -22,6 +23,10 @@ class RemoveCategoryCommand {
     kind: CommandKind.remove,
     doc: 'Delete a custom category.',
     message: 'Remove category',
+    text: ModelText(
+      bundle: 'Categories',
+      key: 'RemoveCategoryCommand',
+    ),
   );
 
   /// Identifier of the aggregate this is directed at.

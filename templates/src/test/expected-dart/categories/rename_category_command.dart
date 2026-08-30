@@ -40,7 +40,7 @@ class RenameCategoryCommand {
         modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
-          key: 'newName',
+          key: 'CategoryName',
           shortLabel: 'Name',
           label: 'Name',
           tooltip: 'What this category is called in lists and pickers',

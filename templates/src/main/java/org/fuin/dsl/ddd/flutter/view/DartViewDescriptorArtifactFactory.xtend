@@ -93,7 +93,7 @@ class DartViewDescriptorArtifactFactory extends AbstractDartSource<View> {
           text: «modelText(bundle, m.id, meta)»,«ENDIF»«IF !parameters.empty»
           params: <AttributeDescriptor>[
             «FOR p : parameters»
-            «parameterOf(p, bundle)»
+            «parameterOf(p, bundle, m.id)»
             «ENDFOR»
           ],«ENDIF»«IF m.returnsRow»
           returns: «m.returnedType».descriptor,«ELSEIF m.returnedType !== null»
@@ -101,7 +101,7 @@ class DartViewDescriptorArtifactFactory extends AbstractDartSource<View> {
         ),'''
     }
 
-    def private parameterOf(DartAttribute p, String bundle) {
+    def private parameterOf(DartAttribute p, String bundle, String owner) {
         val meta = p.meta
         '''
         AttributeDescriptor(
@@ -111,7 +111,7 @@ class DartViewDescriptorArtifactFactory extends AbstractDartSource<View> {
           nested: «p.nestedDescriptor»,«ENDIF»«IF p.optional»
           optional: true,«ENDIF»«IF p.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
-          text: «modelText(bundle, p.name, meta)»,«ENDIF»«IF p.constraints !== null»
+          text: «modelText(p.wordingBundle(bundle), p.metaKey(owner), meta)»,«ENDIF»«IF p.constraints !== null»
           constraints: «p.constraints»,«ENDIF»«IF p.values !== null»
           values: «p.values»,«ENDIF»
         ),'''

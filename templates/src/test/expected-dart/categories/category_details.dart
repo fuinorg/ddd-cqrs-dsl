@@ -42,7 +42,7 @@ class CategoryDetails {
         role: AttributeRole.identifier,
         text: ModelText(
           bundle: 'Categories',
-          key: 'id',
+          key: 'CategoryId',
           shortLabel: 'CATID',
           label: 'Category ID',
           tooltip: 'Unique identifier of the category',
@@ -54,7 +54,7 @@ class CategoryDetails {
         modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
-          key: 'name',
+          key: 'CategoryDetails.name',
           shortLabel: 'Name',
           label: 'Name',
           tooltip: 'What this category is called in lists and pickers',
@@ -68,7 +68,7 @@ class CategoryDetails {
         modelType: 'CategoryType',
         text: ModelText(
           bundle: 'Categories',
-          key: 'kind',
+          key: 'CategoryDetails.kind',
           shortLabel: 'Type',
           label: 'Type',
           tooltip: 'Which side of the ledger this category totals on',

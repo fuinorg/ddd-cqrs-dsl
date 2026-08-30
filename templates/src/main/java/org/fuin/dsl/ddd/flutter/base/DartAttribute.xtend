@@ -415,17 +415,81 @@ class DartAttribute {
      * Whether a screen *shows* the attribute is a separate question, and {@link #role()} answers it.
      */
     def getMeta() {
-        val own = attribute.overridden?.metaInfo
-        if (states(own)) {
-            return own
+        val source = wordingSource
+        return if(source === null) attribute.overridden?.metaInfo else metaOf(source)
+    }
+
+    /**
+     * What to look this attribute's wording up under, in the resource bundle.
+     *
+     * <p>A key names <b>where the wording came from</b>, not where it is used. Wording taken from a
+     * type is keyed by that type, so the caption a value object states once is one entry however many
+     * rows and command forms show it; wording the attribute overrides is keyed by the attribute
+     * <em>and its owner</em>, because a bare attribute name is not unique - a bundle holding a person
+     * and a role has two attributes called <code>id</code> and two called <code>name</code>, and keying
+     * them alike collapses them onto one entry with one of the captions arbitrarily winning.
+     *
+     * <p>Decided from {@link #wordingSource()}, the same function {@link #getMeta()} answers from, so
+     * the key and the text it stands for cannot disagree.
+     *
+     * @param owner What the attribute belongs to - the type declaring it, or a view method's id.
+     *
+     * @return Key, without the bundle and without the suffix.
+     */
+    def String metaKey(String owner) {
+        val source = wordingSource
+        return if(source === null) owner + "." + attribute.name else source.name
+    }
+
+    /**
+     * The name of the type this attribute's wording comes from, or <code>null</code> when the attribute
+     * states its own.
+     *
+     * <p>What a bundle needs in order to write a type's caption only where something reads it. A type
+     * that states wording nobody is keyed to - an id used solely to address a command, say - would
+     * otherwise contribute an entry no descriptor can ask for, and a translator would be asked for it.
+     */
+    def String wordingTypeName() {
+        return wordingSource?.name
+    }
+
+    /**
+     * The module whose bundle carries this attribute's wording, or <code>null</code> when the attribute
+     * states its own and the using module's bundle is the right one.
+     *
+     * <p>A type is captioned where it is declared, and read wherever it is used - and the two are
+     * routinely different modules: a view module's method takes a parameter typed by an id belonging to
+     * the context beside it. The bundle has to follow the wording rather than the reader, or the key
+     * names an entry in a bundle that does not hold it.
+     */
+    def org.fuin.dsl.cqrs.cqrsDsl.Module wordingModule() {
+        return wordingSource?.module
+    }
+
+    /**
+     * The type this attribute's wording comes from, or <code>null</code> when the attribute states its
+     * own.
+     *
+     * <p>The single decision behind both {@link #getMeta()} and {@link #metaKey(String)}. A type that
+     * carries no wording is no source, so an attribute overriding nothing and typed by something silent
+     * falls back to its own empty block rather than to a key for a caption nobody wrote.
+     */
+    def private Type wordingSource() {
+        if (states(attribute.overridden?.metaInfo)) {
+            return null
         }
         val type = effectiveType
+        return if(states(metaOf(type))) type else null
+    }
+
+    /** The wording a type states, or <code>null</code> when it is not a kind of type that can. */
+    def private static org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo metaOf(Type type) {
         return switch (type) {
             ValueObject: type.metaInfo
             EnumObject: type.metaInfo
             AbstractEntityId: type.metaInfo
             EntityIdPathType: type.metaInfo
-            default: own
+            default: null
         }
     }
 

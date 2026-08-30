@@ -27,6 +27,10 @@ class CreateCategoryCommand {
     kind: CommandKind.create,
     doc: 'Create a custom category.',
     message: r"Create ${kind} category '${name}'",
+    text: ModelText(
+      bundle: 'Categories',
+      key: 'CreateCategoryCommand',
+    ),
     attributes: <AttributeDescriptor>[
       AttributeDescriptor(
         name: 'name',
@@ -34,7 +38,7 @@ class CreateCategoryCommand {
         modelType: 'CategoryName',
         text: ModelText(
           bundle: 'Categories',
-          key: 'name',
+          key: 'CategoryName',
           shortLabel: 'Name',
           label: 'Name',
           tooltip: 'What this category is called in lists and pickers',
@@ -48,7 +52,7 @@ class CreateCategoryCommand {
         modelType: 'CategoryType',
         text: ModelText(
           bundle: 'Categories',
-          key: 'kind',
+          key: 'CategoryType',
           shortLabel: 'Type',
           label: 'Type',
           tooltip: 'Which side of the ledger this category totals on',

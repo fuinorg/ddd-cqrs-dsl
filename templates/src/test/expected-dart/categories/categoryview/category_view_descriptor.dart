@@ -57,7 +57,7 @@ const ViewDescriptor categoryView = ViewDescriptor(
           modelType: 'CategoryType',
           text: ModelText(
             bundle: 'Categoryview',
-            key: 'kind',
+            key: 'CategoryView.listByType.kind',
             shortLabel: 'Type',
             label: 'Type',
             tooltip: 'The side of the ledger to list categories for',

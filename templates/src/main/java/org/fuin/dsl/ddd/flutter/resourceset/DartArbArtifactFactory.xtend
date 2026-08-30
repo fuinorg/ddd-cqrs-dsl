@@ -5,21 +5,28 @@ import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import java.util.TreeMap
+import java.util.TreeSet
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.ResourceSet
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
 import org.fuin.dsl.cqrs.cqrsDsl.Command
+import org.fuin.dsl.cqrs.cqrsDsl.EntityIdPathType
 import org.fuin.dsl.cqrs.cqrsDsl.EnumObject
 import org.fuin.dsl.cqrs.cqrsDsl.Module
 import org.fuin.dsl.cqrs.cqrsDsl.TypeMetaInfo
 import org.fuin.dsl.cqrs.cqrsDsl.ValueObject
+import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.View
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
+import org.fuin.dsl.ddd.flutter.base.DartAttribute
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
+import static extension org.fuin.dsl.ddd.gen.extensions.EventExtensions.*
 
 /**
  * Creates the ARB file carrying every word the model states.
@@ -66,15 +73,24 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
         }
 
         val entries = new TreeMap<String, String>()
+        val modules = new ArrayList<Module>()
         var String project = null
         val it = resourceSet.allContents.filter(typeof(EObject)).filter[isPrimary(it)]
         while (it.hasNext) {
             val container = it.next
             if (container instanceof Module) {
                 project = container.context.name
-                collect(container, entries)
+                modules.add(container)
             }
         }
+        val referenced = new TreeSet<String>()
+        for (module : modules) {
+            collectReferences(module, referenced)
+        }
+        for (module : modules) {
+            collect(module, entries, referenced)
+        }
+        collectModules(modules, entries)
         if (project === null || entries.empty) {
             return null
         }
@@ -83,41 +99,139 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
             arb(entries).toString.getBytes("UTF-8"), MODULE, FOLDER))
     }
 
-    def private void collect(Module module, Map<String, String> entries) {
+    /**
+     * Writes what a module contributes, once per group a user navigates by.
+     *
+     * <p>A module is routinely split over a public and a private file, and a context is routinely split
+     * over a top-level module and the view modules under it - but the client's hub has one entry per
+     * <em>group</em>, so only one of them is ever looked up. Which one is not this file's decision to
+     * take twice: the rule is the catalogue's - the top-level module's wording when it states any, and
+     * the first sub-module that states otherwise, by name. Writing an entry for each of them instead is
+     * what put wording in the bundle that no descriptor could ever ask for.
+     */
+    def private void collectModules(List<Module> modules, Map<String, String> entries) {
+        val chosen = new LinkedHashMap<String, Module>()
+        for (module : modules.sortBy[m|m.name].filter[states(metaInfo)]) {
+            val group = groupName(module.name)
+            if (module.name == group || !chosen.containsKey(group)) {
+                chosen.put(group, module)
+            }
+        }
+        for (module : chosen.values) {
+            put(entries, bundleName(module), module.name, module.metaInfo)
+        }
+    }
+
+    /** The hub entry a module belongs to: everything before the first dot. */
+    def private static String groupName(String moduleName) {
+        val idx = moduleName.indexOf('.')
+        return if(idx < 0) moduleName else moduleName.substring(0, idx)
+    }
+
+    /**
+     * Notes every type some attribute is keyed to, so a type's caption is written where it is read and
+     * nowhere else.
+     */
+    def private void collectReferences(Module module, java.util.Set<String> referenced) {
         val bundle = bundleName(module)
-        put(entries, bundle, module.name, module.metaInfo)
+        for (element : module.elements) {
+            val variables = switch (element) {
+                View: element.methods.map[parameters].flatten.toList
+                ValueObject: element.attributes.nullSafe.toList
+                Command: element.commandVariables.nullSafe
+                default: null
+            }
+            for (variable : variables.nullSafe) {
+                val dart = new DartAttribute(variable)
+                val type = dart.wordingTypeName
+                if (type !== null) {
+                    referenced.add(wordingBundle(dart, bundle) + "." + type)
+                }
+            }
+        }
+    }
+
+    def private void collect(Module module, Map<String, String> entries, java.util.Set<String> referenced) {
+        val bundle = bundleName(module)
         for (element : module.elements) {
             switch (element) {
                 View: {
                     put(entries, bundle, element.name, element.metaInfo)
                     for (method : element.methods) {
-                        put(entries, bundle, element.name + "." + method.name, method.metaInfo)
+                        val methodId = element.name + "." + method.name
+                        put(entries, bundle, methodId, method.metaInfo)
                         for (parameter : method.parameters) {
-                            put(entries, bundle, parameter.name, parameter.overridden?.metaInfo)
+                            putVariable(entries, bundle, methodId, parameter)
                         }
                     }
                 }
                 ValueObject: {
-                    put(entries, bundle, element.name, element.metaInfo)
-                    for (Attribute attribute : element.attributes) {
-                        put(entries, bundle, attribute.name, attribute.overridden?.metaInfo)
+                    putType(entries, bundle, element.name, element.metaInfo, referenced)
+                    // A value object over a base with one attribute is a scalar on the wire and in
+                    // Dart - `ModuleName`, not `{value: ...}` - so it gets no descriptor for that one
+                    // attribute, and wording written for it could never be read.
+                    if (!single(element)) {
+                        for (Attribute attribute : element.attributes) {
+                            putVariable(entries, bundle, element.name, attribute)
+                        }
                     }
                 }
                 EnumObject: {
-                    put(entries, bundle, element.name, element.metaInfo)
+                    putType(entries, bundle, element.name, element.metaInfo, referenced)
                     for (instance : element.instances) {
-                        put(entries, bundle, instance.name, instanceMeta(instance))
+                        put(entries, bundle, element.name + "." + instance.name, instanceMeta(instance))
                     }
                 }
                 Command: {
                     // The command's own wording is what a menu entry and a button read, so it is
                     // keyed by the command itself - the way a view or a value object is.
                     put(entries, bundle, element.name, element.metaInfo)
-                    for (Attribute attribute : element.attributes) {
-                        put(entries, bundle, attribute.name, attribute.overridden?.metaInfo)
+                    // The message is the sentence a confirmation dialog asks, so it is wording too -
+                    // and the one piece of it a command nearly always states, where slabel and label
+                    // are usually left to fall back on the documentation. Its placeholders travel as
+                    // they stand: what substitutes them runs after the lookup, not before it.
+                    add(entries, bundle, element.name, "message", element.message)
+                    // A command usually declares no attributes of its own: it names an operation, and
+                    // takes what that operation takes. Reading `attributes` alone therefore misses the
+                    // wording of every command that does what commands normally do.
+                    for (variable : element.commandVariables.nullSafe) {
+                        putVariable(entries, bundle, element.name, variable)
                     }
                 }
+                // An id states wording like anything else, and an attribute typed by one is keyed to it
+                // rather than to itself. Leaving ids out is what left those keys pointing at nothing.
+                AbstractEntityId:
+                    putType(entries, bundle, element.name, element.metaInfo, referenced)
+                EntityIdPathType:
+                    putType(entries, bundle, element.name, element.metaInfo, referenced)
             }
+        }
+    }
+
+    /**
+     * Writes what an attribute or parameter contributes, under the key the descriptor will look it up by.
+     *
+     * <p>Delegates to {@link DartAttribute} rather than deciding again: the descriptor and this file have
+     * to agree about both the key and the wording behind it, and the only way they cannot drift is if one
+     * function answers for both. Wording inherited from a type contributes nothing here - the type writes
+     * its own entry, once, wherever it is declared.
+     */
+    def private static void putVariable(Map<String, String> entries, String bundle, String owner,
+            Variable variable) {
+        val dart = new DartAttribute(variable)
+        put(entries, wordingBundle(dart, bundle), dart.metaKey(owner), variable.overridden?.metaInfo)
+    }
+
+    /** Whether the value object is a single value in disguise, rendered as its base rather than a row. */
+    def private static boolean single(ValueObject vo) {
+        return vo.base !== null && vo.attributes !== null && vo.attributes.size === 1
+    }
+
+    /** Writes a type's own wording, but only where some attribute is keyed to it. */
+    def private static void putType(Map<String, String> entries, String bundle, String key,
+            TypeMetaInfo meta, java.util.Set<String> referenced) {
+        if (referenced.contains(bundle + "." + key)) {
+            put(entries, bundle, key, meta)
         }
     }
 

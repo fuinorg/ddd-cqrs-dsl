@@ -116,7 +116,7 @@ class DartEnumArtifactFactory extends AbstractDartSource<EnumObject> {
               name: «dartString(instance.name)»,
               text: ModelText(
                 bundle: «dartString(bundle)»,
-                key: «dartString(instance.name)»,
+                key: «dartString(className + "." + instance.name)»,
                 shortLabel: «dartStringOrNull(instanceMeta(instance)?.slabel)»,
                 label: «dartStringOrNull(instanceMeta(instance)?.label)»,
                 tooltip: «dartStringOrNull(instanceMeta(instance)?.tooltip)»,

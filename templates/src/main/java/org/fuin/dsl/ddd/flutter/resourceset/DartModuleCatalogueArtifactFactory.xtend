@@ -121,7 +121,7 @@ class DartModuleCatalogueArtifactFactory extends AbstractDartSource<ResourceSet>
           dependsOn: <String>[«FOR d : group.dependsOn SEPARATOR ", "»«dartString(d)»«ENDFOR»],«IF states(group.text)»
           text: ModelText(
             bundle: «dartString(group.bundle)»,
-            key: «dartString(group.name)»,
+            key: «dartString(group.textKey)»,
             shortLabel: «dartStringOrNull(group.text?.slabel)»,
             label: «dartStringOrNull(group.text?.label)»,
             tooltip: «dartStringOrNull(group.text?.tooltip)»,
@@ -167,10 +167,12 @@ class DartModuleCatalogueArtifactFactory extends AbstractDartSource<ResourceSet>
             if (module.name == name) {
                 group.text = module.metaInfo
                 group.bundle = bundleName(module)
+                group.textKey = module.name
             }
-            if (group.text === null && states(module.metaInfo)) {
+            if (!states(group.text) && states(module.metaInfo)) {
                 group.text = module.metaInfo
                 group.bundle = bundleName(module)
+                group.textKey = module.name
             }
             for (element : module.elements) {
                 if (element instanceof View) {
@@ -240,6 +242,8 @@ class DartModuleCatalogueArtifactFactory extends AbstractDartSource<ResourceSet>
         public val List<Command> commands = new ArrayList<Command>()
         public var TypeMetaInfo text
         public var String bundle
+        /** Name of the module the wording was taken from - the key it is looked up under. */
+        public var String textKey
 
         new(String name) {
             this.name = name

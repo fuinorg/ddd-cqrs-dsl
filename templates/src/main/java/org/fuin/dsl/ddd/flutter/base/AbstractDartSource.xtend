@@ -22,6 +22,25 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
  */
 abstract class AbstractDartSource<TYPE> extends AbstractSource<TYPE> {
 
+    /**
+     * The bundle an attribute's wording is looked up in: the declaring type's where the wording came
+     * from a type, and the using module's where the attribute states its own.
+     *
+     * <p>A type is captioned where it is declared and read wherever it is used, and the two are
+     * routinely different modules - a view module's method taking a parameter typed by an id from the
+     * context beside it. Following the reader instead of the wording names an entry in a bundle that
+     * does not hold it.
+     *
+     * @param attribute Attribute or parameter.
+     * @param own Bundle of the module the attribute is used in.
+     *
+     * @return Bundle name.
+     */
+    def protected static String wordingBundle(DartAttribute attribute, String own) {
+        val module = attribute.wordingModule
+        return if(module === null) own else bundleName(module)
+    }
+
     /** Name of the variable naming the Dart package the contract is published as. */
     public static val String KEY_DART_PACKAGE = "dartPackage"
 

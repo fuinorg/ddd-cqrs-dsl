@@ -92,10 +92,17 @@ class DartCommandArtifactFactoryTest {
     }
 
     @Test
-    def void testACommandWithoutWordingEmitsNone() {
-        // Wording is optional, and a command that states none must not emit an empty ModelText for a
-        // client to fall through - it falls back to the documentation instead.
-        assertThat(generate("RemoveCategoryCommand")).doesNotContain("text: ModelText")
+    def void testACommandWithoutWordingEmitsAKeyAndNoCaptions() {
+        // Wording is optional and a command that states none still falls back to its documentation, so
+        // no caption may be emitted for a client to prefer over that fallback. What is emitted is the
+        // bundle and key alone - the handle the message is looked up by, which a command nearly always
+        // has even where it captions nothing. Without it the confirmation a command is announced by
+        // could not be translated, because nothing would say where to look it up.
+        val src = generate("RemoveCategoryCommand")
+        assertThat(src).contains("key: 'RemoveCategoryCommand'")
+        assertThat(src).doesNotContain("shortLabel:")
+        assertThat(src).doesNotContain("label:")
+        assertThat(src).doesNotContain("tooltip:")
     }
 
     @Test

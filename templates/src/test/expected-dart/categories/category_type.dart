@@ -35,7 +35,7 @@ enum CategoryType {
       name: 'INCOME',
       text: ModelText(
         bundle: 'Categories',
-        key: 'INCOME',
+        key: 'CategoryType.INCOME',
         shortLabel: 'Income',
         label: 'Income',
         tooltip: 'Money coming in - totalled on the income side of every report',
@@ -45,7 +45,7 @@ enum CategoryType {
       name: 'EXPENSE',
       text: ModelText(
         bundle: 'Categories',
-        key: 'EXPENSE',
+        key: 'CategoryType.EXPENSE',
         shortLabel: 'Expense',
         label: 'Expense',
         tooltip: 'Money going out - totalled on the expense side of every report',

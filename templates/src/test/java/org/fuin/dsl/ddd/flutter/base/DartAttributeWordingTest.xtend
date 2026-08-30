@@ -105,6 +105,46 @@ class DartAttributeWordingTest {
         assertThat(attribute("plain").type).isEqualTo("ProductName")
     }
 
+    @Test
+    def void testAKeyNamesTheTypeTheWordingWasTakenFrom() {
+        // One entry serves every use of the value object, which is the point of captioning it once on
+        // the type: a row and the form of every command that sets it read the same caption, so they
+        // read the same translation of it too.
+        assertThat(attribute("plain").metaKey("ProductDetails")).isEqualTo("ProductName")
+        assertThat(attribute("aliases").metaKey("ProductDetails")).isEqualTo("ProductName")
+    }
+
+    @Test
+    def void testAnOverrideIsKeyedByItsOwnerBecauseABareNameIsNotUnique() {
+        // A bundle holding a person and a role has two attributes called "id" and two called "name".
+        // Keying an override by the bare name puts them on one entry, and one of the captions wins
+        // silently - the bug this whole scheme exists to make impossible.
+        assertThat(attribute("nickname").metaKey("ProductDetails")).isEqualTo("ProductDetails.nickname")
+        assertThat(attribute("alias").metaKey("ProductDetails")).isEqualTo("ProductDetails.alias")
+        assertThat(attribute("ProtectedDetails", "nickname").metaKey("ProtectedDetails"))
+            .isEqualTo("ProtectedDetails.nickname")
+    }
+
+    @Test
+    def void testAFieldWhoseTypeCanHoldNoWordingIsKeyedByItself() {
+        assertThat(attribute("listedOn").metaKey("ProductDetails")).isEqualTo("ProductDetails.listedOn")
+    }
+
+    @Test
+    def void testTheKeyAndTheWordingAlwaysComeFromTheSamePlace() {
+        // The two are decided by one function on purpose. Where they are decided twice they drift, and
+        // a key pointing at wording that is not the wording it stands for is a caption that silently
+        // becomes another field's the moment a second language is installed.
+        for (name : #["nickname", "alias", "plain", "listedOn", "aliases"]) {
+            val a = attribute(name)
+            val fromType = a.metaKey("ProductDetails").indexOf('.') < 0
+            assertThat(fromType)
+                .describedAs("%s: keyed by its type but worded by itself, or the other way round", name)
+                .isEqualTo(a.attribute.overridden?.metaInfo === null
+                    || a.attribute.overridden.metaInfo.label === null)
+        }
+    }
+
     private def DartAttribute attribute(String name) {
         attribute("ProductDetails", name)
     }

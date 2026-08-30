@@ -117,13 +117,13 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             targetOrigin: «origin(command, aggregate, entity)»,
             kind: «kind(command)»,
             doc: «dartStringOrNull(docText(command.doc))»,
-            message: «dartStringRaw(command.message)»,«IF states(command.metaInfo)»
+            message: «dartStringRaw(command.message)»,«IF states(command.metaInfo) || command.message !== null»
             text: ModelText(
               bundle: «dartString(bundle)»,
-              key: «dartString(command.name)»,
-              shortLabel: «dartStringOrNull(command.metaInfo?.slabel)»,
-              label: «dartStringOrNull(command.metaInfo?.label)»,
-              tooltip: «dartStringOrNull(command.metaInfo?.tooltip)»,
+              key: «dartString(command.name)»,«IF command.metaInfo?.slabel !== null»
+              shortLabel: «dartString(command.metaInfo.slabel)»,«ENDIF»«IF command.metaInfo?.label !== null»
+              label: «dartString(command.metaInfo.label)»,«ENDIF»«IF command.metaInfo?.tooltip !== null»
+              tooltip: «dartString(command.metaInfo.tooltip)»,«ENDIF»
             ),«ENDIF»
             «IF !rules.empty»
             rules: <RuleDescriptor>[
@@ -133,7 +133,7 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
             «IF !attributes.empty»
             attributes: <AttributeDescriptor>[
               «FOR a : attributes»
-              «descriptorOf(a, bundle)»
+              «descriptorOf(a, bundle, className)»
               «ENDFOR»
             ],
             «ENDIF»
@@ -210,7 +210,7 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
     }
 
 
-    def private descriptorOf(DartAttribute a, String bundle) {
+    def private descriptorOf(DartAttribute a, String bundle, String owner) {
         val meta = a.meta
         '''
         AttributeDescriptor(
@@ -221,8 +221,8 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
           optional: true,«ENDIF»«IF a.multiple»
           multiple: true,«ENDIF»«IF states(meta)»
           text: ModelText(
-            bundle: «dartString(bundle)»,
-            key: «dartString(a.name)»,
+            bundle: «dartString(a.wordingBundle(bundle))»,
+            key: «dartString(a.metaKey(owner))»,
             shortLabel: «dartStringOrNull(meta?.slabel)»,
             label: «dartStringOrNull(meta?.label)»,
             tooltip: «dartStringOrNull(meta?.tooltip)»,«IF meta?.prompt !== null»
@@ -263,9 +263,11 @@ class DartCommandArtifactFactory extends AbstractDartSource<Command> {
         }
         if (!attributes.empty) {
             out.add(runtimeImport("src/descriptor/attribute_descriptor.dart"))
-            if (attributes.exists[states(meta)]) {
-                out.add(runtimeImport("src/descriptor/model_text.dart"))
-            }
+        }
+        // The command carries wording of its own whenever it states any or has a message to confirm by,
+        // so the import cannot be decided from the attributes alone.
+        if (attributes.exists[states(meta)] || states(command.metaInfo) || command.message !== null) {
+            out.add(runtimeImport("src/descriptor/model_text.dart"))
         }
         return out
     }
