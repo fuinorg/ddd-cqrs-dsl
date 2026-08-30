@@ -2,16 +2,19 @@ package org.fuin.dsl.ddd.flutter.entityid
 
 import java.util.List
 import java.util.Map
+import java.util.TreeSet
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.cqrs.cqrsDsl.EntityId
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
+import org.fuin.dsl.ddd.flutter.base.DartAttribute
 import org.fuin.dsl.ddd.flutter.base.DartNames
 import org.fuin.dsl.ddd.flutter.base.DartTypes
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
+import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
@@ -29,6 +32,14 @@ import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
  * way the JVM side derives it: the identified aggregate or entity's name in upper snake case. Changing
  * that convention renames event streams and invalidates every stored path, so the two targets must
  * agree about it by construction rather than by coincidence.
+ *
+ * <p><b>An identifier composed of several parts also gets a constructor that builds it from them.</b>
+ * A natural key - <code>(provider, date)</code> - is not something a client can mint, and until this
+ * existed the parts were simply dropped and the class was an opaque string wrapper, which left a client
+ * unable to address such an aggregate at all: it could read an identifier back off a row but could not
+ * name one that did not exist yet. The encoding it emits is the same one
+ * <code>SrcIdStringMethods</code> emits for the JVM, from the same declaration - which is why that one
+ * is generated into the abstract class rather than left as a per-project override.
  */
 class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
 
@@ -63,7 +74,18 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
         // "CATEGORY <uuid>" even though Dart carries it as a string.
         val modelType = (base?.name ?: "String").toLowerCase
 
+        // Two or more, because a single-attribute identifier is already reachable through its own value.
+        val parts = if(base === null) id.attributes.nullSafe.map[new DartAttribute(it)].toList else emptyList
+
+        val imports = imports(parts)
+
         '''
+        «FOR imp : imports»
+        import '«imp»';
+        «ENDFOR»
+        «IF !imports.empty»
+
+        «ENDIF»
         «dartDoc(id.doc, "")»
         ///
         /// On the wire an identifier is **typed** - `«entity.asEntityTypeConstant» <«modelType»>` - and that is what both the
@@ -73,6 +95,15 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
           /// Constructor with mandatory data.
           const «className»(this.value);
 
+          «IF parts.size >= 2»
+          /// Builds the identifier from its parts, the way the write side composes it.
+          ///
+          /// A natural key rather than a surrogate, so there is nothing to mint: the identifier follows
+          /// from the values themselves.
+          factory «className».of(«FOR p : parts SEPARATOR ', '»«p.baseType» «p.name»«ENDFOR») =>
+              «className»('«FOR p : parts SEPARATOR '-'»${«p.idPart»}«ENDFOR»');
+
+          «ENDIF»
           /// Reads an identifier off the wire, in either the typed or the bare form.
           factory «className».fromWire(String wire) {
             final space = wire.indexOf(' ');
@@ -100,6 +131,41 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
           String toString() => typed;
         }
         '''
+    }
+
+    /**
+     * What a composite identifier's parts have to be imported from.
+     *
+     * <p>Empty for every other identifier, which is why this file wrote no import block at all until
+     * composite ones gained a constructor. A part that is an enum or another identifier is a generated
+     * type of its own - possibly in another package, which is what <code>importOf</code> settles - and a
+     * date needs the runtime's wire helpers.
+     *
+     * @param parts Parts of the identifier, empty when it has none.
+     *
+     * @return Import URIs, sorted so the block does not depend on declaration order.
+     */
+    def private imports(List<DartAttribute> parts) {
+        val out = new TreeSet<String>()
+        if (parts.size < 2) {
+            return out
+        }
+        for (p : parts) {
+            val referenced = p.referenced
+            if (referenced !== null) {
+                out.add(importOf(referenced))
+            }
+            // A part whose Dart type is not built in - Decimal, and the base64 of a binary - brings its
+            // own package with it, the same way a value object of that type does.
+            val external = DartTypes.importFor(p.modelTypeName)
+            if (external !== null) {
+                out.add(external)
+            }
+            if (p.idPartNeedsRuntime) {
+                out.add(runtimeImport("src/json/json.dart"))
+            }
+        }
+        return out
     }
 
     /**

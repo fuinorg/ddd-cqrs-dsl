@@ -20,11 +20,18 @@ import static extension org.fuin.dsl.ddd.gen.extensions.TypeExtensions.*
  * identifier inherits the pair from its base type ({@code AggregateRootUuid} and friends); a composite one
  * has no base, which is the gap this fills.
  * <p>
- * <b>The work lives in the abstract class, the choices in the final one.</b> {@link #abstractPart} emits
- * the reading, checking and converting into the regenerated abstract class; {@link #toString} emits two
- * one-line delegators into the generate-once final class, next to the {@code SEPARATOR} constant. Changing
- * the separator is then one constant, and replacing the string form altogether means overwriting two short
- * methods - neither edit is lost on the next build, and the machinery is not copied into every identifier.
+ * <b>The whole string form is generated, and is not a per-project choice.</b> {@link #abstractPart} emits
+ * the {@code SEPARATOR}, {@code asString()}, and the reading and checking that undo them, into the
+ * regenerated abstract class; {@link #toString} emits two one-line delegators into the generate-once final
+ * class.
+ * <p>
+ * It used to be the other way round: the separator and {@code asString()} were emitted into the final class
+ * under a comment inviting an override, so that changing the encoding was an edit a developer kept. That was
+ * defensible while every client shared the jar. It stopped being defensible when a second target began
+ * composing the same identifier from the same declaration - a hand-edited separator would leave the two
+ * languages disagreeing about what a valid identifier is, with nothing on either side able to notice.
+ * {@code asString()} is emitted {@code final} for that reason. A different string form is now a change to
+ * this generator, or to the model it reads.
  * <p>
  * <b>The annotations are only emitted together with the methods.</b> The factory resolves the method
  * eagerly from the annotation, so advertising one that does not exist turns a silent skip into a startup
@@ -80,23 +87,6 @@ class SrcIdStringMethods implements CodeSnippet {
     }
 
     /**
-     * Returns the constant declaration for the separator between the parts, or "" when this identifier has
-     * no string form to build. It lives in the final class so that changing it is a change a developer
-     * keeps: {@code asString()} and the parsing both read it.
-     *
-     * @return Field declaration.
-     */
-    def String separatorConstant() {
-        if (attributes.nullSafe.size < 2) {
-            return ""
-        }
-        '''
-        /** Separates the parts in the string form of this identifier. */
-        public static final String SEPARATOR = "-";
-        '''
-    }
-
-    /**
      * Returns the annotations that go on the final class, or "" when the methods cannot be generated.
      *
      * @return Annotation lines.
@@ -128,6 +118,20 @@ class SrcIdStringMethods implements CodeSnippet {
         val count = attributes.size
         '''
 
+        /** Separates the parts in the string form of this identifier. */
+        public static final String SEPARATOR = "-";
+
+        /**
+         * Returns the parts joined by {@link #SEPARATOR}, which is the form the identifier travels in and
+         * the form {@link #valueOf(String, Factory)} reads back.
+         *
+         * @return String form of this identifier.
+         */
+        @Override
+        public final String asString() {
+            return «FOR a : attributes SEPARATOR ' + SEPARATOR + '»get«a.name.toFirstUpper»()«ENDFOR»;
+        }
+
         /**
          * Creates the identifier from its parts - the concrete class passes its own constructor, which is
          * what lets the reading below live here instead of being repeated in every identifier.
@@ -154,7 +158,6 @@ class SrcIdStringMethods implements CodeSnippet {
          * Converts a string form back into an identifier.
          *
          * @param value String to convert. A {@literal null} value returns {@literal null}.
-         * @param separator Separator the parts are joined with.
          * @param factory Creates the identifier from the converted parts.
          * @param <T> Type that is created.
          *
@@ -165,12 +168,11 @@ class SrcIdStringMethods implements CodeSnippet {
          *                                  {@code NullPointerException} somewhere else entirely.
          */
         @Nullable
-        public static <T> T valueOf(@Nullable final String value, final String separator,
-                final Factory<T> factory) {
+        public static <T> T valueOf(@Nullable final String value, final Factory<T> factory) {
             if (value == null) {
                 return null;
             }
-            final String[] parts = split(value, separator);
+            final String[] parts = split(value);
             if (!validParts(parts)) {
                 throw new IllegalArgumentException("Not a valid «className»: " + value);
             }
@@ -182,12 +184,11 @@ class SrcIdStringMethods implements CodeSnippet {
          * Verifies that a given string can be converted into the type.
          *
          * @param value Value to validate.
-         * @param separator Separator the parts are joined with.
          *
          * @return Returns {@literal true} if it's a valid type else {@literal false}.
          */
-        public static boolean isValid(@Nullable final String value, final String separator) {
-            return value == null || validParts(split(value, separator));
+        public static boolean isValid(@Nullable final String value) {
+            return value == null || validParts(split(value));
         }
 
         /**
@@ -195,12 +196,11 @@ class SrcIdStringMethods implements CodeSnippet {
          * only the last one may contain the separator itself - which is what makes a trailing date work.
          *
          * @param value Value to split.
-         * @param separator Separator the parts are joined with.
          *
          * @return Parts, as many as the split found.
          */
-        private static String[] split(final String value, final String separator) {
-            return value.split(Pattern.quote(separator), «count»);
+        private static String[] split(final String value) {
+            return value.split(Pattern.quote(SEPARATOR), «count»);
         }
 
         /**
@@ -222,8 +222,7 @@ class SrcIdStringMethods implements CodeSnippet {
 
     /**
      * Returns what the final class declares: the two methods the runtime looks for, each delegating to the
-     * abstract class. They are generated once, so overwriting them here is how a different string form is
-     * chosen.
+     * abstract class, which is where the encoding they undo is generated.
      *
      * @return Source code, or a TODO when the pair cannot be generated.
      */
@@ -237,7 +236,9 @@ class SrcIdStringMethods implements CodeSnippet {
             // @HasEntityTypeConstant, @HasPublicStaticIsValidMethod and @HasPublicStaticValueOfMethod, or
             // JandexEntityIdFactory skips this type and commands carrying it fail to deserialize. The
             // generator could not derive the parsing for every part of this identifier - add both methods
-            // and all three annotations by hand, matching asString().
+            // and all three annotations by hand, and an asString() to match, since none was generated.
+            // Whatever is written here a non-JVM client cannot know, so such an identifier cannot be
+            // composed by one.
             '''
         }
         ctx.requiresImport("org.jspecify.annotations.Nullable")
@@ -253,7 +254,7 @@ class SrcIdStringMethods implements CodeSnippet {
          */
         @Nullable
         public static «className» valueOf(@Nullable final String value) {
-            return «abstractClassName».valueOf(value, SEPARATOR, «className»::new);
+            return «abstractClassName».valueOf(value, «className»::new);
         }
 
         /**
@@ -264,7 +265,7 @@ class SrcIdStringMethods implements CodeSnippet {
          * @return Returns {@literal true} if it's a valid type else {@literal false}.
          */
         public static boolean isValid(@Nullable final String value) {
-            return «abstractClassName».isValid(value, SEPARATOR);
+            return «abstractClassName».isValid(value);
         }
         '''
     }

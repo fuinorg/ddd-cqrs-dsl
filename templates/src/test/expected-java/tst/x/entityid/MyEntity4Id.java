@@ -35,8 +35,6 @@ public final class MyEntity4Id extends AbstractMyEntity4Id {
 
     @Serial
     private static final long serialVersionUID = 1000L;
-    /** Separates the parts in the string form of this identifier. */
-    public static final String SEPARATOR = "-";
     
     /**
      * Default constructor.
@@ -56,12 +54,6 @@ public final class MyEntity4Id extends AbstractMyEntity4Id {
         super(a, b);
     }
     
-    @Override
-    public final String asString() {
-        // TODO Implement!
-        return null;
-    }
-
     /**
      * Converts the string form produced by {@link #asString()} back into an identifier.
      *
@@ -73,7 +65,7 @@ public final class MyEntity4Id extends AbstractMyEntity4Id {
      */
     @Nullable
     public static MyEntity4Id valueOf(@Nullable final String value) {
-        return AbstractMyEntity4Id.valueOf(value, SEPARATOR, MyEntity4Id::new);
+        return AbstractMyEntity4Id.valueOf(value, MyEntity4Id::new);
     }
     
     /**
@@ -84,6 +76,6 @@ public final class MyEntity4Id extends AbstractMyEntity4Id {
      * @return Returns {@literal true} if it's a valid type else {@literal false}.
      */
     public static boolean isValid(@Nullable final String value) {
-        return AbstractMyEntity4Id.isValid(value, SEPARATOR);
+        return AbstractMyEntity4Id.isValid(value);
     }
 }

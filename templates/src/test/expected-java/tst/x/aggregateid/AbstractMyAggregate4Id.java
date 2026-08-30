@@ -101,6 +101,20 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
             && Objects.equals(b, other.b);
     }
     
+    /** Separates the parts in the string form of this identifier. */
+    public static final String SEPARATOR = "-";
+    
+    /**
+     * Returns the parts joined by {@link #SEPARATOR}, which is the form the identifier travels in and
+     * the form {@link #valueOf(String, Factory)} reads back.
+     *
+     * @return String form of this identifier.
+     */
+    @Override
+    public final String asString() {
+        return getA() + SEPARATOR + getB();
+    }
+    
     /**
      * Creates the identifier from its parts - the concrete class passes its own constructor, which is
      * what lets the reading below live here instead of being repeated in every identifier.
@@ -126,7 +140,6 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
      * Converts a string form back into an identifier.
      *
      * @param value String to convert. A {@literal null} value returns {@literal null}.
-     * @param separator Separator the parts are joined with.
      * @param factory Creates the identifier from the converted parts.
      * @param <T> Type that is created.
      *
@@ -137,12 +150,11 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
      *                                  {@code NullPointerException} somewhere else entirely.
      */
     @Nullable
-    public static <T> T valueOf(@Nullable final String value, final String separator,
-            final Factory<T> factory) {
+    public static <T> T valueOf(@Nullable final String value, final Factory<T> factory) {
         if (value == null) {
             return null;
         }
-        final String[] parts = split(value, separator);
+        final String[] parts = split(value);
         if (!validParts(parts)) {
             throw new IllegalArgumentException("Not a valid MyAggregate4Id: " + value);
         }
@@ -154,12 +166,11 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
      * Verifies that a given string can be converted into the type.
      *
      * @param value Value to validate.
-     * @param separator Separator the parts are joined with.
      *
      * @return Returns {@literal true} if it's a valid type else {@literal false}.
      */
-    public static boolean isValid(@Nullable final String value, final String separator) {
-        return value == null || validParts(split(value, separator));
+    public static boolean isValid(@Nullable final String value) {
+        return value == null || validParts(split(value));
     }
     
     /**
@@ -167,12 +178,11 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
      * only the last one may contain the separator itself - which is what makes a trailing date work.
      *
      * @param value Value to split.
-     * @param separator Separator the parts are joined with.
      *
      * @return Parts, as many as the split found.
      */
-    private static String[] split(final String value, final String separator) {
-        return value.split(Pattern.quote(separator), 2);
+    private static String[] split(final String value) {
+        return value.split(Pattern.quote(SEPARATOR), 2);
     }
     
     /**

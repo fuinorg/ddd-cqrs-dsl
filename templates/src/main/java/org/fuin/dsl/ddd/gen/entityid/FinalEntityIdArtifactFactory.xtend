@@ -84,20 +84,12 @@ class FinalEntityIdArtifactFactory extends AbstractSource<EntityId> {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
-                «IF id.base === null»
-                    «idStrings.separatorConstant»
-                «ENDIF»
                 
                 «new SrcConstructorsWithParamsAssignment(ctx, GenerateOptions.empty(), id, false, true)»
-                «IF id.base === null»
+                «IF id.base === null && id.attributes.nullSafe.size == 1»
                 @Override
                 public final String asString() {
-                    «IF (id.attributes.nullSafe.size == 1)»
                     return "" + get«id.attributes.first.name.toFirstUpper»();
-                    «ELSE»
-                    // TODO Implement!
-                    return null;
-                    «ENDIF»
                 }
 
                 «ENDIF»

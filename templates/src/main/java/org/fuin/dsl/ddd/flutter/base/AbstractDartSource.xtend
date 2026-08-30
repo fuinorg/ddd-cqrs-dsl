@@ -172,13 +172,49 @@ abstract class AbstractDartSource<TYPE> extends AbstractSource<TYPE> {
             return ""
         }
         val out = new StringBuilder()
-        for (line : wrap(text.trim.replaceAll("\\s+", " "), 96 - indent.length)) {
-            if (out.length > 0) {
-                out.append("\n")
+        for (paragraph : paragraphs(text)) {
+            for (line : wrap(paragraph, 96 - indent.length)) {
+                if (out.length > 0) {
+                    out.append("\n")
+                }
+                out.append(indent).append("/// ").append(line)
             }
-            out.append(indent).append("/// ").append(line)
+            if (out.length > 0) {
+                // Separated by an empty doc line, which is how Dart writes a paragraph break. Emitted
+                // without a trailing space because `tidy` would take it off anyway.
+                out.append("\n").append(indent).append("///")
+            }
         }
-        return out.toString
+        // The loop above closes every paragraph, including the last one, which needs no separator.
+        val text2 = out.toString
+        return if (text2.endsWith("///")) text2.substring(0, text2.length - indent.length - 4) else text2
+    }
+
+    /**
+     * Splits a model's documentation into paragraphs.
+     *
+     * <p>The model writes JavaDoc, and two of its conventions do not survive into a Dart doc comment.
+     * A blank continuation line is <code>" *"</code> with no trailing space, which
+     * {@code CqrsStringExtensions.text} does not strip - it only replaces <code>" * "</code> - so the
+     * star arrives in the middle of the sentence. And a paragraph is marked <code>&lt;p&gt;</code>,
+     * which Dart renders literally rather than as a break.
+     *
+     * <p>Both are fixed here rather than in {@code text}, which the Java target shares: there
+     * <code>&lt;p&gt;</code> is correct output and the stray star has never mattered, so widening the
+     * fix would churn every JavaDoc this generator writes to repair a Dart-only problem.
+     *
+     * @param text Documentation as one collapsed line.
+     *
+     * @return One entry per paragraph, never empty of content.
+     */
+    private static def Iterable<String> paragraphs(String text) {
+        return text.trim
+            // An orphaned star from a blank JavaDoc line, wherever the collapse left it.
+            .replaceAll("(^|\\s)\\*(\\s|$)", " ")
+            .replaceAll("\\s+", " ")
+            .split("(?i)\\s*<p>\\s*")
+            .map[trim]
+            .filter[!empty]
     }
 
     /** The documentation as plain text, markers stripped, or <code>null</code> when there is none. */

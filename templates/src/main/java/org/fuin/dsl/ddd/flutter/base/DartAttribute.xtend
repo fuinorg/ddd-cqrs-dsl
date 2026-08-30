@@ -280,6 +280,51 @@ class DartAttribute {
     }
 
     /**
+     * How one part of a composite identifier is rendered into that identifier's string form.
+     *
+     * <p><b>Not {@link #toJson()}, and the difference is not cosmetic.</b> The JVM builds the string
+     * form by concatenating the parts, so each one arrives as whatever
+     * <code>String.valueOf(part)</code> gives: an enum's constant name, a nested identifier's
+     * <code>asString()</code> - which is <b>bare</b> - and a date's ISO form. <code>toJson()</code>
+     * writes a nested identifier as <code>.typed</code>, which is right for a JSON field and wrong
+     * here: it would put <code>BOOK 123-2026-08-30</code> where the write side expects
+     * <code>123-2026-08-30</code>, and the command would be refused for an identifier that looks
+     * plausible.
+     *
+     * <p>A part is never optional - an identifier with a missing part is not an identifier - so the
+     * null-aware forms {@link #toJson()} needs have no counterpart here. The wire helpers do return a
+     * nullable, though, so what they produce is asserted non-null.
+     *
+     * @return Expression over a parameter called by the attribute's own name.
+     */
+    /** The model's own name for the attribute's type, which is what the type tables are keyed by. */
+    def String modelTypeName() {
+        attribute.type?.name
+    }
+
+    /** Whether {@link #idPart()} reaches for a wire helper, and so needs the runtime imported. */
+    def boolean idPartNeedsRuntime() {
+        wireHelperFor(attribute.type) !== null
+    }
+
+    def String idPart() {
+        val field = attribute.name
+        val type = attribute.type
+        val wire = wireHelperFor(type)
+        if (wire !== null) {
+            return wire + "(" + field + ")!"
+        }
+        return switch (type) {
+            EnumObject: field + ".wireName"
+            // Bare, not typed: the JVM joins asString(), which carries no type prefix.
+            AggregateId: field + ".value"
+            EntityId: field + ".value"
+            ValueObject case single(type): field + ".value"
+            default: field
+        }
+    }
+
+    /**
      * How the attribute is read by a renderer that has only a descriptor.
      *
      * <p>Not the same as {@link #toJson()}, and the difference matters: a scalar is handed over in the

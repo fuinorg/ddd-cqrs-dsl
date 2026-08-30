@@ -35,8 +35,6 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
 
     @Serial
     private static final long serialVersionUID = 1000L;
-    /** Separates the parts in the string form of this identifier. */
-    public static final String SEPARATOR = "-";
     
     /**
      * Default constructor.
@@ -56,13 +54,6 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
         super(a, b);
     }
     
-    @Override
-    public final String asString() {
-        // Default: the id parts joined by SEPARATOR. Override - together with valueOf
-        // below - if a different string form is required.
-        return getA() + SEPARATOR + getB();
-    }
-
     /**
      * Converts the string form produced by {@link #asString()} back into an identifier.
      *
@@ -74,7 +65,7 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
      */
     @Nullable
     public static MyAggregate4Id valueOf(@Nullable final String value) {
-        return AbstractMyAggregate4Id.valueOf(value, SEPARATOR, MyAggregate4Id::new);
+        return AbstractMyAggregate4Id.valueOf(value, MyAggregate4Id::new);
     }
     
     /**
@@ -85,6 +76,6 @@ public final class MyAggregate4Id extends AbstractMyAggregate4Id {
      * @return Returns {@literal true} if it's a valid type else {@literal false}.
      */
     public static boolean isValid(@Nullable final String value) {
-        return AbstractMyAggregate4Id.isValid(value, SEPARATOR);
+        return AbstractMyAggregate4Id.isValid(value);
     }
 }
