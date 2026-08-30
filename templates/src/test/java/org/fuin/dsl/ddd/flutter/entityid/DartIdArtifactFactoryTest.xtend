@@ -60,21 +60,34 @@ class DartIdArtifactFactoryTest {
 
     @Test
     def void testACompositeIdentifierCanBeBuiltFromItsParts() {
-        val artifact = generateFrom("/dart-child-entity.cqrs", "EditionId")
-        assertThat(artifact.pathAndName).isEqualTo("books/edition_id.dart")
+        val artifact = generateFrom("/dart-child-entity.cqrs", "IntakeId")
+        assertThat(artifact.pathAndName).isEqualTo("books/intake_id.dart")
         assertThat(new String(artifact.data, "UTF-8"))
-            .isEqualTo("books/edition_id.dart".loadDartExample)
+            .isEqualTo("books/intake_id.dart".loadDartExample)
     }
 
     @Test
     def void testACompositePartIsRenderedTheWayTheJvmConcatenatesIt() {
         // The JVM builds the string form by concatenating the parts, so each arrives as
-        // String.valueOf(part). A nested identifier's is asString() - BARE - while this file's own
-        // toString() is the TYPED form, so interpolating the object would silently produce
-        // "BOOK 1-2026-08-30" and have the command refused. The date is the ISO form both sides use.
+        // String.valueOf(part): an enum's constant name, and a date's ISO form. Both sides have to
+        // agree character for character or the write side refuses an identifier that looks plausible.
+        val source = new String(generateFrom("/dart-child-entity.cqrs", "IntakeId").data, "UTF-8")
+        assertThat(source).contains(
+            "IntakeId('${_escaped(acquisition.wireName)}-${wireDate(arrivedOn)!}')")
+        // Escaped on the way in, and only the parts that are not last - the JVM's split lets the last
+        // one carry a separator, which is what keeps a trailing date reading as it always has.
+        assertThat(source).contains("value.replaceAll('%', '%25').replaceAll('-', '%2D')")
+    }
+
+    @Test
+    def void testAnIdentifierTheJvmCannotReadBackGetsNoConstructor() {
+        // EditionId is (BookId, Date). Its form would be "<uuid>-<date>", and the split that undoes it
+        // lets only the LAST part carry the separator - a UUID is full of them. So SrcIdStringMethods
+        // generates no valueOf and no asString for it, and whatever string form it has is hand-written.
+        // Composing that from here would be guessing at an encoding this generator did not produce.
         val source = new String(generateFrom("/dart-child-entity.cqrs", "EditionId").data, "UTF-8")
-        assertThat(source).contains("EditionId('${bookId.value}-${wireDate(printedOn)!}')")
-        assertThat(source).doesNotContain("${bookId.typed}")
+        assertThat(source).doesNotContain("factory EditionId.of(")
+        assertThat(source).doesNotContain("import '")
     }
 
     @Test

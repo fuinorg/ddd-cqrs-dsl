@@ -95,6 +95,34 @@ context de.fuin.library {
         }
 
         /**
+         * A batch of copies that came in one way on one day.
+         *
+         * <p>The counterpart of EditionId: its parts are an enum and a date, both of which a round
+         * trip can read back out of the joined string form, so both targets generate the encoding.
+         * EditionId's leading BookId is a UUID full of separators and cannot be split back out, which
+         * is why neither target generates one for it.
+         */
+        aggregate-id IntakeId identifies Intake {
+            slabel "INID"
+            label "Intake ID"
+            tooltip "How the copies came in, and on what day"
+
+            /** How the copies came in. */
+            Acquisition acquisition
+
+            /** The day they arrived. */
+            Date arrivedOn
+        }
+
+        aggregate Intake identifier IntakeId {
+
+            constructor record fires IntakeRecordedEvent {
+                @GenesisEvent event IntakeRecordedEvent { message "recorded" }
+            }
+
+        }
+
+        /**
          * Give a chapter a new heading.
          *
          * <p>Addresses a child entity, so the wire needs the path from the book down to the chapter -

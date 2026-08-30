@@ -74,8 +74,10 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
         // "CATEGORY <uuid>" even though Dart carries it as a string.
         val modelType = (base?.name ?: "String").toLowerCase
 
-        // Two or more, because a single-attribute identifier is already reachable through its own value.
-        val parts = if(base === null) id.attributes.nullSafe.map[new DartAttribute(it)].toList else emptyList
+        // Two or more, because a single-attribute identifier is already reachable through its own
+        // value - and only where the JVM generates the matching round trip, see composableIdPart.
+        val all = if(base === null) id.attributes.nullSafe.map[new DartAttribute(it)].toList else emptyList
+        val parts = if(all.size >= 2 && all.forall[composableIdPart]) all else emptyList
 
         val imports = imports(parts)
 
@@ -101,7 +103,7 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
           /// A natural key rather than a surrogate, so there is nothing to mint: the identifier follows
           /// from the values themselves.
           factory «className».of(«FOR p : parts SEPARATOR ', '»«p.baseType» «p.name»«ENDFOR») =>
-              «className»('«FOR p : parts SEPARATOR '-'»${«p.idPart»}«ENDFOR»');
+              «className»('«FOR i : 0 ..< parts.size SEPARATOR '-'»${«IF i == parts.size - 1»«parts.get(i).idPart»«ELSE»_escaped(«parts.get(i).idPart»)«ENDIF»}«ENDFOR»');
 
           «ENDIF»
           /// Reads an identifier off the wire, in either the typed or the bare form.
@@ -130,6 +132,16 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
           @override
           String toString() => typed;
         }
+        «IF parts.size >= 2»
+
+        /// Escapes one part of a composite identifier so that it cannot be mistaken for two.
+        ///
+        /// The write side joins the parts with `-` and splits them back on it, letting only the last
+        /// part carry one - so every earlier part has its separators escaped, and the escape character
+        /// with them. This has to produce exactly what the JVM's `escape` produces, down to doing the
+        /// escape character first: reverse the two and an escaped separator comes back double-escaped.
+        String _escaped(String value) => value.replaceAll('%', '%25').replaceAll('-', '%2D');
+        «ENDIF»
         '''
     }
 
@@ -147,9 +159,6 @@ class DartIdArtifactFactory extends AbstractDartSource<AbstractEntityId> {
      */
     def private imports(List<DartAttribute> parts) {
         val out = new TreeSet<String>()
-        if (parts.size < 2) {
-            return out
-        }
         for (p : parts) {
             val referenced = p.referenced
             if (referenced !== null) {

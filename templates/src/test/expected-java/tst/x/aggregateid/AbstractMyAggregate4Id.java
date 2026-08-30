@@ -104,15 +104,56 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
     /** Separates the parts in the string form of this identifier. */
     public static final String SEPARATOR = "-";
     
+    /** The separator as it appears inside a part, where it stands for itself. */
+    private static final String SEPARATOR_ESCAPED = "%2D";
+    
+    /** The escape character, escaped, so that a part may contain one. */
+    private static final String ESCAPE_ESCAPED = "%25";
+    
+    /** What {@link #unescape(String)} puts back. */
+    private static final Pattern ESCAPED = Pattern.compile("%(25|2D)");
+    
     /**
      * Returns the parts joined by {@link #SEPARATOR}, which is the form the identifier travels in and
      * the form {@link #valueOf(String, Factory)} reads back.
+     *
+     * <p>Every part but the last is escaped first. Without that the form is ambiguous whenever a part
+     * contains the separator: the split below would cut in the wrong place and hand back a different
+     * identifier that reports itself valid. The last part is left alone because the split already
+     * lets it carry separators, which is what keeps the form of an identifier ending in a date or a
+     * UUID exactly as it has always been.
      *
      * @return String form of this identifier.
      */
     @Override
     public final String asString() {
-        return getA() + SEPARATOR + getB();
+        return escape(String.valueOf(getA())) + SEPARATOR + getB();
+    }
+    
+    /**
+     * Escapes one part so that it cannot be mistaken for two.
+     *
+     * <p>The escape character goes first, or escaping the separator would then have its own escape
+     * escaped in turn.
+     *
+     * @param value Part to escape.
+     *
+     * @return The part, with the escape character and the separator percent-escaped.
+     */
+    private static String escape(final String value) {
+        return value.replace("%", ESCAPE_ESCAPED).replace(SEPARATOR, SEPARATOR_ESCAPED);
+    }
+    
+    /**
+     * Undoes {@link #escape(String)}, in one pass so that an escaped escape cannot be read twice.
+     *
+     * @param value Part to unescape.
+     *
+     * @return The part as it was before escaping.
+     */
+    private static String unescape(final String value) {
+        return ESCAPED.matcher(value)
+                .replaceAll(match -> "25".equals(match.group(1)) ? "%" : SEPARATOR);
     }
     
     /**
@@ -174,15 +215,22 @@ public abstract class AbstractMyAggregate4Id implements AggregateRootId, ValueOb
     }
     
     /**
-     * Splits a string form into its parts. Limited to the number of parts and applied left to right, so
-     * only the last one may contain the separator itself - which is what makes a trailing date work.
+     * Splits a string form into its parts, undoing the escaping as it goes.
+     *
+     * <p>Limited to the number of parts and applied left to right, so only the last one may contain a
+     * bare separator - which is what makes a trailing date work. Every earlier part was escaped by
+     * {@code asString}, so it is unescaped here and every caller below sees the real value.
      *
      * @param value Value to split.
      *
      * @return Parts, as many as the split found.
      */
     private static String[] split(final String value) {
-        return value.split(Pattern.quote(SEPARATOR), 2);
+        final String[] parts = value.split(Pattern.quote(SEPARATOR), 2);
+        for (int i = 0; i < parts.length - 1; i++) {
+            parts[i] = unescape(parts[i]);
+        }
+        return parts;
     }
     
     /**

@@ -297,6 +297,36 @@ class DartAttribute {
      *
      * @return Expression over a parameter called by the attribute's own name.
      */
+    /**
+     * Whether a composite identifier containing this part can be generated at all.
+     *
+     * <p><b>The JVM decides this, and this only mirrors it.</b>
+     * {@code SrcIdStringMethods.kindOf} knows how to read a part back out of the joined string form for
+     * an enum and for a handful of primitives, and for nothing else - so an identifier with any other
+     * part gets no generated {@code asString()} and no {@code valueOf}, and whatever string form it has
+     * is hand-written beside it. Emitting a Dart constructor for such an identifier would compose an
+     * encoding this generator did not produce and cannot check, which is the very thing generating the
+     * encoding was meant to stop.
+     *
+     * <p>The refusal is not fussiness. {@code AnnualTransactionsId} is {@code (AccountId, Integer)} and
+     * its form is {@code &lt;uuid&gt;-&lt;year&gt;}; the split that undoes it lets only the <i>last</i>
+     * part contain the separator, and a UUID is full of them. There is no round trip to generate, so
+     * neither side generates one.
+     *
+     * @return TRUE if both targets can generate the encoding for this part.
+     */
+    def boolean composableIdPart() {
+        val type = attribute.type
+        if (type instanceof EnumObject) {
+            return true
+        }
+        if (type instanceof ExternalType) {
+            // Both spellings, because the JVM sees the mapped name and this side sees the model's.
+            return #{"String", "Integer", "Long", "UUID", "Date", "LocalDate"}.contains(type.name)
+        }
+        return false
+    }
+
     /** The model's own name for the attribute's type, which is what the type tables are keyed by. */
     def String modelTypeName() {
         attribute.type?.name
