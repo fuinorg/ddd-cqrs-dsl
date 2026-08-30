@@ -78,15 +78,33 @@ What would settle it is the model saying so, e.g. `aggregate MasterData single i
 which is a grammar change. Until then, a create must never be offered on `targetOrigin` alone.
 
 
-## A composite id is declared in the model and written by hand
+## A composite id is declared in the model and written by hand — **done**
 
-`aggregate-id DailyRatesId identifies DailyRates { ExchangeRateProvider provider; Date date }` states
-the parts of a natural key, and the Java target emits an abstract base — but the *encoding*, the
-separator and the parse, is hand-written beside it. That works while every client shares the jar. It
-stops working the moment a client is in another language: it would have to reimplement the encoding,
-in a second language, with nothing keeping the two in step.
+Taken by the first of the two routes this recorded: the encoding is generated from the model on both
+sides. `SEPARATOR` and `asString()` moved out of the generate-once final class into the regenerated
+abstract one, so the string form is no longer a per-project edit, and the Dart target emits an
+`of(...)` constructor built from the same declaration. A client can now address such an aggregate.
 
-The Dart target flattens such an id to a `String` wrapper with no composite constructor at all, which
-is honest but leaves the client unable to address the aggregate. `targetOrigin: derived` names the
-situation; what would remove it is either generating the encoding from the model on both sides, or
-commands of this shape not asking a client for an id it can only guess at.
+Three things the work turned up, worth keeping:
+
+- **The encoding was ambiguous, not merely duplicated.** The split that reads a form back lets only the
+  last part contain the separator, and nothing enforced that — so `("x-y", "b")` composed `x-y-b` and
+  read back as `("x", "y-b")`, a different identifier reporting itself valid. Every part but the last
+  is now percent-escaped, which leaves every previously-safe form byte-identical: `DailyRatesId` is
+  still `ECB-2026-08-28`, because a provider's name carries neither separator nor escape character.
+- **Not every composite can be generated, and the refusal is right.** `kindOf` knows how to read back an
+  enum and a handful of primitives; anything else — a nested identifier, a value object — gets no
+  encoding on either side. `AnnualTransactionsId` is `(AccountId, Integer)`, whose form would be
+  `<uuid>-<year>`, and a leading UUID is full of separators. The Dart target refuses in step with the
+  Java one rather than composing something the generator never produced.
+- **Nothing here executes the encoding.** Both fixture sets are byte-compared, and — contrary to what is
+  easy to assume — `expected-java` is not added as a source root either, so neither is compiled. The
+  round trip is exercised downstream, in melkheftken's `DailyRatesIdTest` and `daily_rates_id_test.dart`,
+  which assert the same literal from the two sides.
+
+Still open, and now the thing that stops a *generic* client offering such a command: a descriptor says
+a command's target origin is `derived` but not which of its attributes make up the key, or in what
+order. melkheftken composes the path in its application layer, calling the generated constructor, which
+keeps the encoding in one place at the cost of a line per command. Emitting the key's parts onto the
+descriptor would remove that line — but a renderer cannot import generated code, so it would have to
+reproduce the escaping and the date format instead, putting the encoding back in two places.
