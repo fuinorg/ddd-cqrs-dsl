@@ -138,6 +138,9 @@ Licensed under LGPL v3.'''
 
 ext.pluginChangeNotes = '''\
 <ul>
+    <li><b>1.36.0</b> &ndash; An <code>entity-id</code> can be <code>base UUID</code>, and a
+        <code>base</code> built from a single value - <code>UUID</code>, a number, a decimal - must
+        declare exactly one attribute.</li>
     <li><b>1.35.0</b> &ndash; Declarations are grouped by kind in the structure view and under the file
         in the Project view, so a module shows <code>aggregates</code>, <code>events</code>,
         <code>exceptions</code> and the rest instead of one run of 79 rows; the structure view has a

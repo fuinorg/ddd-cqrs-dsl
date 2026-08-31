@@ -84,6 +84,7 @@ import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.nameRange;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.parameterNames;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.parseIntOrZero;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.resolve;
+import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.simpleName;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.sameType;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.stringValue;
 import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.typeNames;
@@ -102,6 +103,9 @@ import static org.fuin.dsl.cqrs.intellij.CqrsValidationUtil.typeRefsAfter;
  */
 public final class CqrsValidationAnnotator implements Annotator {
 
+    /** Bases whose generated valueOf/converter builds the type from a single value. */
+    private static final List<String> CONSTRUCTED_FROM_BASE = List.of("UUID", "Integer", "Long", "BigDecimal");
+
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         // A model that is only read - an entry of a dependency's archive, or a file of a 'local'
@@ -110,8 +114,16 @@ public final class CqrsValidationAnnotator implements Annotator {
             return;
         }
         if (element instanceof CqrsValueObject) {
-            checkValueObjectBase((CqrsValueObject) element, holder);
-            checkRowAnswersTheGatesItOffers((CqrsValueObject) element, holder);
+            CqrsValueObject vo = (CqrsValueObject) element;
+            checkValueObjectBase(vo, holder);
+            checkRowAnswersTheGatesItOffers(vo, holder);
+            checkBaseTypeAttributes(vo, vo.getAttributeList(), "value-object", holder);
+        } else if (element instanceof CqrsEntityId) {
+            CqrsEntityId entityId = (CqrsEntityId) element;
+            checkBaseTypeAttributes(entityId, entityId.getAttributeList(), "entity-id", holder);
+        } else if (element instanceof CqrsAggregateId) {
+            CqrsAggregateId aggregateId = (CqrsAggregateId) element;
+            checkBaseTypeAttributes(aggregateId, aggregateId.getAttributeList(), "aggregate-id", holder);
         } else if (element instanceof CqrsAttribute) {
             CqrsAttribute attribute = (CqrsAttribute) element;
             checkVariableNameLowerCase(attribute, holder);
@@ -595,6 +607,44 @@ public final class CqrsValidationAnnotator implements Annotator {
         for (CqrsMethodDef method : vo.getMethodDefList()) {
             error(holder, nameRange(method), "A value object with a 'base' is not allowed to have methods");
         }
+    }
+
+    /**
+     * Reports a 'base' whose attributes cannot produce compiling code.
+     *
+     * <p>The port of the Xtext validator's {@code checkBaseTypeAttributes}. A base the generator builds
+     * a value from - UUID, a number, a decimal - is generated as a wrapper around exactly one declared
+     * attribute, because the generated valueOf() and the converters call a one-argument constructor
+     * written from the attributes. With none there is no constructor at all, with several none of that
+     * shape. An entity id on Integer or UUID and an aggregate id on UUID are emitted whole from the
+     * base type alone, and a String base is never instantiated by generated code, so both are exempt.
+     */
+    private void checkBaseTypeAttributes(@NotNull PsiElement element, @NotNull List<CqrsAttribute> attributes,
+            @NotNull String kind, @NotNull AnnotationHolder holder) {
+        CqrsTypeRef base = firstTypeRefAfter(element, CqrsTypes.KW_BASE);
+        if (base == null) {
+            return;
+        }
+        String baseName = simpleName(base);
+        if (!CONSTRUCTED_FROM_BASE.contains(baseName) || generatedFromBaseAlone(kind, baseName)) {
+            return;
+        }
+        int count = attributes.size();
+        if (count != 1) {
+            error(holder, base, "A '" + kind + "' with 'base " + baseName
+                    + "' is built from a single value, so it must declare exactly one attribute holding it, but has "
+                    + (count == 0 ? "none" : count));
+        }
+    }
+
+    private static boolean generatedFromBaseAlone(@NotNull String kind, @NotNull String baseName) {
+        if ("entity-id".equals(kind)) {
+            return "Integer".equals(baseName) || "UUID".equals(baseName);
+        }
+        if ("aggregate-id".equals(kind)) {
+            return "UUID".equals(baseName);
+        }
+        return false;
     }
 
     // --- variable naming ------------------------------------------------------------------------

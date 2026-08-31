@@ -29,6 +29,7 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -41,6 +42,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntityId;
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractMethod;
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractVO;
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate;
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId;
 import org.fuin.dsl.cqrs.cqrsDsl.AnnotationInstance;
@@ -256,6 +258,13 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
   public static final String ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch";
 
   public static final String VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods";
+
+  public static final String BASE_TYPE_NEEDS_ONE_ATTRIBUTE = "baseTypeNeedsOneAttribute";
+
+  /**
+   * Bases whose generated valueOf/converter builds the type from a single value.
+   */
+  private static final List<String> CONSTRUCTED_FROM_BASE = Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("UUID", "Integer", "Long", "BigDecimal"));
 
   public static final String INVALID_CRON_EXPRESSION = "invalidCronExpression";
 
@@ -1746,6 +1755,69 @@ public class CqrsDslValidator extends AbstractCqrsDslValidator {
         CqrsDslPackage.Literals.ANNOTATION_INSTANCE__PARAMS, 
         CqrsDslValidator.ANNOTATION_PARAM_COUNT_MISMATCH);
     }
+  }
+
+  /**
+   * A 'base' the generator builds a value from - UUID, a number, a decimal - is generated as a wrapper
+   * around exactly one declared attribute: the generated valueOf() and the converters call a
+   * one-argument constructor, and that constructor is written from the attributes. With none there is
+   * no constructor at all, with several none of that shape, so the write-once file that lands in
+   * src/main/java does not compile.
+   * 
+   * <p>Two shapes are exempt. An entity id on Integer or UUID and an aggregate id on UUID are emitted
+   * whole from the base type alone, so there is nothing to declare. And a String base is never
+   * instantiated by generated code - its valueOf() is emitted commented out - so any number of
+   * attributes compiles, including none, which leaves supplying the value to the write-once class.
+   */
+  @Check
+  public void checkBaseTypeAttributes(final AbstractVO vo) {
+    if ((((vo.getBase() == null) || vo.getBase().eIsProxy()) || (vo.getBase().getName() == null))) {
+      return;
+    }
+    if (((!CqrsDslValidator.CONSTRUCTED_FROM_BASE.contains(vo.getBase().getName())) || CqrsDslValidator.isGeneratedFromBaseAlone(vo))) {
+      return;
+    }
+    final int count = CqrsCollectionExtensions.<Attribute>nullSafe(vo.getAttributes()).size();
+    if ((count != 1)) {
+      String _baseKind = CqrsDslValidator.getBaseKind(vo);
+      String _plus = ("A \'" + _baseKind);
+      String _plus_1 = (_plus + "\' with \'base ");
+      String _name = vo.getBase().getName();
+      String _plus_2 = (_plus_1 + _name);
+      String _plus_3 = (_plus_2 + 
+        "\' is built from a single value, so it must declare exactly one attribute holding it, but has ");
+      Object _xifexpression = null;
+      if ((count == 0)) {
+        _xifexpression = "none";
+      } else {
+        _xifexpression = Integer.valueOf(count);
+      }
+      String _plus_4 = (_plus_3 + _xifexpression);
+      this.error(_plus_4, vo, 
+        CqrsDslPackage.Literals.ABSTRACT_VO__BASE, 
+        CqrsDslValidator.BASE_TYPE_NEEDS_ONE_ATTRIBUTE);
+    }
+  }
+
+  private static boolean isGeneratedFromBaseAlone(final AbstractVO vo) {
+    if ((vo instanceof EntityId)) {
+      return Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("Integer", "UUID")).contains(((EntityId)vo).getBase().getName());
+    }
+    if ((vo instanceof AggregateId)) {
+      String _name = ((AggregateId)vo).getBase().getName();
+      return Objects.equals("UUID", _name);
+    }
+    return false;
+  }
+
+  private static String getBaseKind(final AbstractVO vo) {
+    if ((vo instanceof EntityId)) {
+      return "entity-id";
+    }
+    if ((vo instanceof AggregateId)) {
+      return "aggregate-id";
+    }
+    return "value-object";
   }
 
   @Check

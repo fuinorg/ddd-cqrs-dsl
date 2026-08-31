@@ -33,7 +33,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     override create(EntityId entityId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
-        if (entityId.base === null || entityId.base.name != "Integer") {
+        if (entityId.base === null || !#["Integer", "UUID"].contains(entityId.base.name)) {
             // Do not generate anything
             return null
         }
@@ -60,7 +60,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
             create(ctx, ns, entityId, pkg, className).toString().getBytes("UTF-8"), entityId));
     }
 
-    def addImports(CodeSnippetContext ctx, EntityId aggregateId) {
+    def addImports(CodeSnippetContext ctx, EntityId entityId) {
         ctx.requiresImport("jakarta.validation.Constraint")
         ctx.requiresImport("jakarta.validation.ConstraintValidator")
         ctx.requiresImport("jakarta.validation.ConstraintValidatorContext")
@@ -73,9 +73,14 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
         ctx.requiresImport("java.lang.annotation.Retention")
         ctx.requiresImport("java.lang.annotation.RetentionPolicy")
         ctx.requiresImport("java.lang.annotation.Target")
-        ctx.requiresImport("java.text.NumberFormat")
-        ctx.requiresImport("java.text.ParsePosition")        
-        ctx.requiresImport("org.fuin.ddd4j.core.IntegerEntityId")
+        if (entityId.base.name == "UUID") {
+            ctx.requiresImport("java.util.UUID")
+            ctx.requiresImport("org.fuin.ddd4j.core.UuidEntityId")
+        } else {
+            ctx.requiresImport("java.text.NumberFormat")
+            ctx.requiresImport("java.text.ParsePosition")
+            ctx.requiresImport("org.fuin.ddd4j.core.IntegerEntityId")
+        }
         ctx.requiresImport("org.fuin.ddd4j.core.EntityType")
         ctx.requiresImport("org.fuin.ddd4j.core.StringBasedEntityType")
         ctx.requiresImport("org.fuin.ddd4j.core.HasEntityTypeConstant")
@@ -99,6 +104,9 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
     }
 
     def create(SimpleCodeSnippetContext ctx, Module ns, EntityId id, String pkg, String className) {
+        val baseType = id.base.name
+        val uuid = baseType == "UUID"
+
         val src = '''
             «new SrcJavaDocType(id)»
             «new SrcMetaAnnotations(ctx, id.metaInfo, bundleName(ns), className)»
@@ -107,7 +115,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
             @HasEntityTypeConstant
             @HasPublicStaticIsValidMethod
             @HasPublicStaticValueOfMethod
-            public final class «className» extends IntegerEntityId {
+            public final class «className» extends «IF uuid»UuidEntityId«ELSE»IntegerEntityId«ENDIF» {
             
                 @Serial
                 private static final long serialVersionUID = 1000L;
@@ -115,6 +123,58 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                 /** Unique name of the aggregate this identifier refers to. */
                 public static final EntityType TYPE = new StringBasedEntityType("«id.entityNullsafe.name.asEntityTypeConstant»");
             
+                «IF uuid»
+                /**
+                 * Default constructor.
+                 */
+                @SuppressWarnings("NullAway.Init")
+                protected «className»() {
+                    super(TYPE);
+                }
+
+                /**
+                 * Constructor with mandatory data.
+                 *
+                 * @param value
+                 *            Persistent value.
+                 */
+                public «className»(final UUID value) {
+                    super(TYPE, value);
+                }
+
+                /**
+                 * Parses a given string and returns a new instance of «className».
+                 * 
+                 * @param value
+                 *            String with valid UUID to convert. A {@literal null} value
+                 *            returns {@literal null}.
+                 * 
+                 * @return Converted value.
+                 */
+                @Nullable
+                public static «className» valueOf(@Nullable final String value) {
+                    if (value == null) {
+                        return null;
+                    }
+                    requireArgValid("value", value);
+                    return new «className»(UUID.fromString(value));
+                }
+
+                /**
+                 * Verifies that a given string can be converted into the type.
+                 * 
+                 * @param value
+                 *            Value to validate.
+                 * 
+                 * @return Returns {@literal true} if it's a valid type else {@literal false}.
+                 */
+                public static boolean isValid(final String value) {
+                    if (value == null) {
+                        return true;
+                    }
+                    return UuidEntityId.isValid(value);
+                }
+                «ELSE»
                 private static final int MIN = 1;
             
                 /**
@@ -194,6 +254,7 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                     }
                     return false;
                 }
+                «ENDIF»
 
                 /**
                  * Verifies if the argument is valid and throws an exception if this is not the case.
@@ -251,22 +312,22 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
             
                 «IF options.jaxb || options.jsonb || options.jpa»
                 /**
-                 * Converts the value object from/to Integer.
+                 * Converts the value object from/to «baseType».
                  */
-                public static final class Converter «IF options.jaxb»extends XmlAdapter<Integer, «className»> «ENDIF»«IF options.jpa && options.jsonb»implements AttributeConverter<«className», Integer>, JsonbAdapter<«className», Integer>«ELSE»«IF options.jsonb»implements JsonbAdapter<«className», Integer>«ENDIF»«IF options.jpa»implements AttributeConverter<«className», Integer>«ENDIF»«ENDIF» {
+                public static final class Converter «IF options.jaxb»extends XmlAdapter<«baseType», «className»> «ENDIF»«IF options.jpa && options.jsonb»implements AttributeConverter<«className», «baseType»>, JsonbAdapter<«className», «baseType»>«ELSE»«IF options.jsonb»implements JsonbAdapter<«className», «baseType»>«ENDIF»«IF options.jpa»implements AttributeConverter<«className», «baseType»>«ENDIF»«ENDIF» {
 
                     // General methods
 
                     /**
-                     * Converts the Integer into a «className». A {@literal null} parameter will return {@literal null}.
+                     * Converts the «baseType» into a «className». A {@literal null} parameter will return {@literal null}.
                      * 
                      * @param value
-                     *            Integer to convert into a «className».
+                     *            «baseType» to convert into a «className».
                      * 
                      * @return Value object of type «className».
                      */
                     @Nullable
-                    public «className» toVO(@Nullable final Integer value) {
+                    public «className» toVO(@Nullable final «baseType» value) {
                         if (value == null) {
                             return null;
                         }
@@ -274,15 +335,15 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
                     }
 
                     /**
-                     * Converts a «className» into a Integer. A {@literal null} parameter will return {@literal null}.
+                     * Converts a «className» into a «baseType». A {@literal null} parameter will return {@literal null}.
                      * 
                      * @param value
                      *            Value object of type «className».
                      * 
-                     * @return Integer.
+                     * @return «baseType».
                      */
                     @Nullable
-                    public Integer fromVO(@Nullable final «className» value) {
+                    public «baseType» fromVO(@Nullable final «className» value) {
                         if (value == null) {
                             return null;
                         }
@@ -294,13 +355,13 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
                     @Override
                     @Nullable
-                    public «className» unmarshal(@Nullable final Integer value) throws Exception {
+                    public «className» unmarshal(@Nullable final «baseType» value) throws Exception {
                         return toVO(value);
                     }
 
                     @Override
                     @Nullable
-                    public Integer marshal(@Nullable final «className» obj) throws Exception {
+                    public «baseType» marshal(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
@@ -310,13 +371,13 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
                     @Override
                     @Nullable
-                    public Integer convertToDatabaseColumn(@Nullable final «className» obj) {
+                    public «baseType» convertToDatabaseColumn(@Nullable final «className» obj) {
                         return fromVO(obj);
                     }
 
                     @Override
                     @Nullable
-                    public «className» convertToEntityAttribute(@Nullable final Integer value) {
+                    public «className» convertToEntityAttribute(@Nullable final «baseType» value) {
                         return toVO(value);
                     }
 
@@ -326,13 +387,13 @@ class SimpleEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
                     @Override
                     @Nullable
-                    public Integer adaptToJson(@Nullable final «className» obj) throws Exception {
+                    public «baseType» adaptToJson(@Nullable final «className» obj) throws Exception {
                         return fromVO(obj);
                     }
 
                     @Override
                     @Nullable
-                    public «className» adaptFromJson(@Nullable final Integer value) throws Exception {
+                    public «className» adaptFromJson(@Nullable final «baseType» value) throws Exception {
                         return toVO(value);
                     }
 

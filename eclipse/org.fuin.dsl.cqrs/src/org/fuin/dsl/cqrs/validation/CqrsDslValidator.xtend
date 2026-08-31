@@ -18,6 +18,7 @@ import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider
 import org.eclipse.xtext.validation.Check
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractElement
 import org.fuin.dsl.cqrs.cqrsDsl.AbstractEntity
+import org.fuin.dsl.cqrs.cqrsDsl.AbstractVO
 import org.fuin.dsl.cqrs.cqrsDsl.Aggregate
 import org.fuin.dsl.cqrs.cqrsDsl.AggregateId
 import org.fuin.dsl.cqrs.cqrsDsl.Attribute
@@ -238,6 +239,11 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 	public static val ANNOTATION_PARAM_COUNT_MISMATCH = "annotationParamCountMismatch"
 
 	public static val VALUE_OBJECT_BASE_NO_CONSTRUCTORS_OR_METHODS = "valueObjectBaseNoConstructorsOrMethods"
+
+	public static val BASE_TYPE_NEEDS_ONE_ATTRIBUTE = "baseTypeNeedsOneAttribute"
+
+	/** Bases whose generated valueOf/converter builds the type from a single value. */
+	static val CONSTRUCTED_FROM_BASE = #["UUID", "Integer", "Long", "BigDecimal"]
 
 	public static val INVALID_CRON_EXPRESSION = "invalidCronExpression"
 
@@ -1575,6 +1581,63 @@ class CqrsDslValidator extends AbstractCqrsDslValidator {
 		}
 	}
 	
+	/**
+	 * A 'base' the generator builds a value from - UUID, a number, a decimal - is generated as a wrapper
+	 * around exactly one declared attribute: the generated valueOf() and the converters call a
+	 * one-argument constructor, and that constructor is written from the attributes. With none there is
+	 * no constructor at all, with several none of that shape, so the write-once file that lands in
+	 * src/main/java does not compile.
+	 *
+	 * <p>Two shapes are exempt. An entity id on Integer or UUID and an aggregate id on UUID are emitted
+	 * whole from the base type alone, so there is nothing to declare. And a String base is never
+	 * instantiated by generated code - its valueOf() is emitted commented out - so any number of
+	 * attributes compiles, including none, which leaves supplying the value to the write-once class.
+	 */
+	@Check
+	def checkBaseTypeAttributes(AbstractVO vo) {
+
+		// A base that does not resolve is reported as such - piling this on top of it says nothing.
+		if ((vo.base === null) || vo.base.eIsProxy || (vo.base.name === null)) {
+			return
+		}
+		if (!CONSTRUCTED_FROM_BASE.contains(vo.base.name) || vo.generatedFromBaseAlone) {
+			return
+		}
+
+		val count = vo.attributes.nullSafe.size
+		if (count != 1) {
+			error(
+				"A '" + vo.baseKind + "' with 'base " + vo.base.name +
+					"' is built from a single value, so it must declare exactly one attribute holding it, but has " +
+					(if (count == 0) "none" else count),
+				vo,
+				CqrsDslPackage.Literals::ABSTRACT_VO__BASE,
+				BASE_TYPE_NEEDS_ONE_ATTRIBUTE
+			)
+		}
+
+	}
+
+	private static def boolean isGeneratedFromBaseAlone(AbstractVO vo) {
+		if (vo instanceof EntityId) {
+			return #["Integer", "UUID"].contains(vo.base.name)
+		}
+		if (vo instanceof AggregateId) {
+			return "UUID" == vo.base.name
+		}
+		return false
+	}
+
+	private static def String getBaseKind(AbstractVO vo) {
+		if (vo instanceof EntityId) {
+			return "entity-id"
+		}
+		if (vo instanceof AggregateId) {
+			return "aggregate-id"
+		}
+		return "value-object"
+	}
+
 	@Check
 	def checkValueObjectBaseHasNoConstructorsOrMethods(ValueObject vo) {
 		if (vo.base !== null) {

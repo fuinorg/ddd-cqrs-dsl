@@ -11,7 +11,7 @@ import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 /**
  * Generates an entity id with a single delegate factory: the {@link SimpleEntityIdArtifactFactory}
- * creates the complete self-contained class for a "base Integer" id. In all other cases the
+ * creates the complete self-contained class for a "base Integer" or "base UUID" id. In all other cases the
  * {@link AbstractEntityIdArtifactFactory} and the {@link FinalEntityIdArtifactFactory} together
  * create the abstract base class and the final class that extends it.
  * <p>
@@ -53,7 +53,7 @@ class CombinedEntityIdArtifactFactory extends AbstractSource<EntityId> {
 
     override create(EntityId entityId, Map<String, Object> context, boolean preparationRun) throws GenerateException {
 
-        if (entityId.base !== null && entityId.base.name == "Integer") {
+        if (entityId.base !== null && #["Integer", "UUID"].contains(entityId.base.name)) {
             return simple.create(entityId, context, preparationRun)
         }
 

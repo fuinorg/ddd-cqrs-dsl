@@ -121,7 +121,7 @@ class SrcVoBaseMethodsNumberTest {
 				        import p.y.types.*
 
 
-				        entity-id MyEntityId identifies MyEntity base Long {}
+				        entity-id MyEntityId identifies MyEntity base Long { Long value }
 
 				        entity MyEntity identifier MyEntityId root MyAggregate {}
 

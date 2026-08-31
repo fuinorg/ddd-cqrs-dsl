@@ -2,6 +2,9 @@
 
 Generated from `ext.pluginChangeNotes` in [build.gradle](build.gradle) - do not edit.
 
+## 1.36.0
+- An `entity-id` can be `base UUID`, and a `base` built from a single value - `UUID`, a number, a decimal - must declare exactly one attribute.
+
 ## 1.35.0
 - Declarations are grouped by kind in the structure view and under the file in the Project view, so a module shows `aggregates`, `events`, `exceptions` and the rest instead of one run of 79 rows; the structure view has a toolbar toggle for it, and each row now carries its own icon rather than the file's. `cid` is removed. It generated a number nothing on the result path ever read; an exception's `code` is now a readable short identifier.
 

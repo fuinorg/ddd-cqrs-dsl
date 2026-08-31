@@ -56,6 +56,88 @@ public class CqrsValidationAnnotatorTest extends BasePlatformTestCase {
                 """);
     }
 
+    // --- 'base' and the attribute holding the value ----------------------------------------------
+    // A base the generator builds a value from - UUID, a number, a decimal - is generated as a wrapper
+    // around exactly one declared attribute, because the generated valueOf() and converters call a
+    // one-argument constructor written from the attributes. A String base is never instantiated by
+    // generated code, so any number of attributes compiles - including none, which leaves supplying
+    // the value to the write-once class.
+
+    public void testInstantiatedBaseWithNoAttributeIsRefused() {
+        check("""
+                context p {
+                  module c.n {
+                    type UUID
+                    value-object Key base <error>UUID</error> {
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testInstantiatedBaseWithSeveralAttributesIsRefused() {
+        check("""
+                context p {
+                  module c.n {
+                    type UUID
+                    value-object Pair base <error>UUID</error> {
+                      UUID a
+                      UUID b
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testStringBaseWithNoAttributeIsLeftAlone() {
+        check("""
+                context p {
+                  module c.n {
+                    type String
+                    value-object Email base String {
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testEntityIdOnIntegerOrUuidNeedsNoAttribute() {
+        check("""
+                context p {
+                  module c.n {
+                    type Integer
+                    type UUID
+                    aggregate-id ThingId identifies Thing base UUID {
+                    }
+                    aggregate Thing identifier ThingId {
+                    }
+                    entity-id PartId identifies Part base Integer {
+                    }
+                    entity-id SlotId identifies Slot base UUID {
+                    }
+                    entity Part identifier PartId root Thing {
+                    }
+                    entity Slot identifier SlotId root Thing {
+                    }
+                  }
+                }
+                """);
+    }
+
+    public void testAggregateIdOnIntegerHasNoSuchShortcut() {
+        check("""
+                context p {
+                  module c.n {
+                    type Integer
+                    aggregate-id ThingId identifies Thing base <error>Integer</error> {
+                    }
+                    aggregate Thing identifier ThingId {
+                    }
+                  }
+                }
+                """);
+    }
+
     public void testValueObjectBaseWithMismatchingAttributeTypeIsValid() {
         check("""
                 context p {

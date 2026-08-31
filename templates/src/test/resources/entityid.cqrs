@@ -3,6 +3,7 @@ context p {
 	module x.types {
 		type String
 		type Integer
+		type UUID
 	}
 
 	module x.entityid {
@@ -62,6 +63,12 @@ context p {
 
 				/** Entity ID no attribute and base Integer. */
 				entity-id MyEntity5Id identifies MyEntity5 base Integer {
+		        }
+
+				entity MyEntity6 identifier MyEntity6Id root MyAggregate {}
+
+				/** Entity ID no attribute and base UUID. */
+				entity-id MyEntity6Id identifies MyEntity6 base UUID {
 		        }
 	}
 }

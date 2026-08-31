@@ -37,6 +37,7 @@ context de.fuin.rules {
             slabel "JEID"
             label "Journal entry ID"
             tooltip "Position of the entry in its book"
+            Integer value
         }
 
         /** Answers what an operation cannot answer itself. */

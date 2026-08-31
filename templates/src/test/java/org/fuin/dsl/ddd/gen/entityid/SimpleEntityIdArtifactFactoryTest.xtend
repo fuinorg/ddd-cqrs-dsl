@@ -52,6 +52,25 @@ class SimpleEntityIdArtifactFactoryTest {
 
     }
 
+    @Test
+    def void testCreateMyEntityId6() {
+
+        // PREPARE
+        val context = new HashMap<String, Object>()
+        val refReg = context.codeReferenceRegistry
+        refReg.putReference("p.x.types.UUID", "java.util.UUID")
+
+        val SimpleEntityIdArtifactFactory testee = createTestee()
+        val EntityId entityId = model.find(typeof(EntityId), "MyEntity6Id")
+
+        // TEST
+        val result = new String(testee.create(entityId, context, false).iterator().next().data)
+
+        // VERIFY
+        assertThat(result).isEqualTo("x/entityid/MyEntity6Id.java".loadConcreteExample)
+
+    }
+
     private def createTestee() {
         val factory = new SimpleEntityIdArtifactFactory()
         val ArtifactFactoryConfig config = new ArtifactFactoryConfig("entityId", SimpleEntityIdArtifactFactory.name, "module", "folder")

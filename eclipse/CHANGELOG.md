@@ -2,6 +2,10 @@
 
 Reflects only changes made in the Eclipse plugin.
 
+## 1.33.0
+- **An `entity-id` can be `base UUID`** - generated whole from its base type, like `base Integer`.
+- **A `base` built from a single value** (`UUID`, a number, a decimal) **must declare exactly one attribute**.
+
 ## 1.32.0
 - **`cid` is removed.** It generated a `UniquelyNumberedException` whose number nothing on the result
   path ever read; an exception's `code` is now a readable short identifier instead.
