@@ -66,7 +66,7 @@ class FinalValueObjectArtifactFactory extends AbstractSource<ValueObject> {
     def create(SimpleCodeSnippetContext ctx, Module ns, ValueObject vo, String pkg, String className, String abstractClassName) {
         val String src = ''' 
             «new SrcJavaDocType(vo)»
-            «new SrcMetaAnnotations(ctx, vo.metaInfo, contextSegment(ns), (if (subModule(ns) === null) className else subModule(ns) + "." + className))»
+            «new SrcMetaAnnotations(ctx, vo.metaInfo, bundleName(ns), className)»
             «IF vo.base === null && options.jaxb»
                 «new SrcXmlRootElement(ctx, vo)»
             «ENDIF»

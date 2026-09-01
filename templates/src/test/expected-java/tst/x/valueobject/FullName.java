@@ -26,9 +26,9 @@ import org.fuin.objects4j.ui.Tooltip;
 /**
  * A person's full nomenclature, also known as a personal name.
  */
-@ShortLabel(bundle = "x", key = "valueobject.FullName.slabel", value = "Name")
-@Label(bundle = "x", key = "valueobject.FullName.label", value = "Full name")
-@Tooltip(bundle = "x", key = "valueobject.FullName.tooltip", value = "A person's full nomenclature, also known as a personal name")
+@ShortLabel(bundle = "Valueobject", key = "FullName.slabel", value = "Name")
+@Label(bundle = "Valueobject", key = "FullName.label", value = "Full name")
+@Tooltip(bundle = "Valueobject", key = "FullName.tooltip", value = "A person's full nomenclature, also known as a personal name")
 @Examples(value = { "Peter Parker","Mary Jane Watson","Harry Osborn" })
 public final class FullName extends AbstractFullName {
 
