@@ -29,15 +29,15 @@ import org.jspecify.annotations.Nullable;
 public enum EnumA {
     
     /** First. */
-    @ShortLabel(key = "A.slabel", value = "1st")
-    @Label(key = "A.label", value = "First one")
-    @Tooltip(key = "A.tooltip", value = "The first instance")
-    @Prompt(key = "A.prompt", value = "a")
+    @ShortLabel(bundle = "Enumobject", key = "EnumA.A.slabel", value = "1st")
+    @Label(bundle = "Enumobject", key = "EnumA.A.label", value = "First one")
+    @Tooltip(bundle = "Enumobject", key = "EnumA.A.tooltip", value = "The first instance")
+    @Prompt(bundle = "Enumobject", key = "EnumA.A.prompt", value = "a")
     @Examples(value = { "A","AA" })
     A,
     
         /** Second. */
-    @Label(key = "B.label", value = "Second one")
+    @Label(bundle = "Enumobject", key = "EnumA.B.label", value = "Second one")
     B,
     
         /** Third. */

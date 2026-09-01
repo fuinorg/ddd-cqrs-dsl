@@ -9,6 +9,7 @@ import org.fuin.dsl.ddd.gen.base.SrcAll
 import org.fuin.dsl.ddd.gen.base.SrcGetters
 import org.fuin.dsl.ddd.gen.base.SrcJavaDocMethod
 import org.fuin.dsl.ddd.gen.base.SrcKeyValueReplace
+import org.fuin.dsl.ddd.gen.base.SrcRefusalMessage
 import org.fuin.dsl.ddd.gen.base.SrcParamsAssignment
 import org.fuin.dsl.ddd.gen.base.SrcParamsDecl
 import org.fuin.dsl.ddd.gen.base.SrcVarsDecl
@@ -102,7 +103,7 @@ class ExceptionArtifactFactory extends AbstractSource<Exception> {
                 «new SrcVarsDecl(ctx, "private", GenerateOptions.empty(), ex)»
                 «new SrcJavaDocMethod(ctx, "Constructs a new instance of the exception.", null, ex.attributes.asParameters, null)»
                 public «ex.name»(«new SrcParamsDecl(ctx, GenerateOptions.empty(), ex.attributes.asParameters)») {
-                    super(«IF !ex.attributes.empty»Objects.requireNonNull(«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»)«ELSE»«new SrcKeyValueReplace(ctx, ex.message, ex.attributes.asNames)»«ENDIF»);
+                    super(«IF !ex.attributes.empty»Objects.requireNonNull(«new SrcRefusalMessage(ctx, ex)»)«ELSE»«new SrcRefusalMessage(ctx, ex)»«ENDIF»);
                     «new SrcParamsAssignment(ctx, ex.attributes.asParameters)»
                 }
             

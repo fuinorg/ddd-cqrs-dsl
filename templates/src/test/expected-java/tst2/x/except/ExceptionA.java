@@ -18,6 +18,7 @@
 package p.shared.domain.x.except;
 
 import java.io.Serial;
+import org.fuin.dsl.cqrs.common.wording.Wording;
 
 /**
  * Exception A - No variables
@@ -31,7 +32,7 @@ public final class ExceptionA extends Exception {
      * Constructs a new instance of the exception.
      */
     public ExceptionA() {
-        super("Exception A");
+        super(Wording.message("Except", "ExceptionA", "Exception A"));
     }
 
 }

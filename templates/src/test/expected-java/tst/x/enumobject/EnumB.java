@@ -26,8 +26,8 @@ import org.jspecify.annotations.Nullable;
 public final class EnumB extends AbstractEnumB {
     
     /** First. */
-    @ShortLabel(key = "A.slabel", value = "1st")
-    @Label(key = "A.label", value = "First one")
+    @ShortLabel(bundle = "Enumobject", key = "EnumB.A.slabel", value = "1st")
+    @Label(bundle = "Enumobject", key = "EnumB.A.label", value = "First one")
     public static final EnumB A = new EnumB(1, "a", "First");
     
     /** Second. */

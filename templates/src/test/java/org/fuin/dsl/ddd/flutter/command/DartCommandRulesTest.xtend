@@ -115,10 +115,11 @@ class DartCommandRulesTest {
     }
 
     @Test
-    def void testARefusalNoClientCanBeShownIsNotTranslated() {
-        // NameMustBeUniqueForType asks a service, so no descriptor carries it and no screen ever shows
-        // its wording. A bundle entry for it would be one nothing could ask for.
-        assertThat(arb()).doesNotContain("NameTakenException")
+    def void testARefusalNoDescriptorNamesIsTranslatedAllTheSame() {
+        // NameMustBeUniqueForType asks a service, so no descriptor carries it and no disabled action
+        // ever wears its wording - but the server still refuses with it, and that sentence reaches a
+        // person. Which refusals a client can predict is not which refusals are written.
+        assertThat(arb()).contains('"Receipts.NameTakenException.message"')
     }
 
     private def String arb() {

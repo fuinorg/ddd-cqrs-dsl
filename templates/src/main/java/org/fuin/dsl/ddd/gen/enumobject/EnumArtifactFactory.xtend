@@ -20,6 +20,7 @@ import org.fuin.srcgen4j.core.emf.SimpleCodeSnippetContext
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAbstractElementExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsAttributeExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 import static extension org.fuin.dsl.cqrs.extensions.CqrsStringExtensions.*
 import static extension org.fuin.dsl.ddd.gen.extensions.MapExtensions.*
@@ -76,7 +77,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
                     
                     «FOR in : eo.instances SEPARATOR ','»
                     «in.doc»
-                    «new SrcMetaAnnotations(ctx, instanceMeta(in), null, in.name)»«in.name»
+                    «new SrcMetaAnnotations(ctx, instanceMeta(in), bundleName(eo.module), eo.name + "." + in.name)»«in.name»
                     
                     «ENDFOR»;
                     
@@ -90,7 +91,7 @@ class EnumArtifactFactory extends AbstractSource<EnumObject> {
                 
                     «FOR in : eo.instances SEPARATOR ','»
                     «in.doc»
-                    «new SrcMetaAnnotations(ctx, instanceMeta(in), null, in.name)»«in.name»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»)
+                    «new SrcMetaAnnotations(ctx, instanceMeta(in), bundleName(eo.module), eo.name + "." + in.name)»«in.name»(«FOR lit : in.params SEPARATOR ', '»«lit.str»«ENDFOR»)
                     
                     «ENDFOR»;
                     

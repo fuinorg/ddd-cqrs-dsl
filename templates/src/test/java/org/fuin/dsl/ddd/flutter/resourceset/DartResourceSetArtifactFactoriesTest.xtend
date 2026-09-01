@@ -146,9 +146,14 @@ class DartResourceSetArtifactFactoriesTest {
         }
         for (line : arb.split("\\n").filter[contains('": "')].filter[!contains("@@locale")]) {
             val key = line.trim.substring(0, line.trim.indexOf(':')).trim
-            assertThat(used)
-                .describedAs("the bundle carries %s, which no descriptor looks up", key)
-                .contains(key)
+            // A refusal is the exception, in both senses. It is written for the *server*, which composes
+            // the sentence it refuses with, so no Dart descriptor has to name it for it to be needed -
+            // and the descriptors that do name one (a rule shown under a disabled action) are a subset.
+            if (!key.contains("Exception.message")) {
+                assertThat(used)
+                    .describedAs("the bundle carries %s, which no descriptor looks up", key)
+                    .contains(key)
+            }
         }
     }
 

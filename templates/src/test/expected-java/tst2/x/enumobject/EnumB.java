@@ -27,8 +27,8 @@ import org.jspecify.annotations.Nullable;
 public enum EnumB {
 
     /** First. */
-    @ShortLabel(key = "A.slabel", value = "1st")
-    @Label(key = "A.label", value = "First one")
+    @ShortLabel(bundle = "Enumobject", key = "EnumB.A.slabel", value = "1st")
+    @Label(bundle = "Enumobject", key = "EnumB.A.label", value = "First one")
     A(1, "a", "First"),
     
         /** Second. */
