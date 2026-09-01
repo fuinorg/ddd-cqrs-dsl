@@ -22,6 +22,7 @@ import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
 import org.fuin.dsl.ddd.flutter.base.DartAttribute
 import org.fuin.dsl.ddd.gen.base.TypeKeys
 import org.fuin.srcgen4j.commons.GenerateException
+import org.fuin.srcgen4j.core.emf.PrimaryResources
 import org.fuin.srcgen4j.commons.GeneratedArtifact
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
@@ -73,16 +74,41 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
             return null
         }
 
+        val entries = wordingEntries(resourceSet)
+        if (entries.empty) {
+            return null
+        }
+
+        return List.of(newArtifact("l10n/melkheftken_" + LOCALE + ".arb",
+            arb(entries).toString.getBytes("UTF-8"), MODULE, FOLDER))
+    }
+
+    /**
+     * Every word the model states, keyed <code>&lt;bundle&gt;.&lt;key&gt;.&lt;suffix&gt;</code>.
+     *
+     * <p>Public because the two runtimes read the same set under the same keys: Flutter as one ARB for
+     * the whole application, the JVM as one properties file per bundle. Walking the model twice would
+     * mean deciding twice what a key is called, and a caption written under a key nothing looks up is
+     * exactly the drift this walk was written to end.
+     *
+     * @param resourceSet Model to walk.
+     *
+     * @return Entries in key order, empty when the model states no wording at all.
+     */
+    def static Map<String, String> wordingEntries(ResourceSet resourceSet) {
         val entries = new TreeMap<String, String>()
         val modules = new ArrayList<Module>()
         var String project = null
-        val it = resourceSet.allContents.filter(typeof(EObject)).filter[isPrimary(it)]
+        val it = resourceSet.allContents.filter(typeof(EObject)).filter[PrimaryResources.isPrimary(it)]
         while (it.hasNext) {
             val container = it.next
             if (container instanceof Module) {
                 project = container.context.name
                 modules.add(container)
             }
+        }
+        if (project === null) {
+            return entries
         }
         val referenced = new TreeSet<String>()
         for (module : modules) {
@@ -92,12 +118,7 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
             collect(module, entries, referenced)
         }
         collectModules(modules, entries)
-        if (project === null || entries.empty) {
-            return null
-        }
-
-        return List.of(newArtifact("l10n/melkheftken_" + LOCALE + ".arb",
-            arb(entries).toString.getBytes("UTF-8"), MODULE, FOLDER))
+        return entries
     }
 
     /**
@@ -110,7 +131,7 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
      * the first sub-module that states otherwise, by name. Writing an entry for each of them instead is
      * what put wording in the bundle that no descriptor could ever ask for.
      */
-    def private void collectModules(List<Module> modules, Map<String, String> entries) {
+    def private static void collectModules(List<Module> modules, Map<String, String> entries) {
         val chosen = new LinkedHashMap<String, Module>()
         for (module : modules.sortBy[m|m.name].filter[states(metaInfo)]) {
             val group = groupName(module.name)
@@ -133,7 +154,7 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
      * Notes every type some attribute is keyed to, so a type's caption is written where it is read and
      * nowhere else.
      */
-    def private void collectReferences(Module module, java.util.Set<String> referenced) {
+    def private static void collectReferences(Module module, java.util.Set<String> referenced) {
         val bundle = bundleName(module)
         for (element : module.elements) {
             // A refusal's wording is read where a rule is shown as the reason an action is disabled,
@@ -169,7 +190,7 @@ class DartArbArtifactFactory extends AbstractDartSource<ResourceSet> {
         }
     }
 
-    def private void collect(Module module, Map<String, String> entries, java.util.Set<String> referenced) {
+    def private static void collect(Module module, Map<String, String> entries, java.util.Set<String> referenced) {
         val bundle = bundleName(module)
         for (element : module.elements) {
             switch (element) {

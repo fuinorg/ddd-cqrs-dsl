@@ -30,7 +30,8 @@ var MAIN_RESOURCE_ARTIFACTS = [
     'AggregateDocArtifactFactory',
     'ESJpaLiquibaseXmlArtifactFactory',
     'ModuleDependencyArtifactFactory',
-    'PermissionCatalogueArtifactFactory'
+    'PermissionCatalogueArtifactFactory',
+    'WordingPropertiesArtifactFactory'
 ];
 
 /** Leaf classes owned by the developer that are not named "Final*". */
@@ -115,6 +116,7 @@ function module(typeKey) {
         case 'java-ui-catalogue':
         case 'res-permission-catalogue':
         case 'res-module-dependencies':
+        case 'res-wording-properties':
             return 'shared';
 
         default:

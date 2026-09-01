@@ -220,6 +220,9 @@ public final class TypeKeys {
     /** The module dependency graph: <code>MODULES.json</code>. */
     public static final String RES_MODULE_DEPENDENCIES = "res-module-dependencies";
 
+    /** The model's wording as JVM resource bundles: one <code>«Bundle».properties</code> per bundle. */
+    public static final String RES_WORDING_PROPERTIES = "res-wording-properties";
+
     /** Liquibase changelog of the JPA event store of an aggregate. */
     public static final String RES_AGGREGATE_LIQUIBASE = "res-aggregate-liquibase";
 
