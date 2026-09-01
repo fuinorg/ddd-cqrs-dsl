@@ -10,6 +10,7 @@ import org.fuin.dsl.cqrs.cqrsDsl.Command
 import org.fuin.dsl.cqrs.cqrsDsl.DomainModel
 import org.fuin.dsl.cqrs.tests.CqrsDslInjectorProvider
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
+import org.fuin.dsl.ddd.flutter.resourceset.DartArbArtifactFactory
 import org.fuin.dsl.ddd.gen.base.Utils
 import org.fuin.srcgen4j.commons.ArtifactFactoryConfig
 import org.fuin.srcgen4j.commons.DefaultContext
@@ -58,6 +59,15 @@ class DartCommandRulesTest {
     }
 
     @Test
+    def void testAndSaysWhereThatWordingIsTranslated() {
+        // The one caption on a screen that used to stay English whatever language the rest of it was
+        // in: the action's own name comes from the bundle, and the reason underneath it did not.
+        assertThat(generate("UnassignReceiptCommand"))
+            .contains("bundle: 'Receipts',")
+            .contains("key: 'ReceiptNotAssignedException',")
+    }
+
+    @Test
     def void testTheRuleAndTheRowMayCallOneValueDifferentThings() {
         // The actuals bind where the rule is used, so the mapping travels rather than being assumed.
         assertThat(generate("UnassignReceiptCommand"))
@@ -95,6 +105,31 @@ class DartCommandRulesTest {
     def void testACommandWithNoRulesCarriesNoField() {
         // An empty list would read as "nothing guards this", which is never true.
         assertThat(generate("RecordReceiptCommand")).doesNotContain("rules:")
+    }
+
+    @Test
+    def void testAndTheBundleCarriesWhatThatKeyLooksUp() {
+        // The two halves are written by different factories, so the one that matters is that they meet:
+        // a descriptor pointing at a key nothing carries would fall back to English for ever, silently.
+        assertThat(arb()).contains('"Receipts.ReceiptNotAssignedException.message"')
+    }
+
+    @Test
+    def void testARefusalNoClientCanBeShownIsNotTranslated() {
+        // NameMustBeUniqueForType asks a service, so no descriptor carries it and no screen ever shows
+        // its wording. A bundle entry for it would be one nothing could ask for.
+        assertThat(arb()).doesNotContain("NameTakenException")
+    }
+
+    private def String arb() {
+        val factory = new DartArbArtifactFactory()
+        val ArtifactFactoryConfig config = new ArtifactFactoryConfig("dartArb",
+            DartArbArtifactFactory.name, "flutter.contract", "genMainDart")
+        config.addVariable(new Variable(AbstractDartSource.KEY_DART_PACKAGE, "melkheftken_contract"))
+        config.init(new DefaultContext(), null)
+        factory.init(config)
+        return new String(factory.create(model.eResource.resourceSet,
+            new HashMap<String, Object>(), false).iterator.next.data, "UTF-8")
     }
 
     private def String generate(String commandName) {

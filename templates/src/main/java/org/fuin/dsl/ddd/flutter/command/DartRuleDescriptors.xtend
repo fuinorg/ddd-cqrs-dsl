@@ -23,9 +23,12 @@ import org.fuin.dsl.cqrs.cqrsDsl.RuleRefOperand
 import org.fuin.dsl.cqrs.cqrsDsl.Variable
 import org.fuin.dsl.cqrs.cqrsDsl.VariableArgument
 import org.fuin.dsl.ddd.flutter.base.AbstractDartSource
+import org.fuin.dsl.ddd.gen.base.AbstractSource
 import org.fuin.srcgen4j.commons.GenerateException
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsBusinessRulesExtensions.*
+
+import static extension org.fuin.dsl.cqrs.extensions.CqrsEObjectExtensions.*
 
 import static extension org.fuin.dsl.cqrs.extensions.CqrsLiteralExtensions.*
 
@@ -57,6 +60,10 @@ import static extension org.fuin.dsl.cqrs.extensions.CqrsCollectionExtensions.*
  * names the thing it refused and only this side knows which thing that is. Its placeholders always
  * resolve: the generator already refuses a model whose exception asks for something the rule does not
  * hold, so every name in the message is a name the rule was handed.
+ *
+ * <p>It travels with the key it is translated under, too. A disabled action's reason is the one caption
+ * on a screen that used to be the model's English whatever language the rest of it was in - the caption
+ * above it comes from the bundle and this did not.
  */
 class DartRuleDescriptors {
 
@@ -122,6 +129,13 @@ class DartRuleDescriptors {
         parts.add("  rule: '" + rule.name + "',")
         parts.add("  predicate: " + predicate(rule.requires) + ",")
         parts.add("  reason: " + AbstractDartSource.dartStringRaw(rule.exception.message) + ",")
+        // Where that sentence is translated. Keyed to the exception, in the module the exception is
+        // declared in rather than the one the rule is used in: wording is written once, where the thing
+        // it describes lives. The template stays beside it as the fallback, the way every ModelText
+        // carries the model's own wording.
+        parts.add("  text: ModelText(\n    bundle: " + AbstractDartSource.dartString(
+            AbstractSource.bundleName(rule.exception.module)) + ",\n    key: "
+            + AbstractDartSource.dartString(rule.exception.name) + ",\n  ),")
         if (!fromAttribute.empty) {
             val entries = new ArrayList<String>()
             for (entry : fromAttribute.entrySet) {

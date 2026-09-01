@@ -273,7 +273,18 @@ abstract class AbstractSource<T> implements ArtifactFactory<T> {
         return if(idx < 0) null else name.substring(idx + 1)
     }
 
-    protected static def String bundleName(Module ns) {
+    /**
+     * The resource bundle a module's wording is keyed under: its last segment, capitalized.
+     *
+     * <p>Public because a caption is written in one file and read in another - the ARB factory writes
+     * the entry, a descriptor factory writes the key that looks it up - and the two agreeing by
+     * construction is what stops the bundle filling with keys nothing asks for.
+     *
+     * @param ns Module the element is declared in.
+     *
+     * @return Bundle base name, or <code>null</code> when the module has no name.
+     */
+    static def String bundleName(Module ns) {
         val name = ns?.name
         if (name === null) {
             return null
